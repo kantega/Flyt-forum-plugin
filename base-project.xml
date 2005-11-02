@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project>
+  <pomVersion>4</pomVersion>
+  <id>ap-modules</id>
+  <name>ap-modules</name>
+  <groupId>ap-modules</groupId>
+  <currentVersion>0.1</currentVersion>
+  <organization>
+    <name>Kantega</name>
+    <url>http://www.kantega.no/</url>
+  </organization>
+  <inceptionYear>2005</inceptionYear>
+  <package>no.kantega</package>
+
+  <shortDescription>Short description of ap-modules</shortDescription>
+
+  <description>Long description of ap-modules</description>
+
+  <url>http://www.kantega.no</url>
+
+  <!--
+      <issueTrackingUrl>
+
+      </issueTrackingUrl>
+
+  
+  <siteAddress>http://www.kantega.no</siteAddress>
+
+  <siteDirectory>
+    /minbankid
+  </siteDirectory>
+
+  <distributionDirectory>
+
+  </distributionDirectory>
+
+-->
+  <repository>
+    <connection>
+      scm:subversion:file:///opt/svn/repo
+    </connection>
+    <url>
+      http://localhost:7467/viewcvs   
+    </url>
+  </repository>
+
+  <versions>
+    <version>
+      <id>0.0.1</id>
+      <name>0.0.1</name>
+      <tag>HEAD</tag>
+    </version>
+  </versions>
+
+  <mailingLists>
+  </mailingLists>
+
+  <developers>
+
+    <developer>
+      <name>Anders Skar</name>
+      <id>andska</id>
+      <email>anders.skar@kantega.no</email>
+      <organization>Kantega AS</organization>
+    </developer>
+    <developer>
+      <name>Eirik Bjørsnøs</name>
+      <id>eirbjo</id>
+      <email>eirik.bjorsnos@kantega.no</email>
+      <organization>Kantega AS</organization>
+    </developer>
+  </developers>
+
+
+  <build>
+    
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+    
+<!--    <unitTest>
+      <includes>
+	      <include>**/*Test.java</include>
+	    </includes>
+	    <resources>
+	      <resource>
+		<directory>src/test/conf</directory>
+		<includes>
+		  <include>**/*</include>
+		</includes>
+	      </resource>
+	    </resources>
+	  </unitTest>
+	  -->
+
+      <resources>
+        <resource>
+            <directory>${basedir}/src/resources</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </resource>
+      </resources>
+	</build>
+	
+	<reports>
+	  <report>maven-javadoc-plugin</report>
+	  <report>maven-jxr-plugin</report>
+	  <report>maven-junit-report-plugin</report>
+	  <report>maven-changelog-plugin</report>
+	  <report>maven-file-activity-plugin</report>
+	  <report>maven-developer-activity-plugin</report>
+	  <report>maven-clover-plugin</report>
+	  <report>maven-jdepend-plugin</report>
+	  <report>maven-checkstyle-plugin</report>
+	  <report>maven-pmd-plugin</report>
+	  <report>maven-simian-plugin</report>
+	  <report>maven-tasklist-plugin</report>
+	</reports>
+
+	<dependencies>
+	  <dependency>
+            <groupId>aksess</groupId>
+            <artifactId>aksess-plugin</artifactId>
+            <version>1.8</version>
+            <type>plugin</type>
+	  </dependency>
+	</dependencies>
+</project>

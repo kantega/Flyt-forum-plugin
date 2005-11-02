@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  <display-name>ap-modules</display-name>
+
+  <description>ap-modules</description>
+
+<!-- Use this to override the Spring root context -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/applicationContext-modules.xml</param-value>
+  </context-param>
+
+    <servlet>
+        <servlet-name>projectweb</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>projectweb</servlet-name>
+        <url-pattern>/projectweb/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project>
+
+    <extend>${basedir}/../../base-project.xml</extend>
+    <name>ap-modules webapp</name>
+    <id>${pom.groupId}-webapp</id>
+    <shortDescription>ap-modules webapp</shortDescription>
+
+    <description>ap-modules webapp</description>
+    <dependencies>
+
+
+      <dependency>
+        <groupId>${pom.groupId}</groupId>
+        <artifactId>${pom.groupId}-core</artifactId>
+        <version>${pom.currentVersion}</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+    <dependency>
+      <groupId>servletapi</groupId>
+      <artifactId>servletapi</artifactId>
+      <version>2.3</version>
+      <properties>
+        <war.bundle>false</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>springframework</groupId>
+      <artifactId>spring</artifactId>
+      <version>${springframework.version}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+      <dependency>
+          <groupId>oscache</groupId>
+          <artifactId>oscache</artifactId>
+          <version>2.1.1</version>
+          <properties>
+              <war.bundle>true</war.bundle>
+          </properties>
+      </dependency>
+
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>jstl</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.1.2</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.0</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-commons</artifactId>
+        <version>5.0dev</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-core</artifactId>
+        <version>5.0dev</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-forms</artifactId>
+        <version>5.0dev</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+      <!-- Aksess webapp -->
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-webapp</artifactId>
+        <version>5.0dev</version>
+	<type>war</type>
+        <properties>
+          <war.bundle>false</war.bundle>
+        </properties>
+      </dependency>
+      <!-- Aksess install -->
+
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-install</artifactId>
+        <version>5.0dev</version>
+        <properties>
+          <war.bundle>false</war.bundle>
+        </properties>
+      </dependency>
+
+      <!-- Aksess felles -->
+
+        <dependency>
+            <groupId>cos</groupId>
+            <artifactId>cos</artifactId>
+            <version>05Nov2002</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>regexp</groupId>
+            <artifactId>regexp</artifactId>
+            <version>1.2</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.6.2</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+          <version>2.6.2</version>
+          <properties>
+            <war.bundle>true</war.bundle>
+          </properties>
+        </dependency>
+
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>dom3-xml-apis</artifactId>
+        <version>2.5.0</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+      <dependency>
+              <groupId>xerces</groupId>
+              <artifactId>dom3-xercesImpl</artifactId>
+              <version>2.5.0</version>
+              <properties>
+                <war.bundle>true</war.bundle>
+              </properties>
+            </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.4.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>mail</groupId>
+            <artifactId>mail</artifactId>            
+            <jar>mail.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>mail</groupId>
+            <artifactId>activation</artifactId>
+            <jar>activation.jar</jar>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>3.0.14-production-bin</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+        <groupId>lucene</groupId>
+        <artifactId>lucene</artifactId>
+        <version>1.4.3</version>
+      </dependency>
+
+       
+    </dependencies>
+
+</project>

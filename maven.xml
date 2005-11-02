@@ -1,0 +1,25 @@
+<project
+   xmlns:ant="jelly:ant"
+   xmlns:j="jelly:core"
+   
+   xmlns:u="jelly:util"
+   xmlns:maven="jelly:maven">
+
+  <preGoal name="jar:jar">
+    
+    <copy todir="${maven.build.dest}/" filtering="true" overwrite="true">
+      <fileset dir="${pom.build.sourceDirectory}">
+	<include name="**/*.properties"/>
+	<include name="**/*.xml"/>
+      </fileset>
+    </copy>
+
+  </preGoal>
+
+
+  <postGoal name="jar:install">
+    <delete file="${maven.repo.local}/${pom.groupId}/poms/${maven.final.name}.pom"/>
+  </postGoal>
+
+
+</project>
