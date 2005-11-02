@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE workflow PUBLIC
+                 "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN"
+                 "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+  <initial-actions>
+    <action id="1" name="Ny aktivitet">
+      <results>
+        <unconditional-result old-status="Created" status="Registered" step="1">
+          <post-functions>
+            <function type="spring">
+              <arg name="bean.name">createActivityFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+  </initial-actions>
+  <steps>
+    <step id="1" name="Registrert">
+      <meta name="activity.status">registered</meta>
+      <actions>
+        <action id="101" name="Start arbeid">
+          <results>
+            <unconditional-result old-status="Finished" status="Estimate requested" step="2">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="2" name="Under arbeid">
+      <meta name="activity.status">in-progress</meta>
+      <actions>
+        <action id="201" name="Sett på vent">
+          <results>
+            <unconditional-result old-status="Finished" status="På vent"
+              step="3">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+        <action id="202" name="Ferdigstill">
+          <results>
+            <unconditional-result old-status="Finished" status="Ferdig"
+              step="4">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="3" name="På vent">
+      <meta name="activity.status">postponed</meta>
+      <actions>
+        <action id="301" name="Start igjen">
+          <results>
+            <unconditional-result old-status="Finished" status="Estimate approved"
+              step="2">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="4" name="Ferdig">
+      <meta name="activity.status">finished</meta>
+      <actions>
+        <action id="401" name="Start igjen">
+          <results>
+            <unconditional-result old-status="Finished" status="Estimate approved"
+                                  step="3">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+  </steps>
+</workflow>     

@@ -15,6 +15,12 @@
     <param-value>/WEB-INF/applicationContext-modules.xml</param-value>
   </context-param>
 
+  <servlet>
+    <servlet-name>context</servlet-name>
+    <servlet-class>org.springframework.web.context.ContextLoaderServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
     <servlet>
         <servlet-name>projectweb</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

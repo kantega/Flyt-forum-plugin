@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+    <tlibversion>1.0</tlibversion>
+    <jspversion>1.1</jspversion>
+    <shortname>aksess publisering</shortname>
+    <uri>http://www.kantega.no/aksess/tags/projectweb</uri>
+    <info>Aksess Project Taglibs</info>
+
+    <tag>
+        <name>haspermission</name>
+        <tagclass>no.kantega.projectweb.tags.HasPermissionTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Evaluate body if user has given permission</info>
+        <attribute>
+            <name>project</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>permission</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+      <attribute>
+            <name>user</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+  <tag>
+    <name>hasglobalpermission</name>
+    <tagclass>no.kantega.projectweb.tags.HasGlobalPermissionTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>Evaluate body if user has given permission</info>
+    <attribute>
+      <name>permission</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>user</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>resolveuser</name>
+    <tagclass>no.kantega.projectweb.tags.ResolveUserTag</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Looks up the full name of the given user or the current user</info>
+    <attribute>
+      <name>user</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>info</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>text2html</name>
+    <tagclass>no.kantega.projectweb.tags.Text2HtmlTag</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Currently replaces \n with &lt;br&gt;</info>
+    <attribute>
+      <name>text</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+</taglib>

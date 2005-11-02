@@ -413,7 +413,7 @@
 
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="close">
       <property name="dataSource">
-        <ref bean="aksessDataSource"/>
+        <ref bean="projectwebDataSource"/>
       </property>
       <property name="mappingResources">
         <value>projectweb.hbm.xml</value>
@@ -431,7 +431,7 @@
 
   <bean id="sessionFactory2" class="org.springframework.orm.hibernate.LocalSessionFactoryBean" destroy-method="close">
         <property name="dataSource">
-          <ref bean="aksessDataSource"/>
+          <ref bean="projectwebDataSource"/>
         </property>
         <property name="mappingResources">
           <list>
@@ -473,19 +473,7 @@
           <property name="suffix"><value>.jsp</value></property>
       </bean>
 
-  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="url">
-      <value>jdbc:mysql://localhost/ningdek?useUnicode=true&amp;characterEncoding=iso-8859-1</value>
-    </property>
-    <property name="driverClassName">
-      <value>com.mysql.jdbc.Driver</value>
-    </property>
-    <property name="username">
-      <value>root</value>
-    </property>
-
-  </bean>
-
+  
   <bean id="workflowStore"
     class="com.opensymphony.workflow.spi.hibernate.SpringHibernateWorkflowStore">
       <property name="sessionFactory"><ref bean="sessionFactory2"/></property>
@@ -576,6 +564,10 @@
     </property>
   </bean>
 
-  <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
+  <bean class="no.kantega.projectweb.conf.SpringPropertyReplacer">
+    <property name="provider">
+      <ref bean="springConfigProvider"/>
+    </property>
+  </bean>
 
 </beans>

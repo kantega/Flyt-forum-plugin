@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for "springapp" DispatcherServlet.
+  -->
+
+<beans>
+
+  <bean id="springConfigProvider" class="no.kantega.projectweb.conf.DefaultConfigurationResourceProvider">
+    <property name="resources">
+      <list>
+        <value>/WEB-INF/projectweb.conf</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean name="userProfileManager" class="no.kantega.projectweb.user.TestUserProfileManager">
+
+  </bean>
+
+  <bean name="userSearcher" class="no.kantega.projectweb.user.TestUserSearcher">
+    <property name="usernames">
+      <list>
+        <value>eirik</value>
+        <value>bjorsnos</value>
+        <value>eirbjo</value>
+        <value>ingode</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="userResolver" class="no.kantega.projectweb.user.SystemUserResolver"/>
+
+  <bean id="projectwebDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="url">
+      <value>jdbc:mysql://localhost/ningdek?useUnicode=true&amp;characterEncoding=iso-8859-1</value>
+    </property>
+    <property name="driverClassName">
+      <value>com.mysql.jdbc.Driver</value>
+    </property>
+    <property name="username">
+      <value>root</value>
+    </property>
+
+  </bean>
+
+</beans>
