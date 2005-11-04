@@ -11,7 +11,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class TestUserSearcher implements UserSearcher {
-    //public String[] users = new String[] {"eirik", "bjorsnos", "eirbjo", "ingode"};
     private List usernames;
     public UserProfile[] findUsers(String substring) {
         List found = new ArrayList();
