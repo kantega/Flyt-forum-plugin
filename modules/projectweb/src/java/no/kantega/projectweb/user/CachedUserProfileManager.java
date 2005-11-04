@@ -34,4 +34,8 @@ public class CachedUserProfileManager extends AbstractUserProfileManager {
     public void setRealManager(UserProfileManager realManager) {
         this.realManager = realManager;
     }
+
+    public void setRefreshPeriod(int refreshPeriod) {
+        this.refreshPeriod = refreshPeriod;
+    }
 }
