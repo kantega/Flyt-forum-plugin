@@ -21,5 +21,37 @@
     <delete file="${maven.repo.local}/${pom.groupId}/poms/${maven.final.name}.pom"/>
   </postGoal>
 
+  <goal name="apmod:prepare">
+      <maven:reactor
+         basedir="${basedir}"
+	 postProcessing="true"
+	 includes="modules/*/project.xml"
+         excludes="modules/webapp/project.xml"
+	 goals="jar:install"
+	 banner="Making sure Core is up to date:"
+	 ignoreFailures="false"/>
+   </goal>
+
+<goal name="apmod:reload" prereqs="apmod:prepare">
+    <maven:reactor
+       basedir="${basedir}"
+       postProcessing="true"
+       includes="modules/webapp/project.xml"
+       goals="tomcat:reload"
+       banner="Reloading context in Tomcat"
+       ignoreFailures="false"/>
+  </goal>
+
+<goal name="apmod:install" prereqs="apmod:prepare">
+    <maven:reactor
+       basedir="${basedir}"
+       postProcessing="true"
+       includes="modules/webapp/project.xml"
+       goals="tomcat:install"
+       banner="Reloading context in Tomcat"
+       ignoreFailures="false"/>
+  </goal>
+
+
 
 </project>
