@@ -260,7 +260,23 @@
             </property>
           </bean>
         </entry>-->
+<!--
+        <entry key="/adduser">
+          <bean class="no.kantega.projectweb.control.user.AddUserController">
+            <property name="userManager">
+              <ref bean="userManager"/>
+            </property>
+          </bean>
+        </entry>
 
+        <entry key="/userlist">
+          <bean class="no.kantega.projectweb.control.user.AddUserController">
+            <property name="userManager">
+              <ref bean="userManager"/>
+            </property>
+          </bean>
+        </entry>
+    -->
         <entry key="/activityworkflow">
           <bean class="no.kantega.projectweb.control.workflow.ActivityWorkflowController" parent="workflowController"/>
         </entry>
@@ -513,38 +529,41 @@
   </bean>
 
   <!--
-  <bean id="userManager" class="com.opensymphony.user.UserManager" init-method="loadConfig">
-    <property name="configLoader">
-      <bean class="no.kantega.osuser.config.SpringConfigLoader">
-        <property name="authenticator">
-          <bean class="no.kantega.osuser.config.Authenticator">
-            <property name="className">
-              <value>com.opensymphony.user.authenticator.SmartAuthenticator</value>
-            </property>
-          </bean>
-        </property>
-        <property name="providers">
-          <list>
-            <bean class="no.kantega.osuser.config.Provider">
-              <property name="className">
-                <value>com.opensymphony.user.provider.memory.MemoryProfileProvider</value>
-              </property>
-            </bean>
-            <bean class="no.kantega.osuser.config.Provider">
-              <property name="className">
-                <value>com.opensymphony.user.provider.memory.MemoryCredentialsProvider</value>
-              </property>
-            </bean>
-            <bean class="no.kantega.osuser.config.Provider">
-              <property name="className">
-                <value>com.opensymphony.user.provider.memory.MemoryAccessProvider</value>
-              </property>
-            </bean>
-          </list>
+  <bean id="userMangerConfigLoader" class="com.opensymphony.user.config.bean.BeanConfigLoader">
+    <property name="authenticator">
+      <bean class="com.opensymphony.user.config.bean.AuthenticatorConfig">
+        <property name="classname">
+          <value>com.opensymphony.user.authenticator.SmartAuthenticator</value>
         </property>
       </bean>
     </property>
-  </bean>-->
+    <property name="providers">
+      <list>
+        <bean class="com.opensymphony.user.config.bean.ProviderConfig">
+          <property name="classname">
+            <value>com.opensymphony.user.provider.memory.MemoryProfileProvider</value>
+          </property>
+        </bean>
+        <bean class="com.opensymphony.user.config.bean.ProviderConfig">
+          <property name="classname">
+            <value>com.opensymphony.user.provider.memory.MemoryCredentialsProvider</value>
+          </property>
+        </bean>
+        <bean class="com.opensymphony.user.config.bean.ProviderConfig">
+          <property name="classname">
+            <value>com.opensymphony.user.provider.memory.MemoryAccessProvider</value>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="userManager" class="com.opensymphony.user.UserManager">
+    <constructor-arg index="0">
+      <ref bean="userMangerConfigLoader"/>
+    </constructor-arg>
+  </bean>
+   -->  
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="cacheSeconds">
       <value>5</value>
