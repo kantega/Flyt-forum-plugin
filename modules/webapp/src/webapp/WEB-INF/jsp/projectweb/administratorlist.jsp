@@ -1,6 +1,6 @@
 <%@ page import="java.util.List,
                  no.kantega.projectweb.model.Project" %>
-<%@ page contentType="text/html;charset=iso-8859-1" language="java" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
