@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="no.kantega.forum.model">
+    <class name="ForumCategory" table="forum_forumcategory">
+        <cache usage="read-write"/>
+        <id name="id" column="forumCategoryId" type="int">
+            <generator class="increment"/>
+        </id>
+        <property name="name"/>
+        <property name="description"/>
+        <property name="numForums"/>
+        <property name="createdDate" type="date"/>
+        <set name="forums" order-by="forumId" cascade="all-delete-orphan">
+          <key column="forumCategoryId"/>
+          <one-to-many class="Forum"/>
+        </set>
+    </class>
+
+    <class name="Forum" table="forum_forum">
+        <cache usage="read-write"/>
+        <id name="id" column="forumId" type="int">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="forumCategory" column="forumCategoryId" not-null="true" class="ForumCategory"/>
+        <property name="name"/>
+        <property name="description"/>
+        <property name="numThreads"/>
+        <property name="lastMessage"/>
+        <property name="createdDate" type="date"/>
+        <set name="threads" order-by="threadId" cascade="all-delete-orphan">
+            <key column="forumId"/>
+            <one-to-many class="ForumThread"/>
+        </set>
+    </class>
+
+    <class name="ForumThread" table="forum_thread">
+        <cache usage="read-write"/>
+        <id name="id" column="threadId" type="int">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="forum" column="forumId" not-null="true" class="Forum"/>
+        <property name="createdDate" type="date"/>
+        <property name="numPosts"/>
+        <set name="posts" order-by="postId" cascade="all-delete-orphan">
+            <key column="threadId"/>
+            <one-to-many class="Post"/>
+        </set>
+    </class>
+
+    <class name="Post" table="forum_post">
+        <cache usage="read-write"/>
+        <id name="id" column="postId" type="int">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="thread" column="threadId" not-null="true" class="ForumThread"/>
+        <property name="replyToId"/>
+        <property name="subject"/>
+        <property name="body"/>
+        <property name="postDate" type="date"/>
+        <set name="attachments" order-by="attachmetId" cascade="all-delete-orphan">
+            <key column="postId"/>
+            <one-to-many class="Attachment"/>
+        </set>
+    </class>
+
+    <class name="Attachment" table="forum_attachment">
+        <cache usage="read-write"/>
+        <id name="id" column="attachmentId" type="int">
+            <generator class="increment"/>
+        </id>
+        <many-to-one name="post" column="postId" not-null="true" class="Post"/>
+        <property name="fileName"/>
+        <property name="fileSize"/>
+        <property name="mimeType"/>
+        <property name="data" type="blob"/>
+    </class>
+</hibernate-mapping>

@@ -583,7 +583,7 @@
     </property>
   </bean>
 
-  <bean class="no.kantega.projectweb.conf.SpringPropertyReplacer">
+  <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
     <property name="provider">
       <ref bean="springConfigProvider"/>
     </property>

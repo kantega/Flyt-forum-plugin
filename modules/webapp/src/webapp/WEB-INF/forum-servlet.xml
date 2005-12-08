@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for "springapp" DispatcherServlet.
+  -->
+
+<beans>
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="close">
+      <property name="dataSource">
+        <ref bean="forumDataSource"/>
+      </property>
+      <property name="mappingResources">
+        <value>forum.hbm.xml</value>
+      </property>
+      <property name="hibernateProperties">
+        <props>
+          <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
+          <prop key="hibernate.show_sql">true</prop>
+        </props>
+      </property>
+      <property name="schemaUpdate">
+        <value>true</value>
+      </property>
+    </bean>
+
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+      <property name="sessionFactory">
+        <ref local="sessionFactory"/>
+      </property>
+    </bean>
+
+    <bean id="dao" class="no.kantega.forum.dao.ForumDao">
+      <property name="template">
+        <ref local="hibernateTemplate"/>
+      </property>
+    </bean>
+
+  <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+          <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+          <property name="prefix"><value>/WEB-INF/jsp/forum/</value></property>
+          <property name="suffix"><value>.jsp</value></property>
+      </bean>
+
+  
+  <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <property name="cacheSeconds">
+      <value>5</value>
+    </property>
+    <property name="basenames">
+      <list>
+        <value>/WEB-INF/classes/forum</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+    <property name="defaultLocale">
+      <value>no</value>
+    </property>
+  </bean>
+
+  <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
+    <property name="provider">
+      <ref bean="springConfigProvider"/>
+    </property>
+  </bean>
+
+</beans>
