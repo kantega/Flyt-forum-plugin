@@ -11,20 +11,20 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class Post {
-    private int Id;
+    private long Id;
     private ForumThread Thread;
     private int ReplyToId;
     private String Subject;
     private String Body;
-    private User user;
+    private User Owner;
     private Date PostDate;
     private Set Attachments;
 
-    public int getId() {
+    public long getId() {
         return Id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.Id = id;
     }
 
@@ -52,14 +52,6 @@ public class Post {
         Body = body;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Date getPostDate() {
         return PostDate;
     }
@@ -82,5 +74,13 @@ public class Post {
 
     public void setThread(ForumThread thread) {
         this.Thread = thread;
+    }
+
+    public User getOwner() {
+        return Owner;
+    }
+
+    public void setOwner(User owner) {
+        Owner = owner;
     }
 }

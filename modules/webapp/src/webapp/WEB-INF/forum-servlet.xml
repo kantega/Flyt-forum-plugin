@@ -6,6 +6,19 @@
   -->
 
 <beans>
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/">
+                    <ref bean="forumCategoryListController"/>
+                </entry>
+                <entry key="/viewcategory">
+                    <ref bean="forumCategoryViewController"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
   <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="close">
       <property name="dataSource">
         <ref bean="forumDataSource"/>
@@ -62,8 +75,20 @@
 
   <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
     <property name="provider">
-      <ref bean="springConfigProvider"/>
+      <ref bean="springForumConfigProvider"/>
     </property>
   </bean>
+
+    <bean id="forumCategoryListController" class="no.kantega.forum.control.ListCategories">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+    </bean>
+
+    <bean id="forumCategoryViewController" class="no.kantega.forum.control.ViewCategory">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+    </bean>
 
 </beans>

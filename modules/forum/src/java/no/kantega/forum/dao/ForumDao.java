@@ -43,6 +43,19 @@ public class ForumDao {
     public void saveOrUpdate(Forum forum) {
         template.saveOrUpdate(forum);
     }
+
+    public void saveOrUpdate(User user) {
+        template.saveOrUpdate(user);
+    }
+
+    public void saveOrUpdate(Group group) {
+        template.saveOrUpdate(group);
+    }
+
+    public void saveOrUpdate(Role role) {
+        template.saveOrUpdate(role);
+    }
+
     //
 
     public List getForumCategories() {
@@ -55,6 +68,7 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategoryId));
                 fc.getForums().size();
+                fc.getGroups().size();
                 return fc;
             }
         });
@@ -65,6 +79,7 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 Forum f = (Forum) session.get(Forum.class, new Long(forumId));
                 f.getThreads().size();
+                f.getGroups().size();
                 return f;
             }
         });
@@ -75,6 +90,7 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 ForumThread t = (ForumThread) session.get(Forum.class, new Long(threadId));
                 t.getPosts().size();
+                t.getGroups().size();
                 return t;
             }
         });
@@ -111,7 +127,7 @@ public class ForumDao {
     public void addForumToCategory(final Forum forum, final ForumCategory forumCategory) {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Integer(forumCategory.getId()));
+                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategory.getId()));
                 forum.setForumCategory(fc);
                 if (fc.getForums() == null) {
                     fc.setForums(new HashSet());
@@ -128,7 +144,7 @@ public class ForumDao {
     public void addThreadToForum(final ForumThread thread, final Forum forum) {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Forum f = (Forum) session.get(Forum.class, new Integer(forum.getId()));
+                Forum f = (Forum) session.get(Forum.class, new Long(forum.getId()));
                 thread.setForum(f);
                 if (f.getThreads() == null) {
                     f.setThreads(new HashSet());
@@ -145,7 +161,7 @@ public class ForumDao {
     public void addPostToThread(final Post post, final ForumThread thread) {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                ForumThread t = (ForumThread) session.get(ForumThread.class, new Integer(thread.getId()));
+                ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(thread.getId()));
                 post.setThread(t);
                 if (t.getPosts() == null) {
                     t.setPosts(new HashSet());
@@ -162,7 +178,7 @@ public class ForumDao {
     public void addAttachmentToPost(final Attachment attachment, final Post post) {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Post p = (Post) session.get(Post.class, new Integer(post.getId()));
+                Post p = (Post) session.get(Post.class, new Long(post.getId()));
                 attachment.setPost(p);
                 if (p.getAttachments() == null) {
                     p.setAttachments(new HashSet());
@@ -170,6 +186,147 @@ public class ForumDao {
                 p.getAttachments().add(attachment);
                 session.saveOrUpdate(attachment);
                 session.saveOrUpdate(p);
+                return null;
+            }
+        });
+    }
+
+    // permissions
+    public void addGroupToForumCategory(final Group group, final ForumCategory forumCategory) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategory.getId()));
+                if (fc.getGroups() == null) {
+                    fc.setGroups(new HashSet());
+                }
+                fc.getGroups().add(group);
+                session.saveOrUpdate(fc);
+                return null;
+            }
+        });
+    }
+
+    public void removeGroupFromForumCategory(final Group group, final ForumCategory forumCategory) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategory.getId()));
+                if (fc.getGroups() == null) {
+                    fc.setGroups(new HashSet());
+                }
+                fc.getGroups().remove(group);
+                session.saveOrUpdate(fc);
+                return null;
+            }
+        });
+    }
+
+    public void addGroupToForum(final Group group, final Forum forum) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Forum f = (Forum) session.get(Forum.class, new Long(forum.getId()));
+                if (f.getGroups() == null) {
+                    f.setGroups(new HashSet());
+                }
+                f.getGroups().add(group);
+                session.saveOrUpdate(f);
+                return null;
+            }
+        });
+    }
+
+    public void removeGroupFromForum(final Group group, final Forum forum) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Forum f = (Forum) session.get(Forum.class, new Long(forum.getId()));
+                if (f.getGroups() == null) {
+                    f.setGroups(new HashSet());
+                }
+                f.getGroups().remove(group);
+                session.saveOrUpdate(f);
+                return null;
+            }
+        });
+    }
+
+    public void addGroupToThread(final Group group, final ForumThread thread) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(thread.getId()));
+                if (t.getGroups() == null) {
+                    t.setGroups(new HashSet());
+                }
+                t.getGroups().add(group);
+                session.saveOrUpdate(t);
+                return null;
+            }
+        });
+    }
+
+    public void removeGroupFromThread(final Group group, final ForumThread thread) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(thread.getId()));
+                if (t.getGroups() == null) {
+                    t.setGroups(new HashSet());
+                }
+                t.getGroups().remove(group);
+                session.saveOrUpdate(t);
+                return null;
+            }
+        });
+    }
+
+    public void addUserToGroup(final User user, final Group group) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Group g = (Group) session.get(Group.class, new Long(group.getId()));
+                if (g.getUsers() == null) {
+                    g.setUsers(new HashSet());
+                }
+                g.getUsers().add(user);
+                session.saveOrUpdate(g);
+                return null;
+            }
+        });
+    }
+
+    public void removeUserFromGroup(final User user, final Group group) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Group g = (Group) session.get(Group.class, new Long(group.getId()));
+                if (g.getUsers() == null) {
+                    g.setUsers(new HashSet());
+                }
+                g.getUsers().remove(user);
+                session.saveOrUpdate(g);
+                return null;
+            }
+        });
+    }
+
+    public void addUserToRole(final User user, final Role role) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Role r = (Role) session.get(Role.class, new Long(role.getId()));
+                if (r.getUsers() == null) {
+                    r.setUsers(new HashSet());
+                }
+                r.getUsers().add(user);
+                session.saveOrUpdate(r);
+                return null;
+            }
+        });
+    }
+
+    public void removeUserFromRole(final User user, final Role role) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Role r = (Role) session.get(Role.class, new Long(role.getId()));
+                if (r.getUsers() == null) {
+                    r.setUsers(new HashSet());
+                }
+                r.getUsers().remove(user);
+                session.saveOrUpdate(r);
                 return null;
             }
         });

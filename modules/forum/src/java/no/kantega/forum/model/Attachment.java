@@ -8,7 +8,7 @@ package no.kantega.forum.model;
  * To change this template use File | Settings | File Templates.
  */
 public class Attachment {
-    private int id;
+    private long id;
     private Post Post;
     private String FileName;
     private long FileSize;
@@ -23,11 +23,11 @@ public class Attachment {
         FileSize = fileSize;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

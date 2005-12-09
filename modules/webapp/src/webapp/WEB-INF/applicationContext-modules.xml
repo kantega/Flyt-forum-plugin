@@ -56,7 +56,7 @@
 
     <bean id="forumDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
       <property name="url">
-        <value>jdbc:jtds://eddie.mogul.no:1433/dnweb;tds=8.0;loginTimeout=15</value>
+        <value>jdbc:jtds:sqlserver://eddie.mogul.no:1433/dnweb;tds=8.0;loginTimeout=15</value>
       </property>
       <property name="driverClassName">
         <value>net.sourceforge.jtds.jdbc.Driver</value>

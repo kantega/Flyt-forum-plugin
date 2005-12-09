@@ -280,6 +280,14 @@
             </properties>
         </dependency>
 
+        <dependency>
+            <groupId>jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>1.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
        
     </dependencies>
 

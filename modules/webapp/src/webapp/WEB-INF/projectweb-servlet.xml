@@ -585,7 +585,7 @@
 
   <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
     <property name="provider">
-      <ref bean="springConfigProvider"/>
+      <ref bean="springProjectWebConfigProvider"/>
     </property>
   </bean>
 

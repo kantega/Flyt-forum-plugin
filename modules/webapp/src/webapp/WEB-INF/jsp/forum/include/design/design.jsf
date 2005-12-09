@@ -1,0 +1,10 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<html>
+    <head>
+        <title>Forum kategorier</title>
+    </head>
+    <body>
+    <kantega:getsection id="innhold"/>
+    </body>
+</html>

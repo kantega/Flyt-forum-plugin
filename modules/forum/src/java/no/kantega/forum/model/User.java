@@ -10,15 +10,14 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class User {
-    private int id;
+    private long id;
     private String name;
-    private Set role;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -28,13 +27,5 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set getRole() {
-        return role;
-    }
-
-    public void setRole(Set role) {
-        this.role = role;
     }
 }

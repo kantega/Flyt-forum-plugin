@@ -6,13 +6,18 @@
 <hibernate-mapping package="no.kantega.forum.model">
     <class name="ForumCategory" table="forum_forumcategory">
         <cache usage="read-write"/>
-        <id name="id" column="forumCategoryId" type="int">
+        <id name="id" column="forumCategoryId" type="long">
             <generator class="increment"/>
         </id>
         <property name="name"/>
         <property name="description"/>
         <property name="numForums"/>
         <property name="createdDate" type="date"/>
+        <one-to-one name="owner" class="User"/>
+        <set name="groups" order-by="groupId" table="forum_forumcategory_groups">
+            <key column="forumCategoryId"/>
+            <many-to-many column="groupId" class="Group"/>
+        </set>
         <set name="forums" order-by="forumId" cascade="all-delete-orphan">
           <key column="forumCategoryId"/>
           <one-to-many class="Forum"/>
@@ -21,7 +26,7 @@
 
     <class name="Forum" table="forum_forum">
         <cache usage="read-write"/>
-        <id name="id" column="forumId" type="int">
+        <id name="id" column="forumId" type="long">
             <generator class="increment"/>
         </id>
         <many-to-one name="forumCategory" column="forumCategoryId" not-null="true" class="ForumCategory"/>
@@ -30,6 +35,11 @@
         <property name="numThreads"/>
         <property name="lastMessage"/>
         <property name="createdDate" type="date"/>
+        <one-to-one name="owner" class="User"/>
+        <set name="groups" order-by="groupId" table="forum_forum_groups">
+            <key column="forumId"/>
+            <many-to-many column="groupId" class="Group"/>
+        </set>
         <set name="threads" order-by="threadId" cascade="all-delete-orphan">
             <key column="forumId"/>
             <one-to-many class="ForumThread"/>
@@ -38,12 +48,17 @@
 
     <class name="ForumThread" table="forum_thread">
         <cache usage="read-write"/>
-        <id name="id" column="threadId" type="int">
+        <id name="id" column="threadId" type="long">
             <generator class="increment"/>
         </id>
         <many-to-one name="forum" column="forumId" not-null="true" class="Forum"/>
         <property name="createdDate" type="date"/>
         <property name="numPosts"/>
+        <one-to-one name="owner" class="User"/>
+        <set name="groups" order-by="groupId" table="forum_thread_groups">
+            <key column="threadId"/>
+            <many-to-many column="groupId" class="Group"/>
+        </set>
         <set name="posts" order-by="postId" cascade="all-delete-orphan">
             <key column="threadId"/>
             <one-to-many class="Post"/>
@@ -52,7 +67,7 @@
 
     <class name="Post" table="forum_post">
         <cache usage="read-write"/>
-        <id name="id" column="postId" type="int">
+        <id name="id" column="postId" type="long">
             <generator class="increment"/>
         </id>
         <many-to-one name="thread" column="threadId" not-null="true" class="ForumThread"/>
@@ -60,6 +75,7 @@
         <property name="subject"/>
         <property name="body"/>
         <property name="postDate" type="date"/>
+        <one-to-one name="owner" class="User"/>
         <set name="attachments" order-by="attachmetId" cascade="all-delete-orphan">
             <key column="postId"/>
             <one-to-many class="Attachment"/>
@@ -68,7 +84,7 @@
 
     <class name="Attachment" table="forum_attachment">
         <cache usage="read-write"/>
-        <id name="id" column="attachmentId" type="int">
+        <id name="id" column="attachmentId" type="long">
             <generator class="increment"/>
         </id>
         <many-to-one name="post" column="postId" not-null="true" class="Post"/>
@@ -76,5 +92,38 @@
         <property name="fileSize"/>
         <property name="mimeType"/>
         <property name="data" type="blob"/>
+    </class>
+
+    <class name="User" table="forum_users">
+        <cache usage="read-write"/>
+        <id name="id" column="userId" type="long">
+            <generator class="increment"/>
+        </id>
+        <property name="name" not-null="true" column="username"/>
+    </class>
+
+    <class name="Role" table="forum_roles">
+        <cache usage="read-write"/>
+        <id name="id" column="roleId" type="long">
+            <generator class="increment"/>
+        </id>
+        <property name="name"/>
+        <property name="description"/>
+        <set name="users" order-by="userId" table="forum_roles_users">
+            <key column="roleId"/>
+            <many-to-many column="userId" class="User"/>
+        </set>
+    </class>
+
+    <class name="Group" table="forum_groups">
+        <cache usage="read-write"/>
+        <id name="id" column="groupId" type="long">
+            <generator class="increment"/>
+        </id>
+        <property name="name" column="groupname"/>
+        <set name="users" order-by="userId" table="forum_groups_users">
+            <key column="groupId"/>
+            <many-to-many column="userId" class="User"/>
+        </set>
     </class>
 </hibernate-mapping>

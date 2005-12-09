@@ -5,13 +5,14 @@ import java.util.Set;
 /**
  * Created by IntelliJ IDEA.
  * User: HAREVE
- * Date: 02.des.2005
- * Time: 12:02:56
+ * Date: 09.des.2005
+ * Time: 11:53:20
  * To change this template use File | Settings | File Templates.
  */
-public class Group {
+public class Role {
     private long id;
     private String name;
+    private String description;
     private Set users;
 
     public long getId() {
@@ -28,6 +29,14 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set getUsers() {

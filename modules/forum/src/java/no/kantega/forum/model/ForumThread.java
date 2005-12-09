@@ -11,17 +11,19 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class ForumThread {
-    private int id;
+    private long id;
     private Forum Forum;
     private Date CreatedDate;
     private int NumPosts;
     private Set Posts;
+    private Set Groups;
+    private User Owner;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -56,4 +58,21 @@ public class ForumThread {
     public void setNumPosts(int numPosts) {
         NumPosts = numPosts;
     }
+
+    public Set getGroups() {
+        return Groups;
+    }
+
+    public void setGroups(Set groups) {
+        Groups = groups;
+    }
+
+    public User getOwner() {
+        return Owner;
+    }
+
+    public void setOwner(User owner) {
+        Owner = owner;
+    }
 }
+

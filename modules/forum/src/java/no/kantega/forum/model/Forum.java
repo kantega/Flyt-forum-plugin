@@ -11,20 +11,22 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class Forum {
-    private int id;
+    private long id;
     private ForumCategory ForumCategory;
     private String Name;
     private String Description;
     private int NumThreads;   // num threads in current Forum
-    private int LastMessage;  // last message posted in Forum
+    private long LastMessage; // last message posted in Forum
     private Date CreatedDate; // Forum Created Date
+    private Set Groups;
+    private User Owner;
     private Set Threads;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -44,11 +46,11 @@ public class Forum {
         Description = description;
     }
 
-    public int getLastMessage() {
+    public long getLastMessage() {
         return LastMessage;
     }
 
-    public void setLastMessage(int lastMessage) {
+    public void setLastMessage(long lastMessage) {
         LastMessage = lastMessage;
     }
 
@@ -82,5 +84,21 @@ public class Forum {
 
     public void setForumCategory(ForumCategory forumCategory) {
         ForumCategory = forumCategory;
+    }
+
+    public Set getGroups() {
+        return Groups;
+    }
+
+    public void setGroups(Set groups) {
+        Groups = groups;
+    }
+
+    public User getOwner() {
+        return Owner;
+    }
+
+    public void setOwner(User owner) {
+        Owner = owner;
     }
 }
