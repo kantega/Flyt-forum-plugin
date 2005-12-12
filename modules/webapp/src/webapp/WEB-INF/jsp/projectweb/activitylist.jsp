@@ -18,7 +18,7 @@
             document.searchform.submit();
         }
     </script>
-    <form name="searchform" action="activitylist">
+    <form name="searchform" action="activitylist" method="POST">
 
     <table border="0" cellpadding="0" cellspacing="0" height="100%">
         <tr>

@@ -16,7 +16,7 @@
 
         <div class="heading"><spring:message code="participants.add" /></div>
 
-        <form action="addparticipant" method="GET">
+        <form action="addparticipant" method="POST">
             <input name="projectId" type="hidden" value="<c:out value="${project.id}"/>">
 
             <input name="query" value="<c:out value="${query}"/>"> <input type="submit" value="<spring:message code="general.search" />">

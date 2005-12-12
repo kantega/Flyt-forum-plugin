@@ -16,7 +16,7 @@
 
         <div class="heading"><spring:message code="administrators.add" /></div>
 
-        <form action="addadministrator" method="GET">
+        <form action="addadministrator" method="POST">
             <input name="query" value="<c:out value="${query}"/>"> <input type="submit" value="<spring:message code="general.search" />">
           </form>
         <c:choose>

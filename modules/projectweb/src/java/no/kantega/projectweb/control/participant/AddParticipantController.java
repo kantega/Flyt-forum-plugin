@@ -42,7 +42,7 @@ public class AddParticipantController implements Controller {
         boolean allowAdd = permissionManager.hasGlobalPermission(user, GlobalPermissions.ADMINISTRATOR) ||
                 permissionManager.hasPermission(user, Permissions.PROJECT_ADMINISTRATION, project);
 
-        if(request.getMethod().equals("POST")) {
+        if(request.getMethod().equals("POST") && request.getParameter("user") != null) {
             String userName = request.getParameter("user");
             if(allowAdd) {
                 Participant participant = new Participant();

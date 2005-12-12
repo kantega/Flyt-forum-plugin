@@ -32,7 +32,7 @@ public class AddAdministratorController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
 
-        if(request.getMethod().equals("POST")) {
+        if(request.getMethod().equals("POST") && request.getParameter("user") != null) {
             String userName = request.getParameter("user");
             dao.addUserToGroup(userName, administratorGroup);
             return new ModelAndView(new RedirectView("administratorlist"));
