@@ -54,7 +54,7 @@
     <property name="assignee"/>
 
     <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
-    <many-to-one name="type" column="typeId"  not-null="true" class="ActivityType"/>
+    <many-to-one name="type" column="typeId"  not-null="false" class="ActivityType"/>
     <many-to-one name="priority" column="priorityId"  not-null="true" class="ActivityPriority"/>
     <many-to-one name="status" column="statusId"  not-null="true" class="ActivityStatus"/>
     <many-to-one name="projectPhase" column="projectPhaseId" class="ProjectPhase"/>
@@ -124,7 +124,7 @@
     <id name="id" column="participantId" type="long">
       <generator class="increment"/>
     </id>
-    <many-to-one name="project" class="Project" column="projectId" not-null="true"/>
+    <many-to-one name="project" class="Project" column="projectId" not-null="true" />
     <property name="user" not-null="true"  column="username"/>
     <set name="roles"  order-by="projectRoleId" table="projectweb_participant_roles">
       <key column="paricipantId"/>
