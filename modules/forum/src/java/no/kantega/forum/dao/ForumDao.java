@@ -8,8 +8,10 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.HashSet;
+import java.sql.SQLException;
 
 import no.kantega.forum.model.*;
+import no.kantega.forum.permission.Roles;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,8 +46,16 @@ public class ForumDao {
         template.saveOrUpdate(forum);
     }
 
+    public void saveOrUpdate(Post post) {
+        template.saveOrUpdate(post);
+    }
+
     public void saveOrUpdate(User user) {
         template.saveOrUpdate(user);
+    }
+
+    public void saveOrUpdate(UserProfile userProfile) {
+        template.saveOrUpdate(userProfile);
     }
 
     public void saveOrUpdate(Group group) {
@@ -56,6 +66,27 @@ public class ForumDao {
         template.saveOrUpdate(role);
     }
 
+    // delete
+    public void delete(Post post) {
+        template.delete(post);
+    }
+
+    public void delete(ForumThread thread) {
+        template.delete(thread);
+    }
+
+    public void delete(Attachment attachment) {
+        template.delete(attachment);
+    }
+
+    public void delete(Forum forum) {
+        template.delete(forum);
+    }
+
+    public void delete(ForumCategory forumCategory) {
+        template.delete(forumCategory);
+    }
+
     //
 
     public List getForumCategories() {
@@ -63,7 +94,11 @@ public class ForumDao {
     }
 
     //
-    public ForumCategory getPopulatedForumCategory(final int forumCategoryId) {
+    public Role getRole(Roles r) {
+        return (Role) template.find("from Roles where roleType=?", r).get(0);
+    }
+
+    public ForumCategory getPopulatedForumCategory(final long forumCategoryId) {
         return (ForumCategory) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategoryId));
@@ -74,7 +109,7 @@ public class ForumDao {
         });
     }
 
-    public Forum getPopulatedForum(final int forumId) {
+    public Forum getPopulatedForum(final long forumId) {
         return (Forum) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Forum f = (Forum) session.get(Forum.class, new Long(forumId));
@@ -85,7 +120,7 @@ public class ForumDao {
         });
     }
 
-    public ForumThread getPopulatedThread(final int threadId) {
+    public ForumThread getPopulatedThread(final long threadId) {
         return (ForumThread) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 ForumThread t = (ForumThread) session.get(Forum.class, new Long(threadId));
@@ -96,7 +131,7 @@ public class ForumDao {
         });
     }
 
-    public Post getPopulatedPost(final int postId) {
+    public Post getPopulatedPost(final long postId) {
         return (Post) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Post p = (Post) session.get(Forum.class, new Long(postId));
@@ -107,20 +142,54 @@ public class ForumDao {
     }
 
     // get
-    public Forum getForum(final int forumId) {
-        return (Forum) template.get(Forum.class, new Integer(forumId));
+    public Forum getForum(final long forumId) {
+        return (Forum) template.get(Forum.class, new Long(forumId));
     }
 
-    public ForumThread getThread(final int threadId) {
-        return (ForumThread) template.get(ForumThread.class, new Integer(threadId));
+    public ForumThread getThread(final long threadId) {
+        return (ForumThread) template.get(ForumThread.class, new Long(threadId));
     }
 
-    public Attachment getAttachment(final int attachmentId) {
-        return (Attachment) template.get(Attachment.class, new Integer(attachmentId));
+    public Attachment getAttachment(final long attachmentId) {
+        return (Attachment) template.get(Attachment.class, new Long(attachmentId));
     }
 
-    public ForumCategory getForumCategory(final int forumCategoryId) {
-        return (ForumCategory) template.get(ForumCategory.class, new Integer(forumCategoryId));
+    public ForumCategory getForumCategory(final long forumCategoryId) {
+        return (ForumCategory) template.get(ForumCategory.class, new Long(forumCategoryId));
+    }
+
+    public Post getPost(final long postId) {
+        return (Post) template.get(Post.class, new Long(postId));
+    }
+
+    public User getUser(final long userId) {
+        return (User) template.get(User.class, new Long(userId));
+    }
+
+    public User getUser(final String username) {
+        return (User) template.find("from User u where u.name=?", username).get(0);
+    }
+
+    public List getUserGroups(final User user) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                Query q = session.createQuery("from forum_groups_users where userId=:userId order by userId");
+                q.setLong("userId", user.getId());
+                List groups = q.list();
+                return groups;
+            }
+        });
+    }
+
+    public List getUserRoles(final User user) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                Query q = session.createQuery("from forum_roles_users where userId=:userId order by userId");
+                q.setLong("userId", user.getId());
+                List groups = q.list();
+                return groups;
+            }
+        });
     }
 
     // add
@@ -327,6 +396,17 @@ public class ForumDao {
                 }
                 r.getUsers().remove(user);
                 session.saveOrUpdate(r);
+                return null;
+            }
+        });
+    }
+
+    public void addUserProfileToUser(final UserProfile userProfile, final User user) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                UserProfile up = (UserProfile) session.get(UserProfile.class, new Long(user.getId()));
+                up.setId(user.getId());
+                session.saveOrUpdate(up);
                 return null;
             }
         });

@@ -1,6 +1,7 @@
 package no.kantega.forum.model;
 
 import java.util.Set;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,6 +13,8 @@ import java.util.Set;
 public class User {
     private long id;
     private String name;
+    private String password;
+    private boolean disabled;
 
     public long getId() {
         return id;
@@ -27,5 +30,21 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

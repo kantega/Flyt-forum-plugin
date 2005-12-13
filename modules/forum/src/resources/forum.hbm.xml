@@ -13,7 +13,7 @@
         <property name="description"/>
         <property name="numForums"/>
         <property name="createdDate" type="date"/>
-        <one-to-one name="owner" class="User"/>
+        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
         <set name="groups" order-by="groupId" table="forum_forumcategory_groups">
             <key column="forumCategoryId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -35,7 +35,7 @@
         <property name="numThreads"/>
         <property name="lastMessage"/>
         <property name="createdDate" type="date"/>
-        <one-to-one name="owner" class="User"/>
+        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
         <set name="groups" order-by="groupId" table="forum_forum_groups">
             <key column="forumId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -54,7 +54,7 @@
         <many-to-one name="forum" column="forumId" not-null="true" class="Forum"/>
         <property name="createdDate" type="date"/>
         <property name="numPosts"/>
-        <one-to-one name="owner" class="User"/>
+        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
         <set name="groups" order-by="groupId" table="forum_thread_groups">
             <key column="threadId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -75,7 +75,7 @@
         <property name="subject"/>
         <property name="body"/>
         <property name="postDate" type="date"/>
-        <one-to-one name="owner" class="User"/>
+        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
         <set name="attachments" order-by="attachmetId" cascade="all-delete-orphan">
             <key column="postId"/>
             <one-to-many class="Attachment"/>
@@ -100,6 +100,23 @@
             <generator class="increment"/>
         </id>
         <property name="name" not-null="true" column="username"/>
+        <property name="password" not-null="true"/>
+        <property name="disabled"/>
+    </class>
+
+    <class name="UserProfile" table="forum_userprofiles">
+        <cache usage="read-write"/>
+        <id name="id" column="userId" type="long">
+            <generator class="foreign">
+               <param name="property">id</param>
+            </generator>
+        </id>
+        <one-to-one name="id" class="User" constrained="true"/>
+        <property name="firstName"/>
+        <property name="lastName"/>
+        <property name="email"/>
+        <property name="phone"/>
+        <property name="mobilePhone"/>
     </class>
 
     <class name="Role" table="forum_roles">
@@ -107,6 +124,7 @@
         <id name="id" column="roleId" type="long">
             <generator class="increment"/>
         </id>
+        <property name="type" type="long"/>
         <property name="name"/>
         <property name="description"/>
         <set name="users" order-by="userId" table="forum_roles_users">

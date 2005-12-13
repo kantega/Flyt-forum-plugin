@@ -11,6 +11,7 @@ import java.util.Set;
  */
 public class Role {
     private long id;
+    private long type;
     private String name;
     private String description;
     private Set users;
@@ -53,5 +54,13 @@ public class Role {
         }
 
         return false;
+    }
+
+    public long getType() {
+        return type;
+    }
+
+    public void setType(long type) {
+        this.type = type;
     }
 }
