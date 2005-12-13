@@ -275,7 +275,7 @@ public class ProjectWebDao {
     public List getProjectListForUser(final String user) {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-                Query c = session.createQuery("from Project p where p.publicProject=? or p.id in (from Participant pp where pp.user=?) order by p.name");
+                Query c = session.createQuery("from Project p where p.publicProject=? or p.id in (select pp.project.id from Participant pp where pp.user=?) order by p.name");
                 c.setBoolean(0, true);
                 c.setString(1, user);
                 return c.list();
