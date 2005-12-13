@@ -51,7 +51,7 @@
                     </spring:bind>
                 </td>
             </tr>
-            <tr>
+            <%--<tr>
                 <td><spring:message code="activity.type"/>:</td>
                 <td>
                     <spring:bind path="activity.type">
@@ -65,6 +65,7 @@
                     </spring:bind>
                 </td>
             </tr>
+            --%>
             <tr>
                 <td><spring:message code="activity.priority"/>:</td>
                 <td>
