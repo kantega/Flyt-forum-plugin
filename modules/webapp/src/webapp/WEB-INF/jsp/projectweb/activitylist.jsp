@@ -169,6 +169,7 @@
             <td><a href="javascript:doSort('status')"><spring:message code="activity.status"/></a></td>
             <td><a href="javascript:doSort('endDate')"><spring:message code="activity.endDate"/></a></td>
             <td><a href="javascript:doSort('phase')"><spring:message code="activity.phase"/></a></td>
+            <td><a href="javascript:doSort('usedHours')"><spring:message code="economy.used"/></a></td>
             <td><a href="javascript:doSort('leftHours')"><spring:message code="economy.left"/></a></td>
         </tr>
       <c:forEach items="${activities}" var="activity" varStatus="status">
@@ -188,6 +189,9 @@
                <td>
                    <c:out value="${activity.activity.projectPhase.name}"/>
                </td>
+              <td align="right">
+                  <c:out value="${activity.activity.usedHours}"/>
+              </td>
               <td align="right">
                   <c:out value="${activity.activity.estimatedLeftHours}"/>
               </td>

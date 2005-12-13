@@ -198,10 +198,11 @@ public class ActivityListController implements Controller {
                 criteria.add(Property.forName("reporter").in(reporters));
             }
         }
-        if(order != null) {
-            if(order.equals("title")) {
+        if(order != null &&
+                (order.equals("title") ||
+                 order.equals("estimatedLeftHours") ||
+                 order.equals("usedHours"))) {
                 criteria.addOrder(Order.asc(order));
-            }
         }
 
         return criteria;
