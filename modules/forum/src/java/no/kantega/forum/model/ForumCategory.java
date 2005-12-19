@@ -17,7 +17,7 @@ public class ForumCategory {
     private int NumForums;
     private Date CreatedDate;
     private Set Groups;
-    private long Owner;
+    private User Owner;
     private Set Forums;
 
     public long getId() {
@@ -76,11 +76,11 @@ public class ForumCategory {
         Groups = groups;
     }
 
-    public long getOwner() {
+    public User getOwner() {
         return Owner;
     }
 
-    public void setOwner(long owner) {
+    public void setOwner(User owner) {
         Owner = owner;
     }
 }

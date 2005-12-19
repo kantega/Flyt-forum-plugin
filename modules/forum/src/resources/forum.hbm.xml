@@ -13,7 +13,7 @@
         <property name="description"/>
         <property name="numForums"/>
         <property name="createdDate" type="date"/>
-        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
+        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true" cascade="save-update"/>
         <set name="groups" order-by="groupId" table="forum_forumcategory_groups">
             <key column="forumCategoryId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -101,7 +101,7 @@
         </id>
         <property name="name" not-null="true" column="username"/>
         <property name="password" not-null="true"/>
-        <property name="disabled"/>
+        <!--<property name="disabled"/>-->
     </class>
 
     <class name="UserProfile" table="forum_userprofiles">

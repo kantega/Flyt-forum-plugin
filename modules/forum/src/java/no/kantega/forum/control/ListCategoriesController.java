@@ -19,7 +19,7 @@ import java.util.List;
  * Time: 15:06:25
  * To change this template use File | Settings | File Templates.
  */
-public class ListCategories implements Controller {
+public class ListCategoriesController implements Controller {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {

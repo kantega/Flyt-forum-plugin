@@ -18,7 +18,7 @@ import no.kantega.forum.model.ForumCategory;
  * Time: 16:51:10
  * To change this template use File | Settings | File Templates.
  */
-public class ViewCategory  implements Controller {
+public class ViewCategoryController  implements Controller {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
