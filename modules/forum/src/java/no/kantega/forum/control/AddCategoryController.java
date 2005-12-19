@@ -12,6 +12,8 @@ import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.User;
 import no.kantega.forum.dao.ForumDao;
 
+import java.util.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: HAREVE
@@ -23,9 +25,11 @@ public class AddCategoryController extends SimpleFormController {
     private ForumDao dao;
 
     protected Object formBackingObject(HttpServletRequest httpServletRequest) throws Exception {
-        ForumCategory fc = new ForumCategory();
         User u = dao.getUser(1);
+        Date d = new Date();
+        ForumCategory fc = new ForumCategory();
         fc.setOwner(u);
+        fc.setCreatedDate(d);
         return fc;
     }
 
