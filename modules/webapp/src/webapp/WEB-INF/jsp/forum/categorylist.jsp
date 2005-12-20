@@ -17,6 +17,7 @@
         <%
     }
 %>
+    <a href="<%=request.getContextPath()%>/forum/addcategory">Ny kategori</a>
 </kantega:section>
 
 <%@include file="include/design/design.jsf"%>

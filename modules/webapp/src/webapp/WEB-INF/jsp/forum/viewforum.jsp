@@ -8,12 +8,11 @@
 </kantega:section>
 
 <kantega:section id="innhold">
-    <b><c:out value="${forumcategory.name}"/></b><br>
-    <c:out value="${forumcategory.description}"/><br>
-    <c:forEach items="${forumcategory.forums}" var="forum">
-        <c:out value="${forum.name}"/><br>
+    <b><c:out value="${forum.name}"/></b><br>
+    <c:out value="${forum.description}"/><br>
+    <c:forEach items="${forum.threads}" var="thread">
+        <c:out value="${thread.name}"/><br>
     </c:forEach>
-    <a href="<%=request.getContextPath()%>/forum/addforum?id=<%=request.getParameter("id")%>">Legg til forum</a>
 </kantega:section>
 
 <%@include file="include/design/design.jsf"%>

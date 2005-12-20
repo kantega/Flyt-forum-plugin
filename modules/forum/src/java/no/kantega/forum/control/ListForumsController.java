@@ -5,32 +5,31 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumCategory;
 
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * Created by IntelliJ IDEA.
  * User: HAREVE
- * Date: 08.des.2005
- * Time: 16:51:10
+ * Date: 20.des.2005
+ * Time: 10:13:02
  * To change this template use File | Settings | File Templates.
  */
-public class ViewCategoryController  implements Controller {
+public class ListForumsController implements Controller {
     private ForumDao dao;
-
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map map = new HashMap();
         long id = Long.parseLong(request.getParameter("id"));
-
         ForumCategory fc = dao.getPopulatedForumCategory(id);
+        Map map = new HashMap();
         map.put("forumcategory", fc);
 
-        return new ModelAndView("viewcategory", map);
+        return new ModelAndView("listforums", map);
     }
-
 
     public void setDao(ForumDao dao) {
         this.dao = dao;

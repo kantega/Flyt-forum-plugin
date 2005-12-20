@@ -35,7 +35,7 @@
         <property name="numThreads"/>
         <property name="lastMessage"/>
         <property name="createdDate" type="date"/>
-        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
+        <many-to-one name="owner" class="User" column="owner" not-null="true" cascade="save-update"/>
         <set name="groups" order-by="groupId" table="forum_forum_groups">
             <key column="forumId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -54,7 +54,7 @@
         <many-to-one name="forum" column="forumId" not-null="true" class="Forum"/>
         <property name="createdDate" type="date"/>
         <property name="numPosts"/>
-        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
+        <many-to-one name="owner" class="User" column="owner" not-null="true" cascade="save-update"/>
         <set name="groups" order-by="groupId" table="forum_thread_groups">
             <key column="threadId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -75,7 +75,7 @@
         <property name="subject"/>
         <property name="body"/>
         <property name="postDate" type="date"/>
-        <many-to-one name="owner" class="User" column="owner" unique="true" not-null="true"/>
+        <many-to-one name="owner" class="User" column="owner" not-null="true" cascade="save-update"/>
         <set name="attachments" order-by="attachmetId" cascade="all-delete-orphan">
             <key column="postId"/>
             <one-to-many class="Attachment"/>

@@ -9,25 +9,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.Forum;
 
 /**
  * Created by IntelliJ IDEA.
  * User: HAREVE
- * Date: 13.des.2005
- * Time: 12:53:55
+ * Date: 20.des.2005
+ * Time: 09:38:56
  * To change this template use File | Settings | File Templates.
  */
-public class EditCategoryController extends SimpleFormController {
+public class EditForumController extends SimpleFormController {
     private ForumDao dao;
+
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         long id = Long.parseLong(request.getParameter("id"));
-        return dao.getForumCategory(id);
+        return dao.getPopulatedForum(id);
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
-        ForumCategory fc = (ForumCategory) object;
-        dao.saveOrUpdate(fc);
+        Forum f = (Forum) object;
+        dao.saveOrUpdate(f);
         return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/"));
     }
 

@@ -9,28 +9,26 @@ import java.util.Map;
 import java.util.HashMap;
 
 import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.Forum;
 
 /**
  * Created by IntelliJ IDEA.
  * User: HAREVE
- * Date: 08.des.2005
- * Time: 16:51:10
+ * Date: 20.des.2005
+ * Time: 10:01:58
  * To change this template use File | Settings | File Templates.
  */
-public class ViewCategoryController  implements Controller {
+public class ViewForumController implements Controller {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
         long id = Long.parseLong(request.getParameter("id"));
+        Forum f = dao.getPopulatedForum(id);
+        map.put("forum", f);
 
-        ForumCategory fc = dao.getPopulatedForumCategory(id);
-        map.put("forumcategory", fc);
-
-        return new ModelAndView("viewcategory", map);
+        return new ModelAndView("viewforum", map);
     }
-
 
     public void setDao(ForumDao dao) {
         this.dao = dao;

@@ -24,7 +24,7 @@ import java.util.Date;
 public class AddCategoryController extends SimpleFormController {
     private ForumDao dao;
 
-    protected Object formBackingObject(HttpServletRequest httpServletRequest) throws Exception {
+    protected Object formBackingObject(HttpServletRequest request) throws Exception {
         User u = dao.getUser(1);
         Date d = new Date();
         ForumCategory fc = new ForumCategory();
@@ -33,11 +33,10 @@ public class AddCategoryController extends SimpleFormController {
         return fc;
     }
 
-    protected ModelAndView onSubmit(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object, BindException bindException) throws Exception {
+    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
         ForumCategory fc = (ForumCategory) object;
-        System.out.println("owner="+String.valueOf(fc.getOwner().getId()));
         dao.saveOrUpdate(fc);
-        return new ModelAndView(new RedirectView("/"));
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/"));
     }
 
     public void setDao(ForumDao dao) {

@@ -18,7 +18,7 @@
                 </spring:bind>
                 <div class="heading">
                 <c:choose>
-                    <c:when test="${forum.id == 0}"><spring:message code="forumcategory.addcategory"/></c:when>
+                    <c:when test="${forumcategory.id == 0}"><spring:message code="forumcategory.addcategory"/></c:when>
                     <c:otherwise><c:out value="${forumcategory.name}"/></c:otherwise>
                 </c:choose>
                 </div>
@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="right">
-                            <input type="submit" value="<spring:message code="forum.edit.save"/>">
+                            <input type="submit" value="<spring:message code="forumcategory.edit.save"/>">
                         </td>
                     </tr>
                 </table>

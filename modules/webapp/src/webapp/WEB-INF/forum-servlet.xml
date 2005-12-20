@@ -21,6 +21,18 @@
                 <entry key="/addcategory">
                     <ref bean="addCategoryController"/>
                 </entry>
+                <entry key="/listforums">
+                    <ref bean="forumListController"/>
+                </entry>
+                <entry key="/viewforum">
+                    <ref bean="forumViewController"/>
+                </entry>
+                <entry key="/editforum">
+                    <ref bean="editForumController"/>
+                </entry>
+                <entry key="/addforum">
+                    <ref bean="addForumController"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -132,4 +144,54 @@
           <bean class="no.kantega.forum.validator.CategoryValidator"/>
         </property>
     </bean>
+
+    <bean id="forumListController" class="no.kantega.forum.control.ListForumsController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+    </bean>
+
+    <bean id="forumViewController" class="no.kantega.forum.control.ViewForumController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+    </bean>
+
+
+   <bean id="editForumController" class="no.kantega.forum.control.EditForumController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+        <property name="formView">
+          <value>editforum</value>
+        </property>
+        <property name="commandName">
+          <value>forum</value>
+        </property>
+        <property name="commandClass">
+          <value>no.kantega.forum.model.Forum</value>
+        </property>
+        <property name="validator">
+          <bean class="no.kantega.forum.validator.ForumValidator"/>
+        </property>
+    </bean>
+
+    <bean id="addForumController" class="no.kantega.forum.control.AddForumController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+        <property name="formView">
+          <value>editforum</value>
+        </property>
+        <property name="commandName">
+          <value>forum</value>
+        </property>
+        <property name="commandClass">
+          <value>no.kantega.forum.model.Forum</value>
+        </property>
+        <property name="validator">
+          <bean class="no.kantega.forum.validator.ForumValidator"/>
+        </property>
+    </bean>
+
 </beans>
