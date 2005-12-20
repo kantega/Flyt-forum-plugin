@@ -33,6 +33,18 @@
                 <entry key="/addforum">
                     <ref bean="addForumController"/>
                 </entry>
+                <entry key="/viewthread">
+                    <ref bean="threadViewController"/>
+                </entry>
+                <entry key="/addthread">
+                    <ref bean="addThreadController"/>
+                </entry>
+                <entry key="/viewpost">
+                    <ref bean="postViewController"/>
+                </entry>
+                <entry key="/addpost">
+                    <ref bean="addPostController"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -191,6 +203,54 @@
         </property>
         <property name="validator">
           <bean class="no.kantega.forum.validator.ForumValidator"/>
+        </property>
+    </bean>
+
+    <bean id="threadViewController" class="no.kantega.forum.control.ViewThreadController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+    </bean>
+
+    <bean id="addThreadController" class="no.kantega.forum.control.AddThreadController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+        <property name="formView">
+          <value>editthread</value>
+        </property>
+        <property name="commandName">
+          <value>thread</value>
+        </property>
+        <property name="commandClass">
+          <value>no.kantega.forum.model.ForumThread</value>
+        </property>
+        <property name="validator">
+          <bean class="no.kantega.forum.validator.ThreadValidator"/>
+        </property>
+    </bean>
+
+    <bean id="postViewController" class="no.kantega.forum.control.ViewPostController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+    </bean>
+
+    <bean id="addPostController" class="no.kantega.forum.control.AddPostController">
+        <property name="dao">
+            <ref bean="dao"/>
+        </property>
+        <property name="formView">
+          <value>editpost</value>
+        </property>
+        <property name="commandName">
+          <value>post</value>
+        </property>
+        <property name="commandClass">
+          <value>no.kantega.forum.model.Post</value>
+        </property>
+        <property name="validator">
+          <bean class="no.kantega.forum.validator.PostValidator"/>
         </property>
     </bean>
 

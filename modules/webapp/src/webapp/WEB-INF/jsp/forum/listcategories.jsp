@@ -13,7 +13,7 @@
     for (int i = 0; i < categories.size(); i++) {
         ForumCategory cat = (ForumCategory) categories.get(i);
         %>
-        <a href="<%=request.getContextPath() %>/forum/viewcategory?id=<%=cat.getId()%>"><%=cat.getName()%></a><br>
+        <a href="<%=request.getContextPath() %>/forum/viewcategory?categoryId=<%=cat.getId()%>"><%=cat.getName()%></a><br>
         <%
     }
 %>

@@ -23,7 +23,7 @@ public class ViewForumController implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
-        long id = Long.parseLong(request.getParameter("id"));
+        long id = Long.parseLong(request.getParameter("forumId"));
         Forum f = dao.getPopulatedForum(id);
         map.put("forum", f);
 

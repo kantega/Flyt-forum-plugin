@@ -51,6 +51,8 @@
         <id name="id" column="threadId" type="long">
             <generator class="increment"/>
         </id>
+        <property name="name"/>
+        <property name="description"/>
         <many-to-one name="forum" column="forumId" not-null="true" class="Forum"/>
         <property name="createdDate" type="date"/>
         <property name="numPosts"/>
@@ -76,7 +78,7 @@
         <property name="body"/>
         <property name="postDate" type="date"/>
         <many-to-one name="owner" class="User" column="owner" not-null="true" cascade="save-update"/>
-        <set name="attachments" order-by="attachmetId" cascade="all-delete-orphan">
+        <set name="attachments" order-by="attachmentId" cascade="all-delete-orphan">
             <key column="postId"/>
             <one-to-many class="Attachment"/>
         </set>

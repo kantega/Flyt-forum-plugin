@@ -123,7 +123,7 @@ public class ForumDao {
     public ForumThread getPopulatedThread(final long threadId) {
         return (ForumThread) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                ForumThread t = (ForumThread) session.get(Forum.class, new Long(threadId));
+                ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(threadId));
                 t.getPosts().size();
                 t.getGroups().size();
                 return t;
@@ -134,7 +134,7 @@ public class ForumDao {
     public Post getPopulatedPost(final long postId) {
         return (Post) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Post p = (Post) session.get(Forum.class, new Long(postId));
+                Post p = (Post) session.get(Post.class, new Long(postId));
                 p.getAttachments().size();
                 return p;
             }

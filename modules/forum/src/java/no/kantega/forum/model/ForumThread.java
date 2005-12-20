@@ -12,6 +12,8 @@ import java.util.Set;
  */
 public class ForumThread {
     private long id;
+    private String name;
+    private String description;
     private Forum Forum;
     private Date CreatedDate;
     private int NumPosts;
@@ -73,6 +75,22 @@ public class ForumThread {
 
     public void setOwner(User owner) {
         Owner = owner;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
 

@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.User;
-import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.Forum;
 
 import java.util.Date;
 
@@ -19,30 +19,30 @@ import java.util.Date;
  * Created by IntelliJ IDEA.
  * User: HAREVE
  * Date: 20.des.2005
- * Time: 09:32:07
+ * Time: 13:37:11
  * To change this template use File | Settings | File Templates.
  */
-public class AddForumController extends SimpleFormController {
+public class AddThreadController extends SimpleFormController {
     private ForumDao dao;
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        long id = Long.parseLong(request.getParameter("categoryId"));
+        long id = Long.parseLong(request.getParameter("forumId"));
 
         User u = dao.getUser(1);
         Date d = new Date();
-        ForumCategory fc = dao.getForumCategory(id);
+        Forum f = dao.getPopulatedForum(id);
 
-        Forum f = new Forum();
-        f.setOwner(u);
-        f.setCreatedDate(d);
-        f.setForumCategory(fc);
-        return f;
+        ForumThread t = new ForumThread();
+        t.setOwner(u);
+        t.setCreatedDate(d);
+        t.setForum(f);
+        return t;
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
-        Forum f = (Forum) object;
-        dao.saveOrUpdate(f);
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewcategory?categoryId="+f.getForumCategory().getId()));
+        ForumThread t = (ForumThread) object;
+        dao.saveOrUpdate(t);
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewforum?forumId="+t.getForum().getId()));
     }
 
     public void setDao(ForumDao dao) {

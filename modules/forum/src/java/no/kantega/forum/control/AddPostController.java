@@ -8,10 +8,10 @@ import org.springframework.validation.BindException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.Post;
 import no.kantega.forum.model.User;
-import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.dao.ForumDao;
 
 import java.util.Date;
 
@@ -19,30 +19,29 @@ import java.util.Date;
  * Created by IntelliJ IDEA.
  * User: HAREVE
  * Date: 20.des.2005
- * Time: 09:32:07
+ * Time: 14:05:19
  * To change this template use File | Settings | File Templates.
  */
-public class AddForumController extends SimpleFormController {
+public class AddPostController extends SimpleFormController {
     private ForumDao dao;
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        long id = Long.parseLong(request.getParameter("categoryId"));
-
+        long id = Long.parseLong(request.getParameter("threadId"));
         User u = dao.getUser(1);
         Date d = new Date();
-        ForumCategory fc = dao.getForumCategory(id);
+        ForumThread t = dao.getPopulatedThread(id);
 
-        Forum f = new Forum();
-        f.setOwner(u);
-        f.setCreatedDate(d);
-        f.setForumCategory(fc);
-        return f;
+        Post p = new Post();
+        p.setOwner(u);
+        p.setPostDate(d);
+        p.setThread(t);
+        return p;
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
-        Forum f = (Forum) object;
-        dao.saveOrUpdate(f);
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewcategory?categoryId="+f.getForumCategory().getId()));
+        Post p = (Post) object;
+        dao.saveOrUpdate(p);
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewthread?threadId="+p.getThread().getId()));
     }
 
     public void setDao(ForumDao dao) {

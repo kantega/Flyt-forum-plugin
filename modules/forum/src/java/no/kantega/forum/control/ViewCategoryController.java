@@ -23,7 +23,7 @@ public class ViewCategoryController  implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
-        long id = Long.parseLong(request.getParameter("id"));
+        long id = Long.parseLong(request.getParameter("categoryId"));
 
         ForumCategory fc = dao.getPopulatedForumCategory(id);
         map.put("forumcategory", fc);

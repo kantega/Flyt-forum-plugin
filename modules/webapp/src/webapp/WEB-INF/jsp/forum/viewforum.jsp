@@ -1,8 +1,6 @@
-<%@ page import="no.kantega.forum.model.ForumCategory"%>
-<%@ page import="java.util.List"%>
-<%@ page import="no.kantega.forum.model.Forum"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
 <kantega:section id="tittel">
 </kantega:section>
@@ -10,9 +8,11 @@
 <kantega:section id="innhold">
     <b><c:out value="${forum.name}"/></b><br>
     <c:out value="${forum.description}"/><br>
+    <spring:message code="forum.threads"/><br>
     <c:forEach items="${forum.threads}" var="thread">
-        <c:out value="${thread.name}"/><br>
+        <a href="<%=request.getContextPath()%>/forum/viewthread?threadId=<c:out value="${thread.id}"/>"><c:out value="${thread.name}"/></a><br>
     </c:forEach>
+    <a href="<%=request.getContextPath()%>/forum/addthread?forumId=<c:out value="${forum.id}"/>">Ny tråd</a>
 </kantega:section>
 
-<%@include file="include/design/design.jsf"%>
+<%@ include file="include/design/design.jsf" %>
