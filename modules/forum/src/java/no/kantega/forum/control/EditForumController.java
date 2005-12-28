@@ -22,7 +22,7 @@ public class EditForumController extends SimpleFormController {
     private ForumDao dao;
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        long id = Long.parseLong(request.getParameter("id"));
+        long id = Long.parseLong(request.getParameter("forumId"));
         return dao.getPopulatedForum(id);
     }
 

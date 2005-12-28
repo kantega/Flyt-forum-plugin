@@ -15,6 +15,16 @@
     <param-value>/WEB-INF/applicationContext-modules.xml</param-value>
   </context-param>
 
+    <filter>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
   <servlet>
     <servlet-name>context</servlet-name>
     <servlet-class>org.springframework.web.context.ContextLoaderServlet</servlet-class>
@@ -42,5 +52,7 @@
         <servlet-name>forum</servlet-name>
         <url-pattern>/forum/*</url-pattern>
     </servlet-mapping>
+
+
 
 </web-app>

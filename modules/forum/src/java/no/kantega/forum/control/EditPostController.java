@@ -8,46 +8,28 @@ import org.springframework.validation.BindException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import no.kantega.forum.model.ForumCategory;
-import no.kantega.forum.model.User;
-import no.kantega.forum.model.Group;
 import no.kantega.forum.dao.ForumDao;
-
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
+import no.kantega.forum.model.Post;
 
 /**
  * Created by IntelliJ IDEA.
  * User: HAREVE
- * Date: 13.des.2005
- * Time: 13:51:46
+ * Date: 21.des.2005
+ * Time: 12:11:54
  * To change this template use File | Settings | File Templates.
  */
-public class AddCategoryController extends SimpleFormController {
+public class EditPostController extends SimpleFormController {
     private ForumDao dao;
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        // create groups
-        Set groups = new HashSet();
-        Group g = dao.getGroup(2);
-        groups.add(g);
-
-        User u = dao.getUser(1); // get owner
-        Date d = new Date();
-
-        // init category
-        ForumCategory fc = new ForumCategory();
-        fc.setOwner(u);
-        fc.setGroups(groups);
-        fc.setCreatedDate(d);
-        return fc;
+        long id = Long.parseLong(request.getParameter("postId"));
+        return dao.getPopulatedPost(id);
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
-        ForumCategory fc = (ForumCategory) object;
-        dao.saveOrUpdate(fc);
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/"));
+        Post p = (Post) object;
+        dao.saveOrUpdate(p);
+        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewthread?threadId="+p.getThread().getId()));
     }
 
     public void setDao(ForumDao dao) {

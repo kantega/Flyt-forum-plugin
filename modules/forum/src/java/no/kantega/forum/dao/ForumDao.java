@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.HashSet;
+import java.util.Set;
 import java.sql.SQLException;
 
 import no.kantega.forum.model.*;
@@ -88,7 +89,6 @@ public class ForumDao {
     }
 
     //
-
     public List getForumCategories() {
         return template.find("from ForumCategory order by Name");
     }
@@ -126,6 +126,7 @@ public class ForumDao {
                 ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(threadId));
                 t.getPosts().size();
                 t.getGroups().size();
+                t.getOwner().getName();
                 return t;
             }
         });
@@ -136,6 +137,7 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 Post p = (Post) session.get(Post.class, new Long(postId));
                 p.getAttachments().size();
+                p.getThread().getGroups().size();
                 return p;
             }
         });
@@ -168,6 +170,14 @@ public class ForumDao {
 
     public User getUser(final String username) {
         return (User) template.find("from User u where u.name=?", username).get(0);
+    }
+
+    public Group getGroup(final long groupId) {
+        return (Group) template.get(Group.class, new Long(groupId));
+    }
+
+    public Group getGroup(final String groupname) {
+        return (Group) template.find("from Group g where g.name=?", groupname).get(0);
     }
 
     public List getUserGroups(final User user) {
@@ -410,5 +420,22 @@ public class ForumDao {
                 return null;
             }
         });
+    }
+
+    public boolean isInGroup(Set groups, Group g) {
+        Object[] tmpgroups = groups.toArray();
+        for (int i = 0; i < tmpgroups.length; i++) {
+            Group tmpgroup = (Group) tmpgroups[i];
+            if (tmpgroup.getId() == g.getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean postGotChildren(final Post p) {
+        List children = template.find("from Post p where p.replyToId=?",String.valueOf(p.getId()));
+        return (children.size() > 0) ? true : false;
     }
 }

@@ -12,8 +12,11 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.User;
 import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.Group;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +31,11 @@ public class AddForumController extends SimpleFormController {
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         long id = Long.parseLong(request.getParameter("categoryId"));
 
+        // create groups
+        Set groups = new HashSet();
+        Group g = dao.getGroup(2);
+        groups.add(g);
+
         User u = dao.getUser(1);
         Date d = new Date();
         ForumCategory fc = dao.getForumCategory(id);
@@ -36,6 +44,7 @@ public class AddForumController extends SimpleFormController {
         f.setOwner(u);
         f.setCreatedDate(d);
         f.setForumCategory(fc);
+        f.setGroups(groups);
         return f;
     }
 

@@ -29,7 +29,7 @@
         <id name="id" column="forumId" type="long">
             <generator class="increment"/>
         </id>
-        <many-to-one name="forumCategory" column="forumCategoryId" not-null="true" class="ForumCategory"/>
+        <many-to-one name="forumCategory" column="forumCategoryId" not-null="false" class="ForumCategory"/>
         <property name="name"/>
         <property name="description"/>
         <property name="numThreads"/>
@@ -53,7 +53,7 @@
         </id>
         <property name="name"/>
         <property name="description"/>
-        <many-to-one name="forum" column="forumId" not-null="true" class="Forum"/>
+        <many-to-one name="forum" column="forumId" not-null="false" class="Forum"/>
         <property name="createdDate" type="date"/>
         <property name="numPosts"/>
         <many-to-one name="owner" class="User" column="owner" not-null="true" cascade="save-update"/>
@@ -72,8 +72,8 @@
         <id name="id" column="postId" type="long">
             <generator class="increment"/>
         </id>
-        <many-to-one name="thread" column="threadId" not-null="true" class="ForumThread"/>
-        <property name="replyToId"/>
+        <many-to-one name="thread" column="threadId" not-null="false" class="ForumThread"/>
+        <property name="replyToId" type="long"/>
         <property name="subject"/>
         <property name="body"/>
         <property name="postDate" type="date"/>
@@ -89,7 +89,7 @@
         <id name="id" column="attachmentId" type="long">
             <generator class="increment"/>
         </id>
-        <many-to-one name="post" column="postId" not-null="true" class="Post"/>
+        <many-to-one name="post" column="postId" not-null="false" class="Post"/>
         <property name="fileName"/>
         <property name="fileSize"/>
         <property name="mimeType"/>

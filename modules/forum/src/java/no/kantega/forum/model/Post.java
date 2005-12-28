@@ -13,7 +13,7 @@ import java.util.Set;
 public class Post {
     private long Id;
     private ForumThread Thread;
-    private int ReplyToId;
+    private long ReplyToId;
     private String Subject;
     private String Body;
     private User Owner;
@@ -28,11 +28,11 @@ public class Post {
         this.Id = id;
     }
 
-    public int getReplyToId() {
+    public long getReplyToId() {
         return ReplyToId;
     }
 
-    public void setReplyToId(int replyToId) {
+    public void setReplyToId(long replyToId) {
         ReplyToId = replyToId;
     }
 

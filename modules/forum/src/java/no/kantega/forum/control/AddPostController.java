@@ -27,6 +27,7 @@ public class AddPostController extends SimpleFormController {
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         long id = Long.parseLong(request.getParameter("threadId"));
+        String postId = request.getParameter("postId");
         User u = dao.getUser(1);
         Date d = new Date();
         ForumThread t = dao.getPopulatedThread(id);
@@ -35,6 +36,9 @@ public class AddPostController extends SimpleFormController {
         p.setOwner(u);
         p.setPostDate(d);
         p.setThread(t);
+        if (postId != null) {
+            p.setReplyToId(Long.parseLong(postId));
+        }
         return p;
     }
 

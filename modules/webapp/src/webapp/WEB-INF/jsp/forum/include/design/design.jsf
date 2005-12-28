@@ -2,7 +2,8 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <html>
     <head>
-        <title>Forum kategorier</title>
+        <title>Forum kategorier - <kantega:getsection id="tittel"/></title>
+        <link rel="stylesheet" type="text/css" href="../forum.css">
     </head>
     <body>
     <kantega:getsection id="innhold"/>
