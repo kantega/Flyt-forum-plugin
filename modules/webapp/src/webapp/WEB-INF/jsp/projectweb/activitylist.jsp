@@ -296,7 +296,7 @@
         </c:choose>
          </c:when>
     <c:otherwise>
-        <div>Fant ingen aktiviteter</div>
+        <div><spring:message code="activitylist.nonefound"/></div>
         <pw:haspermission project="${project}" permission="ADD_ACTIVITY">
 
         <a class="button" style="vertical-align: middle;" href="addactivity?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif" border="0" style="vertical-align: middle;"><spring:message code="activitylist.add"/></a>

@@ -11,4 +11,5 @@ public interface Permissions {
     long PROJECT_ADMINISTRATION = 1;
     long ACTIVITY_ADD_COMMENT = 2;
     long ADD_ACTIVITY = 3;
+    long ADD_DOCUMENT = 4;
 }

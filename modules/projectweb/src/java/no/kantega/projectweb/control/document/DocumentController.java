@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletOutputStream;
 
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Activity;
@@ -14,6 +15,10 @@ import no.kantega.projectweb.model.Document;
 import no.kantega.projectweb.viewmodel.WorkflowHistoryLine;
 import no.kantega.projectweb.user.UserResolver;
 import no.kantega.osworkflow.BasicWorkflowFactory;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.commons.log.Log;
+import no.kantega.commons.media.MimeTypes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,57 +38,82 @@ import com.opensymphony.workflow.loader.ActionDescriptor;
  * To change this template use File | Settings | File Templates.
  */
 public class DocumentController implements Controller{
-
-
     private ProjectWebDao dao;
-
     private BasicWorkflowFactory workflowFactory;
     private UserResolver userResolver;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map map = new HashMap();
         long documentId = Long.parseLong(request.getParameter("documentId"));
         Document document = dao.getDocumentWithProject(documentId);
-        map.put("document", document);
+        if ("download".equals(request.getParameter("action"))){
+            //hvis download er valgt sendes dokumentet til brukeren
 
-        Workflow workflow = (Workflow) workflowFactory.createBasicWorkflow(userResolver.resolveUser(request).getUsername());
 
-        final WorkflowDescriptor wd = workflow.getWorkflowDescriptor(workflow.getWorkflowName(document.getWorkflowId()));
+            byte[] content = document.getContent();
+            if (content == null) {
+                // Dokumentinnhold er null
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return null;
+            }
 
-        int[] actionIds = workflow.getAvailableActions(document.getWorkflowId(), null);
+            String filename = document.getFileName();
+            String mimetype = MimeTypes.getMimeType(filename).getType();
+            ServletOutputStream out = response.getOutputStream();
 
-        List actions = new ArrayList();
-        for (int i = 0; i < actionIds.length; i++) {
-            actions.add(wd.getAction(actionIds[i]));
+            response.setContentType(mimetype);
+            response.addHeader("Content-Disposition", "attachment; filename=" + filename);
+            try {
+                out.write(content);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                // Klient har avbrutt
+            }
+            return null;
         }
-        map.put("actions", actions);
+        else{
+            Map map = new HashMap();
+            map.put("document", document);
 
-        List historySteps = workflow.getHistorySteps(document.getWorkflowId());
+            Workflow workflow = (Workflow) workflowFactory.createBasicWorkflow(userResolver.resolveUser(request).getUsername());
 
-        List history = new ArrayList();
-        for (int i = 0; i < historySteps.size(); i++) {
-            final Step step = (Step) historySteps.get(i);
-            WorkflowHistoryLine line = new WorkflowHistoryLine();
-            line.setStep(step);
-            line.setActionDescriptor(wd.getAction(step.getActionId()));
-            history.add(line);
+            final WorkflowDescriptor wd = workflow.getWorkflowDescriptor(workflow.getWorkflowName(document.getWorkflowId()));
+
+            int[] actionIds = workflow.getAvailableActions(document.getWorkflowId(), null);
+
+            List actions = new ArrayList();
+            for (int i = 0; i < actionIds.length; i++) {
+                actions.add(wd.getAction(actionIds[i]));
+            }
+            map.put("actions", actions);
+
+            List historySteps = workflow.getHistorySteps(document.getWorkflowId());
+
+            List history = new ArrayList();
+            for (int i = 0; i < historySteps.size(); i++) {
+                final Step step = (Step) historySteps.get(i);
+                WorkflowHistoryLine line = new WorkflowHistoryLine();
+                line.setStep(step);
+                line.setActionDescriptor(wd.getAction(step.getActionId()));
+                history.add(line);
+            }
+            map.put("history", history);
+
+            List currentSteps = workflow.getCurrentSteps(document.getWorkflowId());
+
+            List current = new ArrayList();
+            for (int i = 0; i < currentSteps.size(); i++) {
+                final Step step = (Step) currentSteps.get(i);
+                WorkflowHistoryLine line = new WorkflowHistoryLine();
+                line.setStep(step);
+                line.setActionDescriptor(wd.getAction(step.getActionId()));
+                current.add(line);
+            }
+            map.put("current", current);
+
+
+            return new ModelAndView("document", map);
         }
-        map.put("history", history);
-
-        List currentSteps = workflow.getCurrentSteps(document.getWorkflowId());
-
-        List current = new ArrayList();
-        for (int i = 0; i < currentSteps.size(); i++) {
-            final Step step = (Step) currentSteps.get(i);
-            WorkflowHistoryLine line = new WorkflowHistoryLine();
-            line.setStep(step);
-            line.setActionDescriptor(wd.getAction(step.getActionId()));
-            current.add(line);
-        }
-        map.put("current", current);
-
-
-        return new ModelAndView("document", map);
     }
 
     public void setDao(ProjectWebDao dao) {

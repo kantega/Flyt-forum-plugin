@@ -64,10 +64,34 @@ public class ProjectWebDao {
             }
         });
     }
+
+    public Document getPopulatedDocument(final long documentId) {
+        return (Document) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q = session.createQuery("from Document d inner join fetch d.project left outer join fetch d.status where d.id=:documentId");
+                q.setLong("documentId", documentId);
+                Object o = q.uniqueResult();
+                log.info("O is: " +o);
+                return o;
+            }
+        });
+    }
+
+
     public List getActivitiesInProject(final long projectId) {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query q = session.createQuery("from Activity a inner join fetch a.type inner join fetch a.priority left outer join fetch a.status where a.project=:projectId");
+                q.setLong("projectId", projectId);
+                return q.list();
+            }
+        });
+    }
+
+    public List getDocumentsInProject(final long projectId) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q = session.createQuery("from Document a inner join fetch a.type inner join fetch a.priority left outer join fetch a.status where a.project=:projectId");
                 q.setLong("projectId", projectId);
                 return q.list();
             }
@@ -261,11 +285,24 @@ public class ProjectWebDao {
         try {
             session = template.getSessionFactory().openSession();
             Criteria exCriteria = criteria.getExecutableCriteria(session);
-            log.info("Criteria: " + criteria.toString());
+            log.info("getActivitiesInProject; Criteria: " + criteria.toString());
             exCriteria.setFetchMode("type", FetchMode.JOIN);
             exCriteria.setFetchMode("priority",FetchMode.JOIN);
             exCriteria.setFetchMode("status", FetchMode.JOIN);
             exCriteria.setFetchMode("projectPhase", FetchMode.JOIN);
+            return exCriteria.list();
+        } finally {
+            session.close();
+        }
+    }
+
+    public List getDocumentsInProject(final DetachedCriteria criteria) {
+        Session session = null;
+        try {
+            session = template.getSessionFactory().openSession();
+            Criteria exCriteria = criteria.getExecutableCriteria(session);
+            log.info("getDocumentsInProject; Criteria: " + criteria.toString());
+            exCriteria.setFetchMode("status", FetchMode.JOIN);
             return exCriteria.list();
         } finally {
             session.close();

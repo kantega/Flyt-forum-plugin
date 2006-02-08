@@ -243,14 +243,18 @@
         </entry>
 
 
-        <!--<entry key="/documentlist">
-          <bean class="no.kantega.projectweb.control.document.DocumentListController" parent="daoAware"/>
-        </entry>
-        <entry key="/addocument">
-          <bean class="no.kantega.projectweb.control.document.AddDocumentController" parent="workflowController">
-            <property name="userResolver">
-              <ref bean="userResolver"/>
+        <entry key="/documentlist">
+          <bean class="no.kantega.projectweb.control.document.DocumentListController" parent="daoAware">
+            <property name="statusManager">
+              <ref bean="activityStatusManager"/>
             </property>
+          </bean>
+        </entry>
+        <entry key="/editdocument">
+          <bean class="no.kantega.projectweb.control.document.EditDocumentController" parent="workflowController">
+              <property name="formView">
+                <value>editdocument</value>
+              </property>
           </bean>
         </entry>
         <entry key="/document">
@@ -259,7 +263,7 @@
               <ref bean="userResolver"/>
             </property>
           </bean>
-        </entry>-->
+        </entry>
 <!--
         <entry key="/adduser">
           <bean class="no.kantega.projectweb.control.user.AddUserController">

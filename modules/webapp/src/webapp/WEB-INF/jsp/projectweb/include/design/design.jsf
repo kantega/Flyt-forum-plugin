@@ -28,6 +28,7 @@
                       <c:if test="${project != null}">
                           <td><a href="activitylist?projectId=<c:out value="${project.id}"/>"><img border="0" src="../bitmaps/projectweb/knapp_aktiviteter<c:if test="${selectedMenu eq 'activities'}">_f2</c:if>.gif"></a></td>
                           <td><a href="participantlist?projectId=<c:out value="${project.id}"/>"><img border="0" src="../bitmaps/projectweb/knapp_deltakere<c:if test="${selectedMenu eq 'participants'}">_f2</c:if>.gif"></a></td>
+                          <td><a href="documentlist?projectId=<c:out value="${project.id}"/>">Dokumenter</a></td>
                       </c:if>
                   </tr>
               </table>

@@ -110,14 +110,27 @@
     <many-to-one name="activity" class="Activity" column="activityId" not-null="true"/>
   </class>
 
+    <class name="DocumentFolder" table="projectweb_documentfolder">
+        <id name="id" column="folderId" type="long">
+            <generator class="increment"/>
+        </id>
+        <property name="title"/>
+        <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
+        <many-to-one name="parent" column="parentId" not-null="false" class="DocumentFolder"/>
+    </class>
+
   <class name="Document" table="projectweb_document">
     <id name="id" column="documentId" type="long">
           <generator class="increment"/>
     </id>
     <property name="title"/>
-    <property name="status"/>
+    <property name="fileName"/>
+    <property name="content"/>
+    <property name="editDate"/>
+    <many-to-one name="status" column="statusId"  not-null="true" class="ActivityStatus"/>
     <property name="workflowId"/>
     <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
+    <many-to-one name="documentFolder" column="folderId" not-null="false" class="DocumentFolder"/>
   </class>
 
   <class name="Participant" table="projectweb_participant">
