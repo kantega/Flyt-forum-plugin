@@ -5,8 +5,65 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 
+<%@ include file="adddocument_part.jsp" %>
+
 <kantega:section id="title">
     <spring:message code="documentlist.header" arguments="${project.name}"/>
+</kantega:section>
+
+<kantega:section id="documentlist">
+<c:choose>
+<c:when test="${not empty documents}">
+    <table border="0" cellspacing="0">
+        <tr>
+            <td colspan="5" align="right">
+                <kantega:getsection id="add_document"/>
+            </td>
+        </tr>
+        <tr class="tableHeading">
+            <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
+            <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
+            <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <c:forEach items="${documents}" var="document" varStatus="status">
+            <tr class="tableRow<c:out value="${status.count % 2}"/>">
+                <td>
+                    <a href="document?documentId=<c:out value="${document.id}"/>"><c:out
+                            value="${document.title}"/></a>
+                </td>
+                <td>
+                    <c:out value="${document.category.name}"/>
+                </td>
+                <td>
+                    <c:out value="${document.editDate}"/>
+                </td>
+                <td>
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
+                        <spring:message code="documentlist.download"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="editdocument?projectId=<c:out value="${project.id}"/>&documentId=<c:out value="${document.id}"/>">
+                        <spring:message code="general.edit"/>
+                    </a>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
+</c:when>
+<c:otherwise>
+    <div style="padding-bottom:10px;"><spring:message code="documentlist.nonefound"/></div>
+    <pw:haspermission project="${project}" permission="ADD_DOCUMENT">
+
+        <a class="button" style="vertical-align: middle;"
+           href="editdocument?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif"
+                                                                            border="0" style="vertical-align: middle;">
+            <spring:message code="documentlist.add"/></a>
+    </pw:haspermission>
+</c:otherwise>
+</c:choose>
 </kantega:section>
 
 <kantega:section id="content">
@@ -71,67 +128,7 @@
 <td valign="top">
 <div class="activitylistmain">
 <div class="heading"><spring:message code="documentlist.header" arguments="${project.name}"/></div>
-
-<c:choose>
-<c:when test="${not empty documents}">
-    <table border="0" cellspacing="0">
-        <tr>
-            <td colspan="5" align="right">
-                                <pw:haspermission project="${project}" permission="ADD_DOCUMENT">
-                                <div style="padding-bottom: 2px;">
-                                    <a class="button" style="vertical-align: middle;"
-                                       href="editdocument?projectId=<c:out value="${project.id}"/>"><img
-                                            src="../bitmaps/projectweb/ikon_rediger.gif" border="0"
-                                            style="vertical-align: middle;"><spring:message code="documentlist.add"/>
-                                    </a>
-                                </div>
-                            </pw:haspermission>
-            </td>
-        </tr>
-        <tr class="tableHeading">
-            <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
-            <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
-            <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-        </tr>
-        <c:forEach items="${documents}" var="document" varStatus="status">
-            <tr class="tableRow<c:out value="${status.count % 2}"/>">
-                <td>
-                    <a href="document?documentId=<c:out value="${document.id}"/>"><c:out
-                            value="${document.title}"/></a>
-                </td>
-                <td>
-                    <c:out value="${document.category.name}"/>
-                </td>
-                <td>
-                    <fmt:formatDate value="${document.editDate}" type="both"/>
-                </td>
-                <td>
-                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
-                        <spring:message code="documentlist.download"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="editdocument?projectId=<c:out value="${project.id}"/>&documentId=<c:out value="${document.id}"/>">
-                        <spring:message code="documentlist.edit"/>
-                    </a>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
-</c:when>
-<c:otherwise>
-    <div><spring:message code="documentlist.nonefound"/></div>
-    <pw:haspermission project="${project}" permission="ADD_DOCUMENT">
-
-        <a class="button" style="vertical-align: middle;"
-           href="editdocument?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif"
-                                                                            border="0" style="vertical-align: middle;">
-            <spring:message code="documentlist.add"/></a>
-    </pw:haspermission>
-</c:otherwise>
-</c:choose>
+    <kantega:getsection id="documentlist"/>
 </div>
 
 </td>

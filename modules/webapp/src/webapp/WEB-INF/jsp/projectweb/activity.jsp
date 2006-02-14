@@ -7,6 +7,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 
+<%@ include file="adddocument_part.jsp" %>
+
+
 <kantega:section id="title">
 <c:out value="${activity.project.name}"/>: <c:out value="${activity.title}"/>
 </kantega:section>
@@ -103,6 +106,13 @@
 
     <c:out value="${activity.description}"/><br>
 
+        <div style="padding-top:20px;padding-bottom:20px">
+            <kantega:getsection id="add_document"/><br>
+            <c:forEach items="${documents}" var="document" varStatus="status">
+                <a href="document?documentId=<c:out value="${document.id}"/>"><c:out value="${document.title}"/></a><br>
+            </c:forEach>
+
+        </div>
 
         <pw:haspermission project="${activity.project}" permission="ACTIVITY_ADD_COMMENT">
             <table width="500">
@@ -162,19 +172,19 @@
         <tr>
             <td valign="top">
                 <div class="activitylistsearch">
-                <table cellpadding="0" cellspacing="0">
-                    <kantega:getsection id="summary"/>
-                    <kantega:getsection id="economy"/>
-                    <kantega:getsection id="workflowactions"/>
-                </table>
-                    </div>
+                    <table cellpadding="0" cellspacing="0">
+                        <kantega:getsection id="summary"/>
+                        <kantega:getsection id="economy"/>
+                        <kantega:getsection id="workflowactions"/>
+                    </table>
+                </div>
             </td>
             <td valign="top">
                 <div class="activitylistmain">
                     <kantega:getsection id="main"/>
                 </div>
-    </td>
-    </tr>
+            </td>
+        </tr>
     </table>
 </kantega:section>
 <%@include file="include/design/design.jsf"%>

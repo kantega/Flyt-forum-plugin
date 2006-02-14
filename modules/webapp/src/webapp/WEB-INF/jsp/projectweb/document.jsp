@@ -16,17 +16,6 @@
     <%
         int c = 0;
     %>
-        <tr class="tableRow<%=c++ % 2%>">
-            <td>Id:</td>
-            <td class="dottedTd"><c:out value="${document.project.code}"/><c:out value="${document.id}"/></td>
-        </tr>
-        <tr  class="tableRow<%=c++ % 2%>">
-            <td><spring:message code="document.filename"/>:</td>
-            <td class="dottedTd">
-                <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
-                <c:out value="${document.fileName}"/></a>
-            </td>
-        </tr>
         <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="document.category"/>:</td>
             <td class="dottedTd"><c:out value="${document.category.name}"/></td>
@@ -37,7 +26,7 @@
         </tr>
         <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="document.uploader"/>:</td>
-            <td class="dottedTd"><c:out value="${document.uploader}"/></td>
+            <td class="dottedTd"><pw:resolveuser user="${document.uploader}"/>'</td>
         </tr>
         <pw:haspermission project="${document.project}" permission="EDIT_DOCUMENT">
             <tr  class="tableRow<%=c++ % 2%>">
@@ -66,7 +55,7 @@
                     // -->
                     </script>
 
-                    <a onclick="return confirmSubmit()" href="document?action=delete&documentId=<c:out value="${document.id}"/>">
+                    <a onclick="return confirmSubmit()" href="deletedocument?documentId=<c:out value="${document.id}"/>">
                         <img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0">
                         <spring:message code="general.delete"/>
                     </a>
@@ -77,10 +66,13 @@
 
 <kantega:section id="main">
     <div class="heading"><c:out value="${document.project.name}"/>: <c:out value="${document.title}"/></div>
-
-    <kantega:hassection id="message">
-        <kantega:getsection id="message"/>
-    </kantega:hassection><br>
+    <c:forEach items="${document.activities}" var="activity">
+        Aktivitet: <c:out value="${activity.title}"/><br>
+    </c:forEach>
+    <spring:message code="document.filename"/>:
+    <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
+        <c:out value="${document.fileName}"/>
+    </a><br><br>
 
     <c:out value="${document.description}"/><br>
 </kantega:section>

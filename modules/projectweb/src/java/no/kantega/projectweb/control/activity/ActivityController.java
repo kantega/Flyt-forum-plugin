@@ -82,6 +82,7 @@ public class ActivityController implements Controller{
         }
         map.put("current", current);
 
+        map.put("documents", activity.getDocuments());
 
         return new ModelAndView("activity", map);
     }

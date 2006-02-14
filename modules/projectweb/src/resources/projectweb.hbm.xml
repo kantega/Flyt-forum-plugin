@@ -64,6 +64,10 @@
       <one-to-many class="ActivityComment"/>
     </set>
 
+    <set name="documents" table="projectweb_activity_document">
+      <key column="activityId"/>
+      <many-to-many column="documentId" class="Document"/>
+    </set>
   </class>
 
   <class name="ActivityType" table="projectweb_activitytype">
@@ -138,15 +142,15 @@
     <property name="content" type="binary" length="10000" lazy="true"/>
     <property name="contentText" type="text" lazy="true" not-null="false"/>
     <property name="editDate"/>
+    <property name="contentType"/>
     <property name="uploader"/>
     <many-to-one name="category" column="categoryId"  not-null="true" class="DocumentCategory"/>
     <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
 
-<!--      <set name="activities"  order-by="activityCommentId desc" cascade="all-delete-orphan">
-        <key column="activityId"/>
-        <one-to-many class="ActivityComment"/>
-      </set>-->
-
+    <set name="activities" table="projectweb_activity_document" inverse="true" >
+        <key column="documentId"/>
+        <many-to-many column="activityId" class="Activity"/>
+    </set>
     <!--<many-to-one name="documentFolder" column="folderId" not-null="false" class="DocumentFolder"/>-->
   </class>
 

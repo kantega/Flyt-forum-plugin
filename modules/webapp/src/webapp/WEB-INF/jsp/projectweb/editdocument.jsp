@@ -23,7 +23,9 @@
         </div>
 
         <form method="post" enctype="multipart/form-data">
-
+            <c:if test="${activityId != null}">
+                <input type="hidden" name="activityId" value="${acivityId}">
+            </c:if>
             <table>
                 <tr>
                     <td><spring:message code="document.title"/>:</td>

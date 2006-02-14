@@ -28,7 +28,7 @@ public class CachedPermissionManager implements PermissionManager, PermissionInv
             try {
                 permitted = new Boolean(realPermissionManager.hasPermission(user, permission,  project));
                 cache.putInCache(key, permitted);
-            } catch (Exception e1) {
+            } catch (Throwable e1) {
                 cache.cancelUpdate(key);
             }
         }
@@ -45,7 +45,7 @@ public class CachedPermissionManager implements PermissionManager, PermissionInv
             try {
                 permitted = new Boolean(realPermissionManager.hasGlobalPermission(user, permission));
                 cache.putInCache(key, permitted);
-            } catch (Exception e1) {
+            } catch (Throwable e1) {
                 cache.cancelUpdate(key);
             }
         }

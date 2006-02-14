@@ -41,17 +41,15 @@ import com.opensymphony.workflow.loader.ActionDescriptor;
  */
 public class DocumentController implements Controller{
     private ProjectWebDao dao;
-    private BasicWorkflowFactory workflowFactory;
-    private UserResolver userResolver;
-    private PermissionManager permissionManager;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long documentId = Long.parseLong(request.getParameter("documentId"));
+
+
+
         Document document = dao.getPopulatedDocument(documentId);
         if ("download".equals(request.getParameter("action"))){
             //hvis download er valgt sendes dokumentet til brukeren
-
-
             byte[] content = document.getContent();
             if (content == null) {
                 // Dokumentinnhold er null
@@ -59,10 +57,7 @@ public class DocumentController implements Controller{
                 return null;
             }
 
-            String user = userResolver.resolveUser(request).getUsername();
-            if(permissionManager.hasPermission(user, Permissions.ADD_DOCUMENT, document.getProject()));
-
-                String filename = document.getFileName();
+            String filename = document.getFileName();
             String mimetype = document.getContentType();
             ServletOutputStream out = response.getOutputStream();
 
@@ -88,16 +83,6 @@ public class DocumentController implements Controller{
 
     public void setDao(ProjectWebDao dao) {
         this.dao = dao;
-    }
-
-
-    public void setWorkflowFactory(BasicWorkflowFactory workflowFactory) {
-        this.workflowFactory = workflowFactory;
-    }
-
-
-    public void setUserResolver(UserResolver userResolver) {
-        this.userResolver = userResolver;
     }
 }
 

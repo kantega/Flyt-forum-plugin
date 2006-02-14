@@ -2,6 +2,7 @@ package no.kantega.projectweb.model;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.HashSet;
 
 public class Activity implements WorkflowParticipator {
     private long id;
@@ -21,6 +22,7 @@ public class Activity implements WorkflowParticipator {
     private float usedHours;
     private float estimatedLeftHours;
     private Set comments;
+    private Set documents = new HashSet();
 
 
     private long workflowId;
@@ -161,5 +163,23 @@ public class Activity implements WorkflowParticipator {
 
     public void setProjectPhase(ProjectPhase projectPhase) {
         this.projectPhase = projectPhase;
+    }
+
+    public Set getDocuments() {
+        return documents;
+    }
+
+    protected void setDocuments(Set documents) {
+        this.documents = documents;
+    }
+
+    public void addToDocuments(Document document){
+        getDocuments().add(document);
+        document.getActivities().add(this);
+    }
+
+    public void removeFromDocuments(Document document){
+        getDocuments().remove(document);
+        document.getActivities().remove(this);
     }
 }

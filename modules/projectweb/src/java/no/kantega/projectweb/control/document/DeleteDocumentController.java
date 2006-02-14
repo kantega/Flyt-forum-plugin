@@ -40,7 +40,7 @@ import com.opensymphony.workflow.loader.ActionDescriptor;
  * Time: 13:53:29
  * To change this template use File | Settings | File Templates.
  */
-public class DocumentDeleteController implements Controller{
+public class DeleteDocumentController implements Controller{
     private ProjectWebDao dao;
     private UserResolver userResolver;
     private PermissionManager permissionManager;
@@ -51,10 +51,11 @@ public class DocumentDeleteController implements Controller{
         String user = userResolver.resolveUser(request).getUsername();
         if (permissionManager.hasPermission(user, Permissions.DELETE_DOCUMENT, document.getProject())){
             dao.deleteDocument(documentId);
-            return new ModelAndView(new RedirectView("documentlist"), "documentId", Long.toString(document.getId()));
+            return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
         }
         else{
-            return new ModelAndView(new RedirectView("deletedocument"), "documentId", Long.toString(document.getId()));
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return null;
         }
     }
 
@@ -64,6 +65,10 @@ public class DocumentDeleteController implements Controller{
 
     public void setUserResolver(UserResolver userResolver) {
         this.userResolver = userResolver;
+    }
+
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
     }
 }
 

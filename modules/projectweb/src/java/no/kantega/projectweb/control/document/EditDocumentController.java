@@ -1,13 +1,9 @@
 package no.kantega.projectweb.control.document;
 
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.validation.Errors;
 import org.springframework.validation.BindException;
 import org.apache.log4j.Logger;
@@ -42,6 +38,7 @@ public class EditDocumentController extends FormControllerSupport {
     private TextExtractorSelector textExtractorSelector;
     private Logger log = Logger.getLogger(getClass());
 
+
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         Document document = null;
         if (request.getParameter("documentId")!=null){
@@ -53,6 +50,7 @@ public class EditDocumentController extends FormControllerSupport {
             long projectId = Long.parseLong(request.getParameter("projectId"));
             document.setProject(dao.getProject(projectId));
         }
+
         document.setEditDate(new Date());
         return document;
     }
@@ -67,14 +65,16 @@ public class EditDocumentController extends FormControllerSupport {
 
             //slik at dersom man ikke laster opp noe så forkastes ikke det som er
             if (file.getSize()>0){
+                document.setFileName(file.getOriginalFilename());
+                document.setContentType(file.getContentType());
+
                 if (document.getTitle()==null || "".equals(document.getTitle())){
                     document.setTitle(document.getFileName());
                 }
 
-                document.setFileName(file.getOriginalFilename());
-                document.setContentType(file.getContentType());
 
-                document.setUploader(request.getRemoteUser());
+                String user = userResolver.resolveUser(request).getUsername();
+                document.setUploader(user);
                 document.setContent(file.getBytes());
 
                 try {
@@ -87,7 +87,17 @@ public class EditDocumentController extends FormControllerSupport {
                 }
             }
         }
-        dao.saveOrUpdate(document);
+
+        //hvis dokumentet legges til en aktivitet
+        String activityId = httpServletRequest.getParameter("activityId");
+        if (activityId!=null){
+
+            dao.saveDocumentWithActivity(Long.parseLong(activityId), document);
+        }
+        else{
+            dao.saveOrUpdate(document);
+        }
+
         return new ModelAndView(new RedirectView("document"), "documentId", Long.toString(document.getId()));
     }
 
@@ -97,6 +107,7 @@ public class EditDocumentController extends FormControllerSupport {
         Map map = new HashMap();
         map.put("categories", dao.getDocumentCategories());
         map.put("project", document.getProject());
+        map.put("activityId", httpServletRequest.getParameter("activityId"));
         return map;
     }
 

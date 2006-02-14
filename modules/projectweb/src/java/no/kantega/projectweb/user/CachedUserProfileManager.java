@@ -24,7 +24,7 @@ public class CachedUserProfileManager extends AbstractUserProfileManager {
             try {
                 profile = realManager.getUserProfile(user);
                 cache.putInCache(user, profile);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 cache.cancelUpdate(user);
             }
         }

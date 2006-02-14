@@ -1,6 +1,8 @@
 package no.kantega.projectweb.model;
 
 import java.util.Date;
+import java.util.Set;
+import java.util.HashSet;
 
 
 public class Document implements WorkflowParticipator {
@@ -17,6 +19,7 @@ public class Document implements WorkflowParticipator {
     private String contentType;
     private String contentText;
     private String uploader;
+    private Set activities = new HashSet();
 
     public long getId() {
         return id;
@@ -121,5 +124,13 @@ public class Document implements WorkflowParticipator {
 
     public void setUploader(String uploader) {
         this.uploader = uploader;
+    }
+
+    public Set getActivities() {
+        return activities;
+    }
+
+    protected void setActivities(Set activities) {
+        this.activities = activities;
     }
 }

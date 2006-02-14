@@ -271,6 +271,7 @@
         <entry key="/documentlist">
           <bean class="no.kantega.projectweb.control.document.DocumentListController" parent="daoAware"/>
         </entry>
+
         <entry key="/editdocument">
           <bean class="no.kantega.projectweb.control.document.EditDocumentController" parent="daoAware">
               <property name="formView">
@@ -281,6 +282,9 @@
               <property name="validator">
                 <bean class="no.kantega.projectweb.control.validator.DocumentValidator"/>
               </property>
+              <property name="userResolver">
+                <ref bean="userResolver"/>
+              </property>
               <property name="userProfileManager">
                 <ref bean="userProfileManager"/>
               </property>
@@ -289,11 +293,20 @@
               </property>
           </bean>
         </entry>
+
+         <entry key="/deletedocument">
+             <bean class="no.kantega.projectweb.control.document.DeleteDocumentController" parent="daoAware">
+                 <property name="userResolver">
+                   <ref bean="userResolver"/>
+                 </property>
+                 <property name="permissionManager">
+                   <ref bean="permissionManager"/>
+                 </property>
+             </bean>
+         </entry>
+
         <entry key="/document">
-          <bean class="no.kantega.projectweb.control.document.DocumentController" parent="workflowController">
-            <property name="userResolver">
-              <ref bean="userResolver"/>
-            </property>
+          <bean class="no.kantega.projectweb.control.document.DocumentController" parent="daoAware">
           </bean>
         </entry>
 <!--
@@ -625,7 +638,7 @@
 
         <!-- one of the properties available; the maximum file size in bytes -->
         <property name="maxUploadSize">
-            <value>100000</value>
+            <value>16000000</value>
         </property>
     </bean>
 

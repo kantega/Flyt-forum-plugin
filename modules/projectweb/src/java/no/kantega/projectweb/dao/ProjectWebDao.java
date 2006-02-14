@@ -32,6 +32,20 @@ public class ProjectWebDao {
         return template.find("from Project order by name");
     }
 
+    public void saveDocumentWithActivity(final long activityId, final Document document){
+        template.execute(new HibernateCallback(){
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                Activity a = (Activity) session.get(Activity.class, new Long(activityId));
+                a.addToDocuments(document);
+                session.saveOrUpdate(a);
+                session.saveOrUpdate(document);
+                return null;
+            }
+        }
+
+        );
+    }
+
     public void saveOrUpdate(Project project) {
         template.saveOrUpdate(project);
     }
@@ -59,6 +73,8 @@ public class ProjectWebDao {
                 q.setLong("activityId", activityId);
                 Object o = q.uniqueResult();
                 log.info("O is: " +o);
+                //unngå lazy
+                (((Activity)o).getDocuments()).size();
                 return o;
             }
         });
@@ -71,6 +87,8 @@ public class ProjectWebDao {
                 q.setLong("documentId", documentId);
                 Object o = q.uniqueResult();
                 log.info("O is: " +o);
+                //unngå lazy
+                (((Document)o).getActivities()).size();
                 return o;
             }
         });
@@ -115,8 +133,7 @@ public class ProjectWebDao {
     }
 
     public Activity getActivity(long activityId) {
-        Activity activity = (Activity) template.get(Activity.class, new Long(activityId));
-        return activity;
+        return (Activity) template.get(Activity.class, new Long(activityId));
     }
 
     public Document getDocumentWithProject(final long documentId) {
@@ -146,9 +163,23 @@ public class ProjectWebDao {
         return (Document) template.get(Document.class, new Long(documentId));
     }
 
-    public void deleteDocument(long documentId){
-        Document toDelete = (Document) template.get(Document.class, new Long(documentId));
-        template.delete(toDelete);
+    public void deleteDocument(final long documentId){
+        template.execute(new HibernateCallback(){
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                Document docToDelete = (Document) session.get(Document.class, new Long(documentId));
+                Iterator actIt = docToDelete.getActivities().iterator();
+                while (actIt.hasNext()) {
+                    Activity act = (Activity) actIt.next();
+                    act.removeFromDocuments(docToDelete);
+                    session.saveOrUpdate(act);
+
+                }
+                session.delete(docToDelete);
+                return null;
+            }
+        });
+
+
     }
 
     public void saveOrUpdate(Document document) {
@@ -320,6 +351,7 @@ public class ProjectWebDao {
             session.close();
         }
     }
+
 
     public List getProjectListForUser(final String user) {
         return (List) template.execute(new HibernateCallback() {
