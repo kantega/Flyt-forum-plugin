@@ -61,9 +61,9 @@
         </div>
 
 
-        <div align="center">
+        <!--<div align="center">
             <a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a>
-        </div>
+        </div>-->
 
     </div>
 </td>
