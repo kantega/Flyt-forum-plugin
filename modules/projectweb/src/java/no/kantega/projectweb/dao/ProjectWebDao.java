@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import no.kantega.projectweb.model.*;
 import no.kantega.projectweb.permission.scheme.PermissionScheme;
 import no.kantega.projectweb.permission.scheme.PermissionEntry;
-import no.kantega.projectweb.permission.PermissionInvalidationListener;
 import no.kantega.projectweb.permission.PermissionInvalidator;
 
 public class ProjectWebDao {
@@ -68,7 +67,7 @@ public class ProjectWebDao {
     public Document getPopulatedDocument(final long documentId) {
         return (Document) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q = session.createQuery("from Document d inner join fetch d.project left outer join fetch d.status where d.id=:documentId");
+                Query q = session.createQuery("from Document d inner join fetch d.project inner join fetch d.category where d.id=:documentId");
                 q.setLong("documentId", documentId);
                 Object o = q.uniqueResult();
                 log.info("O is: " +o);
@@ -91,7 +90,7 @@ public class ProjectWebDao {
     public List getDocumentsInProject(final long projectId) {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q = session.createQuery("from Document a inner join fetch a.type inner join fetch a.priority left outer join fetch a.status where a.project=:projectId");
+                Query q = session.createQuery("from Document d inner join fetch d.type inner join fetch d.priority left outer join fetch d.category where d.project=:projectId");
                 q.setLong("projectId", projectId);
                 return q.list();
             }
@@ -147,6 +146,11 @@ public class ProjectWebDao {
         return (Document) template.get(Document.class, new Long(documentId));
     }
 
+    public void deleteDocument(long documentId){
+        Document toDelete = (Document) template.get(Document.class, new Long(documentId));
+        template.delete(toDelete);
+    }
+
     public void saveOrUpdate(Document document) {
         template.saveOrUpdate(document);
     }
@@ -165,6 +169,14 @@ public class ProjectWebDao {
 
     public List getActivityPriorities() {
         return template.loadAll(ActivityPriority.class);
+    }
+
+    public DocumentCategory getDocumentCategory(long categoryId) {
+        return (DocumentCategory) template.get(DocumentCategory.class, new Long(categoryId));
+    }
+
+    public List getDocumentCategories() {
+        return template.loadAll(DocumentCategory.class);
     }
 
     public List getProjectParticipants(final long id) {
@@ -302,7 +314,7 @@ public class ProjectWebDao {
             session = template.getSessionFactory().openSession();
             Criteria exCriteria = criteria.getExecutableCriteria(session);
             log.info("getDocumentsInProject; Criteria: " + criteria.toString());
-            exCriteria.setFetchMode("status", FetchMode.JOIN);
+            exCriteria.setFetchMode("category", FetchMode.JOIN);
             return exCriteria.list();
         } finally {
             session.close();

@@ -100,6 +100,14 @@
     <property name="description"/>
   </class>
 
+    <class name="DocumentCategory" table="projectweb_documentcategories">
+        <cache usage="read-write"/>
+        <id name="id" column="documentCategoryId" type="long">
+            <generator class="increment"/>
+        </id>
+        <property name="name"/>
+    </class>
+
   <class name="ActivityComment" table="projectweb_activitycomment">
     <id name="id" column="activityCommentId" type="long">
       <generator class="increment"/>
@@ -110,6 +118,7 @@
     <many-to-one name="activity" class="Activity" column="activityId" not-null="true"/>
   </class>
 
+    <!--
     <class name="DocumentFolder" table="projectweb_documentfolder">
         <id name="id" column="folderId" type="long">
             <generator class="increment"/>
@@ -117,20 +126,28 @@
         <property name="title"/>
         <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
         <many-to-one name="parent" column="parentId" not-null="false" class="DocumentFolder"/>
-    </class>
+    </class>-->
 
   <class name="Document" table="projectweb_document">
     <id name="id" column="documentId" type="long">
           <generator class="increment"/>
     </id>
     <property name="title"/>
+    <property name="description"/>
     <property name="fileName"/>
-    <property name="content"/>
+    <property name="content" type="binary" length="10000" lazy="true"/>
+    <property name="contentText" type="text" lazy="true" not-null="false"/>
     <property name="editDate"/>
-    <many-to-one name="status" column="statusId"  not-null="true" class="ActivityStatus"/>
-    <property name="workflowId"/>
+    <property name="uploader"/>
+    <many-to-one name="category" column="categoryId"  not-null="true" class="DocumentCategory"/>
     <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
-    <many-to-one name="documentFolder" column="folderId" not-null="false" class="DocumentFolder"/>
+
+<!--      <set name="activities"  order-by="activityCommentId desc" cascade="all-delete-orphan">
+        <key column="activityId"/>
+        <one-to-many class="ActivityComment"/>
+      </set>-->
+
+    <!--<many-to-one name="documentFolder" column="folderId" not-null="false" class="DocumentFolder"/>-->
   </class>
 
   <class name="Participant" table="projectweb_participant">

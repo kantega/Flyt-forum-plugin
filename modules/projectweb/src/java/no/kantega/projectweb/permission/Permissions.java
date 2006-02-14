@@ -12,4 +12,7 @@ public interface Permissions {
     long ACTIVITY_ADD_COMMENT = 2;
     long ADD_ACTIVITY = 3;
     long ADD_DOCUMENT = 4;
+    long EDIT_DOCUMENT = 5;
+    long DELETE_DOCUMENT = 6;
+
 }

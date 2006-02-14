@@ -242,18 +242,50 @@
           </bean>
         </entry>
 
+          <entry key="/activityworkflow">
+              <bean class="no.kantega.projectweb.control.workflow.ActivityWorkflowController" parent="workflowController"/>
+          </entry>
+
+      </map>
+    </property>
+  </bean>
+    <bean id="urlMapping3b" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+       <property name="interceptors">
+         <list>
+           <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
+             <property name="userResolver">
+               <ref bean="userResolver"/>
+             </property>
+           </bean>
+           <bean class="no.kantega.projectweb.interceptors.MenuSelectionInterceptor">
+             <property name="selected">
+               <value>documents</value>
+             </property>
+           </bean>
+         </list>
+       </property>
+       <property name="urlMap">
+         <map>
+
 
         <entry key="/documentlist">
-          <bean class="no.kantega.projectweb.control.document.DocumentListController" parent="daoAware">
-            <property name="statusManager">
-              <ref bean="activityStatusManager"/>
-            </property>
-          </bean>
+          <bean class="no.kantega.projectweb.control.document.DocumentListController" parent="daoAware"/>
         </entry>
         <entry key="/editdocument">
-          <bean class="no.kantega.projectweb.control.document.EditDocumentController" parent="workflowController">
+          <bean class="no.kantega.projectweb.control.document.EditDocumentController" parent="daoAware">
               <property name="formView">
                 <value>editdocument</value>
+              </property>
+              <property name="commandName"><value>document</value></property>
+              <property name="commandClass"><value>no.kantega.projectweb.model.Document</value></property>
+              <property name="validator">
+                <bean class="no.kantega.projectweb.control.validator.DocumentValidator"/>
+              </property>
+              <property name="userProfileManager">
+                <ref bean="userProfileManager"/>
+              </property>
+              <property name="textExtractorSelector">
+                  <ref bean="textExtractorSelector"/>
               </property>
           </bean>
         </entry>
@@ -281,9 +313,6 @@
           </bean>
         </entry>
     -->
-        <entry key="/activityworkflow">
-          <bean class="no.kantega.projectweb.control.workflow.ActivityWorkflowController" parent="workflowController"/>
-        </entry>
         <!--<entry key="/documentworkflow">
           <bean class="no.kantega.projectweb.control.workflow.DocumentWorkflowController" parent="workflowController"/>
         </entry>-->
@@ -587,7 +616,16 @@
     </property>
   </bean>
 
-  <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize">
+            <value>100000</value>
+        </property>
+    </bean>
+
+    <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
     <property name="provider">
       <ref bean="springProjectWebConfigProvider"/>
     </property>

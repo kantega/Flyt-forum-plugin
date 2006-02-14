@@ -1,36 +1,22 @@
 package no.kantega.projectweb.control.activity;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import com.opensymphony.workflow.Workflow;
+import no.kantega.osworkflow.BasicWorkflowFactory;
+import no.kantega.projectweb.control.FormControllerSupport;
+import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.user.UserProfileManager;
+import no.kantega.projectweb.user.UserResolver;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.text.DateFormat;
-
-import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.model.Activity;
-import no.kantega.projectweb.model.ActivityType;
-import no.kantega.projectweb.model.ActivityPriority;
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.control.FormControllerSupport;
-import no.kantega.projectweb.propertyeditors.ActivityTypeEditor;
-import no.kantega.projectweb.propertyeditors.ActivityPriorityEditor;
-import no.kantega.projectweb.user.UserProfileManager;
-import no.kantega.projectweb.user.UserResolver;
-import no.kantega.osworkflow.BasicWorkflowFactory;
-import com.opensymphony.workflow.Workflow;
+import java.util.Map;
 
 
 public class AddActivityController extends FormControllerSupport {

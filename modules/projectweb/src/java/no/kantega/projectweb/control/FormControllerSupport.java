@@ -3,15 +3,17 @@ package no.kantega.projectweb.control;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
 import no.kantega.projectweb.propertyeditors.ActivityTypeEditor;
 import no.kantega.projectweb.propertyeditors.ActivityPriorityEditor;
 import no.kantega.projectweb.propertyeditors.ProjectPhaseEditor;
+import no.kantega.projectweb.propertyeditors.DocumentCategoryEditor;
 import no.kantega.projectweb.model.ActivityType;
 import no.kantega.projectweb.model.ActivityPriority;
 import no.kantega.projectweb.model.ProjectPhase;
+import no.kantega.projectweb.model.DocumentCategory;
 import no.kantega.projectweb.dao.ProjectWebDao;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +49,8 @@ public class FormControllerSupport extends SimpleFormController implements Appli
         binder.registerCustomEditor(ActivityPriority.class, new ActivityPriorityEditor(dao));
         binder.registerCustomEditor(ActivityType.class, new ActivityTypeEditor(dao));
         binder.registerCustomEditor(ProjectPhase.class, new ProjectPhaseEditor(dao));
+        binder.registerCustomEditor(DocumentCategory.class, new DocumentCategoryEditor(dao));
+       // binder.registerCustomEditor(byte[].class, new ByteArrayMultipartFileEditor());
 
     }
 

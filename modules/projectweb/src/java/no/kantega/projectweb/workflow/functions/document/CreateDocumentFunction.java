@@ -1,18 +1,7 @@
 package no.kantega.projectweb.workflow.functions.document;
 
-import com.opensymphony.workflow.FunctionProvider;
-import com.opensymphony.workflow.WorkflowException;
-import com.opensymphony.workflow.loader.WorkflowDescriptor;
-import com.opensymphony.workflow.spi.WorkflowEntry;
-import com.opensymphony.workflow.spi.Step;
-
 import java.util.Map;
-import java.util.Iterator;
-import java.util.Collection;
 
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.model.Activity;
 import no.kantega.projectweb.model.Document;
 import no.kantega.projectweb.workflow.functions.AbstractCreateFunction;
 
@@ -31,7 +20,7 @@ public class CreateDocumentFunction extends AbstractCreateFunction {
     }
 
     public void updateStatus(Object object, String status) {
-        ((Document) object).setStatus(status);
+        //((Document) object).setCategory();
     }
 
     public String getStatusKey() {

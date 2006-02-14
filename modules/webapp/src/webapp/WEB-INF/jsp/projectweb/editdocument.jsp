@@ -22,7 +22,7 @@
             </c:choose>
         </div>
 
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
 
             <table>
                 <tr>
@@ -35,13 +35,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><spring:message code="document.status"/>:</td>
+                    <td><spring:message code="document.category"/>:</td>
                     <td>
-                        <spring:bind path="document.status">
-                            <select name="status">
-                                <c:forEach items="${statuses}" var="status">
-                                    <option <c:if test="${status.id == document.status.id}">selected</c:if> value="<c:out value="${status.id}"/>">
-                                        <c:out value="${status.name}"/></option>
+                        <spring:bind path="document.category">
+                            <select name="category">
+                                <c:forEach items="${categories}" var="category">
+                                    <option <c:if test="${category.id == document.category.id}">selected</c:if> value="<c:out value="${category.id}"/>"><c:out value="${category.name}"/></option>
                                 </c:forEach>
                             </select>
                             <c:out value="${status.errorMessage}"/>
@@ -52,8 +51,15 @@
                 <tr>
                     <td><spring:message code="document.file"/>:</td>
                     <td>
-                        <spring:bind path="document.content">
-                            <input type="file" name="file">
+                              <input type="file" name="contentFile">
+
+                    </td>
+                </tr>
+                <tr>
+                    <td><spring:message code="document.description"/>:</td>
+                    <td>
+                        <spring:bind path="document.description">
+                            <textarea name="description" cols="20" rows="10"><c:out value="${document.description}"/></textarea><br>
                             <c:out value="${status.errorMessage}"/>
                         </spring:bind>
 

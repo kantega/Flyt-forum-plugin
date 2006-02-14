@@ -37,30 +37,29 @@
                     <td><input name="text" value="<c:out value="${text[0]}"/>" class="activitylistsearchinput"></td>
                     <td><a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif"
                                                                       border="0"></a></td>
-
                 </tr>
             </table>
+            <spring:message code="documentlist.textsearchcontent"/>:
+            <input type="checkbox" name="searchContent" <c:if test="${searchContent != null}">checked</c:if> >
         </div>
 
         <div class="activitysearchsection">
-
-            <spring:message code="document.status"/>:<br>
-            <select multiple name="statuses" size="5" class="activitylistselect">
-                <option value="-1" <c:if test="${statuses[0] eq '-1'}">selected</c:if> ><spring:message
-                        code="general.any"/></option>
-                <c:forEach items="${allstatuses}" var="status">
+            <spring:message code="document.category"/>:<br>
+            <select multiple name="categories" size="5" class="activitylistselect">
+                <option value="-1" <c:if test="${categories[0] eq '-1'}">selected</c:if> ><spring:message code="general.any"/></option>
+                <c:forEach items="${allcategories}" var="category">
                     <c:set var="found" value="false"/>
-                    <c:forEach items="${statuses}" var="st">
-                        <c:if test="${status.id eq st}">
+                    <c:forEach items="${categories}" var="CA">
+                        <c:if test="${category.id eq ca}">
                             <c:set var="found" value="true"/>
                         </c:if>
                     </c:forEach>
-                    <option <c:if test="${found}">selected</c:if> value="<c:out value="${status.id}"/>"><spring:message
-                            code="activitystatus.${status.code}"/></option>
-                </c:forEach>      <%-- Velger å bruke samme oversettinger for status som activity --%>
+                    <option <c:if test="${found}">selected</c:if> value="<c:out value="${category.id}"/>"><c:out value="${category.name}"/></option>
+                </c:forEach>
 
             </select>
         </div>
+
 
         <div align="center">
             <a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a>
@@ -77,10 +76,7 @@
     <table border="0" cellspacing="0">
         <tr>
             <td colspan="3">
-                                <%
-                                    //TODO: sette ADD_ACTIVITY til ADD_DOCUMENT
-                                 %>
-                                <pw:haspermission project="${project}" permission="ADD_ACTIVITY">
+                                <pw:haspermission project="${project}" permission="ADD_DOCUMENT">
                                 <div style="padding-bottom: 2px;">
                                     <a class="button" style="vertical-align: middle;"
                                        href="editdocument?projectId=<c:out value="${project.id}"/>"><img
@@ -93,8 +89,9 @@
         </tr>
         <tr class="tableHeading">
             <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
-            <td><a href="javascript:doSort('status')"><spring:message code="document.status"/></a></td>
-            <td><a href="javascript:doSort('status')"><spring:message code="document.editdate"/></a></td>
+            <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
+            <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
+            <td>&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
         <c:forEach items="${documents}" var="document" varStatus="status">
@@ -104,7 +101,7 @@
                             value="${document.title}"/></a>
                 </td>
                 <td>
-                    <c:out value="${document.status.name}"/>
+                    <c:out value="${document.category.name}"/>
                 </td>
                 <td>
                     <c:out value="${document.editDate}"/>
@@ -112,6 +109,11 @@
                 <td>
                     <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
                         <spring:message code="documentlist.download"/>
+                    </a>
+                </td>
+                <td>
+                    <a href="editdocument?projectId=<c:out value="${project.id}"/>&documentId=<c:out value="${document.id}"/>">
+                        <spring:message code="documentlist.edit"/>
                     </a>
                 </td>
             </tr>

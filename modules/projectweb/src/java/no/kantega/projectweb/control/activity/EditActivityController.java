@@ -1,25 +1,17 @@
 package no.kantega.projectweb.control.activity;
 
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import no.kantega.projectweb.control.FormControllerSupport;
+import no.kantega.projectweb.dao.ProjectWebDao;
+import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.user.UserProfileManager;
+import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.beans.PropertyValues;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.validation.Errors;
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.*;
-import no.kantega.projectweb.propertyeditors.ActivityTypeEditor;
-import no.kantega.projectweb.propertyeditors.ActivityPriorityEditor;
-import no.kantega.projectweb.control.FormControllerSupport;
-import no.kantega.projectweb.user.UserProfileManager;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Date;
 import java.util.List;
-import java.text.DateFormat;
+import java.util.Map;
 
 public class EditActivityController extends FormControllerSupport {
 

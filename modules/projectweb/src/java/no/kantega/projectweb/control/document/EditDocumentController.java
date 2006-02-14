@@ -1,13 +1,23 @@
 package no.kantega.projectweb.control.document;
 
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.validation.Errors;
+import org.springframework.validation.BindException;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
+import java.io.ByteArrayInputStream;
 
 import no.kantega.projectweb.model.Document;
 import no.kantega.projectweb.dao.ProjectWebDao;
@@ -15,6 +25,8 @@ import no.kantega.projectweb.user.UserProfileManager;
 import no.kantega.projectweb.user.UserResolver;
 import no.kantega.projectweb.control.FormControllerSupport;
 import no.kantega.osworkflow.BasicWorkflowFactory;
+import no.kantega.publishing.search.extraction.TextExtractorSelector;
+import no.kantega.publishing.search.extraction.TextExtractor;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,6 +39,8 @@ public class EditDocumentController extends FormControllerSupport {
     private UserProfileManager userProfileManager;
     private BasicWorkflowFactory workflowFactory;
     private UserResolver userResolver;
+    private TextExtractorSelector textExtractorSelector;
+    private Logger log = Logger.getLogger(getClass());
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         Document document = null;
@@ -43,15 +57,46 @@ public class EditDocumentController extends FormControllerSupport {
         return document;
     }
 
-    protected ModelAndView onSubmit(Object o) throws Exception {
-        Document document = (Document) o;
+    protected ModelAndView onSubmit(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object, BindException bindException) throws Exception {
+        Document document = (Document) object;
+
+        if(httpServletRequest instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest request = (MultipartHttpServletRequest) httpServletRequest;
+            MultipartFile file  = request.getFile("contentFile");
+
+
+            //slik at dersom man ikke laster opp noe så forkastes ikke det som er
+            if (file.getSize()>0){
+                if (document.getTitle()==null || "".equals(document.getTitle())){
+                    document.setTitle(document.getFileName());
+                }
+
+                document.setFileName(file.getOriginalFilename());
+                document.setContentType(file.getContentType());
+
+                document.setUploader(request.getRemoteUser());
+                document.setContent(file.getBytes());
+
+                try {
+                    TextExtractor extractor = textExtractorSelector.select(document.getFileName());
+                    if(extractor != null) {
+                        document.setContentText(extractor.extractText(new ByteArrayInputStream(document.getContent())));
+                    }
+                } catch (Throwable e) {
+                    log.error("Error extracting text from document " + document.getFileName());
+                }
+            }
+        }
         dao.saveOrUpdate(document);
         return new ModelAndView(new RedirectView("document"), "documentId", Long.toString(document.getId()));
     }
 
+
     protected Map referenceData(HttpServletRequest httpServletRequest, Object object, Errors errors) throws Exception {
+        Document document = (Document) object;
         Map map = new HashMap();
-        map.put("statuses", dao.getActivityStatuses());
+        map.put("categories", dao.getDocumentCategories());
+        map.put("project", document.getProject());
         return map;
     }
 
@@ -70,5 +115,9 @@ public class EditDocumentController extends FormControllerSupport {
 
     public void setUserResolver(UserResolver userResolver) {
         this.userResolver = userResolver;
+    }
+
+    public void setTextExtractorSelector(TextExtractorSelector textExtractorSelector) {
+        this.textExtractorSelector = textExtractorSelector;
     }
 }

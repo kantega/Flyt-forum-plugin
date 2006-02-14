@@ -2,6 +2,7 @@ package no.kantega.projectweb.control.document;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
 
@@ -39,62 +40,27 @@ import com.opensymphony.workflow.loader.ActionDescriptor;
  * Time: 13:53:29
  * To change this template use File | Settings | File Templates.
  */
-public class DocumentController implements Controller{
+public class DocumentDeleteController implements Controller{
     private ProjectWebDao dao;
-    private BasicWorkflowFactory workflowFactory;
     private UserResolver userResolver;
     private PermissionManager permissionManager;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long documentId = Long.parseLong(request.getParameter("documentId"));
         Document document = dao.getPopulatedDocument(documentId);
-        if ("download".equals(request.getParameter("action"))){
-            //hvis download er valgt sendes dokumentet til brukeren
-
-
-            byte[] content = document.getContent();
-            if (content == null) {
-                // Dokumentinnhold er null
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return null;
-            }
-
-            String user = userResolver.resolveUser(request).getUsername();
-            if(permissionManager.hasPermission(user, Permissions.ADD_DOCUMENT, document.getProject()));
-
-                String filename = document.getFileName();
-            String mimetype = document.getContentType();
-            ServletOutputStream out = response.getOutputStream();
-
-            response.setContentType(mimetype);
-            response.addHeader("Content-Disposition", "attachment; filename=" + filename);
-            try {
-                out.write(content);
-                out.flush();
-                out.close();
-            } catch (Exception e) {
-                // Klient har avbrutt
-            }
-            return null;
+        String user = userResolver.resolveUser(request).getUsername();
+        if (permissionManager.hasPermission(user, Permissions.DELETE_DOCUMENT, document.getProject())){
+            dao.deleteDocument(documentId);
+            return new ModelAndView(new RedirectView("documentlist"), "documentId", Long.toString(document.getId()));
         }
         else{
-            Map map = new HashMap();
-            map.put("document", document);
-            map.put("project", document.getProject());
-
-            return new ModelAndView("document", map);
+            return new ModelAndView(new RedirectView("deletedocument"), "documentId", Long.toString(document.getId()));
         }
     }
 
     public void setDao(ProjectWebDao dao) {
         this.dao = dao;
     }
-
-
-    public void setWorkflowFactory(BasicWorkflowFactory workflowFactory) {
-        this.workflowFactory = workflowFactory;
-    }
-
 
     public void setUserResolver(UserResolver userResolver) {
         this.userResolver = userResolver;

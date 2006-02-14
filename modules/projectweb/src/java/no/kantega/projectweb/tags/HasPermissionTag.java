@@ -32,15 +32,12 @@ public class HasPermissionTag extends ConditionalTagSupport {
 
         try {
             WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-            System.out.println("Context is: " + context);
             PermissionManager manager = (PermissionManager) context.getBean("permissionManager");
             Project theProject = (Project) ExpressionEvaluationUtils.evaluate("project", project, Project.class, pageContext);
 
             Class c = Permissions.class;
             Field field = c.getField(permission);
             long permissionId = field.getLong(null);
-            System.out.println("The project is: " + theProject);
-            System.out.println("The permissionId is: " + permissionId);
 
             if (user == null) {
                 UserResolver userResolver = (UserResolver) context.getBean("userResolver");
