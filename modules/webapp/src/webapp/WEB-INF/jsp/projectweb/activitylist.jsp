@@ -233,7 +233,7 @@
                         <td>Tittel</td>
                         <td>
                             <table width="100%">
-                                <tr style="color: white">
+                                <tr class="tableHeading">
                                     <td>
                                         <c:out value="${firstactivity.startDate}"/>
                                     </td>

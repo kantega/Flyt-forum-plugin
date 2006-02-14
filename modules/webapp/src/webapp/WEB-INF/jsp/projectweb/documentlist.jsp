@@ -39,8 +39,9 @@
                                                                       border="0"></a></td>
                 </tr>
             </table>
-            <spring:message code="documentlist.textsearchcontent"/>:
+
             <input type="checkbox" name="searchContent" <c:if test="${searchContent != null}">checked</c:if> >
+            <spring:message code="documentlist.textsearchcontent"/>
         </div>
 
         <div class="activitysearchsection">
@@ -75,7 +76,7 @@
 <c:when test="${not empty documents}">
     <table border="0" cellspacing="0">
         <tr>
-            <td colspan="3">
+            <td colspan="5" align="right">
                                 <pw:haspermission project="${project}" permission="ADD_DOCUMENT">
                                 <div style="padding-bottom: 2px;">
                                     <a class="button" style="vertical-align: middle;"
@@ -104,7 +105,7 @@
                     <c:out value="${document.category.name}"/>
                 </td>
                 <td>
-                    <c:out value="${document.editDate}"/>
+                    <fmt:formatDate value="${document.editDate}" type="both"/>
                 </td>
                 <td>
                     <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
