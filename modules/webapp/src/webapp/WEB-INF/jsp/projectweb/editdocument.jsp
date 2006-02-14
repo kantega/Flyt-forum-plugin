@@ -56,7 +56,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><spring:message code="document.description"/>:</td>
+                    <td valign="top"><spring:message code="document.description"/>:</td>
                     <td>
                         <spring:bind path="document.description">
                             <textarea name="description" cols="20" rows="10"><c:out value="${document.description}"/></textarea><br>
