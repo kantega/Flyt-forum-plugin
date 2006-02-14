@@ -6,6 +6,7 @@
 <html>
   <head><title><kantega:getsection id="title"/></title>
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/projectweb.css">
+      <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/<spring:theme code="projectcss"/>">
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/calendar-blue.css">
       <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar.js"></script>
       <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar-en.js"></script>
@@ -14,9 +15,17 @@
   </head>
   <body>
   <div class="topheader">
-      <div align="right">
-          <img src="../bitmaps/projectweb/prosjektweb.gif">
-      </div>
+      <table cellpadding="0" cellspacing="0" width="100%">
+
+          <tr>
+              <td>
+                  <a href="<spring:theme code="topimage.link"/>"><img src="../<spring:theme code="topimage"/>" border="0"></a>
+              </td>
+              <td align="right">
+                  <img src="../bitmaps/projectweb/prosjektweb.gif">
+              </td>
+          </tr>
+      </table>
   </div>
 
   <table width="100%" cellspacing="0" cellpadding="0">

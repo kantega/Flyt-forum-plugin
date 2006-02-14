@@ -522,7 +522,7 @@
           <property name="suffix"><value>.jsp</value></property>
       </bean>
 
-  
+
   <bean id="workflowStore"
     class="com.opensymphony.workflow.spi.hibernate.SpringHibernateWorkflowStore">
       <property name="sessionFactory"><ref bean="sessionFactory2"/></property>
@@ -550,7 +550,7 @@
 
   <bean id="workflowTypeResolver"
         class="com.opensymphony.workflow.util.SpringTypeResolver"/>
- 
+
   <bean id="basicWorkflowFactory"
         class="no.kantega.osworkflow.BasicWorkflowFactory">
     <property name="configuration">
@@ -596,7 +596,7 @@
       <ref bean="userMangerConfigLoader"/>
     </constructor-arg>
   </bean>
-   -->  
+   -->
   <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
     <property name="cacheSeconds">
       <value>5</value>
@@ -609,6 +609,10 @@
       </list>
     </property>
   </bean>
+
+  <bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+  </bean>
+
 
   <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
     <property name="defaultLocale">

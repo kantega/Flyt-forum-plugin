@@ -127,9 +127,9 @@
                         </c:forEach>
                     </select>
                     </div>
-                    <div align="center">
+                    <!--<div align="right">
                         <a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a>
-                    </div>
+                    </div>-->
 
                     </div>
                     </td>
@@ -145,7 +145,7 @@
         <c:when test="${param.view == null or param.view eq 'list'}">
     <table border="0" cellspacing="0">
         <tr>
-            <td colspan="6">
+            <td colspan="7">
                 <table width="100%">
                     <tr>
                         <td>
