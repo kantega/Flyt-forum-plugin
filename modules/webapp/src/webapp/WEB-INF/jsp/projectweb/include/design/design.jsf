@@ -49,7 +49,10 @@
                       <pw:hasglobalpermission permission="ADMINISTRATOR">
                           <td><a href="admin"><img src="../bitmaps/projectweb/knapp_administrator<c:if test="${selectedMenu eq 'admin'}">_f2</c:if>.gif" border="0"></a></td>
                       </pw:hasglobalpermission>
-                      <td><a href="../Logout.action"><img src="../bitmaps/projectweb/knapp_loggut.gif" border="0"></a></td>
+                      <c:set var="showLogout"><spring:theme code="logout.show"/></c:set>
+                      <c:if test="${showLogout}">
+                        <td><a href="<spring:theme code="logout.url"/>"><img src="../bitmaps/projectweb/knapp_loggut.gif" border="0"></a></td>
+                      </c:if>
                   </tr>
               </table>
           </td>
