@@ -4,6 +4,10 @@ body {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
 }
+
+form {
+    margin: 0px;
+}
 .topheader {
     background-image: url("../bitmaps/projectweb/top_logo_spacer.gif");
     width: 100%;
@@ -78,6 +82,7 @@ td {
     background-color: white;
     padding: 2px;
     padding-left: 10px;
+    padding-top: 22px;
 }
 
 .activitylistmain {
