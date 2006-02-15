@@ -69,7 +69,7 @@ public class ProjectWebDao {
     public Activity getPopulatedActivity(final long activityId) {
         return (Activity) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q = session.createQuery("from Activity a inner join fetch a.type inner join fetch a.priority inner join fetch a.project left outer join fetch a.status left join fetch a.comments left outer join fetch a.projectPhase where a.id=:activityId");
+                Query q = session.createQuery("from Activity a left join fetch a.type inner join fetch a.priority inner join fetch a.project left outer join fetch a.status left join fetch a.comments left outer join fetch a.projectPhase where a.id=:activityId");
                 q.setLong("activityId", activityId);
                 Object o = q.uniqueResult();
                 log.info("O is: " +o);
