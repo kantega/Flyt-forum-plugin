@@ -16,7 +16,7 @@
 <c:when test="${not empty documents}">
     <table border="0" cellspacing="0">
         <tr>
-            <td colspan="5" align="right">
+            <td colspan="4" align="right">
                 <kantega:getsection id="add_document"/>
             </td>
         </tr>
@@ -24,7 +24,6 @@
             <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
             <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
             <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
-            <td>&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
         <c:forEach items="${documents}" var="document" varStatus="status">
@@ -42,11 +41,6 @@
                 <td>
                     <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
                         <spring:message code="documentlist.download"/>
-                    </a>
-                </td>
-                <td>
-                    <a href="editdocument?projectId=<c:out value="${project.id}"/>&documentId=<c:out value="${document.id}"/>">
-                        <spring:message code="general.edit"/>
                     </a>
                 </td>
             </tr>

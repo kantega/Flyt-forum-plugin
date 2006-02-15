@@ -69,7 +69,11 @@ public class EditDocumentController extends FormControllerSupport {
                 document.setContentType(file.getContentType());
 
                 if (document.getTitle()==null || "".equals(document.getTitle())){
-                    document.setTitle(document.getFileName());
+                    String fileName = document.getFileName();
+                    if (fileName.lastIndexOf(".")>0){
+                        document.setTitle(fileName.substring(0,fileName.lastIndexOf(".")));
+                    }
+                    else document.setTitle(fileName);
                 }
 
 

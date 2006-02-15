@@ -26,7 +26,7 @@
         </tr>
         <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="document.uploader"/>:</td>
-            <td class="dottedTd"><pw:resolveuser user="${document.uploader}"/>'</td>
+            <td class="dottedTd"><pw:resolveuser user="${document.uploader}"/></td>
         </tr>
         <pw:haspermission project="${document.project}" permission="EDIT_DOCUMENT">
             <tr  class="tableRow<%=c++ % 2%>">
@@ -55,7 +55,14 @@
                     // -->
                     </script>
 
-                    <a onclick="return confirmSubmit()" href="deletedocument?documentId=<c:out value="${document.id}"/>">
+                    <c:choose>
+                        <c:when test="${activityId == null}">
+                            <a onclick="return confirmSubmit()" href="deletedocument?documentId=<c:out value="${document.id}"/>">
+                        </c:when>
+                        <c:otherwise>
+                            <a onclick="return confirmSubmit()" href="deletedocument?documentId=<c:out value="${document.id}"/>&activityId=<c:out value="${activityId}"/>">
+                        </c:otherwise>
+                    </c:choose>
                         <img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0">
                         <spring:message code="general.delete"/>
                     </a>
@@ -67,7 +74,10 @@
 <kantega:section id="main">
     <div class="heading"><c:out value="${document.project.name}"/>: <c:out value="${document.title}"/></div>
     <c:forEach items="${document.activities}" var="activity">
-        Aktivitet: <c:out value="${activity.title}"/><br>
+        <spring:message code="document.activity"/>
+            <a href="activity?activityId=<c:out value="${activity.id}"/>">
+                <c:out value="${activity.title}"/>
+            </a><br>
     </c:forEach>
     <spring:message code="document.filename"/>:
     <a href="document?action=download&documentId=<c:out value="${document.id}"/>">

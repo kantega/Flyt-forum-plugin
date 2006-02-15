@@ -51,7 +51,14 @@ public class DeleteDocumentController implements Controller{
         String user = userResolver.resolveUser(request).getUsername();
         if (permissionManager.hasPermission(user, Permissions.DELETE_DOCUMENT, document.getProject())){
             dao.deleteDocument(documentId);
-            return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
+
+            String activityId = request.getParameter("activityId");
+            if (activityId!=null){
+                return new ModelAndView(new RedirectView("activity"), "activityId", activityId);
+            }
+            else{
+                return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
+            }
         }
         else{
             response.sendError(HttpServletResponse.SC_FORBIDDEN);

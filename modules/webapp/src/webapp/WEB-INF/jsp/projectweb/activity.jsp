@@ -96,6 +96,29 @@
 
 </kantega:section>
 
+<kantega:section id="documents">
+        <tr class="tableHeading">
+            <td colspan="2"><spring:message code="activity.documents"/></td>
+        </tr>
+    <%
+        int c = 0;
+    %>
+    <c:forEach items="${documents}" var="document" varStatus="status">
+        <tr class="tableRow<%=c++ % 2%>">
+            <td colspan="2">
+                <a href="document?documentId=<c:out value="${document.id}"/>&activityId=<c:out value="${activity.id}"/>">
+                     <pw:limittextlength value="${document.title}" length="17"/>
+                </a><br>
+            </td>
+        </tr>
+    </c:forEach>
+        <tr class="tableRow0">
+            <td colspan="2" align="right">
+                <kantega:getsection id="add_document"/>
+            </td>
+        </tr>
+</kantega:section>
+
 <kantega:section id="main">
     <script>
         function addComment() {
@@ -105,14 +128,6 @@
     <div class="heading"><c:out value="${activity.project.name}"/>: <c:out value="${activity.title}"/></div>
 
     <c:out value="${activity.description}"/><br>
-
-        <div style="padding-top:20px;padding-bottom:20px">
-            <kantega:getsection id="add_document"/><br>
-            <c:forEach items="${documents}" var="document" varStatus="status">
-                <a href="document?documentId=<c:out value="${document.id}"/>"><c:out value="${document.title}"/></a><br>
-            </c:forEach>
-
-        </div>
 
         <pw:haspermission project="${activity.project}" permission="ACTIVITY_ADD_COMMENT">
             <table width="500">
@@ -176,6 +191,7 @@
                         <kantega:getsection id="summary"/>
                         <kantega:getsection id="economy"/>
                         <kantega:getsection id="workflowactions"/>
+                        <kantega:getsection id="documents"/>
                     </table>
                 </div>
             </td>

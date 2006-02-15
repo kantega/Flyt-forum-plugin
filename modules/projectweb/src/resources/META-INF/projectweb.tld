@@ -6,7 +6,6 @@
     <shortname>aksess publisering</shortname>
     <uri>http://www.kantega.no/aksess/tags/projectweb</uri>
     <info>Aksess Project Taglibs</info>
-
     <tag>
         <name>haspermission</name>
         <tagclass>no.kantega.projectweb.tags.HasPermissionTag</tagclass>
@@ -27,7 +26,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-    </tag>
+   </tag>
   <tag>
     <name>hasglobalpermission</name>
     <tagclass>no.kantega.projectweb.tags.HasGlobalPermissionTag</tagclass>
@@ -44,6 +43,24 @@
       <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+
+    <tag>
+      <name>limittextlength</name>
+      <tagclass>no.kantega.projectweb.tags.LimitTextLengthTag</tagclass>
+      <bodycontent>empty</bodycontent>
+      <info>Shortens long texts</info>
+      <attribute>
+        <name>value</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+        <name>length</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+      </attribute>
+    </tag>
+
   <tag>
     <name>resolveuser</name>
     <tagclass>no.kantega.projectweb.tags.ResolveUserTag</tagclass>

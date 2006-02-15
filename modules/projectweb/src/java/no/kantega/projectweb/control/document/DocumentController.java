@@ -75,6 +75,7 @@ public class DocumentController implements Controller{
         else{
             Map map = new HashMap();
             map.put("document", document);
+            map.put("activityId", request.getParameter("activityId"));
             map.put("project", document.getProject());
 
             return new ModelAndView("document", map);
