@@ -91,7 +91,7 @@
             </table>
             </c:when>
         <c:otherwise>
-            Ingen deltakere<br>
+            Ingen deltakere<br><br>
             <c:if test="${allowAdd}">
                 <a href="addparticipant?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_deltaker.gif" border="0"><spring:message code="participants.add"/></a>
             </c:if>

@@ -8,7 +8,10 @@
 
 
 <kantega:section id="title">
-    <spring:message code="project.edit.title" arguments="${project.name}"/>
+    <c:choose>
+        <c:when test="${project.id == 0}"><spring:message code="projectlist.addproject"/></c:when>
+        <c:otherwise><c:out value="${project.name}"/></c:otherwise>
+    </c:choose>
 </kantega:section>
 
 <kantega:section id="content">
