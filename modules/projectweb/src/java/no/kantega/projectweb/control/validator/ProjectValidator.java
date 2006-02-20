@@ -27,7 +27,7 @@ public class ProjectValidator implements Validator {
         }
         for (int i = 0; i < project.getCode().toCharArray().length; i++) {
             char c = project.getCode().toCharArray()[i];
-            if(!Character.isLetter(c)) {
+            if(!Character.isLetter(c) || !Character.isUpperCase(c)) {
                 errors.rejectValue("code", "code.illegal", "Illegal code");
                 break;
             }
