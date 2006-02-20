@@ -139,11 +139,10 @@
     <property name="title"/>
     <property name="description"/>
     <property name="fileName"/>
-    <property name="content" type="binary" length="10000" lazy="true"/>
-    <property name="contentText" type="text" lazy="true" not-null="false"/>
     <property name="editDate"/>
     <property name="contentType"/>
     <property name="uploader"/>
+    <many-to-one name="documentContent" class="DocumentContent" unique="true" not-null="true" cascade="all" column="documentContentId"/>
     <many-to-one name="category" column="categoryId"  not-null="true" class="DocumentCategory"/>
     <many-to-one name="project" column="projectId" not-null="true" class="Project"/>
 
@@ -152,6 +151,15 @@
         <many-to-many column="activityId" class="Activity"/>
     </set>
     <!--<many-to-one name="documentFolder" column="folderId" not-null="false" class="DocumentFolder"/>-->
+  </class>
+
+  <class name="DocumentContent" table="projectweb_documentcontent">
+    <id name="id" column="documentContentId" type="long">
+      <generator class="increment"/>
+    </id>
+    <property name="content" type="binary" length="10000" />
+    <property name="contentText" type="text" not-null="false" />
+    <one-to-one name="document" class="Document" property-ref="documentContent"/>
   </class>
 
   <class name="Participant" table="projectweb_participant">

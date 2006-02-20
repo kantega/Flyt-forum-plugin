@@ -46,22 +46,28 @@ public class DeleteDocumentController implements Controller{
     private PermissionManager permissionManager;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long documentId = Long.parseLong(request.getParameter("documentId"));
-        Document document = dao.getPopulatedDocument(documentId);
-        String user = userResolver.resolveUser(request).getUsername();
-        if (permissionManager.hasPermission(user, Permissions.DELETE_DOCUMENT, document.getProject())){
-            dao.deleteDocument(documentId);
+        if(request.getMethod().equals("POST")) {
+            long documentId = Long.parseLong(request.getParameter("documentId"));
+            Document document = dao.getPopulatedDocument(documentId);
+            String user = userResolver.resolveUser(request).getUsername();
+            if (permissionManager.hasPermission(user, Permissions.DELETE_DOCUMENT, document.getProject())){
+                dao.deleteDocument(documentId);
 
-            String activityId = request.getParameter("activityId");
-            if (activityId!=null){
-                return new ModelAndView(new RedirectView("activity"), "activityId", activityId);
+                String activityId = request.getParameter("activityId");
+                if (activityId!=null && !activityId.equals("")){
+                    return new ModelAndView(new RedirectView("activity"), "activityId", activityId);
+                }
+                else{
+                    return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
+                }
             }
             else{
-                return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return null;
             }
-        }
-        else{
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+        } else {
+            // GET should never be used here
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return null;
         }
     }

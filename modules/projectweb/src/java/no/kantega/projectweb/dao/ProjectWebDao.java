@@ -81,15 +81,22 @@ public class ProjectWebDao {
     }
 
     public Document getPopulatedDocument(final long documentId) {
+        return getPopulatedDocument(documentId, false);
+    }
+
+    public Document getPopulatedDocument(final long documentId, final boolean withContent) {
         return (Document) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query q = session.createQuery("from Document d inner join fetch d.project inner join fetch d.category where d.id=:documentId");
                 q.setLong("documentId", documentId);
-                Object o = q.uniqueResult();
-                log.info("O is: " +o);
+                Document doc = (Document) q.uniqueResult();
+                log.info("Document is: " +doc);
+                if(withContent) {
+                    doc.getDocumentContent().getContent();
+                }
                 //unngå lazy
-                (((Document)o).getActivities()).size();
-                return o;
+                (((Document)doc).getActivities()).size();
+                return doc;
             }
         });
     }

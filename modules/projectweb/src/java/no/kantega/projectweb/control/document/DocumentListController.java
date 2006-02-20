@@ -48,14 +48,14 @@ public class DocumentListController implements Controller {
 
         String order = request.getParameter("order");
         criteria.add(Property.forName("project").eq(project));
-
+        criteria.createAlias("documentContent", "dc");
         if (text != null && text.length() > 2) {
             Disjunction tx = Restrictions.disjunction();
             tx.add(Property.forName("title").like(text, MatchMode.ANYWHERE));
             tx.add(Property.forName("description").like(text, MatchMode.ANYWHERE));
 
             if (searchContent!=null){
-                tx.add(Property.forName("contentText").like(text, MatchMode.ANYWHERE));
+                tx.add(Restrictions.like("dc.contentText", text, MatchMode.ANYWHERE));
             }
             criteria.add(tx);
         }

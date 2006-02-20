@@ -10,16 +10,15 @@ public class Document implements WorkflowParticipator {
     private String title;
     private String description;
     private String fileName;
-    private byte[] content;
     private DocumentCategory category;
     private Date editDate;
     private DocumentFolder documentFolder;
     private long workflowId;
     private Project project;
     private String contentType;
-    private String contentText;
     private String uploader;
     private Set activities = new HashSet();
+    private DocumentContent documentContent = new DocumentContent();
 
     public long getId() {
         return id;
@@ -53,13 +52,7 @@ public class Document implements WorkflowParticipator {
         this.fileName = fileName;
     }
 
-    public byte[] getContent() {
-        return content;
-    }
 
-    public void setContent(byte[] content) {
-        this.content = content;
-    }
 
     public DocumentCategory getCategory() {
         return category;
@@ -109,15 +102,6 @@ public class Document implements WorkflowParticipator {
         this.contentType = contentType;
     }
 
-
-    public void setContentText(String contentText) {
-        this.contentText = contentText;
-    }
-
-    public String getContentText() {
-        return contentText;
-    }
-
     public String getUploader() {
         return uploader;
     }
@@ -132,5 +116,13 @@ public class Document implements WorkflowParticipator {
 
     protected void setActivities(Set activities) {
         this.activities = activities;
+    }
+
+    public DocumentContent getDocumentContent() {
+        return documentContent;
+    }
+
+    public void setDocumentContent(DocumentContent documentContent) {
+        this.documentContent = documentContent;
     }
 }

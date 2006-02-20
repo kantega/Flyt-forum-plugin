@@ -47,10 +47,11 @@ public class DocumentController implements Controller{
 
 
 
-        Document document = dao.getPopulatedDocument(documentId);
         if ("download".equals(request.getParameter("action"))){
+            Document document = dao.getPopulatedDocument(documentId, true);
+
             //hvis download er valgt sendes dokumentet til brukeren
-            byte[] content = document.getContent();
+            byte[] content = document.getDocumentContent().getContent();
             if (content == null) {
                 // Dokumentinnhold er null
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -73,6 +74,8 @@ public class DocumentController implements Controller{
             return null;
         }
         else{
+            Document document = dao.getPopulatedDocument(documentId, true);
+
             Map map = new HashMap();
             map.put("document", document);
             map.put("activityId", request.getParameter("activityId"));

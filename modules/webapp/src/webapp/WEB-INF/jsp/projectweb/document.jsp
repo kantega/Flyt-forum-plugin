@@ -20,10 +20,10 @@
             <td><spring:message code="document.category"/>:</td>
             <td class="dottedTd"><c:out value="${document.category.name}"/></td>
         </tr>
-        <tr  class="tableRow<%=c++ % 2%>">
+<%--    <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="document.type"/>:</td>
             <td class="dottedTd"><c:out value="${document.contentType}"/></td>
-        </tr>
+        </tr>--%>
         <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="document.uploader"/>:</td>
             <td class="dottedTd"><pw:resolveuser user="${document.uploader}"/></td>
@@ -41,28 +41,22 @@
         <pw:haspermission project="${document.project}" permission="DELETE_DOCUMENT">
             <tr  class="tableRow<%=c++ % 2%>">
                 <td colspan="2"  align="right">
-
-                    <script LANGUAGE="JavaScript">
+                    <form name="deleteForm" action="deletedocument" method="POST">
+                        <input name="documentId" type="hidden" value="<c:out value="${document.id}"/>">
+                        <input name="documentId" type="hidden" value="<c:out value="${activityId}"/>">
+                    </form>
+                    <script LANGUAGE="JavaScript" type="text/javascript">
                     <!--
-                    function confirmSubmit()
-                    {
-                    var agree=confirm("<spring:message code="document.confirmdelete"/>");
-                    if (agree)
-                        return true ;
-                    else
-                        return false ;
+                    function confirmDelete() {
+
+                        if (confirm("<spring:message code="document.confirmdelete"/>")) {
+                            document.deleteForm.submit();
+                        }
                     }
                     // -->
                     </script>
 
-                    <c:choose>
-                        <c:when test="${activityId == null}">
-                            <a onclick="return confirmSubmit()" href="deletedocument?documentId=<c:out value="${document.id}"/>">
-                        </c:when>
-                        <c:otherwise>
-                            <a onclick="return confirmSubmit()" href="deletedocument?documentId=<c:out value="${document.id}"/>&activityId=<c:out value="${activityId}"/>">
-                        </c:otherwise>
-                    </c:choose>
+                    <a href="javascript:confirmDelete()" >
                         <img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0">
                         <spring:message code="general.delete"/>
                     </a>

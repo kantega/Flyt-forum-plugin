@@ -16,6 +16,7 @@ import java.util.Date;
 import java.io.ByteArrayInputStream;
 
 import no.kantega.projectweb.model.Document;
+import no.kantega.projectweb.model.DocumentContent;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.user.UserProfileManager;
 import no.kantega.projectweb.user.UserResolver;
@@ -47,6 +48,9 @@ public class EditDocumentController extends FormControllerSupport {
         }
         else{
             document = new Document();
+            DocumentContent content = new DocumentContent();
+            document.setDocumentContent(content);
+            content.setDocument(document);
             long projectId = Long.parseLong(request.getParameter("projectId"));
             document.setProject(dao.getProject(projectId));
         }
@@ -79,12 +83,12 @@ public class EditDocumentController extends FormControllerSupport {
 
                 String user = userResolver.resolveUser(request).getUsername();
                 document.setUploader(user);
-                document.setContent(file.getBytes());
+                document.getDocumentContent().setContent(file.getBytes());
 
                 try {
                     TextExtractor extractor = textExtractorSelector.select(document.getFileName());
                     if(extractor != null) {
-                        document.setContentText(extractor.extractText(new ByteArrayInputStream(document.getContent())));
+                        document.getDocumentContent().setContentText(extractor.extractText(new ByteArrayInputStream(document.getDocumentContent().getContent())));
                     }
                 } catch (Throwable e) {
                     log.error("Error extracting text from document " + document.getFileName());
