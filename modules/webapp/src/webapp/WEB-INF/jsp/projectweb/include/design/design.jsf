@@ -8,10 +8,10 @@
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/projectweb.css">
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/<spring:theme code="projectcss"/>">
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/calendar-blue.css">
-      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar.js"></script>
-      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar-en.js"></script>
-      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar-no.js" charset="utf-8"></script>
-      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar-setup.js"></script>
+      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar/calendar.js"></script>
+      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar/calendar-en.js"></script>
+      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar/calendar-no.js" charset="utf-8"></script>
+      <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar/calendar-setup.js"></script>
   </head>
   <body>
   <div class="topheader">
