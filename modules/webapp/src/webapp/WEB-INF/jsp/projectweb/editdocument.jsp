@@ -32,7 +32,7 @@
                     <td>
                         <spring:bind path="document.title">
                             <input name="title" value="<c:out value="${status.value}"/>">
-                            <c:out value="${status.errorMessage}"/>
+                           <spring:message code="document.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </spring:bind>
                     </td>
                 </tr>
