@@ -6,6 +6,14 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 
+<kantega:section id="title">
+    <c:choose>
+        <c:when test="${activity.id == 0}"><spring:message code="activity.new"/></c:when>
+        <c:otherwise><spring:message code="activity.edit"/></c:otherwise>
+    </c:choose>
+
+</kantega:section>
+
 
 <kantega:section id="content">
 
