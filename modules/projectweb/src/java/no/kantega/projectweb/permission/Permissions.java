@@ -14,5 +14,6 @@ public interface Permissions {
     long ADD_DOCUMENT = 4;
     long EDIT_DOCUMENT = 5;
     long DELETE_DOCUMENT = 6;
+    long EDIT_ACTIVITY = 7;
 
 }

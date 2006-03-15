@@ -57,7 +57,7 @@
             <td><spring:message code="activity.reporter"/>:</td>
             <td class="dottedTd"><pw:resolveuser user="${activity.reporter}"/></td>
         </tr>
-        <pw:haspermission project="${activity.project}" permission="PROJECT_ADMINISTRATION">
+        <pw:haspermission project="${activity.project}" permission="EDIT_ACTIVITY">
             <tr  class="tableRow0">
                 <td colspan="2"  align="right">
                      <a href="editactivitysummary?activityId=<c:out value="${activity.id}"/>"><spring:message code="general.edit"/></a>
@@ -86,7 +86,7 @@
             <td><spring:message code="economy.left"/>:</td>
             <td class="dottedTd"><c:out value="${activity.estimatedLeftHours}"/></td>
         </tr>
-        <pw:haspermission project="${activity.project}" permission="PROJECT_ADMINISTRATION">
+        <pw:haspermission project="${activity.project}" permission="EDIT_ACTIVITY">
         <tr class="tableRow0">
             <td colspan="2" align="right">
                  <a href="editactivityeconomy?activityId=<c:out value="${activity.id}"/>"><spring:message code="general.edit"/></a>
