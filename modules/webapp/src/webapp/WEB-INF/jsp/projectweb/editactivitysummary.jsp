@@ -113,7 +113,7 @@
                               }
                                       );
                           </script>
-                        <c:out value="${status.errorMessage}"/>
+                        <spring:message code="activity.validation.${status.errorCode}"/>
                   </spring:bind>
                 </td>
             </tr>
