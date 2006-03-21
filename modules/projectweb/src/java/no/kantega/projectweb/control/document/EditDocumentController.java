@@ -44,7 +44,7 @@ public class EditDocumentController extends FormControllerSupport {
         Document document = null;
         if (request.getParameter("documentId")!=null){
             long documentId = new Long(request.getParameter("documentId")).longValue();
-            document = dao.getPopulatedDocument(documentId);
+            document = dao.getPopulatedDocument(documentId, true);
         }
         else{
             document = new Document();
