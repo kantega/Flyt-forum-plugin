@@ -159,7 +159,6 @@
     </id>
     <property name="content" type="binary" length="10000" />
     <property name="contentText" type="text" not-null="false" />
-    <one-to-one name="document" class="Document" property-ref="documentContent"/>
   </class>
 
   <class name="Participant" table="projectweb_participant">
