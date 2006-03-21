@@ -9,7 +9,6 @@ public class DocumentContent {
     private long id;
     private byte[] content;
     private String contentText;
-    private Document document;
 
     public long getId() {
         return id;
@@ -35,11 +34,4 @@ public class DocumentContent {
         this.contentText = contentText;
     }
 
-    public void setDocument(Document document) {
-        this.document = document;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
 }

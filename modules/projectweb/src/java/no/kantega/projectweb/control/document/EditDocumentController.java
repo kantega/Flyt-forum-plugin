@@ -50,7 +50,6 @@ public class EditDocumentController extends FormControllerSupport {
             document = new Document();
             DocumentContent content = new DocumentContent();
             document.setDocumentContent(content);
-            content.setDocument(document);
             long projectId = Long.parseLong(request.getParameter("projectId"));
             document.setProject(dao.getProject(projectId));
         }
