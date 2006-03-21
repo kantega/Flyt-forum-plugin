@@ -18,9 +18,7 @@ public class DocumentValidator implements Validator {
     }
 
     public void validate(Object o, Errors errors) {
-        Document d = (Document) o;
-        if(d.getTitle() == null || d.getTitle().length() < 2) {
-            errors.rejectValue("title", "title.too-short", "Title is too short");
-        }
+        
+
     }
 }

@@ -71,13 +71,6 @@ public class EditDocumentController extends FormControllerSupport {
                 document.setFileName(file.getOriginalFilename());
                 document.setContentType(file.getContentType());
 
-                if (document.getTitle()==null || "".equals(document.getTitle())){
-                    String fileName = document.getFileName();
-                    if (fileName.lastIndexOf(".")>0){
-                        document.setTitle(fileName.substring(0,fileName.lastIndexOf(".")));
-                    }
-                    else document.setTitle(fileName);
-                }
 
 
                 String user = userResolver.resolveUser(request).getUsername();
@@ -93,6 +86,13 @@ public class EditDocumentController extends FormControllerSupport {
                     log.error("Error extracting text from document " + document.getFileName());
                 }
             }
+        }
+        if (document.getTitle()==null || "".equals(document.getTitle())){
+            String fileName = document.getFileName();
+            if (fileName.lastIndexOf(".")>0){
+                document.setTitle(fileName.substring(0,fileName.lastIndexOf(".")));
+            }
+            else document.setTitle(fileName);
         }
 
         //hvis dokumentet legges til en aktivitet
