@@ -12,6 +12,4 @@ import java.util.List;
 public interface UserProfileManager {
 
     public UserProfile getUserProfile(String user);
-
-    List getUserProfileDtos(List activityPriorities);
 }

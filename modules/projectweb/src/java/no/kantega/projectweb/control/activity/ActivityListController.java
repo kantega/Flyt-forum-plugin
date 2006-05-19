@@ -12,6 +12,7 @@ import no.kantega.projectweb.model.Project;
 import no.kantega.projectweb.model.Activity;
 import no.kantega.projectweb.user.UserProfileManager;
 import no.kantega.projectweb.activity.ActivityStatusManager;
+import no.kantega.projectweb.util.ProjectWebUtil;
 
 import java.util.*;
 
@@ -213,7 +214,7 @@ public class ActivityListController implements Controller {
     private Map referenceData(HttpServletRequest request, Project project) {
         Map map = new HashMap();
         map.put("allstatuses", statusManager.getActivityStatuses(project));
-        map.put("allparticipants", userProfileManager.getUserProfileDtos(dao.getProjectParticipants(project.getId())));
+        map.put("allparticipants", ProjectWebUtil.getUserProfileDtos(userProfileManager, dao.getProjectParticipants(project.getId())));
         map.put("allpriorities", dao.getActivityPriorities());
         map.put("alltypes", dao.getActivityTypes());
         map.put("allphases", dao.getProjectPhases());

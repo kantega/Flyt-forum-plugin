@@ -4,6 +4,7 @@ import no.kantega.projectweb.control.FormControllerSupport;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Activity;
 import no.kantega.projectweb.user.UserProfileManager;
+import no.kantega.projectweb.util.ProjectWebUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -38,7 +39,7 @@ public class EditActivityController extends FormControllerSupport {
         Activity activity = (Activity) object;
         map.put("project",activity.getProject());
         List projectParticipants = dao.getProjectParticipants(activity.getProject().getId());
-        map.put("profiles", userProfileManager.getUserProfileDtos(projectParticipants));
+        map.put("profiles", ProjectWebUtil.getUserProfileDtos(userProfileManager, projectParticipants));
         return map;
     }
 

@@ -13,6 +13,7 @@ import no.kantega.projectweb.model.Hours;
 import no.kantega.projectweb.control.FormControllerSupport;
 import no.kantega.projectweb.user.UserProfileManager;
 import no.kantega.projectweb.permission.PermissionManager;
+import no.kantega.projectweb.util.ProjectWebUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -39,7 +40,7 @@ public class EditProjectController extends FormControllerSupport implements Appl
         Map map = new HashMap();
         Project project = (Project) object;
         List projectParticipants = dao.getProjectParticipants(project.getId());
-        map.put("profiles", userProfileManager.getUserProfileDtos(projectParticipants));
+        map.put("profiles", ProjectWebUtil.getUserProfileDtos(userProfileManager, projectParticipants));
         return map;
     }
 

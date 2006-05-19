@@ -17,15 +17,5 @@ public abstract class AbstractUserProfileManager implements UserProfileManager {
 
     public abstract UserProfile getUserProfile(String user);
 
-    public List getUserProfileDtos(List participants) {
-        List dtos = new ArrayList();
-        for (int i = 0; i < participants.size(); i++) {
-            Participant participant = (Participant) participants.get(i);
-            ParticipantDto dto = new ParticipantDto();
-            dto.setParticipant(participant);
-            dto.setProfile(getUserProfile(participant.getUser()));
-            dtos.add(dto);
-        }
-        return dtos;
-    }
+
 }

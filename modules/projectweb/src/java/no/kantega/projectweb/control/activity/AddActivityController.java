@@ -6,6 +6,7 @@ import no.kantega.projectweb.control.FormControllerSupport;
 import no.kantega.projectweb.model.Activity;
 import no.kantega.projectweb.user.UserProfileManager;
 import no.kantega.projectweb.user.UserResolver;
+import no.kantega.projectweb.util.ProjectWebUtil;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -59,7 +60,7 @@ public class AddActivityController extends FormControllerSupport {
         map.put("project", activity.getProject());
         map.put("phases", dao.getProjectPhases());
         List projectParticipants = dao.getProjectParticipants(activity.getProject().getId());
-        map.put("profiles", userProfileManager.getUserProfileDtos(projectParticipants));
+        map.put("profiles", ProjectWebUtil.getUserProfileDtos(userProfileManager,projectParticipants));
 
         return map;
     }
