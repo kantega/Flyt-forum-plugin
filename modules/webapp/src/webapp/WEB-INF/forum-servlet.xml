@@ -323,4 +323,9 @@
         </property>
     </bean>
 
+
+    <bean id="permissionManager" class="no.kantega.forum.permission.TestPermissionManager">
+
+    </bean>
+
 </beans>
