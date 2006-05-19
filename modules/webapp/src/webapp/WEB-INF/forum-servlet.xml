@@ -33,6 +33,9 @@
                 <entry key="/editforum">
                     <ref bean="editForumController"/>
                 </entry>
+                <entry key="/deleteforum">
+                    <ref bean="deleteForumController"/>
+                </entry>
                 <entry key="/addforum">
                     <ref bean="addForumController"/>
                 </entry>
@@ -221,6 +224,12 @@
         </property>
         <property name="validator">
           <bean class="no.kantega.forum.validator.ForumValidator"/>
+        </property>
+    </bean>
+
+    <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController">
+        <property name="dao">
+            <ref bean="dao"/>
         </property>
     </bean>
 

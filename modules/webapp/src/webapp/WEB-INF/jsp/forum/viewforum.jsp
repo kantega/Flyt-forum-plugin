@@ -13,7 +13,7 @@
     <c:forEach items="${forum.threads}" var="thread">
         <a href="<%=request.getContextPath()%>/forum/viewthread?threadId=<c:out value="${thread.id}"/>"><c:out value="${thread.name}"/></a><br>
     </c:forEach>
-    <a href="<%=request.getContextPath()%>/forum/editforum?forumId=<c:out value="${forum.id}"/>">Ny tråd</a> | <a href="<%=request.getContextPath()%>/forum/addthread?forumId=<c:out value="${forum.id}"/>">Ny tråd</a>
+    <a href="<%=request.getContextPath()%>/forum/editforum?forumId=<c:out value="${forum.id}"/>">Endre forum</a> | <a href="<%=request.getContextPath()%>/forum/addthread?forumId=<c:out value="${forum.id}"/>">Ny tråd</a> | <a href="<%=request.getContextPath()%>/forum/deleteforum?forumId=<c:out value="${forum.id}"/>">Slett forum</a> 
 </kantega:section>
 
 <%@ include file="include/design/design.jsf" %>

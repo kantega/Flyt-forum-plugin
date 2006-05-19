@@ -1,0 +1,56 @@
+body {
+    font-family: verdana, sans-serif;
+    font-size: 10px;
+}
+
+.overskrift {
+    font-family: verdana, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+a {
+    text-decoration: underline;
+    font-weight: normal;
+    color: #000000;
+    font-size: 11px;
+    font-family: verdana, sans-serif;
+}
+
+a:visited {
+    text-decoration: underline;
+    font-weight: normal;
+    color: #000000;
+}
+
+a:hover {
+    text-decoration: underline;
+    font-weight: normal;
+    color: #CECECE;
+}
+
+a:active {
+    text-decoration: underline;
+    font-weight: normal;
+    color: #000000;
+}
+
+.tblHeading {
+    font-weight: bold;
+    background-color: #CECECE;
+    color: #000000;
+}
+
+.tblHeading2 {
+    font-weight: bold;
+    background: #E6E6E6;
+    color: #000000;
+}
+
+.tblSelected {
+    background: #F6F6F6;
+}
+
+.tblNormal {
+    background: #FCFCFC;
+}

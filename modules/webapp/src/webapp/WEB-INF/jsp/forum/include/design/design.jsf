@@ -1,9 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <html>
     <head>
-        <title>Forum kategorier - <kantega:getsection id="tittel"/></title>
-        <link rel="stylesheet" type="text/css" href="../forum.css">
+        <title><kantega:getsection id="tittel"/></title>
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/forum.css">
     </head>
     <body>
     <kantega:getsection id="innhold"/>

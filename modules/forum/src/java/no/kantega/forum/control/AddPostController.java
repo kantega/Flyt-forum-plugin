@@ -38,6 +38,9 @@ public class AddPostController extends SimpleFormController {
         p.setThread(t);
         if (postId != null) {
             p.setReplyToId(Long.parseLong(postId));
+            Post origPost = dao.getPost(Long.parseLong(postId));
+            p.setSubject("SV: " + origPost.getSubject());
+            p.setBody("> " + origPost.getBody());
         }
         return p;
     }

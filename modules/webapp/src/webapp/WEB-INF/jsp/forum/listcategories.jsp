@@ -8,12 +8,22 @@
 </kantega:section>
 
 <kantega:section id="innhold">
-    <div class="overskrift">Forumkategorier:</div>
-    <c:forEach items="${categories}" var="category">
-        <a href="<%=request.getContextPath()%>/forum/viewcategory?categoryId=<c:out value="${category.id}"/>"><c:out value="${category.name}"/></a><br>
-    </c:forEach>
-    <br>
-    <a href="<%=request.getContextPath()%>/forum/addcategory">Ny kategori</a>
+    <table border="1" cellspacing="0" cellpadding="0" width="400">
+        <tr><td class="tblHeading">Forumkategorier:</td></tr>
+        <% int i = 1; %>
+        <c:forEach items="${categories}" var="category">
+            <%
+                String cssClass = "tblNormal";
+                if ((i % 2) == 0) {
+                    cssClass = "tblSelected";
+                }
+            %>
+            <tr><td class="<%=cssClass%>"><a href="<%=request.getContextPath()%>/forum/viewcategory?categoryId=<c:out value="${category.id}"/>"><c:out value="${category.name}"/></a></td></tr>
+            <% i++; %>
+        </c:forEach>
+        <tr><td>&nbsp;</td></tr>
+        <tr><td><a href="<%=request.getContextPath()%>/forum/addcategory">Ny kategori</a></td></tr>
+    </table>
 </kantega:section>
 
 <%@include file="include/design/design.jsf"%>
