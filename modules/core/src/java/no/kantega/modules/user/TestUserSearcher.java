@@ -1,4 +1,4 @@
-package no.kantega.projectweb.user;
+package no.kantega.modules.user;
 
 import java.util.ArrayList;
 import java.util.List;

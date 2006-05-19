@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.permission.PermissionManager;
 import no.kantega.projectweb.permission.GlobalPermissions;
-import no.kantega.projectweb.user.UserResolver;
+import no.kantega.modules.user.UserResolver;
 
 import java.util.HashMap;
 import java.util.Map;

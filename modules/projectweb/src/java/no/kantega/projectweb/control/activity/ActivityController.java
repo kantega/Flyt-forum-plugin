@@ -2,8 +2,6 @@ package no.kantega.projectweb.control.activity;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Activity;
 import no.kantega.projectweb.viewmodel.WorkflowHistoryLine;
-import no.kantega.projectweb.user.UserResolver;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.osworkflow.BasicWorkflowFactory;
 
 import java.util.HashMap;
@@ -22,7 +20,6 @@ import java.util.List;
 import com.opensymphony.workflow.Workflow;
 import com.opensymphony.workflow.spi.Step;
 import com.opensymphony.workflow.loader.WorkflowDescriptor;
-import com.opensymphony.workflow.loader.ActionDescriptor;
 
 /**
  * Created by IntelliJ IDEA.

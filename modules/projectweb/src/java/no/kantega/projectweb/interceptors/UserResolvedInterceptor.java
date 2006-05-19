@@ -1,6 +1,6 @@
 package no.kantega.projectweb.interceptors;
 
-import no.kantega.projectweb.user.UserResolver;
+import no.kantega.modules.user.UserResolver;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

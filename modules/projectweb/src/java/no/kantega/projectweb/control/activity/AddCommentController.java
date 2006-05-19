@@ -3,26 +3,15 @@ package no.kantega.projectweb.control.activity;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.Activity;
 import no.kantega.projectweb.model.ActivityComment;
-import no.kantega.projectweb.viewmodel.WorkflowHistoryLine;
-import no.kantega.projectweb.user.UserResolver;
-import no.kantega.projectweb.permission.PermissionManager;
-import no.kantega.osworkflow.BasicWorkflowFactory;
+import no.kantega.modules.user.UserResolver;
 
 import java.util.*;
-
-import com.opensymphony.workflow.Workflow;
-import com.opensymphony.workflow.spi.Step;
-import com.opensymphony.workflow.loader.WorkflowDescriptor;
-import com.opensymphony.workflow.loader.ActionDescriptor;
 
 /**
  * Created by IntelliJ IDEA.

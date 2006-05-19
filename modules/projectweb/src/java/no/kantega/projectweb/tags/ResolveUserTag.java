@@ -9,9 +9,9 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-import no.kantega.projectweb.user.UserResolver;
-import no.kantega.projectweb.user.UserProfileManager;
-import no.kantega.projectweb.user.UserProfile;
+import no.kantega.modules.user.UserResolver;
+import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserProfile;
 
 /**
  * Created by IntelliJ IDEA.

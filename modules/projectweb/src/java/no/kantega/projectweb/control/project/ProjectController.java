@@ -2,22 +2,16 @@ package no.kantega.projectweb.control.project;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.control.participant.dto.ParticipantDto;
-import no.kantega.projectweb.user.UserProfileManager;
-import no.kantega.projectweb.user.UserResolver;
+import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.projectweb.permission.PermissionManager;
 import no.kantega.projectweb.permission.Permissions;
 import no.kantega.projectweb.permission.GlobalPermissions;
@@ -40,7 +34,7 @@ public class ProjectController implements Controller {
         long projectId = Long.parseLong(request.getParameter("projectId"));
 
         Project project = dao.getPopulatedProject(projectId);
-        
+
         map.put("project", project);
         String user = userResolver.resolveUser(request).getUsername();
         boolean mayEdit = permissionManager.hasGlobalPermission(user, GlobalPermissions.ADMINISTRATOR) ||

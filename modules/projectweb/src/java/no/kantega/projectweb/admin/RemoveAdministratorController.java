@@ -8,15 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.model.Participant;
-import no.kantega.projectweb.model.Group;
-import no.kantega.projectweb.permission.PermissionManager;
-import no.kantega.projectweb.permission.Permissions;
-import no.kantega.projectweb.permission.GlobalPermissions;
-import no.kantega.projectweb.user.UserResolver;
-
-import java.util.HashSet;
 
 /**
  * Created by IntelliJ IDEA.

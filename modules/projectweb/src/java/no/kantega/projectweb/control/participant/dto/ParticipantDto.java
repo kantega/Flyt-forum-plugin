@@ -1,7 +1,7 @@
 package no.kantega.projectweb.control.participant.dto;
 
 import no.kantega.projectweb.model.Participant;
-import no.kantega.projectweb.user.UserProfile;
+import no.kantega.modules.user.UserProfile;
 
 /**
  * Created by IntelliJ IDEA.

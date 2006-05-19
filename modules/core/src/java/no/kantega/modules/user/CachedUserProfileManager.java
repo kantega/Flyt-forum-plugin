@@ -1,7 +1,8 @@
-package no.kantega.projectweb.user;
+package no.kantega.modules.user;
 
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.NeedsRefreshException;
+import no.kantega.modules.user.AbstractUserProfileManager;
 
 /**
  * Created by IntelliJ IDEA.

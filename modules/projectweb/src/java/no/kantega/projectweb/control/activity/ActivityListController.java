@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Project;
 import no.kantega.projectweb.model.Activity;
-import no.kantega.projectweb.user.UserProfileManager;
+import no.kantega.modules.user.UserProfileManager;
 import no.kantega.projectweb.activity.ActivityStatusManager;
 import no.kantega.projectweb.util.ProjectWebUtil;
 

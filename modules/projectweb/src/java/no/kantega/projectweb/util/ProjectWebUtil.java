@@ -2,7 +2,7 @@ package no.kantega.projectweb.util;
 
 import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.control.participant.dto.ParticipantDto;
-import no.kantega.projectweb.user.UserProfileManager;
+import no.kantega.modules.user.UserProfileManager;
 
 import java.util.List;
 import java.util.ArrayList;

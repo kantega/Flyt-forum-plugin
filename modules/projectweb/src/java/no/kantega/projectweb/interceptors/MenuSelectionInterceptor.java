@@ -5,10 +5,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import no.kantega.projectweb.permission.PermissionManager;
-import no.kantega.projectweb.user.UserResolver;
-import no.kantega.projectweb.user.ResolvedUser;
-
 /**
  * Created by IntelliJ IDEA.
  * User: bjorsnos

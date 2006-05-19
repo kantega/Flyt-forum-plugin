@@ -1,22 +1,11 @@
 package no.kantega.projectweb.tags;
 
-import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.ExpressionEvaluationUtils;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.lang.reflect.Field;
-
-import no.kantega.projectweb.permission.PermissionManager;
-import no.kantega.projectweb.permission.Permissions;
-import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.user.UserResolver;
-import no.kantega.projectweb.user.UserProfileManager;
 
 /**
  * Created by IntelliJ IDEA.

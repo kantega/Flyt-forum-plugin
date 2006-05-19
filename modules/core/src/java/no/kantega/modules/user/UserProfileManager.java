@@ -1,6 +1,6 @@
-package no.kantega.projectweb.user;
+package no.kantega.modules.user;
 
-import java.util.List;
+import no.kantega.modules.user.UserProfile;
 
 /**
  * Created by IntelliJ IDEA.

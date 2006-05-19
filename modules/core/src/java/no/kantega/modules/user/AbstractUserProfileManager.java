@@ -1,10 +1,7 @@
-package no.kantega.projectweb.user;
+package no.kantega.modules.user;
 
 import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.control.participant.dto.ParticipantDto;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.

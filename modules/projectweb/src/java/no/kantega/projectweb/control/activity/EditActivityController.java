@@ -3,7 +3,7 @@ package no.kantega.projectweb.control.activity;
 import no.kantega.projectweb.control.FormControllerSupport;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Activity;
-import no.kantega.projectweb.user.UserProfileManager;
+import no.kantega.modules.user.UserProfileManager;
 import no.kantega.projectweb.util.ProjectWebUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;

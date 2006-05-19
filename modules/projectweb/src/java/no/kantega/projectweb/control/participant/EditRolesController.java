@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.model.ProjectRole;
-import no.kantega.projectweb.user.UserProfileManager;
+import no.kantega.modules.user.UserProfileManager;
 import no.kantega.projectweb.role.RoleManager;
 import no.kantega.projectweb.viewmodel.HasRole;
 

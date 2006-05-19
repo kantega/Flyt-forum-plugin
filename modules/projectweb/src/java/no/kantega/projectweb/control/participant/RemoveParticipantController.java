@@ -13,9 +13,7 @@ import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.permission.PermissionManager;
 import no.kantega.projectweb.permission.Permissions;
 import no.kantega.projectweb.permission.GlobalPermissions;
-import no.kantega.projectweb.user.UserResolver;
-
-import java.util.HashSet;
+import no.kantega.modules.user.UserResolver;
 
 /**
  * Created by IntelliJ IDEA.

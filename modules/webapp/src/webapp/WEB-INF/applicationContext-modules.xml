@@ -24,11 +24,11 @@
     </bean>
 
 
-  <bean name="userProfileManager" class="no.kantega.projectweb.user.TestUserProfileManager">
+  <bean name="userProfileManager" class="no.kantega.modules.user.TestUserProfileManager">
 
   </bean>
 
-  <bean name="userSearcher" class="no.kantega.projectweb.user.TestUserSearcher">
+  <bean name="userSearcher" class="no.kantega.modules.user.TestUserSearcher">
     <property name="usernames">
       <list>
         <value>eirik</value>
@@ -39,7 +39,7 @@
     </property>
   </bean>
 
-  <bean id="userResolver" class="no.kantega.projectweb.user.SystemUserResolver"/>
+  <bean id="userResolver" class="no.kantega.modules.user.SystemUserResolver"/>
 
   <bean id="projectwebDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
     <property name="url">

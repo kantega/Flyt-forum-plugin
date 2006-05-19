@@ -4,17 +4,15 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.util.ExpressionEvaluationUtils;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 import no.kantega.projectweb.permission.PermissionManager;
 import no.kantega.projectweb.permission.Permissions;
 import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.user.UserResolver;
+import no.kantega.modules.user.UserResolver;
 
 /**
  * Created by IntelliJ IDEA.

@@ -8,10 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.model.GroupMembership;
-import no.kantega.projectweb.user.UserResolver;
-import no.kantega.projectweb.user.UserSearcher;
+import no.kantega.modules.user.UserSearcher;
 
 import java.util.*;
 
