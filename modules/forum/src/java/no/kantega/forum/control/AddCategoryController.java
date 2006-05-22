@@ -12,6 +12,8 @@ import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.User;
 import no.kantega.forum.model.Group;
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.permission.PermissionObject;
+import no.kantega.forum.permission.Permissions;
 
 import java.util.Date;
 import java.util.Set;
@@ -24,24 +26,39 @@ import java.util.HashSet;
  * Time: 13:51:46
  * To change this template use File | Settings | File Templates.
  */
-public class AddCategoryController extends SimpleFormController {
+public class AddCategoryController extends AbstractForumFormController {
     private ForumDao dao;
 
+    private PermissionObject[] permissions = new PermissionObject[] {new PermissionObject(Permissions.EDIT_CATEGORY, null)};
+
+    public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
+        return permissions;
+    }
+
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        // create groups
-        Set groups = new HashSet();
-        Group g = dao.getGroup(2);
-        groups.add(g);
+        String idString = request.getParameter("categoryId");
+        if(idString != null) {
+            long id = Long.parseLong(idString);
+            return dao.getForumCategory(id);
+        } else {
+            /*
+            // create groups
+            Set groups = new HashSet();
+            Group g = dao.getGroup(2);
+            groups.add(g);
 
-        User u = dao.getUser(1); // get owner
-        Date d = new Date();
+            User u = dao.getUser(1); // get owner
+            */
 
-        // init category
-        ForumCategory fc = new ForumCategory();
-        fc.setOwner(u);
-        fc.setGroups(groups);
-        fc.setCreatedDate(d);
-        return fc;
+            // init category
+            ForumCategory fc = new ForumCategory();
+
+            //fc.setOwner(u);
+            //fc.setGroups(groups);
+
+            fc.setCreatedDate(new Date());
+            return fc;
+        }
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
