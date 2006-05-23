@@ -126,7 +126,9 @@ public class ForumDao {
                 ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(threadId));
                 t.getPosts().size();
                 t.getGroups().size();
-                t.getOwner().getName();
+                if(t.getOwner() != null) {
+                    t.getOwner().getName();
+                }
                 return t;
             }
         });
@@ -437,5 +439,13 @@ public class ForumDao {
     public boolean postGotChildren(final Post p) {
         List children = template.find("from Post p where p.replyToId=?",String.valueOf(p.getId()));
         return (children.size() > 0) ? true : false;
+    }
+
+    public List getThreadsInForum(long forumId) {
+        return template.find("from ForumThread t where t.forum.id=?",new Long(forumId));
+    }
+
+    public List getPostsInThread(long id) {
+        return template.find("from Post p where p.thread.id=?", new Long(id));
     }
 }

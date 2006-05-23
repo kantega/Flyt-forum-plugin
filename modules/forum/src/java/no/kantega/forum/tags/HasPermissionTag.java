@@ -11,6 +11,8 @@ import java.lang.reflect.Field;
 
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.modules.user.UserResolver;
+import no.kantega.modules.user.ResolvedUser;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,22 +31,32 @@ public class HasPermissionTag extends ConditionalTagSupport {
         try {
             WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
             PermissionManager manager = (PermissionManager) context.getBean("permissionManager");
-            Object o = ExpressionEvaluationUtils.evaluate("object", object, Object.class, pageContext);
+            Object o  = null;
 
+            if(object != null) {
+                o = ExpressionEvaluationUtils.evaluate("object", object, Object.class, pageContext);
+            }
             Class c = Permissions.class;
             Field field = c.getField(permission);
             long permissionId = field.getLong(null);
 
             if (user == null) {
                 UserResolver userResolver = (UserResolver) context.getBean("userResolver");
-                user = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest()).getUsername();
+                ResolvedUser resolvedUser = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest());
+                if(resolvedUser != null) {
+                    user = resolvedUser.getUsername();
+                }
             }
 
-            return manager.hasPermission(user, permissionId, theProject);
+            return manager.hasPermission(user, permissionId, o);
 
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            user = null;
+            object = null;
+            permission = null;
         }
     }
 

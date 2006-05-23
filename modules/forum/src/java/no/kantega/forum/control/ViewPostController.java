@@ -27,12 +27,16 @@ public class ViewPostController implements Controller {
         long id = Long.parseLong(request.getParameter("postId"));
         Post p = dao.getPopulatedPost(id);
 
-        Group g = dao.getGroup("Everyone");
+        //Group g = dao.getGroup("Everyone");
 
         Map map = new HashMap();
+        /*
         if (dao.isInGroup(p.getThread().getGroups(), g)) {
-            map.put("post", p);
+
         }
+        */
+
+        map.put("post", p);
         map.put("gotchildren", String.valueOf(dao.postGotChildren(p)));
         return new ModelAndView("viewpost", map);
     }

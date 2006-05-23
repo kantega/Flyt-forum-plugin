@@ -13,7 +13,7 @@
             <spring:bind path="thread.id">
                 <input type="hidden" name="id" value="<c:out value="${status.value}"/>">
             </spring:bind>
-            <div class="heading">
+            <div class="forum-heading">
                 <c:choose>
                     <c:when test="${thread.id == 0}"><spring:message code="thread.addthread"/></c:when>
                     <c:otherwise><c:out value="${thread.name}"/></c:otherwise>

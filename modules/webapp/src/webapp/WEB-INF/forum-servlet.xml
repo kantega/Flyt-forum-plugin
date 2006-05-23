@@ -18,9 +18,6 @@
                 <entry key="/editcategory">
                     <ref bean="editCategoryController"/>
                 </entry>
-                <entry key="/addcategory">
-                    <ref bean="addCategoryController"/>
-                </entry>
                 <entry key="/deletecategory">
                     <ref bean="deleteCategoryController"/>
                 </entry>
@@ -36,26 +33,17 @@
                 <entry key="/deleteforum">
                     <ref bean="deleteForumController"/>
                 </entry>
-                <entry key="/addforum">
-                    <ref bean="addForumController"/>
-                </entry>
                 <entry key="/viewthread">
                     <ref bean="threadViewController"/>
                 </entry>
                 <entry key="/editthread">
                     <ref bean="editThreadController"/>
                 </entry>
-                <entry key="/addthread">
-                    <ref bean="addThreadController"/>
-                </entry>
                 <entry key="/viewpost">
                     <ref bean="postViewController"/>
                 </entry>
                 <entry key="/editpost">
                     <ref bean="editPostController"/>
-                </entry>
-                <entry key="/addpost">
-                    <ref bean="addPostController"/>
                 </entry>
                 <entry key="/deletepost">
                     <ref bean="deletePostController"/>
@@ -154,24 +142,6 @@
         </property>
     </bean>
 
-    <bean id="addCategoryController" class="no.kantega.forum.control.AddCategoryController">
-        <property name="dao">
-            <ref bean="dao"/>
-        </property>
-        <property name="formView">
-          <value>editcategory</value>
-        </property>
-        <property name="commandName">
-          <value>category</value>
-        </property>
-        <property name="commandClass">
-          <value>no.kantega.forum.model.ForumCategory</value>
-        </property>
-        <property name="validator">
-          <bean class="no.kantega.forum.validator.CategoryValidator"/>
-        </property>
-    </bean>
-
     <bean id="deleteCategoryController" class="no.kantega.forum.control.DeleteCategoryController">
         <property name="dao">
             <ref bean="dao"/>
@@ -192,24 +162,6 @@
 
 
    <bean id="editForumController" class="no.kantega.forum.control.EditForumController">
-        <property name="dao">
-            <ref bean="dao"/>
-        </property>
-        <property name="formView">
-          <value>editforum</value>
-        </property>
-        <property name="commandName">
-          <value>forum</value>
-        </property>
-        <property name="commandClass">
-          <value>no.kantega.forum.model.Forum</value>
-        </property>
-        <property name="validator">
-          <bean class="no.kantega.forum.validator.ForumValidator"/>
-        </property>
-    </bean>
-
-    <bean id="addForumController" class="no.kantega.forum.control.AddForumController">
         <property name="dao">
             <ref bean="dao"/>
         </property>
@@ -257,23 +209,6 @@
          </property>
      </bean>
 
-    <bean id="addThreadController" class="no.kantega.forum.control.AddThreadController">
-        <property name="dao">
-            <ref bean="dao"/>
-        </property>
-        <property name="formView">
-          <value>editthread</value>
-        </property>
-        <property name="commandName">
-          <value>thread</value>
-        </property>
-        <property name="commandClass">
-          <value>no.kantega.forum.model.ForumThread</value>
-        </property>
-        <property name="validator">
-          <bean class="no.kantega.forum.validator.ThreadValidator"/>
-        </property>
-    </bean>
 
     <bean id="postViewController" class="no.kantega.forum.control.ViewPostController">
         <property name="dao">
@@ -282,24 +217,6 @@
     </bean>
 
     <bean id="editPostController" class="no.kantega.forum.control.EditPostController">
-        <property name="dao">
-            <ref bean="dao"/>
-        </property>
-        <property name="formView">
-          <value>editpost</value>
-        </property>
-        <property name="commandName">
-          <value>post</value>
-        </property>
-        <property name="commandClass">
-          <value>no.kantega.forum.model.Post</value>
-        </property>
-        <property name="validator">
-          <bean class="no.kantega.forum.validator.PostValidator"/>
-        </property>
-    </bean>
-
-    <bean id="addPostController" class="no.kantega.forum.control.AddPostController">
         <property name="dao">
             <ref bean="dao"/>
         </property>

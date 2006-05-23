@@ -12,15 +12,15 @@ import java.util.Set;
  */
 public class Forum {
     private long id;
-    private ForumCategory ForumCategory;
-    private String Name;
-    private String Description;
-    private int NumThreads;   // num threads in current Forum
-    private long LastMessage; // last message posted in Forum
-    private Date CreatedDate; // Forum Created Date
-    private Set Groups;
-    private User Owner;
-    private Set Threads;
+    private ForumCategory forumCategory;
+    private String name;
+    private String description;
+    private int numThreads;   // num threads in current Forum
+    private long lastMessage; // last message posted in Forum
+    private Date createdDate; // Forum Created Date
+    private Set groups;
+    private User owner;
+    private Set threads;
 
     public long getId() {
         return id;
@@ -31,74 +31,74 @@ public class Forum {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public long getLastMessage() {
-        return LastMessage;
+        return lastMessage;
     }
 
     public void setLastMessage(long lastMessage) {
-        LastMessage = lastMessage;
+        this.lastMessage = lastMessage;
     }
 
     public Date getCreatedDate() {
-        return CreatedDate;
+        return createdDate;
     }
 
     public void setCreatedDate(Date createdDate) {
-        CreatedDate = createdDate;
+        this.createdDate = createdDate;
     }
 
     public Set getThreads() {
-        return Threads;
+        return threads;
     }
 
     public void setThreads(Set threads) {
-        Threads = threads;
+        this.threads = threads;
     }
 
     public int getNumThreads() {
-        return NumThreads;
+        return numThreads;
     }
 
     public void setNumThreads(int numThreads) {
-        NumThreads = numThreads;
+        this.numThreads = numThreads;
     }
 
     public ForumCategory getForumCategory() {
-        return ForumCategory;
+        return forumCategory;
     }
 
     public void setForumCategory(ForumCategory forumCategory) {
-        ForumCategory = forumCategory;
+        this.forumCategory = forumCategory;
     }
 
     public Set getGroups() {
-        return Groups;
+        return groups;
     }
 
     public void setGroups(Set groups) {
-        Groups = groups;
+        this.groups = groups;
     }
 
     public User getOwner() {
-        return Owner;
+        return owner;
     }
 
     public void setOwner(User owner) {
-        Owner = owner;
+        this.owner = owner;
     }
 }

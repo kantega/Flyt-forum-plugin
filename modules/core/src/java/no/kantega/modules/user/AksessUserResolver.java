@@ -17,7 +17,7 @@ public class AksessUserResolver implements UserResolver {
     public ResolvedUser resolveUser(HttpServletRequest request) {
         SecuritySession session = (SecuritySession) request.getSession().getAttribute("aksess.securitySession");
 
-        if(session == null) {
+        if(session == null || session.getUser() == null) {
             return null;
         } else {
             ResolvedUser user = new ResolvedUser();

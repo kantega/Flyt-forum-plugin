@@ -13,36 +13,41 @@
             <spring:bind path="post.id">
                 <input type="hidden" name="id" value="<c:out value="${status.value}"/>">
             </spring:bind>
-            <div class="heading">
+            <div class="forum-heading">
                 <c:choose>
                     <c:when test="${post.id == 0}"><spring:message code="post.addpost"/></c:when>
                     <c:otherwise><c:out value="${post.subject}"/></c:otherwise>
                 </c:choose>
             </div>
-            <table border="0">
-                <tr>
-                    <td valign="top"><strong><spring:message code="post.subject"/>:</strong></td>
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr class="forum-labelRow">
+                    <td valign="top" colspan="2"><spring:message code="post.subject"/>:</td>
+                </tr>
+
+                <tr class="forum-tableRow0">
                     <spring:bind path="post.subject">
                         <td>
-                            <input type="text" name="subject" value="<c:out value="${status.value}"/>">
+                            <input type="text" size="50" name="subject" value="<c:out value="${status.value}"/>">
                         </td>
                         <td>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
                 </tr>
-                <tr>
-                    <td valign="top"><strong><spring:message code="post.body"/>:</strong></td>
+                <tr class="forum-labelRow">
+                    <td valign="top" colspan="2"><spring:message code="post.body"/>:</td>
+                </tr>
+                <tr class="forum-tableRow0">
                     <spring:bind path="post.body">
                         <td>
-                            <textarea name="body" rows="5" cols="80"><c:out value="${status.value}"/></textarea>
+                            <textarea name="body" rows="10" cols="50"><c:out value="${status.value}"/></textarea>
                         </td>
                         <td>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
                 </tr>
-                <tr>
+                <tr class="forum-tableRow0">
                     <td colspan="2" align="right">
                         <input type="submit" value="<spring:message code="post.edit.save"/>">
                     </td>

@@ -10,6 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Group;
+import no.kantega.forum.model.User;
+import no.kantega.forum.model.Forum;
+
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,8 +29,32 @@ public class EditThreadController extends SimpleFormController {
     private ForumDao dao;
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        long id = Long.parseLong(request.getParameter("threadId"));
-        return dao.getPopulatedThread(id);
+        String threadId = request.getParameter("threadId");
+        if(threadId != null && !threadId.equals("0")) {
+            long id = Long.parseLong(threadId);
+            return dao.getPopulatedThread(id);
+        } else {
+            long id = Long.parseLong(request.getParameter("forumId"));
+
+            // create groups
+            /*
+            Set groups = new HashSet();
+            Group g = dao.getGroup(2);
+            groups.add(g);
+
+            User u = dao.getUser(1);
+            Date d = new Date();
+            */
+            Forum f = dao.getPopulatedForum(id);
+
+            ForumThread t = new ForumThread();
+            //t.setOwner(u);
+            t.setCreatedDate(new Date());
+            t.setForum(f);
+            //t.setGroups(groups);
+            return t;
+        }
+
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {

@@ -13,7 +13,7 @@
             <spring:bind path="forum.id">
                 <input type="hidden" name="id" value="<c:out value="${status.value}"/>">
             </spring:bind>
-            <div class="heading">
+            <div class="forum-heading">
                 <c:choose>
                     <c:when test="${forum.id == 0}"><spring:message code="forum.addforum"/></c:when>
                     <c:otherwise><c:out value="${forum.name}"/></c:otherwise>
@@ -35,7 +35,7 @@
                     <td valign="top"><strong><spring:message code="forum.description"/>:</strong></td>
                     <spring:bind path="forum.description">
                         <td>
-                            <textarea name="description" rows="5" cols="80"><c:out value="${status.value}"/></textarea>
+                            <textarea name="description" rows="5" cols="50"><c:out value="${status.value}"/></textarea>
                         </td>
                         <td>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>

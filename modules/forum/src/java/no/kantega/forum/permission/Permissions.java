@@ -8,4 +8,16 @@ package no.kantega.forum.permission;
  * To change this template use File | Settings | File Templates.
  */
 public interface Permissions {
+    long EDIT_CATEGORY = 0;
+
+    long EDIT_FORUM = 1;
+
+    long EDIT_THREAD = 2;
+
+    long POST_IN_THREAD = 3;
+
+    long EDIT_POST = 4;
+
+    long DELETE_POST = 5;
+
 }

@@ -4,16 +4,26 @@
     <tlibversion>1.0</tlibversion>
     <jspversion>1.1</jspversion>
     <shortname>aksess publisering</shortname>
-    <uri>http://www.kantega.no/aksess/tags/projectweb</uri>
+    <uri>http://www.kantega.no/aksess/tags/forum</uri>
     <info>Aksess Project Taglibs</info>
 
     <tag>
-        <name></name>
-        <tagclass></tagclass>
+        <name>haspermisson</name>
+        <tagclass>no.kantega.forum.tags.HasPermissionTag</tagclass>
         <bodycontent>JSP</bodycontent>
-        <info></info>
+        <info>Evaluates the body if the user has a given permisson on a given object</info>
         <attribute>
-            <name></name>
+            <name>object</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>permission</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+      <attribute>
+            <name>user</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

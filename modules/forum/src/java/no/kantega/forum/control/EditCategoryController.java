@@ -26,7 +26,7 @@ import java.util.HashSet;
  * Time: 13:51:46
  * To change this template use File | Settings | File Templates.
  */
-public class AddCategoryController extends AbstractForumFormController {
+public class EditCategoryController extends AbstractForumFormController {
     private ForumDao dao;
 
     private PermissionObject[] permissions = new PermissionObject[] {new PermissionObject(Permissions.EDIT_CATEGORY, null)};
@@ -37,7 +37,7 @@ public class AddCategoryController extends AbstractForumFormController {
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         String idString = request.getParameter("categoryId");
-        if(idString != null) {
+        if(idString != null && !idString.equals("0")) {
             long id = Long.parseLong(idString);
             return dao.getForumCategory(id);
         } else {

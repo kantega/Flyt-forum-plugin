@@ -23,10 +23,11 @@ public class ViewThreadController implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long id = Long.parseLong(request.getParameter("threadId"));
-        ForumThread t = dao.getPopulatedThread(id);
+        ForumThread t = dao.getThread(id);
 
         Map map = new HashMap();
         map.put("thread", t);
+        map.put("posts", dao.getPostsInThread(t.getId()));
         return new ModelAndView("viewthread", map);
     }
 

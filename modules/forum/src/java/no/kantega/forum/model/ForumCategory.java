@@ -12,13 +12,13 @@ import java.util.Set;
  */
 public class ForumCategory {
     private long id;
-    private String Name;
-    private String Description;
-    private int NumForums;
-    private Date CreatedDate;
-    private Set Groups;
-    private User Owner;
-    private Set Forums;
+    private String name;
+    private String description;
+    private int numForums;
+    private Date createdDate;
+    private Set groups;
+    private User owner;
+    private Set forums;
 
     public long getId() {
         return id;
@@ -29,58 +29,58 @@ public class ForumCategory {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public int getNumForums() {
-        return NumForums;
+        return numForums;
     }
 
     public void setNumForums(int numForums) {
-        NumForums = numForums;
+        this.numForums = numForums;
     }
 
     public Date getCreatedDate() {
-        return CreatedDate;
+        return createdDate;
     }
 
     public void setCreatedDate(Date createdDate) {
-        CreatedDate = createdDate;
+        this.createdDate = createdDate;
     }
 
     public Set getForums() {
-        return Forums;
+        return forums;
     }
 
     public void setForums(Set forums) {
-        Forums = forums;
+        this.forums = forums;
     }
 
     public Set getGroups() {
-        return Groups;
+        return groups;
     }
 
     public void setGroups(Set groups) {
-        Groups = groups;
+        this.groups = groups;
     }
 
     public User getOwner() {
-        return Owner;
+        return owner;
     }
 
     public void setOwner(User owner) {
-        Owner = owner;
+        this.owner = owner;
     }
 }

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
@@ -24,8 +25,10 @@ public class ViewForumController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
         long id = Long.parseLong(request.getParameter("forumId"));
-        Forum f = dao.getPopulatedForum(id);
+        Forum f = dao.getForum(id);
+        List threads = dao.getThreadsInForum(f.getId());
         map.put("forum", f);
+        map.put("threads", threads);
 
         return new ModelAndView("viewforum", map);
     }

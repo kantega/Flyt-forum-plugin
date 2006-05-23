@@ -1,12 +1,14 @@
+<%@ page import="org.springframework.web.servlet.support.RequestContextUtils"%>
+<%@ page import="org.springframework.web.context.WebApplicationContext"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<html>
-    <head>
-        <title><kantega:getsection id="tittel"/></title>
-        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/forum.css">
-    </head>
-    <body>
-    <kantega:getsection id="innhold"/>
-    </body>
-</html>
+
+<%
+    String design = Aksess.getConfiguration().getString("forum.designview");
+    System.out.println("Forum designview is: " + design);
+    RequestDispatcher rd = request.getRequestDispatcher(design);
+    rd.include(request, response);
+%>
+
