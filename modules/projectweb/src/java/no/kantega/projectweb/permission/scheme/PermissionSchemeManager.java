@@ -71,7 +71,7 @@ public class PermissionSchemeManager {
             }
 
         }
-        log.info("User does not have one of the required role");
+        log.info("User does not have one of the required roles");
         return false;
     }
 
