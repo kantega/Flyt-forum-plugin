@@ -13,6 +13,8 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Group;
 import no.kantega.forum.model.User;
 import no.kantega.forum.model.Forum;
+import no.kantega.forum.permission.PermissionObject;
+import no.kantega.forum.permission.Permissions;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -25,8 +27,18 @@ import java.util.Date;
  * Time: 12:11:47
  * To change this template use File | Settings | File Templates.
  */
-public class EditThreadController extends SimpleFormController {
+public class EditThreadController extends AbstractForumFormController {
     private ForumDao dao;
+
+    public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
+        String threadId = request.getParameter("threadId");
+
+        ForumThread thread = null;
+        if(threadId != null) {
+            thread = dao.getThread(Long.parseLong(threadId));
+        }
+        return permissions(Permissions.DELETE_THREAD, thread);
+    }
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         String threadId = request.getParameter("threadId");

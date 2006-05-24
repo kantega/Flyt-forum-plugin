@@ -45,6 +45,7 @@ public class ForumDao {
 
     public void saveOrUpdate(Forum forum) {
         template.saveOrUpdate(forum);
+        updateForumCount(forum.getForumCategory().getId());
     }
 
     public void saveOrUpdate(Post post) {
@@ -82,6 +83,7 @@ public class ForumDao {
 
     public void delete(Forum forum) {
         template.delete(forum);
+        updateForumCount(forum.getForumCategory().getId());
     }
 
     public void delete(ForumCategory forumCategory) {
@@ -447,5 +449,24 @@ public class ForumDao {
 
     public List getPostsInThread(long id) {
         return template.find("from Post p where p.thread.id=?", new Long(id));
+    }
+
+    public void updateForumCount(final long categoryId) {
+
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+
+                ForumCategory category = (ForumCategory) session.get(ForumCategory.class, new Long(categoryId));
+
+                Query q = session.createQuery("select count(*) from Forum f where f.forumCategory.id=?");
+                q.setLong(0, categoryId);
+
+                Number num = (Number) q.uniqueResult();
+                category.setNumForums(num.intValue());
+                session.saveOrUpdate(category);
+                return null;
+
+            }
+        });
     }
 }

@@ -11,18 +11,23 @@
 
     <div class="forum-heading"><c:out value="${forumcategory.name}"/></div>
 
-    <p><c:out value="${forumcategory.description}"/></p>
-
-
     <c:set var="hasforums" value="false"/>
     <kantega:section id="forums">
-        <p><spring:message code="forumcategory.forums"/>:</p>
-        <table border="0" cellspacing="0" cellpadding="0">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+            <tr class="forum-labelRow">
+                <td>
+                    <spring:message code="forum.name"/>
+                </td>
+            </tr>
+                <c:forEach items="${forumcategory.forums}" var="forum" varStatus="status">
+                    <c:set var="hasforums" value="true"/>
+                    <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
+                        <td>
+                            <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
+                        </td>
+                    </tr>
+                </c:forEach>
 
-            <c:forEach items="${forumcategory.forums}" var="forum">
-                <c:set var="hasforums" value="true"/>
-                <tr><td><a href="<%=request.getContextPath()%>/forum/viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a></td></tr>
-            </c:forEach>
         </table>
     </kantega:section>
 

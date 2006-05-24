@@ -16,9 +16,13 @@
     <c:when test="${empty threads}">
         </c:when>
     <c:otherwise>
-        <p><spring:message code="forum.threads"/>:</p>
 
         <table width="100%" cellpadding="0" cellspacing="0">
+            <tr class="forum-labelRow">
+                <td>
+                    <spring:message code="thread.name"/>
+                </td>
+            </tr>
             <c:forEach items="${threads}" var="thread" varStatus="status">
                 <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
                     <td>
