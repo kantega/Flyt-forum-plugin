@@ -9,18 +9,18 @@ package no.kantega.forum.model;
  */
 public class Attachment {
     private long id;
-    private Post Post;
-    private String FileName;
-    private long FileSize;
-    private String MimeType;
-    private byte[] Data;
+    private Post post;
+    private String fileName;
+    private long fileSize;
+    private String mimeType;
+    private byte[] data;
 
     public long getFileSize() {
-        return FileSize;
+        return fileSize;
     }
 
     public void setFileSize(long fileSize) {
-        FileSize = fileSize;
+        this.fileSize = fileSize;
     }
 
     public long getId() {
@@ -33,34 +33,34 @@ public class Attachment {
 
 
     public String getFileName() {
-        return FileName;
+        return fileName;
     }
 
     public void setFileName(String fileName) {
-        FileName = fileName;
+        this.fileName = fileName;
     }
 
     public String getMimeType() {
-        return MimeType;
+        return mimeType;
     }
 
     public void setMimeType(String mimeType) {
-        MimeType = mimeType;
+        this.mimeType = mimeType;
     }
 
     public byte[] getData() {
-        return Data;
+        return data;
     }
 
     public void setData(byte[] data) {
-        Data = data;
+        this.data = data;
     }
 
     public Post getPost() {
-        return Post;
+        return post;
     }
 
     public void setPost(Post post) {
-        Post = post;
+        this.post = post;
     }
 }

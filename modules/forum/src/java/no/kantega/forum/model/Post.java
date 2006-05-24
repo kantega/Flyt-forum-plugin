@@ -11,76 +11,76 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class Post {
-    private long Id;
-    private ForumThread Thread;
-    private long ReplyToId;
-    private String Subject;
-    private String Body;
-    private User Owner;
-    private Date PostDate;
-    private Set Attachments;
+    private long id;
+    private ForumThread thread;
+    private long replyToId;
+    private String subject;
+    private String body;
+    private User owner;
+    private Date postDate;
+    private Set attachments;
 
     public long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(long id) {
-        this.Id = id;
+        this.id = id;
     }
 
     public long getReplyToId() {
-        return ReplyToId;
+        return replyToId;
     }
 
     public void setReplyToId(long replyToId) {
-        ReplyToId = replyToId;
+        this.replyToId = replyToId;
     }
 
     public String getSubject() {
-        return Subject;
+        return subject;
     }
 
     public void setSubject(String subject) {
-        Subject = subject;
+        this.subject = subject;
     }
 
     public String getBody() {
-        return Body;
+        return body;
     }
 
     public void setBody(String body) {
-        Body = body;
+        this.body = body;
     }
 
     public Date getPostDate() {
-        return PostDate;
+        return postDate;
     }
 
     public void setPostDate(Date postDate) {
-        PostDate = postDate;
+        this.postDate = postDate;
     }
 
     public Set getAttachments() {
-        return Attachments;
+        return attachments;
     }
 
     public void setAttachments(Set attachments) {
-        Attachments = attachments;
+        this.attachments = attachments;
     }
 
     public ForumThread getThread() {
-        return Thread;
+        return thread;
     }
 
     public void setThread(ForumThread thread) {
-        this.Thread = thread;
+        this.thread = thread;
     }
 
     public User getOwner() {
-        return Owner;
+        return owner;
     }
 
     public void setOwner(User owner) {
-        Owner = owner;
+        this.owner = owner;
     }
 }

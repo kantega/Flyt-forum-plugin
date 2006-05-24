@@ -14,12 +14,12 @@ public class ForumThread {
     private long id;
     private String name;
     private String description;
-    private Forum Forum;
-    private Date CreatedDate;
-    private int NumPosts;
-    private Set Posts;
-    private Set Groups;
-    private User Owner;
+    private Forum forum;
+    private Date createdDate;
+    private int numPosts;
+    private Set posts;
+    private Set groups;
+    private User owner;
 
     public long getId() {
         return id;
@@ -30,51 +30,51 @@ public class ForumThread {
     }
 
     public Forum getForum() {
-        return Forum;
+        return forum;
     }
 
     public void setForum(Forum forum) {
-        Forum = forum;
+        this.forum = forum;
     }
 
     public Date getCreatedDate() {
-        return CreatedDate;
+        return createdDate;
     }
 
     public void setCreatedDate(Date createdDate) {
-        CreatedDate = createdDate;
+        this.createdDate = createdDate;
     }
 
     public Set getPosts() {
-        return Posts;
+        return posts;
     }
 
     public void setPosts(Set posts) {
-        Posts = posts;
+        this.posts = posts;
     }
 
     public int getNumPosts() {
-        return NumPosts;
+        return numPosts;
     }
 
     public void setNumPosts(int numPosts) {
-        NumPosts = numPosts;
+        this.numPosts = numPosts;
     }
 
     public Set getGroups() {
-        return Groups;
+        return groups;
     }
 
     public void setGroups(Set groups) {
-        Groups = groups;
+        this.groups = groups;
     }
 
     public User getOwner() {
-        return Owner;
+        return owner;
     }
 
     public void setOwner(User owner) {
-        Owner = owner;
+        this.owner = owner;
     }
 
     public String getName() {
