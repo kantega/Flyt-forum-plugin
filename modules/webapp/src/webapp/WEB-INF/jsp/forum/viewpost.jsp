@@ -9,7 +9,9 @@
 
 <kantega:section id="innhold">
     <div class="forum-heading"><c:out value="${post.subject}"/></div>
-    <c:out value="${post.body}"/><br>
+    <div class="forum-body">
+            <c:out value="${post.body}" escapeXml="false"/>
+    </div>
 
     <div style="padding-top: 10px">
         <forum:haspermisson permission="EDIT_POST" object="${post}">

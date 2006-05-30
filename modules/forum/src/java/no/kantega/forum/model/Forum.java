@@ -19,7 +19,7 @@ public class Forum {
     private long lastMessage; // last message posted in Forum
     private Date createdDate; // Forum Created Date
     private Set groups;
-    private User owner;
+    private String owner;
     private Set threads;
 
     public long getId() {
@@ -94,11 +94,11 @@ public class Forum {
         this.groups = groups;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 }

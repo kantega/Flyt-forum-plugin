@@ -7,7 +7,6 @@
 
 <%
     String design = Aksess.getConfiguration().getString("forum.designview");
-    System.out.println("Forum designview is: " + design);
     RequestDispatcher rd = request.getRequestDispatcher(design);
     rd.include(request, response);
 %>

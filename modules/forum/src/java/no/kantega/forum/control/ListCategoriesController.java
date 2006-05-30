@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumCategory;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,9 +24,10 @@ public class ListCategoriesController implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
-        
-        List categories = dao.getForumCategories();
-        map.put("categories", categories);
+
+        List cats = dao.getForumCategories();
+
+        map.put("categories", cats);
 
         return new ModelAndView("listcategories", map);
     }

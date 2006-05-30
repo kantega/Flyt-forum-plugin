@@ -17,5 +17,14 @@ public class PostValidator implements Validator {
     }
 
     public void validate(Object object, Errors errors) {
+        Post post = (Post) object;
+        if(post.getSubject().trim().length() ==0) {
+            errors.rejectValue("subject", "post.subject.too-short", "Subject too short");
+        }
+        if(post.getOwner() == null) {
+            if(post.getAuthor() == null || post.getAuthor().trim().length() == 0) {
+                errors.rejectValue("author", "post.author.too-short", "Name must be filled out");
+            }
+        }
     }
 }

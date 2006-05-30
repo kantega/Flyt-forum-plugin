@@ -232,6 +232,12 @@
         <property name="validator">
           <bean class="no.kantega.forum.validator.PostValidator"/>
         </property>
+        <property name="userResolver">
+            <ref bean="userResolver"/>
+        </property>
+        <property name="userProfileManager">
+            <ref bean="userProfileManager"/>
+        </property>
     </bean>
 
     <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController">

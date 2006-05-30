@@ -3,7 +3,8 @@
    xmlns:j="jelly:core"
    
    xmlns:u="jelly:util"
-   xmlns:maven="jelly:maven">
+   xmlns:maven="jelly:maven"
+        default="multiproject:install">
 
   <preGoal name="jar:jar">
     

@@ -16,9 +16,10 @@ public class Post {
     private long replyToId;
     private String subject;
     private String body;
-    private User owner;
+    private String owner;
     private Date postDate;
     private Set attachments;
+    private String author;
 
     public long getId() {
         return id;
@@ -76,11 +77,19 @@ public class Post {
         this.thread = thread;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

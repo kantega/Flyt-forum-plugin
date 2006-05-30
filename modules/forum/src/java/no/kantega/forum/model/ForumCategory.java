@@ -17,7 +17,7 @@ public class ForumCategory {
     private int numForums;
     private Date createdDate;
     private Set groups;
-    private User owner;
+    private String owner;
     private Set forums;
 
     public long getId() {
@@ -76,11 +76,15 @@ public class ForumCategory {
         this.groups = groups;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String toString() {
+        return getClass().getName() +": " +id +", " + name;
     }
 }

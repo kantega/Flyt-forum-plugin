@@ -19,31 +19,31 @@
                     <c:otherwise><c:out value="${thread.name}"/></c:otherwise>
                 </c:choose>
             </div>
-            <table border="0">
-                <tr>
-                    <td valign="top"><strong><spring:message code="thread.name"/>:</strong></td>
+            <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                <tr class="forum-labelRow">
+                    <td valign="top"><spring:message code="thread.name"/>:</td>
+                </tr>
+                <tr class="forum-tableRow0">
                     <spring:bind path="thread.name">
                         <td>
                             <input type="text" name="name" value="<c:out value="${status.value}"/>">
-                        </td>
-                        <td>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
                 </tr>
-                <tr>
-                    <td valign="top"><strong><spring:message code="thread.description"/>:</strong></td>
+                <tr class="forum-labelRow">
+                    <td valign="top"><spring:message code="thread.description"/>:</td>
+                </tr>
+                <tr class="forum-tableRow0">
                     <spring:bind path="thread.description">
                         <td>
                             <textarea name="description" rows="5" cols="80"><c:out value="${status.value}"/></textarea>
-                        </td>
-                        <td>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
                 </tr>
-                <tr>
-                    <td colspan="2" align="right">
+                <tr class="forum-tableRow1">
+                    <td colspan="2" align="left">
                         <input type="submit" value="<spring:message code="thread.edit.save"/>">
                     </td>
                 </tr>

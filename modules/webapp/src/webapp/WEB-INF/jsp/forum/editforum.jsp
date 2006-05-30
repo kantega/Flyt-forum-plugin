@@ -19,31 +19,31 @@
                     <c:otherwise><c:out value="${forum.name}"/></c:otherwise>
                 </c:choose>
             </div>
-            <table border="0">
-                <tr>
-                    <td valign="top"><strong><spring:message code="forum.name"/>:</strong></td>
+            <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                <tr class="forum-labelRow">
+                    <td valign="top"><spring:message code="forum.name"/>:</td>
+                </tr>
+                <tr class="forum-tableRow0">
                     <spring:bind path="forum.name">
                         <td>
-                            <input type="text" name="name" value="<c:out value="${status.value}"/>">
-                        </td>
-                        <td>
+                            <input type="text" name="name" value="<c:out value="${status.value}"/>" size="50">
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
                 </tr>
-                <tr>
-                    <td valign="top"><strong><spring:message code="forum.description"/>:</strong></td>
+                <tr class="forum-labelRow">
+                    <td valign="top"><spring:message code="forum.description"/></td>
+                    </tr>
+                <tr class="forum-tableRow0">
                     <spring:bind path="forum.description">
                         <td>
                             <textarea name="description" rows="5" cols="50"><c:out value="${status.value}"/></textarea>
-                        </td>
-                        <td>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
                 </tr>
-                <tr>
-                    <td colspan="2" align="right">
+                <tr class="forum-tableRow1">
+                    <td align="left">
                         <input type="submit" value="<spring:message code="forum.edit.save"/>">
                     </td>
                 </tr>

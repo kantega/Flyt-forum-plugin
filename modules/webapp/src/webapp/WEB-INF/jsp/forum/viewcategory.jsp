@@ -9,7 +9,10 @@
 
 <kantega:section id="innhold">
 
-    <div class="forum-heading"><c:out value="${forumcategory.name}"/></div>
+    <div class="forum-heading">
+        <spring:message code="forum.title"/> > 
+        <c:out value="${forumcategory.name}"/>
+    </div>
 
     <c:set var="hasforums" value="false"/>
     <kantega:section id="forums">
@@ -18,12 +21,19 @@
                 <td>
                     <spring:message code="forum.name"/>
                 </td>
+                    <td>
+                    <spring:message code="forum.threads"/>
+                </td>
             </tr>
+
                 <c:forEach items="${forumcategory.forums}" var="forum" varStatus="status">
                     <c:set var="hasforums" value="true"/>
                     <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
                         <td>
                             <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
+                        </td>
+                        <td>
+                            <c:out value="${forum.numThreads}"/>
                         </td>
                     </tr>
                 </c:forEach>

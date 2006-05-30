@@ -33,11 +33,15 @@ public class EditThreadController extends AbstractForumFormController {
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         String threadId = request.getParameter("threadId");
 
-        ForumThread thread = null;
         if(threadId != null) {
-            thread = dao.getThread(Long.parseLong(threadId));
+            ForumThread thread = dao.getThread(Long.parseLong(threadId));
+            return permissions(Permissions.EDIT_THREAD, thread);
+        } else {
+            long id = Long.parseLong(request.getParameter("forumId"));
+            Forum forum = dao.getForum(id);
+            return permissions(Permissions.ADD_THREAD, forum);
         }
-        return permissions(Permissions.DELETE_THREAD, thread);
+
     }
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {

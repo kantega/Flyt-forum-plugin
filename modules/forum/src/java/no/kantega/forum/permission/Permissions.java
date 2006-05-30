@@ -21,4 +21,5 @@ public interface Permissions {
     long DELETE_POST = 5;
 
     long DELETE_THREAD = 6;
+    long ADD_THREAD = 7;
 }

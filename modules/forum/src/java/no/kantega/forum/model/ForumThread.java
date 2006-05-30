@@ -19,7 +19,7 @@ public class ForumThread {
     private int numPosts;
     private Set posts;
     private Set groups;
-    private User owner;
+    private String owner;
 
     public long getId() {
         return id;
@@ -69,11 +69,11 @@ public class ForumThread {
         this.groups = groups;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 

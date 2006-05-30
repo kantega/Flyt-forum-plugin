@@ -13,7 +13,7 @@
         <property name="description"/>
         <property name="numForums"/>
         <property name="createdDate" type="date"/>
-        <many-to-one name="owner" class="User" column="owner" not-null="false" cascade="save-update"/>
+        <property name="owner"/>
         <set name="groups" order-by="groupId" table="forum_forumcategory_groups">
             <key column="forumCategoryId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -35,7 +35,7 @@
         <property name="numThreads"/>
         <property name="lastMessage"/>
         <property name="createdDate" type="date"/>
-        <many-to-one name="owner" class="User" column="owner" not-null="false" cascade="save-update"/>
+        <property name="owner"/>
         <set name="groups" order-by="groupId" table="forum_forum_groups">
             <key column="forumId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -56,7 +56,7 @@
         <many-to-one name="forum" column="forumId" not-null="false" class="Forum"/>
         <property name="createdDate" type="date"/>
         <property name="numPosts"/>
-        <many-to-one name="owner" class="User" column="owner" not-null="false" cascade="save-update"/>
+        <property name="owner"/>
         <set name="groups" order-by="groupId" table="forum_thread_groups">
             <key column="threadId"/>
             <many-to-many column="groupId" class="Group"/>
@@ -74,10 +74,11 @@
         </id>
         <many-to-one name="thread" column="threadId" not-null="false" class="ForumThread"/>
         <property name="replyToId" type="long"/>
+        <property name="author"/>
         <property name="subject"/>
         <property name="body"/>
         <property name="postDate" type="date"/>
-        <many-to-one name="owner" class="User" column="owner" not-null="false" cascade="save-update"/>
+        <property name="owner"/>
         <set name="attachments" order-by="attachmentId" cascade="all-delete-orphan">
             <key column="postId"/>
             <one-to-many class="Attachment"/>

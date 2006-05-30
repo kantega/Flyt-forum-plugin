@@ -40,7 +40,7 @@ public class DeleteCategoryController extends AbstractForumFormController {
             long id = Long.parseLong(request.getParameter("categoryId"));
             ForumCategory fc = dao.getForumCategory(id);
             dao.delete(fc);
-            return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/"));
+            return new ModelAndView(new RedirectView("."));
         }
     }
 

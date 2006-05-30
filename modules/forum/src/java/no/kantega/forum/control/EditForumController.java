@@ -35,7 +35,7 @@ public class EditForumController extends AbstractForumFormController {
         String categoryId = request.getParameter("categoryId");
         ForumCategory category;
         if(forumId != null) {
-            category = dao.getPopulatedForum(Long.parseLong(forumId)).getForumCategory();
+            category = dao.getForum(Long.parseLong(forumId)).getForumCategory();
         } else {
             category = dao.getForumCategory(Long.parseLong(categoryId));
         }
