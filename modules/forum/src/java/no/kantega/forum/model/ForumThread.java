@@ -17,9 +17,11 @@ public class ForumThread {
     private Forum forum;
     private Date createdDate;
     private int numPosts;
+    private Post lastPost;
     private Set posts;
     private Set groups;
     private String owner;
+    private int contentId;
 
     public long getId() {
         return id;
@@ -91,6 +93,22 @@ public class ForumThread {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Post getLastPost() {
+        return lastPost;
+    }
+
+    public void setLastPost(Post lastPost) {
+        this.lastPost = lastPost;
+    }
+
+    public int getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
     }
 }
 

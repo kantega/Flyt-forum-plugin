@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.dao.ForumDao;
@@ -27,7 +29,25 @@ public class ViewThreadController implements Controller {
 
         Map map = new HashMap();
         map.put("thread", t);
-        map.put("posts", dao.getPostsInThread(t.getId()));
+        int maxPosts = 2;
+
+        int startIndex = 0;
+        try {
+            startIndex = Integer.parseInt(request.getParameter("startIndex"));
+        } catch (Exception e) {
+
+        }
+        List startIndexes = new ArrayList();
+        for(int i = 0; i < t.getNumPosts(); i+= maxPosts) {
+            startIndexes.add(new Integer(i));
+        }
+
+        map.put("current", new Integer(startIndex/maxPosts));
+        map.put("startindex", new Integer(startIndex));
+        map.put("startindexes", startIndexes);
+        map.put("pages", new Integer(startIndexes.size()));
+
+        map.put("posts", dao.getPostsInThread(t.getId(), startIndex, maxPosts));
         return new ModelAndView("viewthread", map);
     }
 

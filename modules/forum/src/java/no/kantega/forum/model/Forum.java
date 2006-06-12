@@ -16,8 +16,8 @@ public class Forum {
     private String name;
     private String description;
     private int numThreads;   // num threads in current Forum
-    private long lastMessage; // last message posted in Forum
     private Date createdDate; // Forum Created Date
+    private Post lastPost;
     private Set groups;
     private String owner;
     private Set threads;
@@ -44,14 +44,6 @@ public class Forum {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public long getLastMessage() {
-        return lastMessage;
-    }
-
-    public void setLastMessage(long lastMessage) {
-        this.lastMessage = lastMessage;
     }
 
     public Date getCreatedDate() {
@@ -100,5 +92,13 @@ public class Forum {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public Post getLastPost() {
+        return lastPost;
+    }
+
+    public void setLastPost(Post lastPost) {
+        this.lastPost = lastPost;
     }
 }

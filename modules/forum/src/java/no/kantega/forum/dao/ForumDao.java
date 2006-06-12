@@ -13,6 +13,7 @@ import java.sql.SQLException;
 
 import no.kantega.forum.model.*;
 import no.kantega.forum.permission.Roles;
+import no.kantega.publishing.common.data.Content;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,7 +74,7 @@ public class ForumDao {
     // delete
     public void delete(Post post) {
         template.delete(post);
-        updateThreadCount(post.getThread().getId());
+        updatePostCount(post.getThread().getId());
     }
 
     public void delete(ForumThread thread) {
@@ -99,10 +100,37 @@ public class ForumDao {
         return template.find("from ForumCategory c left join fetch c.forums f order by c.name");
     }
 
-    
+
     //
     public Role getRole(Roles r) {
         return (Role) template.find("from Roles where roleType=?", r).get(0);
+    }
+
+    public List getLastPostsInForum(final long forumId, final int n) {
+
+
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.thread.forum.id=? order by p.id desc");
+                query.setLong(0, forumId);
+                query.setMaxResults(n);
+                return query.list();
+            }
+        });
+
+    }
+    public List getLastPostsInThread(final long threadId, final int n) {
+
+
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.thread.id=? order by p.id desc");
+                query.setLong(0, threadId);
+                query.setMaxResults(n);
+                return query.list();
+            }
+        });
+
     }
 
     public ForumCategory getPopulatedForumCategory(final long forumCategoryId) {
@@ -413,12 +441,38 @@ public class ForumDao {
         return (children.size() > 0) ? true : false;
     }
 
-    public List getThreadsInForum(long forumId) {
-        return template.find("from ForumThread t where t.forum.id=?",new Long(forumId));
+    public List getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q  = session.createQuery("from ForumThread t where t.forum.id=?");
+                q.setLong(0, forumId);
+
+                q.setFirstResult(firstResult);
+                q.setMaxResults(maxResult);
+
+                return q.list();
+            }
+        });
     }
 
-    public List getPostsInThread(long id) {
-        return template.find("from Post p where p.thread.id=?", new Long(id));
+    public List getPostsInThread(final long id, final int firstResult, final int maxResult) {
+        return getPostsInThread(id, firstResult, maxResult, false);
+    }
+
+    public List getPostsInThread(final long id, final int firstResult, final int maxResult, final boolean reverse) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q  = session.createQuery("from Post p where p.thread.id=? order by p.id " +(reverse ? "desc" : "asc"));
+                q.setLong(0, id);
+
+                q.setFirstResult(firstResult);
+                if(maxResult > 0) {
+                    q.setMaxResults(maxResult);
+                }
+
+                return q.list();
+            }
+        });
     }
 
     public void updateForumCount(final long categoryId) {
@@ -476,4 +530,25 @@ public class ForumDao {
             }
         });
     }
+
+
+    public long getThreadAboutContent(final Content content) {
+
+        List l = (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                Query q = session.createQuery("select t.id from ForumThread t where t.contentId=?");
+                q.setInteger(0, content.getId());
+                return q.list();
+            }
+        });
+
+
+        if(l.size() == 0) {
+            return -1;
+        } else {
+            return ((Number)l.get(0)).longValue();
+        }
+    }
+
+
 }

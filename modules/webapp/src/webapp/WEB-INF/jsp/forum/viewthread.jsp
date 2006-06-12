@@ -9,6 +9,30 @@
 </kantega:section>
 
 <kantega:section id="innhold">
+    <form action="deletepost" name="deletepost" method="POST">
+        <input type="hidden" name="postId">
+    </form>
+
+    <form action="deletethread" name="deletethread" method="POST">
+        <input type="hidden" name="threadId">
+    </form>
+
+    <script type="text/javascript" >
+        function deletePost(postId) {
+            if(confirm("<spring:message code="post.delete"/>")) {
+                document.deletepost.postId.value = postId;
+                document.deletepost.submit();
+            }
+        }
+        function deleteThread(threadId) {
+            if(confirm("<spring:message code="thread.confirmdelete"/>")) {
+                document.deletethread.threadId.value = threadId;
+                document.deletethread.submit();
+            }
+        }
+    </script>
+
+
     <div class="forum-heading">
         <a href="."><spring:message code="forum.title"/></a> >
         <a href="viewforum?forumId=<c:out value="${thread.forum.id}"/>"><c:out value="${thread.forum.name}"/></a> >
@@ -19,16 +43,46 @@
     <kantega:section id="controls">
 
         <forum:haspermisson permission="POST_IN_THREAD" object="${thread}">
-            <a href="<%=request.getContextPath()%>/forum/editpost?threadId=<c:out value="${thread.id}"/>"><spring:message code="post.add"/></a> |
+            <a href="editpost?threadId=<c:out value="${thread.id}"/>"><spring:message code="post.add"/></a>
         </forum:haspermisson>
         <forum:haspermisson permission="EDIT_THREAD" object="${thread}">
-            <a href="<%=request.getContextPath()%>/forum/editthread?threadId=<c:out value="${thread.id}"/>"><spring:message code="thread.edit"/> </a>
+             | <a href="editthread?threadId=<c:out value="${thread.id}"/>"><spring:message code="thread.edit"/> </a>
+        </forum:haspermisson>
+
+        <forum:haspermisson permission="DELETE_THREAD" object="${thread}">
+            | <a href="javascript:deleteThread(<c:out value="${thread.id}"/>)"><spring:message code="thread.delete"/> </a>
         </forum:haspermisson>
 
     </kantega:section>
 
     <div style="padding-bottom: 10px">
         <kantega:getsection id="controls"/>
+    </div>
+    <div>
+
+        <c:if test="${pages > 1}">
+            <table width="100%" cellpadding="0" cellspacing="0" style="padding-bottom: 5px">
+                <tr>
+                    <td align="right">
+                        <spring:message code="thread.pagexofy" arguments="${current+1},${pages}"/>: 
+
+                        <c:forEach var="index" items="${startindexes}" varStatus="status">
+                            <c:if test="${startindex == index}">
+                                <c:set var="current" value="-current"/>
+                            </c:if>
+                            <c:if test="${startindex != index}">
+                                <c:set var="current" value=""/>
+                            </c:if>
+                            <a class="forum-pagenavigation<c:out value="${current}"/>" href="viewthread?threadId=<c:out value="${thread.id}"/>&amp;startIndex=<c:out value="${index}"/>"><c:out value="${status.index+1}"/></a>
+                        </c:forEach>
+                    </td>
+                </tr>
+            </table>
+
+        </c:if>
+
+
+
     </div>
 
     <c:choose>
@@ -42,6 +96,7 @@
                 <c:forEach items="${posts}" var="post" varStatus="status">
                     <tr class="forum-labelRow">
                         <td>
+                            <a name="post_<c:out value="${post.id}"/>"></a>
                             <c:out value="${post.subject}"/>
                             <forum:haspermisson permission="EDIT_POST" object="${post}">
                                 <a href="editpost?postId=<c:out value="${post.id}"/>">Endre</a> |
@@ -52,9 +107,8 @@
                             </forum:haspermisson>
 
                             <forum:haspermisson permission="DELETE_POST" object="${post}">
-                                <c:if test="${gotchildren == 'false'}">
-                                    | <a href="deletepost?postId=<c:out value="${post.id}"/>">Slett</a>
-                                </c:if>
+                                | <a href="javascript:deletePost(<c:out value="${post.id}"/>)">Slett</a>
+
                             </forum:haspermisson>
 
                         </td>

@@ -9,9 +9,22 @@
 
 <kantega:section id="innhold">
 
+    <form action="deletecategory" name="deletecategory" method="POST">
+        <input type="hidden" name="categoryId">
+    </form>
+
+        <script type="text/javascript" >
+            function deleteCategory(categoryId) {
+                if(confirm("<spring:message code="forumcategory.confirmdelete"/>")) {
+                    document.deletecategory.categoryId.value = categoryId;
+                    document.deletecategory.submit();
+                }
+            }
+        </script>
+
     <div class="forum-heading">
-        <spring:message code="forum.title"/> > 
-        <c:out value="${forumcategory.name}"/>
+        <a href="."><spring:message code="forum.title"/></a> >
+        <a href="viewcategory?categoryId=<c:out value="${forumcategory.id}"/>"><c:out value="${forumcategory.name}"/></a>
     </div>
 
     <c:set var="hasforums" value="false"/>
@@ -56,9 +69,9 @@
     <forum:haspermisson permission="EDIT_CATEGORY" object="${forumcategory}">
 
         <div style="padding-top: 10px">
-            <a href="<%=request.getContextPath()%>/forum/editcategory?categoryId=<c:out value="${forumcategory.id}"/>">Endre</a>
-            | <a href="<%=request.getContextPath()%>/forum/editforum?categoryId=<c:out value="${forumcategory.id}"/>">Legg til forum</a>
-            | <a href="<%=request.getContextPath()%>/forum/deletecategory?categoryId=<c:out value="${forumcategory.id}"/>">Slett kategori</a>
+            <a href="editcategory?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forumcategory.edit"/></a>
+            | <a href="editforum?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forum.addforum"/></a>
+            | <a href="javascript:deleteCategory(<c:out value="${forumcategory.id}"/>)"><spring:message code="forumcategory.delete"/></a>
         </div>
     </forum:haspermisson>
 </kantega:section>

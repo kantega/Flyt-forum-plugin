@@ -33,11 +33,18 @@
                 <entry key="/deleteforum">
                     <ref bean="deleteForumController"/>
                 </entry>
+                <entry key="/startthread">
+                    <ref bean="startThreadController"/>
+                </entry>
+
                 <entry key="/viewthread">
                     <ref bean="threadViewController"/>
                 </entry>
                 <entry key="/editthread">
                     <ref bean="editThreadController"/>
+                </entry>
+                <entry key="/deletethread">
+                    <ref bean="deleteThreadController"/>
                 </entry>
                 <entry key="/viewpost">
                     <ref bean="postViewController"/>
@@ -52,35 +59,6 @@
         </property>
     </bean>
 
-  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="close">
-      <property name="dataSource">
-        <ref bean="forumDataSource"/>
-      </property>
-      <property name="mappingResources">
-        <value>forum.hbm.xml</value>
-      </property>
-      <property name="hibernateProperties">
-        <props>
-          <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
-          <prop key="hibernate.show_sql">true</prop>
-        </props>
-      </property>
-      <property name="schemaUpdate">
-        <value>true</value>
-      </property>
-    </bean>
-
-    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-      <property name="sessionFactory">
-        <ref local="sessionFactory"/>
-      </property>
-    </bean>
-
-    <bean id="dao" class="no.kantega.forum.dao.ForumDao">
-      <property name="template">
-        <ref local="hibernateTemplate"/>
-      </property>
-    </bean>
 
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
           <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
@@ -114,19 +92,19 @@
 
     <bean id="forumCategoryListController" class="no.kantega.forum.control.ListCategoriesController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="forumCategoryViewController" class="no.kantega.forum.control.ViewCategoryController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="editCategoryController" class="no.kantega.forum.control.EditCategoryController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
         <property name="formView">
           <value>editcategory</value>
@@ -144,26 +122,26 @@
 
     <bean id="deleteCategoryController" class="no.kantega.forum.control.DeleteCategoryController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="forumListController" class="no.kantega.forum.control.ListForumsController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="forumViewController" class="no.kantega.forum.control.ViewForumController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
 
    <bean id="editForumController" class="no.kantega.forum.control.EditForumController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
         <property name="formView">
           <value>editforum</value>
@@ -181,19 +159,25 @@
 
     <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="startThreadController" class="no.kantega.forum.control.StartThreadController">
+        <property name="dao">
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="threadViewController" class="no.kantega.forum.control.ViewThreadController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="editThreadController" class="no.kantega.forum.control.EditThreadController">
          <property name="dao">
-             <ref bean="dao"/>
+             <ref bean="forumDao"/>
          </property>
          <property name="formView">
            <value>editthread</value>
@@ -210,15 +194,22 @@
      </bean>
 
 
+    <bean id="deleteThreadController" class="no.kantega.forum.control.DeleteThreadController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+
     <bean id="postViewController" class="no.kantega.forum.control.ViewPostController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 
     <bean id="editPostController" class="no.kantega.forum.control.EditPostController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
         <property name="formView">
           <value>editpost</value>
@@ -242,7 +233,7 @@
 
     <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController">
         <property name="dao">
-            <ref bean="dao"/>
+            <ref bean="forumDao"/>
         </property>
     </bean>
 

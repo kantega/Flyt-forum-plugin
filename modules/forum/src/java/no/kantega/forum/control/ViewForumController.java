@@ -8,9 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,8 +29,35 @@ public class ViewForumController implements Controller {
         Map map = new HashMap();
         long id = Long.parseLong(request.getParameter("forumId"));
         Forum f = dao.getForum(id);
-        List threads = dao.getThreadsInForum(f.getId());
+
+        int maxThreads = 2;
+
+        int startIndex = 0;
+        try {
+            startIndex = Integer.parseInt(request.getParameter("startIndex"));
+        } catch (Exception e) {
+
+        }
+        List startIndexes = new ArrayList();
+        for(int i = 0; i < f.getNumThreads(); i+= maxThreads) {
+            startIndexes.add(new Integer(i));
+        }
+
+        map.put("current", new Integer(startIndex/maxThreads));
+        map.put("startindex", new Integer(startIndex));
+        map.put("startindexes", startIndexes);
+        map.put("pages", new Integer(startIndexes.size()));
+
         map.put("forum", f);
+
+        List threads = dao.getThreadsInForum(f.getId(), startIndex, maxThreads);
+        for (int i = 0; i < threads.size(); i++) {
+            ForumThread thread = (ForumThread) threads.get(i);
+            List last = dao.getLastPostsInThread(thread.getId(), 1);
+            if(last.size() > 0) {
+                thread.setLastPost((Post)last.get(0));
+            }
+        }
         map.put("threads", threads);
 
         return new ModelAndView("viewforum", map);

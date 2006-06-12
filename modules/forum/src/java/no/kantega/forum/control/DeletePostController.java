@@ -21,11 +21,15 @@ public class DeletePostController implements Controller {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if(!request.getMethod().equals("POST")) {
+            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            return null;
+        }
         long id = Long.parseLong(request.getParameter("postId"));
         Post p = dao.getPopulatedPost(id);
         long threadId = p.getThread().getId();
         dao.delete(p);
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewthread?threadId=" + threadId));
+        return new ModelAndView(new RedirectView("viewthread?threadId=" + threadId));
     }
 
     public void setDao(ForumDao dao) {

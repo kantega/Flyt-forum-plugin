@@ -14,41 +14,47 @@
 
     <kantega:section id="cats">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
-            <!--    <tr class="forum-labelRow">
-                    <td>
-                        <spring:message code="forumcategory.name"/>
-                    </td>
-                    <td>
-                        <spring:message code="forumcategory.forums"/>
-                    </td>
-                </tr>-->
+
             <c:forEach items="${categories}" var="category">
                 <c:set var="hascats" value="true"/>
                 <tr class="forum-labelRow">
-                    <td>
-                        <c:out value="${category.name}"/>
-                    </td>
-                    <td align="right" style="font-weight: normal;">
+                    <td valign="top">
+                        <c:set var="canedit" value="false"/>
                         <forum:haspermisson permission="EDIT_CATEGORY" object="${category}">
-                            <a href="editcategory?categoryId=<c:out value="${category.id}"/>">Endre</a>
-                            | <a href="editforum?categoryId=<c:out value="${category.id}"/>">Legg til forum</a>
-                            | <a href="deletecategory?categoryId=<c:out value="${category.id}"/>">Slett kategori</a>
+                            <a href="viewcategory?categoryId=<c:out value="${category.id}"/>"><c:out value="${category.name}"/></a>
+                            <c:set var="canedit" value="true"/>
                         </forum:haspermisson>
+                        <c:if test="${canedit != 'true'}">
+                            <c:out value="${category.name}"/>
+                        </c:if>
+                    </td>
+                    <td>
+                        <spring:message code="forumlist.lastpost"/>
+                    </td>
+                    <td>
+                        <spring:message code="forum.threads"/>
                     </td>
                 </tr>
 
                 <c:forEach var="forum" items="${category.forums}"  varStatus="status">
                     <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
-                        <td>
+                        <td valign="top">
                             <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
                             <c:if test="${forum.description != ''}">
-                                <br><c:out value="${forum.description}"/>
+                                <div style="padding-top: 4px"><c:out value="${forum.description}"/></div>
                             </c:if>
 
                         </td>
-                        <td>
+                        <td valign="top">
+                            <c:if test="${forum.lastPost != null}">
+                                <a href="viewthread?threadId=<c:out value="${forum.lastPost.thread.id}"/>#post_<c:out value="${forum.lastPost.id}"/>"><c:out value="${forum.lastPost.subject}"/></a><br>
+                                av <c:out value="${forum.lastPost.author}"/>
+                            </c:if>
+                        </td>
+                        <td valign="top">
                             <c:out value="${forum.numThreads}"/>
                         </td>
+
                     </tr>
                 </c:forEach>
             </c:forEach>
@@ -67,7 +73,7 @@
 
     <forum:haspermisson permission="EDIT_CATEGORY">
         <br><br>
-        <a href="editcategory">Ny kategori</a>
+        <a href="editcategory"><spring:message code="forumcategory.addcategory"/></a>
     </forum:haspermisson>
 
 

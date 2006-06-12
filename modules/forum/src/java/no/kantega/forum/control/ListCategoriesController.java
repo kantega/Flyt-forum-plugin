@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.Post;
 
 import java.util.*;
 
@@ -27,6 +28,19 @@ public class ListCategoriesController implements Controller {
 
         List cats = dao.getForumCategories();
 
+        for (int i = 0; i < cats.size(); i++) {
+            ForumCategory category = (ForumCategory) cats.get(i);
+            Iterator forums  = category.getForums().iterator();
+
+            while (forums.hasNext()) {
+                Forum forum = (Forum) forums.next();
+                List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
+                if(lastPostsInForum.size() > 0) {
+                    forum.setLastPost((Post) lastPostsInForum.get(0));
+                }
+
+            }
+        }
         map.put("categories", cats);
 
         return new ModelAndView("listcategories", map);
