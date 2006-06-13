@@ -3,8 +3,11 @@ package no.kantega.forum.permission;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.Arrays;
 
 import no.kantega.forum.model.Post;
+import no.kantega.modules.user.GroupResolver;
 
 
 public class DefaultPermissionManager implements PermissionManager {
@@ -12,6 +15,10 @@ public class DefaultPermissionManager implements PermissionManager {
     private Logger log = Logger.getLogger(getClass());
 
     private Field[] permissionFields = Permissions.class.getFields();
+
+    private GroupResolver groupResolver;
+
+    private List administratorGroups;
 
     public boolean hasPermission(String user, long permission, Object object) {
         boolean has = getPermission(user, permission, object);
@@ -23,9 +30,15 @@ public class DefaultPermissionManager implements PermissionManager {
     }
 
     private boolean getPermission(String user, long permission, Object object) {
-        // Bjorsnos er administrator
-        if("bjorsnos".equals(user)) {
-            return true;
+
+        // Sjekk om bruker er forumadministrator
+        if(user != null && !user.trim().equals("")) {
+            for (int i = 0; i < administratorGroups.size(); i++) {
+                String group = (String) administratorGroups.get(i);
+                if(groupResolver.isInGroup(user, group)) {
+                    return true;
+                }
+            }
         }
 
         // Alle kan poste
@@ -41,7 +54,6 @@ public class DefaultPermissionManager implements PermissionManager {
         if(permission == Permissions.EDIT_POST && object instanceof Post) {
             return user != null && user.equals(((Post)object).getOwner());
         }
-
 
         return false;
     }
@@ -60,4 +72,11 @@ public class DefaultPermissionManager implements PermissionManager {
         return "Unknown field " + value;
     }
 
+    public void setGroupResolver(GroupResolver groupResolver) {
+        this.groupResolver = groupResolver;
+    }
+
+    public void setAdministratorGroups(String administratorGroups) {
+        this.administratorGroups = Arrays.asList(administratorGroups.split(","));
+    }
 }
