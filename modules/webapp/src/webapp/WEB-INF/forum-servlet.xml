@@ -238,7 +238,7 @@
     </bean>
 
 
-    <bean id="permissionManager" class="no.kantega.forum.permission.TestPermissionManager">
+    <bean id="permissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
 
     </bean>
 

@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import no.kantega.forum.model.Post;
 
 
-public class TestPermissionManager implements PermissionManager {
+public class DefaultPermissionManager implements PermissionManager {
 
     private Logger log = Logger.getLogger(getClass());
 
