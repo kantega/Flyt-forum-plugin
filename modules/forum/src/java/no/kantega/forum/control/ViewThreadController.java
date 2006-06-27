@@ -26,7 +26,7 @@ public class ViewThreadController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String postId = request.getParameter("postId");
         if(postId != null) {
-            long postId = Long.parseLong(postId);
+           // long postId = Long.parseLong(postId);
         }
         long id = Long.parseLong(request.getParameter("threadId"));
         ForumThread t = dao.getThread(id);
