@@ -27,7 +27,7 @@
     </forum:haspermisson>
 
 
-    <br><br>
+    <br>
 
     <c:choose>
 

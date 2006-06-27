@@ -69,8 +69,8 @@
     <forum:haspermisson permission="EDIT_CATEGORY" object="${forumcategory}">
 
         <div style="padding-top: 10px">
-            <a href="editcategory?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forumcategory.edit"/></a>
-            | <a href="editforum?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forum.addforum"/></a>
+            <a href="editforum?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forum.addforum"/></a>
+            |<a href="editcategory?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forumcategory.edit"/></a>
             | <a href="javascript:deleteCategory(<c:out value="${forumcategory.id}"/>)"><spring:message code="forumcategory.delete"/></a>
         </div>
     </forum:haspermisson>

@@ -113,7 +113,11 @@
                 </tr>
                 <tr class="forum-tableRow0">
                     <td colspan="2" align="right">
-                        <input type="submit" value="<spring:message code="post.edit.save"/>">
+                        <c:choose>
+                            <c:when test="${post.thread.id == 0}"><input type="submit" value="<spring:message code="thread.edit.save"/>"></c:when>
+                            <c:otherwise><input type="submit" value="<spring:message code="post.edit.save"/>"></c:otherwise>
+                        </c:choose>
+
                     </td>
                 </tr>
             </table>
