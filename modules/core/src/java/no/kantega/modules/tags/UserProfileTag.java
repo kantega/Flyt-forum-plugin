@@ -48,6 +48,7 @@ public class UserProfileTag extends ConditionalTagSupport {
                 pageContext.setAttribute(var, profile);
             }
 
+            user = null;
             return true;
         } catch (JspException e) {
             throw new JspTagException(e.getMessage());
