@@ -551,4 +551,22 @@ public class ForumDao {
     }
 
 
+    public int getPostCountBefore(final long postId) {
+
+        Number n = (Number) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+
+                Post p = (Post) session.get(Post.class, new Long(postId));
+
+                Query q = session.createQuery("select count(*) from Post p where p.thread.id=? and p.id < ?");
+
+                q.setLong(0, p.getThread().getId());
+                q.setLong(1, p.getId());
+
+                return q.uniqueResult();
+            }
+        });
+
+        return n.intValue();
+    }
 }

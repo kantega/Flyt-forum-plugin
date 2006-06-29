@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
+
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ taglib prefix="modules" uri="http://www.kantega.no/aksess/tags/modules" %>
@@ -55,7 +57,7 @@
 
     </kantega:section>
 
-    <div style="padding-bottom: 10px">
+    <div style="padding-bottom: 10px;text-align:right;">
         <kantega:getsection id="controls"/>
     </div>
     <div>
@@ -98,6 +100,11 @@
                         <td>
                             <a name="post_<c:out value="${post.id}"/>"></a>
                             <c:out value="${post.subject}"/>
+                            <span style="font-weight: normal;">(<c:out value="${post.author}"/>, <fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy"/>
+                                <fmt:formatDate value="${post.postDate}" pattern="HH:mm"/>)</span>
+                        </td>
+                        <td align="right" style="font-weight: normal;">
+
                             <forum:haspermisson permission="EDIT_POST" object="${post}">
                                 <a href="editpost?postId=<c:out value="${post.id}"/>">Endre</a> |
                             </forum:haspermisson>
@@ -110,10 +117,6 @@
                                 | <a href="javascript:deletePost(<c:out value="${post.id}"/>)">Slett</a>
 
                             </forum:haspermisson>
-
-                        </td>
-                        <td align="right" style="font-weight: normal;">
-                            Av  <c:out value="${post.author}"/>, <c:out value="${post.postDate}"/><br>
                         </td>
                     </tr>
                     <tr class="forum-tableRow0">
@@ -130,7 +133,7 @@
         </c:otherwise>
     </c:choose>
 
-    <div style="padding-top: 5px">
+    <div style="padding-top: 10px;text-align:right;">    
         <kantega:getsection id="controls"/>
     </div>
 </kantega:section>

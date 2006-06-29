@@ -2,6 +2,7 @@ package no.kantega.forum.control;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,16 +25,23 @@ public class ViewThreadController implements Controller {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String postId = request.getParameter("postId");
-        if(postId != null) {
-           // long postId = Long.parseLong(postId);
-        }
         long id = Long.parseLong(request.getParameter("threadId"));
         ForumThread t = dao.getThread(id);
+        int maxPosts = 50;
 
+
+        String postId = request.getParameter("postId");
+        if(postId != null) {
+            long pid = Long.parseLong(postId);
+            int index = dao.getPostCountBefore(pid);
+            index -= index % maxPosts;
+            Map map = new HashMap();
+            map.put("threadId", new Long(t.getId()));
+            map.put("startIndex", new Long(index));
+            return new ModelAndView(new RedirectView("viewthread#post_" +pid), map);
+        }
         Map map = new HashMap();
         map.put("thread", t);
-        int maxPosts = 2;
 
         int startIndex = 0;
         try {

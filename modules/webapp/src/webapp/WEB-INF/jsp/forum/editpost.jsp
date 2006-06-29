@@ -117,6 +117,7 @@
                             <c:when test="${post.thread.id == 0}"><input type="submit" value="<spring:message code="thread.edit.save"/>"></c:when>
                             <c:otherwise><input type="submit" value="<spring:message code="post.edit.save"/>"></c:otherwise>
                         </c:choose>
+                        <input type="button" onclick="history.back();" value="<spring:message code="cancel"/>">                        
 
                     </td>
                 </tr>

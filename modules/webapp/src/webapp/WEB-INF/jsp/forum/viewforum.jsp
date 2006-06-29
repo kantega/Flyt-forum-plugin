@@ -17,15 +17,16 @@
 
     <p><c:out value="${forum.description}"/></p>
 
-    <forum:haspermisson permission="EDIT_THREAD">
-        <a href="editpost?forumId=<c:out value="${forum.id}"/>">Ny tråd</a>
-    </forum:haspermisson>
+    <div style="text-align: right;">
+        <forum:haspermisson permission="EDIT_THREAD">
+            <a href="editpost?forumId=<c:out value="${forum.id}"/>"><spring:message code="thread.addthread"/></a>
+        </forum:haspermisson>
 
-    <forum:haspermisson permission="EDIT_FORUM" object="${forum}">
-            | <a href="editforum?forumId=<c:out value="${forum.id}"/>">Endre forum</a>
-            | <a href="deleteforum?forumId=<c:out value="${forum.id}"/>">Slett forum</a>
-    </forum:haspermisson>
-
+        <forum:haspermisson permission="EDIT_FORUM" object="${forum}">
+            | <a href="editforum?forumId=<c:out value="${forum.id}"/>"><spring:message code="forum.edit"/></a>
+            | <a href="deleteforum?forumId=<c:out value="${forum.id}"/>"><spring:message code="forum.delete"/></a>
+        </forum:haspermisson>
+    </div>
 
     <br>
 

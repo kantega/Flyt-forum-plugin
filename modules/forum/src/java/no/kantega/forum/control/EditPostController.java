@@ -32,9 +32,7 @@ import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserProfile;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.IOException;
@@ -90,7 +88,11 @@ public class EditPostController extends AbstractForumFormController {
                 String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
                 p.setReplyToId(Long.parseLong(replyId));
                 Post origPost = dao.getPost(Long.parseLong(replyId));
-                p.setSubject("SV: " + origPost.getSubject());
+                if(origPost.getSubject().startsWith("SV:")) {
+                    p.setSubject(origPost.getSubject());
+                } else {
+                    p.setSubject("SV: " + origPost.getSubject());
+                }
                 String body = origPost.getBody();
                 body = body.replaceAll("<blockquote>", qStart).replaceAll("</blockquote>", qEnd);
                 p.setBody(qStart + body + qEnd + "\n");
@@ -112,7 +114,11 @@ public class EditPostController extends AbstractForumFormController {
             dao.saveOrUpdate(p.getThread());
         }
         dao.saveOrUpdate(p);
-        return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewthread?threadId=" + p.getThread().getId()));
+        Map map = new HashMap();
+        map.put("threadId",new Long(p.getThread().getId()));
+        map.put("postId",new Long(p.getId()));
+
+        return new ModelAndView(new RedirectView("viewthread"), map);
     }
 
     private String cleanup(String body, HttpServletRequest request) {

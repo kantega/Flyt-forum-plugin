@@ -30,7 +30,7 @@ public class ViewForumController implements Controller {
         long id = Long.parseLong(request.getParameter("forumId"));
         Forum f = dao.getForum(id);
 
-        int maxThreads = 2;
+        int maxThreads = 50;
 
         int startIndex = 0;
         try {
