@@ -33,12 +33,7 @@
         <name>foreachpostinthread</name>
         <tagclass>no.kantega.forum.tags.ForEachPostInThreadTag</tagclass>
         <bodycontent>JSP</bodycontent>
-        <info>Iterates over posts in a given thread</info>
-        <attribute>
-            <name>threadId</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
+        <info>Iterates over posts in a given thread, if no thread is given the current content objects thread will be used</info>
         <attribute>
             <name>firstResult</name>
             <required>false</required>
@@ -64,6 +59,38 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-
     </tag>
+
+    <tag>
+        <name>newpostlink</name>
+        <tagclass>no.kantega.forum.tags.NewPostLinkTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Create a link for a new thread or post</info>
+        <attribute>
+            <name>accesskey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>cssstyle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>tabindex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>target</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
 </taglib>
