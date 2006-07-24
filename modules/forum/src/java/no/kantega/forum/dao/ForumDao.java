@@ -6,9 +6,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.apache.log4j.Logger;
 
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.sql.SQLException;
 
 import no.kantega.forum.model.*;
@@ -95,9 +93,20 @@ public class ForumDao {
         template.delete(forumCategory);
     }
 
-    //
     public List getForumCategories() {
-        return template.find("from ForumCategory c left join fetch c.forums f order by c.name");
+        List results = template.find("from ForumCategory c left join fetch c.forums f order by c.name");
+
+        List unique = new ArrayList();
+        // Vi får duplikater, fjern disse
+        long prevId = -1;
+        for (int i = 0; i < results.size(); i++) {
+            ForumCategory fc = (ForumCategory)results.get(i);
+            if (fc.getId() != prevId) {
+                unique.add(fc);
+                prevId = fc.getId();
+            }
+        }
+        return unique;
     }
 
 
