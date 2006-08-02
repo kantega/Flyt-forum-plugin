@@ -1,12 +1,19 @@
+html{
+    height:100%;
+}
 body {
     margin: 0px;
     padding: 0px;
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
+    height: 100%;
 }
 
 form {
     margin: 0px;
+}
+br{
+    clear:left;
 }
 .topheader {
     background-image: url("../bitmaps/projectweb/top_logo_spacer.gif");
@@ -33,19 +40,25 @@ form {
 }
 
 .contentmain {
+    float:left;
     background-color: white;
-    margin-left: 20px;
-    margin-top: 20px;
+    padding:20px;
+    width:730px;
 }
 td {
     font-family: Verdana, Arial, Helvetica, sans-serif;
     font-size: 11px;
 }
 
+td a{
+    font-weight:bold;
+}
 .heading {
+    padding-left:5px;
     font-size: 12pt;
     font-weight: bold;
     margin-bottom: 5px;
+    background-color: #B5D0DF;
 }
 
 .heading2 {
@@ -56,11 +69,11 @@ td {
 
 .tableHeading {
     font-weight: bold;
-    background-color: #666666;
+    background-color: #CEE4F0;
     color: #ffffff;
     padding: 2px;
 }
-.tableheading a {
+a.tableheading{
     color: #ffffff;
     text-decoration: none;
 }
@@ -75,9 +88,8 @@ td {
 }
 
 .activitylistsearch {
-    width: 172px; height: 99%;
+    float:right;
     border: 1px solid gray;
-    border-left: none;
     border-top: none;
     background-color: white;
     padding: 2px;
@@ -124,4 +136,31 @@ td {
 .button:hover {
     color: #0030ff;
     text-decoration:underline;
+}
+
+.leftmenu{
+    float:left;
+    width:140px;
+    height:100%;
+    border: 2px solid gray;
+    border-top: none;
+}
+.leftmenu a{
+    display:block;
+    color:#000000;
+    text-decoration:none;
+    font-weight:bold;
+}
+.navlink0{
+    padding-left:20px;
+    margin-top:20px;
+}
+.navlink1{
+    padding-left:30px;
+}
+
+.label{
+    float:left;
+    width:9em;
+    margin-bottom:15px;
 }

@@ -32,6 +32,18 @@ public class ProjectWebDao {
         return template.find("from Project order by name");
     }
 
+    public List getCustomerList(){
+        return template.find("from Customer order by customername");
+    }
+
+    public void saveOrUpdate(Customer customer){
+        template.saveOrUpdate(customer);
+    }
+
+    public Customer getCustomer(long customerId) {
+        return (Customer) template.get(Customer.class, new Long(customerId));
+    }
+
     public void saveDocumentWithActivity(final long activityId, final Document document){
         template.execute(new HibernateCallback(){
             public Object doInHibernate(Session session) throws HibernateException, SQLException {

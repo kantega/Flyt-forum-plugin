@@ -69,11 +69,7 @@
 </script>
 
 <form name="searchform" action="documentlist" method="POST">
-
-<table border="0" cellpadding="0" cellspacing="0" height="100%">
-<tr>
-<td valign="top">
-    <div class="activitylistsearch">
+<div style="float:right;" class="activitylistsearch">
         <div class="heading2"><spring:message code="documentlist.search"/></div>
         <input type="hidden" name="order">
 
@@ -118,7 +114,8 @@
         </div>-->
 
     </div>
-</td>
+<table border="0" cellpadding="0" cellspacing="0" height="100%">
+<tr>
 <td valign="top">
 <div class="activitylistmain">
 <div class="heading"><spring:message code="documentlist.header" arguments="${project.name}"/></div>
@@ -129,5 +126,6 @@
 </tr>
 </table>
 </form>
+
 </kantega:section>
 <%@ include file="include/design/design.jsf" %>

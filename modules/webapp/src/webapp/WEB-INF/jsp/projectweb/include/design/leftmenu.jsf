@@ -1,0 +1,36 @@
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+
+<div class="leftmenu">
+  <c:forEach items="${projects}" var="project" varStatus="status">
+    <a class="navlink0" href="project?projectId=<c:out value="${project.id}"/>">
+        <c:out value="${project.name}"/>
+    </a>
+    <a class="navlink1" href="activitylist?projectId=<c:out value="${project.id}"/>">
+       <spring:message code="activitylist"/>
+    </a>
+    <a class="navlink1" href="participantlist?projectId=<c:out value="${project.id}"/>">
+       <spring:message code="participants"/>
+    </a>
+    <a class="navlink1" href="documentlist?projectId=<c:out value="${project.id}"/>">
+       <spring:message code="documentlist"/>
+    </a>
+  </c:forEach>
+  <c:if test="${null eq  projects and null ne project}">
+      <div class="heading"><spring:message code="projects"/></div>
+     <a class="navlink0" href="project?projectId=<c:out value="${project.id}"/>">
+        <c:out value="${project.name}"/>
+    </a>
+     <a class="navlink1" href="activitylist?projectId=<c:out value="${project.id}"/>">
+        <spring:message code="activitylist"/>
+    </a>
+    <a class="navlink1" href="participantlist?projectId=<c:out value="${project.id}"/>">
+        <spring:message code="participants"/>
+    </a>
+    <a class="navlink1" href="documentlist?projectId=<c:out value="${project.id}"/>">
+        <spring:message code="documentlist"/>
+    </a>
+  </c:if>
+</div>

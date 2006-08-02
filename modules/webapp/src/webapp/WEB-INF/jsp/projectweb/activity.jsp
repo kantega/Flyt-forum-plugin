@@ -57,6 +57,10 @@
             <td><spring:message code="activity.reporter"/>:</td>
             <td class="dottedTd"><pw:resolveuser user="${activity.reporter}"/></td>
         </tr>
+        <tr class="tableRow<%=c++ % 2%>">
+            <td><spring:message code="activity.type"/>:</td>
+            <td class="dottedTd"><pw:resolveuser user="${activity.type}"/></td>
+        </tr>
         <pw:haspermission project="${activity.project}" permission="EDIT_ACTIVITY">
             <tr  class="tableRow0">
                 <td colspan="2"  align="right">
@@ -106,7 +110,7 @@
     <c:forEach items="${documents}" var="document" varStatus="status">
         <tr class="tableRow<%=c++ % 2%>">
             <td colspan="2">
-                <a href="document?documentId=<c:out value="${document.id}"/>&activityId=<c:out value="${activity.id}"/>">
+                <a href="document?documentId=<c:out value="${document.id}"/>&amp;activityId=<c:out value="${activity.id}"/>">
                      <pw:limittextlength value="${document.title}" length="17"/>
                 </a><br>
             </td>
@@ -120,7 +124,7 @@
 </kantega:section>
 
 <kantega:section id="main">
-    <script>
+    <script type="text/javascript">
         function addComment() {
             document.getElementById("addcomment").style.display = 'block';
         }
@@ -133,18 +137,32 @@
             <table width="500">
             <tr>
                     <td align="right">
-                        <a class="button" style="vertical-align: middle;" href="javascript:addComment()"><img src="../bitmaps/projectweb/ikon_leggtilkommentar.gif" border="0"  style="vertical-align: middle;"><spring:message code="activity.addcomment"/></a>
+                        <a class="button" style="vertical-align: middle;" href="javascript:addComment()"><img src="../bitmaps/projectweb/ikon_leggtilkommentar.gif" style="vertical-align: middle; border:0;" alt="Legg til"><spring:message code="activity.addcomment"/></a>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <div id="addcomment" style="display: none">
-                            <form action="addactivitycomment" method="POST">
+
+                        <form action="addactivitycomment" method="POST">
+                             <div id="addcomment" style="display: none">
                                 <input name="activityId" type="hidden" value="<c:out value="${activity.id}"/>">
-                                <textarea name="text" style="width: 100%; height: 100px"></textarea><br>
+                                 <!-- TODO: skal være meldingstype -->
+                                 <spring:message code="activity.type"/>:
+                                 <spring:bind path="activity.type">
+                                    <select name="type">
+                                        <c:forEach items="${types}" var="type">
+                                            <option <c:if test="${type.id == activity.type.id}">selected</c:if> value="<c:out value="${type.id}"/>"><c:out value="${type.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                    <c:out value="${status.errorMessage}"/>
+                                    <br>
+                                </spring:bind>
+                                <br/>
+                                <textarea name="text" cols="59" rows="5"></textarea><br>
                                 <input type="submit" value="<spring:message code="activity.addcomment"/>">
-                            </form>
-                        </div>
+                             </div>
+                        </form>
+
                     </td>
 
                 </tr>
@@ -177,24 +195,22 @@
 
         <c:forEach items="${actions}" var="action" varStatus="status">
             <tr class="tableRow<c:out value="${status.count % 2}"/>">
-                <td colspan="2"><a href="activityworkflow?action=<c:out value="${action.id}"/>&workflowId=<c:out value="${activity.workflowId}"/>&activityId=<c:out value="${activity.id}"/>"><c:out value="${action.name}"/></a></td>
+                <td colspan="2"><a href="activityworkflow?action=<c:out value="${action.id}"/>&amp;workflowId=<c:out value="${activity.workflowId}"/>&amp;activityId=<c:out value="${activity.id}"/>"><c:out value="${action.name}"/></a></td>
             </tr>
         </c:forEach>
 
 </kantega:section>
 <kantega:section id="content">
+    <div class="activitylistsearch">
+        <table cellpadding="0" cellspacing="0">
+            <kantega:getsection id="summary"/>
+            <kantega:getsection id="economy"/>
+            <kantega:getsection id="workflowactions"/>
+            <kantega:getsection id="documents"/>
+        </table>
+    </div>
     <table border="0" cellspacing="0">
         <tr>
-            <td valign="top">
-                <div class="activitylistsearch">
-                    <table cellpadding="0" cellspacing="0">
-                        <kantega:getsection id="summary"/>
-                        <kantega:getsection id="economy"/>
-                        <kantega:getsection id="workflowactions"/>
-                        <kantega:getsection id="documents"/>
-                    </table>
-                </div>
-            </td>
             <td valign="top">
                 <div class="activitylistmain">
                     <kantega:getsection id="main"/>

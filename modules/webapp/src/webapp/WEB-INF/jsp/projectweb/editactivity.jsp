@@ -24,7 +24,7 @@
         </c:choose>
         </div>
 
-    <form method="post">
+    <form method="post" action="">
 
         <table>
             <tr>
@@ -51,7 +51,7 @@
                     </spring:bind>
                 </td>
             </tr>
-            <%--<tr>
+            <tr>
                 <td><spring:message code="activity.type"/>:</td>
                 <td>
                     <spring:bind path="activity.type">
@@ -65,7 +65,7 @@
                     </spring:bind>
                 </td>
             </tr>
-            --%>
+
             <tr>
                 <td><spring:message code="activity.priority"/>:</td>
                 <td>
@@ -85,7 +85,7 @@
                 <td>
                       <spring:bind path="activity.startDate">
                           <input id="startDate" name="startDate" value="<c:out value="${status.value}"/>" size="8">
-                          <a href="#" id="startDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" border="0"> Velg</a>
+                          <a href="#" id="startDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" style="border:0" alt="Velg start"> Velg</a>
                           <script type="text/javascript">
                               Calendar.setup(
                               {
@@ -104,7 +104,7 @@
                 <td>
                     <spring:bind path="activity.endDate">
                         <input id="endDate" name="endDate" value="<c:out value="${status.value}"/>" size="8">
-                        <a href="#" id="endDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" border="0"> Velg</a>
+                        <a href="#" id="endDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" style="border:0" alt="Velg slutt"> Velg</a>
                           <script type="text/javascript">
                               Calendar.setup(
                               {
@@ -155,7 +155,7 @@
             </tr>
 
         </table>
-        <input type="submit" value="<spring:message code="general.save"/>">
+        <div><input type="submit" value="<spring:message code="general.save"/>"></div>
     </form>
     </div>
 </kantega:section>

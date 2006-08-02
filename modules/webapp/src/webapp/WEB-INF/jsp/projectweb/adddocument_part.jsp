@@ -19,8 +19,8 @@
             </c:choose>
             <a class="button" style="vertical-align: middle;"
                href="editdocument?<c:out value="${parameters}"/>"><img
-                    src="../bitmaps/projectweb/ikon_rediger.gif" border="0"
-                    style="vertical-align: middle;"><spring:message code="documentlist.add"/>
+                    src="../bitmaps/projectweb/ikon_rediger.gif"
+                    style="vertical-align:middle; border:0;" alt="Rediger"><spring:message code="documentlist.add"/>
             </a>
 
         </div>

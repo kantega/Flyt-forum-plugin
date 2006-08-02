@@ -19,11 +19,7 @@
         }
     </script>
     <form name="searchform" action="activitylist" method="POST">
-
-    <table border="0" cellpadding="0" cellspacing="0" height="100%">
-        <tr>
-            <td valign="top">
-                <div class="activitylistsearch">
+    <div class="activitylistsearch">
                 <div class="heading2"><spring:message code="activitylist.search"/></div>
                     <input type="hidden" name="order">
 
@@ -36,7 +32,7 @@
                         <table>
                             <tr>
                                 <td><input name="text" value="<c:out value="${text[0]}"/>" class="activitylistsearchinput"></td>
-                                <td><a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a></td>
+                                <td><a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" style="border:0;" alt="Søk"></a></td>
 
                             </tr>
                         </table>
@@ -108,31 +104,32 @@
                             <option <c:if test="${found}">selected</c:if> value="<c:out value="${priority.id}"/>"><c:out value="${priority.name}"/></option>
                         </c:forEach>
                     </select>
-                        </div>
-                    <div class="activitysearchsection">
-                    <spring:message code="activity.assignee"/>:<br>
-                    <select name="assignees" class="activitylistselect">
-                        <option value="-1" <c:if test="${assignees[0] eq '-1'}">selected</c:if>><spring:message code="general.any"/></option>
-                        <c:forEach items="${allparticipants}" var="participant">
-                            <option value="<c:out value="${participant.profile.user}"/>"  <c:if test="${assignees[0] eq participant.profile.user}">selected</c:if>><c:out value="${participant.profile.fullName}"/></option>
-                        </c:forEach>
-                    </select>
-                        </div>
-                <div class="activitysearchsection">
-                    <spring:message code="activity.reporter"/>:<br>
-                    <select  name="reporters" class="activitylistselect">
-                        <option value="-1" <c:if test="${reporters[0] eq '-1'}">selected</c:if>><spring:message code="general.any"/></option>
-                        <c:forEach items="${allparticipants}" var="participant">
-                            <option value="<c:out value="${participant.profile.user}"/>" <c:if test="${reporters[0] eq participant.profile.user}">selected</c:if>><c:out value="${participant.profile.fullName}"/></option>
-                        </c:forEach>
-                    </select>
-                    </div>
+        </div>
+        <div class="activitysearchsection">
+               <spring:message code="activity.assignee"/>:<br>
+               <select name="assignees" class="activitylistselect">
+               <option value="-1" <c:if test="${assignees[0] eq '-1'}">selected</c:if>><spring:message code="general.any"/></option>
+               <c:forEach items="${allparticipants}" var="participant">
+                    <option value="<c:out value="${participant.profile.user}"/>"  <c:if test="${assignees[0] eq participant.profile.user}">selected</c:if>><c:out value="${participant.profile.fullName}"/></option>
+                </c:forEach>
+            </select>
+        </div>
+        <div class="activitysearchsection">
+            <spring:message code="activity.reporter"/>:<br>
+            <select  name="reporters" class="activitylistselect">
+                <option value="-1" <c:if test="${reporters[0] eq '-1'}">selected</c:if>><spring:message code="general.any"/></option>
+                <c:forEach items="${allparticipants}" var="participant">
+                    <option value="<c:out value="${participant.profile.user}"/>" <c:if test="${reporters[0] eq participant.profile.user}">selected</c:if>><c:out value="${participant.profile.fullName}"/></option>
+                </c:forEach>
+            </select>
+        </div>
                     <!--<div align="right">
                         <a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a>
                     </div>-->
 
-                    </div>
-                    </td>
+    </div>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
     <td valign="top">
         <div class="activitylistmain">
     <div class="heading"><spring:message code="activitylist.header" arguments="${project.name}"/></div>
@@ -145,7 +142,7 @@
         <c:when test="${param.view == null or param.view eq 'list'}">
     <table border="0" cellspacing="0">
         <tr>
-            <td colspan="7">
+            <td colspan="8">
                 <table width="100%">
                     <tr>
                         <td>
@@ -155,7 +152,7 @@
                         <td align="right">
                             <pw:haspermission project="${project}" permission="ADD_ACTIVITY">
                                 <div style="padding-bottom: 2px;">
-                                    <a class="button" style="vertical-align: middle;" href="addactivity?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif" border="0" style="vertical-align: middle;"><spring:message code="activitylist.add"/></a>
+                                    <a class="button" style="vertical-align: middle;" href="addactivity?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif" style="vertical-align: middle; border:0;" alt="Rediger"><spring:message code="activitylist.add"/></a>
                                 </div>
                             </pw:haspermission>
                         </td>
@@ -164,13 +161,14 @@
             </td>
         </tr>
         <tr class="tableHeading">
-            <td><a href="javascript:doSort('title')"><spring:message code="activity.title"/></a></td>
-            <td><a href="javascript:doSort('assignee')"><spring:message code="activity.assignee"/></a></td>
-            <td><a href="javascript:doSort('status')"><spring:message code="activity.status"/></a></td>
-            <td><a href="javascript:doSort('endDate')"><spring:message code="activity.endDate"/></a></td>
-            <td><a href="javascript:doSort('phase')"><spring:message code="activity.phase"/></a></td>
-            <td><a href="javascript:doSort('usedHours')"><spring:message code="economy.used"/></a></td>
-            <td><a href="javascript:doSort('leftHours')"><spring:message code="economy.left"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('title')"><spring:message code="activity.title"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('assignee')"><spring:message code="activity.assignee"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('status')"><spring:message code="activity.status"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('endDate')"><spring:message code="activity.endDate"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('phase')"><spring:message code="activity.phase"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('priority')"><spring:message code="activity.priority" /></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('usedHours')"><spring:message code="economy.used"/></a></td>
+            <td><a class="tableHeading" href="javascript:doSort('leftHours')"><spring:message code="economy.left"/></a></td>
         </tr>
       <c:forEach items="${activities}" var="activity" varStatus="status">
           <tr class="tableRow<c:out value="${status.count % 2}"/>">
@@ -189,6 +187,9 @@
                <td>
                    <c:out value="${activity.activity.projectPhase.name}"/>
                </td>
+              <td>
+                  <c:out value="${activity.activity.priority.name}"/>
+              </td>
               <td align="right">
                   <c:out value="${activity.activity.usedHours}"/>
               </td>
@@ -221,7 +222,7 @@
                                 <td align="right">
                                     <pw:haspermission project="${project}" permission="ADD_ACTIVITY">
                                         <div style="padding-bottom: 2px;">
-                                            <a class="button" style="vertical-align: middle;" href="addactivity?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif" border="0" style="vertical-align: middle;"><spring:message code="activitylist.add"/></a>
+                                            <a class="button" style="vertical-align: middle;" href="addactivity?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_rediger.gif" style="vertical-align: middle; border:0;" alt="Rediger"><spring:message code="activitylist.add"/></a>
                                         </div>
                                     </pw:haspermission>
                                 </td>
@@ -261,14 +262,14 @@
                                             long startTime = activity.getActivity().getStartDate().getTime() - firstActivity.getStartDate().getTime();
                                             start = (double)((double)startTime/(double)time);
                                         } else {
-                                            color = "lightgray";
+                                            color = "gray";
                                             border = "1px dotted gray";
                                         }
                                         if(activity.getActivity().getEndDate() != null) {
                                             long endTime = activity.getActivity().getEndDate().getTime() - firstActivity.getStartDate().getTime();
                                             end = (double)((double)endTime/(double)time);
                                         } else {
-                                            color = "lightgray";
+                                            color = "gray";
                                             border = "1px dotted gray";
                                         }
                                     }
@@ -278,10 +279,10 @@
                             <td>
                                 <a href="activity?activityId=<c:out value="${activity.activity.id}"/>"><c:out value="${activity.activity.title}"/></a>
                             </td>
-                            <td widtd="500" class="dottedTd">
+                            <td style="width:500;" class="dottedTd">
 
                                 <div style="width: 100%; height: 15px" title="<c:if test="${activity.activity.startDate != null}">Fra: <fmt:formatDate value="${activity.activity.startDate}"/></c:if> <c:if test="${activity.activity.endDate != null}">Til: <fmt:formatDate value="${activity.activity.endDate}"/></c:if>">
-                                    <div style="position: relative; left: <%=(int)(start*500)%>px; width:<%=(int)(widtd*500)%>px; height:80%; background-color: <%=color%>; margin:2px; border: <%=border%>;" ></div>
+                                    <div style="position: relative; left: <%=(int)(start*500)%>px; width:<%=(int)(widtd*500)%>px; height:80%; background-color:<%=color%>; margin:2px; border: <%=border%>;" ></div>
                                 </div>
                             </td>
 

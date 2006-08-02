@@ -1,0 +1,28 @@
+.tableHeading {
+    font-weight: bold;
+    background: #dbd1ad;
+    color: #000000;
+}
+.tableHeading a {
+    color: #000000;
+}
+
+.tableRow0 {
+    background: #f4f3ea;
+}
+
+.tableRow1 {
+    background-color: #ffffff;
+}
+
+.heading, .heading2 {
+    font-size: small;
+    font-weight: bold;
+    padding-bottom: 10px;
+    color: #014a7d;
+    background-color: #f4f3ea;
+}
+
+.heading2 {
+    font-size: x-small;
+}

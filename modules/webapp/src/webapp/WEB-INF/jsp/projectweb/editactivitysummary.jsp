@@ -25,7 +25,7 @@
         </c:choose>
         </div>
 
-    <form method="post">
+    <form method="post" action="">
 
         <table>
             <tr>
@@ -37,21 +37,23 @@
                     </spring:bind>
                 </td>
             </tr>
-            <td><spring:message code="activity.phase"/>:</td>
-                <td>
-                    <spring:bind path="activity.projectPhase">
-                        <select name="projectPhase">
-                            <option <c:if test="${activity.projectPhase == null}">selected</c:if> value="-1">Velg fase</option>
-                            <c:forEach items="${phases}" var="phase">
-                                <option <c:if test="${phase.id == activity.projectPhase.id}">selected</c:if> value="<c:out value="${phase.id}"/>"><c:out value="${phase.name}"/></option>
-                            </c:forEach>
-                        </select>
+            <tr>
+                <td><spring:message code="activity.phase"/>:</td>
+                    <td>
+                        <spring:bind path="activity.projectPhase">
+                            <select name="projectPhase">
+                                <option <c:if test="${activity.projectPhase == null}">selected</c:if> value="-1">Velg fase</option>
+                                <c:forEach items="${phases}" var="phase">
+                                    <option <c:if test="${phase.id == activity.projectPhase.id}">selected</c:if> value="<c:out value="${phase.id}"/>"><c:out value="${phase.name}"/></option>
+                                </c:forEach>
+                            </select>
                         <c:out value="${status.errorMessage}"/>
                         <br>
                     </spring:bind>
                 </td>
+            </tr>
             <tr>
-<!--                <td><spring:message code="activity.type"/>:</td>
+               <td><spring:message code="activity.type"/>:</td>
                 <td>
                     <spring:bind path="activity.type">
                         <select name="type">
@@ -63,7 +65,7 @@
                         <br>
                     </spring:bind>
                 </td>
-            </tr>    -->
+            </tr>    
             <tr>
                 <td><spring:message code="activity.priority"/>:</td>
                 <td>
@@ -83,7 +85,7 @@
                 <td>
                       <spring:bind path="activity.startDate">
                           <input id="startDate" name="startDate" value="<c:out value="${status.value}"/>" size="8">
-                          <a href="#" id="startDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" border="0"> Velg</a>
+                          <a href="#" id="startDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" style="border:0" alt="Startdato"> Velg</a>
                           <script type="text/javascript">
                               Calendar.setup(
                               {
@@ -103,7 +105,7 @@
                 <td>
                     <spring:bind path="activity.endDate">
                         <input id="endDate" name="endDate" value="<c:out value="${status.value}"/>" size="8">
-                        <a href="#" id="endDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" border="0"> Velg</a>
+                        <a href="#" id="endDateButton" class="button"><img src="../bitmaps/projectweb/mini_velg.gif" style="border:0" alt="Sluttdato"> Velg</a>
                           <script type="text/javascript">
                               Calendar.setup(
                               {

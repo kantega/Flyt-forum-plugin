@@ -361,7 +361,6 @@
     </property>
     <property name="urlMap">
       <map>
-
         <entry key="/admin">
           <bean class="no.kantega.projectweb.admin.AdminController"/>
         </entry>
@@ -389,12 +388,45 @@
             </property>
           </bean>
         </entry>
-
       </map>
-
     </property>
   </bean>
 
+  <bean id="urlMapping5" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+       <property name="interceptors">
+         <list>
+           <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
+             <property name="userResolver">
+               <ref bean="userResolver"/>
+             </property>
+           </bean>
+           <bean class="no.kantega.projectweb.interceptors.MenuSelectionInterceptor">
+             <property name="selected">
+               <value>customers</value>
+             </property>
+           </bean>
+         </list>
+       </property>
+       <property name="urlMap">
+        <map>
+            <entry key="/customer">
+                <bean class="no.kantega.projectweb.control.customer.CustomerController"/>
+            </entry>
+            <entry key="/customerlist">
+                <bean class="no.kantega.projectweb.control.customer.CustomerListController"/>
+            </entry>
+            <entry key="/addcustomer">
+                <bean class="no.kantega.projectweb.control.customer.AddCustomerController"/>
+            </entry>
+            <entry key="/addcustomeruser">
+                <bean class="no.kantega.projectweb.control.customer.AddCustomerUserController"/>
+            </entry>
+            <entry key="/statistics">
+                <bean class="no.kantega.projectweb.control.StatisticsController"/>
+            </entry>
+        </map>
+    </property>
+ </bean>
   <bean id="daoAware" abstract="true">
     <property name="dao">
       <ref local="dao"/>

@@ -5,13 +5,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-  <head>
-      <title><kantega:getsection id="title"/></title>
-      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-      <!-- Standard CSS -->
+  <head><title><kantega:getsection id="title"/></title>
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/projectweb.css">
-      <!-- CSS for å tilpasse sidene til resten av nettstedet -->
-      <!-- <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/<spring:theme code="projectcss"/>">   -->
+      <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/<spring:theme code="projectcss"/>">
       <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/calendar-blue.css">
       <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar/calendar.js"></script>
       <script type="text/javascript" src="<%=request.getContextPath() %>/js/calendar/calendar-en.js"></script>
@@ -38,12 +34,12 @@
           <td class="topmenubackground">
               <table cellpadding="0" cellspacing="0">
                   <tr>
-                      <td><a href="projectlist"><img src="../bitmaps/projectweb/knapp_prosjekter<c:if test="${selectedMenu eq 'project'}">_f2</c:if>.gif" style="border:0" alt="Prosjekt"></a></td>
-                      <pw:hasglobalpermission permission="ADMINISTRATOR">
-                          <td><a href="customerlist"><img style="border:0" src="../bitmaps/projectweb/knapp_kunder<c:if test="${selectedMenu eq 'customers'}">_f2</c:if>.gif" alt="Kunder"></a></td>
-                          <td><a href="statistics"><img style="border:0" src="../bitmaps/projectweb/knapp_statistikk<c:if test="${selectedMenu eq 'statistics'}">_f2</c:if>.gif" alt="Statistikk"></a></td>
-                          <td><a href="admin"><img src="../bitmaps/projectweb/knapp_administrator<c:if test="${selectedMenu eq 'admin'}">_f2</c:if>.gif" style="border:0" alt="Administrator"></a></td>
-                      </pw:hasglobalpermission>
+                      <td><a href="projectlist"><img src="../bitmaps/projectweb/knapp_prosjekter<c:if test="${selectedMenu eq 'project'}">_f2</c:if>.gif" border="0" alt="Prosjekt"></a></td>
+                      <c:if test="${project != null}">
+                          <td><a href="activitylist?projectId=<c:out value="${project.id}"/>"><img border="0" src="../bitmaps/projectweb/knapp_aktiviteter<c:if test="${selectedMenu eq 'activities'}">_f2</c:if>.gif" alt="Aktiviteter"></a></td>
+                          <td><a href="participantlist?projectId=<c:out value="${project.id}"/>"><img border="0" src="../bitmaps/projectweb/knapp_deltakere<c:if test="${selectedMenu eq 'participants'}">_f2</c:if>.gif" alt="Deltakere"></a></td>
+                          <td><a href="documentlist?projectId=<c:out value="${project.id}"/>"><img border="0" src="../bitmaps/projectweb/knapp_dokumenter<c:if test="${selectedMenu eq 'documents'}">_f2</c:if>.gif" alt="Dokumenter"></a></td>
+                      </c:if>
                   </tr>
               </table>
           </td>
@@ -51,9 +47,12 @@
               <table cellpadding="0" cellspacing="0">
                   <tr>
                       <!--<td><span class="topmenutext">Bruker: <pw:resolveuser/></span></td>-->
+                      <pw:hasglobalpermission permission="ADMINISTRATOR">
+                          <td><a href="admin"><img src="../bitmaps/projectweb/knapp_administrator<c:if test="${selectedMenu eq 'admin'}">_f2</c:if>.gif" border="0" alt="Administrator"></a></td>
+                      </pw:hasglobalpermission>
                       <c:set var="showLogout"><spring:theme code="logout.show"/></c:set>
                       <c:if test="${showLogout}">
-                        <td><a href="<spring:theme code="logout.url"/>"><img src="../bitmaps/projectweb/knapp_loggut.gif" style="border:0" alt="Logg ut"></a></td>
+                        <td><a href="<spring:theme code="logout.url"/>"><img src="../bitmaps/projectweb/knapp_loggut.gif" border="0" alt="Logg ut"></a></td>
                       </c:if>
                   </tr>
               </table>
@@ -63,10 +62,8 @@
   <div class="topstrut">
 
   </div>
-  <div style="width:995px; height:100%;">
-      <%@include file="leftmenu.jsf"%>
+
       <kantega:getsection id="content"/>
-  </div>
   </body>
 
 </html>

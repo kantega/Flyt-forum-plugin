@@ -12,45 +12,48 @@
 
 <kantega:section id="content">
     <div class="contentmain">
-    <div class="heading"><spring:message code="projectlist.projects"/>:</div>
 
-    <table cellpadding="0" cellspacing="0">
-        <pw:hasglobalpermission permission="ADMINISTRATOR">
+
+        <table cellpadding="0" cellspacing="0" style="width:100%">
             <tr>
-                <td colspan="4" align="right">
-                    <div style="padding-bottom: 5px">
-                        <a style="vertical-align:middle;" class="button" href="addproject"><img src="../bitmaps/projectweb/ikon_leggtilkommentar.gif" border="0" style="vertical-align:middle;"><spring:message code="projectlist.addproject"/></a>
-                    </div>
-                </td>
+                <td colspan="4" class="heading"><spring:message code="projectlist.projects"/>:</td>
             </tr>
-        </pw:hasglobalpermission>
-        <tr class="tableHeading">
-            <td><spring:message code="project.name"/></td>
-            <td><spring:message code="project.goal"/></td>
-            <td><spring:message code="project.status"/></td>
-            <td><spring:message code="project.leader"/></td>
-        </tr>
-        <c:forEach items="${projects}" var="project" varStatus="status">
-            <tr class="tableRow<c:out value="${status.count % 2}"/>">
-                <td valign="top">
-                    <a href="project?projectId=<c:out value="${project.id}"/>">
-                        <strong><c:out value="${project.name}"/></strong>
-                    </a>
+            <pw:hasglobalpermission permission="ADMINISTRATOR">
+                <tr>
+                    <td colspan="4" align="right">
+                        <div style="padding-bottom: 5px">
+                            <a style="vertical-align:middle;" class="button" href="addproject"><img src="../bitmaps/projectweb/ikon_leggtilkommentar.gif" style="vertical-align:middle; border:0;" alt="Legg til prosjekt"><spring:message code="projectlist.addproject"/></a>
+                        </div>
+                    </td>
+                </tr>
+            </pw:hasglobalpermission>
+            <tr class="tableHeading">
+                <td><spring:message code="project.name"/></td>
+                <td><spring:message code="project.goal"/></td>
+                <td><spring:message code="project.status"/></td>
+                <td><spring:message code="project.leader"/></td>
+            </tr>
+            <c:forEach items="${projects}" var="project" varStatus="status">
+                <tr class="tableRow<c:out value="${status.count % 2}"/>">
+                    <td valign="top">
+                        <a href="project?projectId=<c:out value="${project.id}"/>">
+                            <c:out value="${project.name}"/>
+                        </a>
 
-                </td>
-                <td valign="top" width="250" class="dottedTd">
-                    <c:out value="${project.goal}"/>&nbsp;
-                </td>
-                <td valign="top" width="250" class="dottedTd">
-                    <c:out value="${project.status}"/>&nbsp;
-                </td>
-                <td valign="top" class="dottedTd">
-                    <c:set var="email"><pw:resolveuser user="${project.leader}" info="email"/></c:set>
-                    <a href="mailto:<c:out value="${email}"/>"><c:out value="${email}"/></a>&nbsp;
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
+                    </td>
+                    <td valign="top" style="width:250px" class="dottedTd">
+                        <c:out value="${project.goal}"/>&nbsp;
+                    </td>
+                    <td valign="top" style="width:250px" class="dottedTd">
+                        <c:out value="${project.status}"/>&nbsp;
+                    </td>
+                    <td valign="top" class="dottedTd">
+                        <c:set var="email"><pw:resolveuser user="${project.leader}" info="email"/></c:set>
+                        <a href="mailto:<c:out value="${email}"/>"><c:out value="${email}"/></a>&nbsp;
+                    </td>
+                </tr>
+            </c:forEach>
+        </table>
 
     </div>
 </kantega:section>

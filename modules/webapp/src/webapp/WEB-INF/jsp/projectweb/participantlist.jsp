@@ -42,7 +42,7 @@
                        <td colspan="6" align="right">
                            <c:if test="${allowAdd}">
                                <div style="padding-bottom: 5px">
-                                   <a style="vertical-align: middle;" class="button" href="addparticipant?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_deltaker.gif" border="0" style="vertical-align: middle;"><spring:message code="participants.add"/></a>
+                                   <a style="vertical-align: middle;" class="button" href="addparticipant?projectId=<c:out value="${project.id}"/>"><img src="../bitmaps/projectweb/ikon_deltaker.gif" style="vertical-align: middle; border:0;"><spring:message code="participants.add"/></a>
                                </div>
                            </c:if>
                        </td>
