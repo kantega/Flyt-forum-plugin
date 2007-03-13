@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for "springapp" DispatcherServlet.
+  -->
+
+<beans>
+
+  <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="close">
+      <property name="dataSource">
+        <ref bean="forumDataSource"/>
+      </property>
+      <property name="mappingResources">
+        <value>forum.hbm.xml</value>
+      </property>
+      <property name="hibernateProperties">
+        <props>
+          <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
+          <prop key="hibernate.show_sql">true</prop>
+        </props>
+      </property>
+      <property name="schemaUpdate">
+        <value>true</value>
+      </property>
+    </bean>
+
+    <bean id="forumHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+      <property name="sessionFactory">
+        <ref local="forumSessionFactory"/>
+      </property>
+    </bean>
+
+
+    <bean id="forumDao" class="no.kantega.forum.dao.ForumDao">
+      <property name="template">
+        <ref local="forumHibernateTemplate"/>
+      </property>
+    </bean>
+
+</beans>

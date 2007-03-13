@@ -1,0 +1,381 @@
+package no.kantega.forum.dao;
+
+import org.hibernate.*;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.apache.log4j.Logger;
+
+import java.util.*;
+import java.sql.SQLException;
+
+import no.kantega.forum.model.*;
+import no.kantega.publishing.common.data.Content;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: HAREVE
+ * Date: 02.des.2005
+ * Time: 13:10:00
+ * To change this template use File | Settings | File Templates.
+ */
+public class ForumDao {
+    private HibernateTemplate template;
+
+    private Logger log = Logger.getLogger(ForumDao.class);
+
+    public void setTemplate(HibernateTemplate template) {
+        this.template = template;
+    }
+
+    // saveOrUpdate
+    public void saveOrUpdate(ForumCategory forumCategory) {
+        template.saveOrUpdate(forumCategory);
+    }
+
+    public void saveOrUpdate(Attachment attachment) {
+        template.saveOrUpdate(attachment);
+    }
+
+    public void saveOrUpdate(ForumThread thread) {
+        template.saveOrUpdate(thread);
+        updateThreadCount(thread.getForum().getId());
+    }
+
+    public void saveOrUpdate(Forum forum) {
+        template.saveOrUpdate(forum);
+        updateForumCount(forum.getForumCategory().getId());
+    }
+
+    public void saveOrUpdate(Post post) {
+        template.saveOrUpdate(post);
+        updatePostCount(post.getThread().getId());
+    }
+
+    public void approve(Post post) {
+        post.setApproved(true);
+        saveOrUpdate(post);
+
+        ForumThread thread = post.getThread();
+        thread.setApproved(true);
+        saveOrUpdate(thread);
+
+        updatePostCount(thread.getId());
+        updateThreadCount(thread.getForum().getId());
+    }
+
+
+    // delete
+    public void delete(Post post) {
+        template.delete(post);
+        updatePostCount(post.getThread().getId());
+    }
+
+    public void delete(ForumThread thread) {
+        template.delete(thread);
+        updateThreadCount(thread.getForum().getId());
+    }
+
+    public void delete(Attachment attachment) {
+        template.delete(attachment);
+    }
+
+    public void delete(Forum forum) {
+        template.delete(forum);
+        updateForumCount(forum.getForumCategory().getId());
+    }
+
+    public void delete(ForumCategory forumCategory) {
+        template.delete(forumCategory);
+    }
+
+    public List getForumCategories() {
+        List list = template.find("from ForumCategory c left join fetch c.forums f order by c.name");
+
+        Set setItems = new LinkedHashSet(list);
+        list.clear();
+        list.addAll(setItems);
+
+        return list;
+    }
+
+    public List getLastPosts(final int n) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.approved = ? order by p.id desc");
+                query.setString(0, "Y");
+                query.setMaxResults(n);
+                return query.list();
+            }
+        });
+
+    }
+
+    public List getLastPostsInForum(final long forumId, final int n) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.thread.forum.id = ? and p.approved = ? order by p.id desc");
+                query.setLong(0, forumId);
+                query.setString(1, "Y");
+                query.setMaxResults(n);
+                return query.list();
+            }
+        });
+
+    }
+
+
+    public List getLastPostsInThread(final long threadId, final int n) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.thread.id = ? and p.approved = ? order by p.id desc");
+                query.setLong(0, threadId);
+                query.setString(1, "Y");
+                query.setMaxResults(n);
+                return query.list();
+            }
+        });
+
+    }
+
+    public List getUnapprovedPosts() {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.approved = ? order by p.id desc");
+                query.setString(0, "N");
+                return query.list();
+            }
+        });
+    }
+
+    public ForumCategory getPopulatedForumCategory(final long forumCategoryId) {
+        return (ForumCategory) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategoryId));
+                fc.getForums().size();
+                return fc;
+            }
+        });
+    }
+
+    public Forum getPopulatedForum(final long forumId) {
+        return (Forum) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Forum f = (Forum) session.get(Forum.class, new Long(forumId));
+                f.getThreads().size();
+                return f;
+            }
+        });
+    }
+
+    public ForumThread getPopulatedThread(final long threadId) {
+        return (ForumThread) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(threadId));
+                t.getPosts().size();
+                return t;
+            }
+        });
+    }
+
+    public Post getPopulatedPost(final long postId) {
+        return (Post) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Post p = (Post) session.get(Post.class, new Long(postId));
+                p.getAttachments().size();
+                return p;
+            }
+        });
+    }
+
+    // get
+    public Forum getForum(final long forumId) {
+        return (Forum) template.find("from Forum f inner join fetch f.forumCategory c where f.id=?", new Long(forumId)).get(0);
+    }
+
+    public ForumThread getThread(final long threadId) {
+        return (ForumThread) template.find("from ForumThread t inner join fetch t.forum f where t.id=?", new Long(threadId)).get(0);
+    }
+
+    public Attachment getAttachment(final long attachmentId) {
+        return (Attachment) template.get(Attachment.class, new Long(attachmentId));
+    }
+
+    public ForumCategory getForumCategory(final long forumCategoryId) {
+        return (ForumCategory) template.get(ForumCategory.class, new Long(forumCategoryId));
+    }
+
+    public Post getPost(final long postId) {
+        return (Post) template.get(Post.class, new Long(postId));
+    }
+
+    // add
+    public void addForumToCategory(final Forum forum, final ForumCategory forumCategory) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategory.getId()));
+                forum.setForumCategory(fc);
+                if (fc.getForums() == null) {
+                    fc.setForums(new HashSet());
+                }
+                fc.getForums().add(forum);
+                fc.setNumForums(fc.getNumForums() + 1); // increase number of forums
+                session.saveOrUpdate(forum);
+                session.saveOrUpdate(fc);
+                return null;
+            }
+        });
+    }
+
+
+    public void addAttachmentToPost(final Attachment attachment, final Post post) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Post p = (Post) session.get(Post.class, new Long(post.getId()));
+                attachment.setPost(p);
+                if (p.getAttachments() == null) {
+                    p.setAttachments(new HashSet());
+                }
+                p.getAttachments().add(attachment);
+                session.saveOrUpdate(attachment);
+                session.saveOrUpdate(p);
+                return null;
+            }
+        });
+    }
+
+    public boolean postGotChildren(final Post p) {
+        List children = template.find("from Post p where p.replyToId=?",String.valueOf(p.getId()));
+        return (children.size() > 0);
+    }
+
+    public List getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ?");
+                q.setLong(0, forumId);
+                q.setString(1, "Y");
+                q.setFirstResult(firstResult);
+                q.setMaxResults(maxResult);
+
+                return q.list();
+            }
+        });
+    }
+
+    public List getPostsInThread(final long id, final int firstResult, final int maxResult) {
+        return getPostsInThread(id, firstResult, maxResult, false);
+    }
+
+    public List getPostsInThread(final long id, final int firstResult, final int maxResult, final boolean reverse) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q  = session.createQuery("from Post p where p.thread.id = ? and approved = ? order by p.id " +(reverse ? "desc" : "asc"));
+                q.setLong(0, id);
+                q.setString(1, "Y");
+
+                q.setFirstResult(firstResult);
+                if(maxResult > 0) {
+                    q.setMaxResults(maxResult);
+                }
+
+                return q.list();
+            }
+        });
+    }
+
+    public void updateForumCount(final long categoryId) {
+
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+
+                ForumCategory category = (ForumCategory) session.get(ForumCategory.class, new Long(categoryId));
+
+                Query q = session.createQuery("select count(*) from Forum f where f.forumCategory.id=?");
+                q.setLong(0, categoryId);
+
+                Number num = (Number) q.uniqueResult();
+                category.setNumForums(num.intValue());
+                session.saveOrUpdate(category);
+                return null;
+
+            }
+        });
+    }
+
+    public void updateThreadCount(final long forumId) {
+
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+
+                Forum forum = (Forum) session.get(Forum.class, new Long(forumId));
+
+                Query q = session.createQuery("select count(*) from ForumThread t where t.forum.id = ? and approved = ?");
+                q.setLong(0, forumId);
+                q.setString(1, "Y");
+                Number num = (Number) q.uniqueResult();
+                forum.setNumThreads(num.intValue());
+                session.saveOrUpdate(forum);
+                return null;
+
+            }
+        });
+    }
+    public void updatePostCount(final long threadId) {
+
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+
+                ForumThread thread = (ForumThread) session.get(ForumThread.class, new Long(threadId));
+
+                Query q = session.createQuery("select count(*) from Post p where p.thread.id = ? and approved = ?");
+                q.setLong(0, threadId);
+                q.setString(1, "Y");
+
+                Number num = (Number) q.uniqueResult();
+                thread.setNumPosts(num.intValue());
+                session.saveOrUpdate(thread);
+                return null;
+
+            }
+        });
+    }
+
+
+    public long getThreadAboutContent(final Content content) {
+
+        List l = (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q = session.createQuery("select t.id from ForumThread t where t.contentId=?");
+                q.setInteger(0, content.getId());
+                return q.list();
+            }
+        });
+
+
+        if(l.size() == 0) {
+            return -1;
+        } else {
+            return ((Number)l.get(0)).longValue();
+        }
+    }
+
+
+    public int getPostCountBefore(final long postId) {
+
+        Number n = (Number) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+
+                Post p = (Post) session.get(Post.class, new Long(postId));
+
+                Query q = session.createQuery("select count(*) from Post p where p.thread.id=? and p.id < ? and approved = 'Y'");
+
+                q.setLong(0, p.getThread().getId());
+                q.setLong(1, p.getId());
+
+                return q.uniqueResult();
+            }
+        });
+
+        return n.intValue();
+    }
+}

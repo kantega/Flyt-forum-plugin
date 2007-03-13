@@ -1,0 +1,15 @@
+
+<project
+    default="site"
+
+    xmlns:ant="jelly:ant"
+    xmlns:j="jelly:core"
+
+    xmlns:u="jelly:util"
+    xmlns:maven="jelly:maven">
+<!--
+    <postGoal name="war:webapp">
+      <attainGoal name="aksess:post-webapp"/>
+    </postGoal>-->
+
+</project>

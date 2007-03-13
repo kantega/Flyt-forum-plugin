@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for "springapp" DispatcherServlet.
+  -->
+
+<beans>
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/">
+                    <ref bean="forumCategoryListController"/>
+                </entry>
+                <entry key="/viewcategory">
+                    <ref bean="forumCategoryViewController"/>
+                </entry>
+                <entry key="/editcategory">
+                    <ref bean="editCategoryController"/>
+                </entry>
+                <entry key="/deletecategory">
+                    <ref bean="deleteCategoryController"/>
+                </entry>
+                <entry key="/listforums">
+                    <ref bean="forumListController"/>
+                </entry>
+                <entry key="/viewforum">
+                    <ref bean="forumViewController"/>
+                </entry>
+                <entry key="/editforum">
+                    <ref bean="editForumController"/>
+                </entry>
+                <entry key="/deleteforum">
+                    <ref bean="deleteForumController"/>
+                </entry>
+                <entry key="/startthread">
+                    <ref bean="startThreadController"/>
+                </entry>
+                <entry key="/viewthread">
+                    <ref bean="threadViewController"/>
+                </entry>
+                <entry key="/editthread">
+                    <ref bean="editThreadController"/>
+                </entry>
+                <entry key="/deletethread">
+                    <ref bean="deleteThreadController"/>
+                </entry>
+                <entry key="/viewpost">
+                    <ref bean="postViewController"/>
+                </entry>
+                <entry key="/editpost">
+                    <ref bean="editPostController"/>
+                </entry>
+                <entry key="/approvepost">
+                    <ref bean="approvePostController"/>
+                </entry>
+                <entry key="/deletepost">
+                    <ref bean="deletePostController"/>
+                </entry>
+                <entry key="/listunapproved">
+                    <ref bean="listUnapprovedController"/>
+                </entry>
+                <entry key="/viewattachment">
+                    <ref bean="viewAttachmentController"/>
+                </entry>
+                <entry key="/searchusers">
+                    <ref bean="ajaxUserSearchController"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+        <property name="prefix"><value>/WEB-INF/jsp/forum/</value></property>
+        <property name="suffix"><value>.jsp</value></property>
+    </bean>
+
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="cacheSeconds">
+            <value>5</value>
+        </property>
+        <property name="basenames">
+            <list>
+                <value>/WEB-INF/classes/forum</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+        <property name="defaultLocale">
+            <value>no</value>
+        </property>
+    </bean>
+
+    <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
+        <property name="provider">
+            <ref bean="springForumConfigProvider"/>
+        </property>
+    </bean>
+
+    <bean id="forumCategoryListController" class="no.kantega.forum.control.ListCategoriesController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="userResolver">
+            <ref bean="userResolver"/>
+        </property>
+        <property name="permissionManager">
+            <ref bean="permissionManager"/>
+        </property>
+    </bean>
+
+    <bean id="forumCategoryViewController" class="no.kantega.forum.control.ViewCategoryController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="editCategoryController" class="no.kantega.forum.control.EditCategoryController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="formView">
+            <value>editcategory</value>
+        </property>
+        <property name="commandName">
+            <value>category</value>
+        </property>
+        <property name="commandClass">
+            <value>no.kantega.forum.model.ForumCategory</value>
+        </property>
+        <property name="validator">
+            <bean class="no.kantega.forum.validator.CategoryValidator"/>
+        </property>
+    </bean>
+
+    <bean id="deleteCategoryController" class="no.kantega.forum.control.DeleteCategoryController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="forumListController" class="no.kantega.forum.control.ListForumsController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="forumViewController" class="no.kantega.forum.control.ViewForumController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+
+    <bean id="editForumController" class="no.kantega.forum.control.EditForumController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="formView">
+            <value>editforum</value>
+        </property>
+        <property name="commandName">
+            <value>forum</value>
+        </property>
+        <property name="commandClass">
+            <value>no.kantega.forum.model.Forum</value>
+        </property>
+        <property name="validator">
+            <bean class="no.kantega.forum.validator.ForumValidator"/>
+        </property>
+    </bean>
+
+    <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="startThreadController" class="no.kantega.forum.control.StartThreadController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="threadViewController" class="no.kantega.forum.control.ViewThreadController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="editThreadController" class="no.kantega.forum.control.EditThreadController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="formView">
+            <value>editthread</value>
+        </property>
+        <property name="commandName">
+            <value>thread</value>
+        </property>
+        <property name="commandClass">
+            <value>no.kantega.forum.model.ForumThread</value>
+        </property>
+        <property name="validator">
+            <bean class="no.kantega.forum.validator.ThreadValidator"/>
+        </property>
+    </bean>
+
+
+    <bean id="deleteThreadController" class="no.kantega.forum.control.DeleteThreadController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+
+    <bean id="postViewController" class="no.kantega.forum.control.ViewPostController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="editPostController" class="no.kantega.forum.control.EditPostController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="formView">
+            <value>editpost</value>
+        </property>
+        <property name="commandName">
+            <value>post</value>
+        </property>
+        <property name="commandClass">
+            <value>no.kantega.forum.model.Post</value>
+        </property>
+        <property name="validator">
+            <bean class="no.kantega.forum.validator.PostValidator"/>
+        </property>
+        <property name="userResolver">
+            <ref bean="userResolver"/>
+        </property>
+        <property name="userProfileManager">
+            <ref bean="userProfileManager"/>
+        </property>
+    </bean>
+
+    <bean id="approvePostController" class="no.kantega.forum.control.ApprovePostController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="listUnapprovedController" class="no.kantega.forum.control.ListUnapprovedController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="userResolver">
+            <ref bean="userResolver"/>
+        </property>
+        <property name="permissionManager">
+            <ref bean="permissionManager"/>
+        </property>
+    </bean>    
+
+    <bean id="viewAttachmentController" class="no.kantega.forum.control.ViewAttachmentController">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+    </bean>
+
+    <bean id="ajaxUserSearchController" class="no.kantega.forum.control.AjaxUserSearchController">
+        <property name="userSearcher">
+            <ref bean="userSearcher"/>
+        </property>
+    </bean>
+
+    <bean id="permissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
+        <property name="groupResolver">
+            <ref bean="groupResolver"/>
+        </property>
+        <property name="administratorGroups">
+            <value>${forum.administratorgroups}</value>
+        </property>
+    </bean>
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <property name="maxUploadSize">
+            <value>5000000</value>
+        </property>
+    </bean>
+
+</beans>

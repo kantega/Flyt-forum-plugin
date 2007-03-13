@@ -1,0 +1,58 @@
+<project
+   xmlns:ant="jelly:ant"
+   xmlns:j="jelly:core"
+   
+   xmlns:u="jelly:util"
+   xmlns:maven="jelly:maven"
+        default="multiproject:install">
+
+  <preGoal name="jar:jar">
+    
+    <copy todir="${maven.build.dest}/" filtering="true" overwrite="true">
+      <fileset dir="${pom.build.sourceDirectory}">
+	<include name="**/*.properties"/>
+	<include name="**/*.xml"/>
+      </fileset>
+    </copy>
+
+  </preGoal>
+
+
+  <postGoal name="jar:install">
+    <delete file="${maven.repo.local}/${pom.groupId}/poms/${maven.final.name}.pom"/>
+  </postGoal>
+
+  <goal name="apmod:prepare">
+      <maven:reactor
+         basedir="${basedir}"
+	 postProcessing="true"
+	 includes="modules/*/project.xml"
+         excludes="modules/webapp/project.xml"
+	 goals="jar:install"
+	 banner="Making sure Core is up to date:"
+	 ignoreFailures="false"/>
+   </goal>
+
+<goal name="apmod:reload" prereqs="apmod:prepare">
+    <maven:reactor
+       basedir="${basedir}"
+       postProcessing="true"
+       includes="modules/webapp/project.xml"
+       goals="tomcat:reload"
+       banner="Reloading context in Tomcat"
+       ignoreFailures="false"/>
+  </goal>
+
+<goal name="apmod:install" prereqs="apmod:prepare">
+    <maven:reactor
+       basedir="${basedir}"
+       postProcessing="true"
+       includes="modules/webapp/project.xml"
+       goals="tomcat:install"
+       banner="Reloading context in Tomcat"
+       ignoreFailures="false"/>
+  </goal>
+
+
+
+</project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project>
+
+  <extend>${basedir}/base-project.xml</extend>
+  <name>ap-modules</name>
+  <artifactId>ap-modules</artifactId>
+  <reports>    
+    <report>maven-license-plugin</report>
+    <report>maven-multiproject-plugin</report>
+    <report>maven-dashboard-plugin</report>
+  </reports>
+  
+</project>

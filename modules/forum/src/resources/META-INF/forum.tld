@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+    <tlibversion>1.0</tlibversion>
+    <jspversion>1.1</jspversion>
+    <shortname>aksess publisering</shortname>
+    <uri>http://www.kantega.no/aksess/tags/forum</uri>
+    <info>Aksess Project Taglibs</info>
+
+    <tag>
+        <name>haspermisson</name>
+        <tagclass>no.kantega.forum.tags.HasPermissionTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Evaluates the body if the user has a given permisson on a given object</info>
+        <attribute>
+            <name>object</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>permission</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+      <attribute>
+            <name>user</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>foreachpostinthread</name>
+        <tagclass>no.kantega.forum.tags.ForEachPostInThreadTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Iterates over posts in a given thread, if no thread is given the current content objects thread will be used</info>
+        <attribute>
+            <name>firstResult</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxPosts</name>
+            <required>maxPosts</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>reverse</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>foreachnewpost</name>
+        <tagclass>no.kantega.forum.tags.ForEachNewPostTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Iterates over new posts in a given thread</info>
+        <attribute>
+            <name>maxPosts</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>forumId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <name>newpostlink</name>
+        <tagclass>no.kantega.forum.tags.NewPostLinkTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Create a link for a new thread or post</info>
+        <attribute>
+            <name>accesskey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>cssstyle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>tabindex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>target</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+</taglib>
