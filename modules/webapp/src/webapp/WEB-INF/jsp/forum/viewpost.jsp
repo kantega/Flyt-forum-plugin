@@ -8,6 +8,19 @@
 </kantega:section>
 
 <kantega:section id="innhold">
+    <script type="text/javascript" >
+        function deletePost(postId) {
+            if(confirm("<spring:message code="post.delete"/>")) {
+                document.deletepost.postId.value = postId;
+                document.deletepost.submit();
+            }
+        }
+    </script>
+
+    <form action="deletepost" name="deletepost" method="POST">
+        <input type="hidden" name="postId">
+    </form>
+
     <div class="forum-heading"><c:out value="${post.subject}"/></div>
     <div class="forum-body">
             <c:out value="${post.body}" escapeXml="false"/>
@@ -24,7 +37,7 @@
         </forum:haspermisson>
         <forum:haspermisson permission="DELETE_POST" object="${post}">
             <c:if test="${gotchildren == 'false'}">
-            <a href="deletepost?postId=<c:out value="${post.id}"/>">Slett</a>
+            <a href="javascript:deletePost(<c:out value="${post.id}"/>)">Slett</a>
             </c:if>
         </forum:haspermisson>
     </div>

@@ -3,6 +3,7 @@ package no.kantega.forum.control;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,8 +13,11 @@ import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.modules.user.UserProfileManager;
 
 import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +28,7 @@ import java.util.Date;
  */
 public class EditForumController extends AbstractForumFormController {
     private ForumDao dao;
+    private UserProfileManager userProfileManager;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         String forumId = request.getParameter("forumId");
@@ -38,6 +43,20 @@ public class EditForumController extends AbstractForumFormController {
         return new PermissionObject[] {new PermissionObject(Permissions.EDIT_FORUM, category)};
 
     }
+
+
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{
+        Map referenceData = new HashMap();
+
+        Forum forum = (Forum)command;
+        String moderator = forum.getModerator();
+        if (moderator != null && moderator.length() > 0) {
+            referenceData.put("moderator", userProfileManager.getUserProfile(moderator));
+        }
+
+        return referenceData;
+    }
+
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         String forumId = request.getParameter("forumId");
@@ -66,5 +85,9 @@ public class EditForumController extends AbstractForumFormController {
 
     public void setDao(ForumDao dao) {
         this.dao = dao;
+    }
+
+    public void setUserProfileManager(UserProfileManager userProfileManager) {
+        this.userProfileManager = userProfileManager;
     }
 }

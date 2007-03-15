@@ -52,7 +52,7 @@
                     <spring:message code="forum.moderator.name"/>:<br>
                     <spring:bind path="forum.moderator">
                         <input type="hidden" id="moderator" name="moderator" value="<c:out value="${status.value}"/>">
-                        <input type="text" id="moderatortext" name="moderatortext" value="" size="50" maxlength="64" class="forum-editforum-moderator">
+                        <input type="text" id="moderatortext" name="moderatortext" size="50" maxlength="64" class="forum-editforum-moderator" value="<c:out value="${moderator.fullName}"/>">
                         <script type="text/javascript">
                             Autocomplete.setup({'inputField' :'moderator', url:'searchusers', 'minChars' :3 });
                         </script>

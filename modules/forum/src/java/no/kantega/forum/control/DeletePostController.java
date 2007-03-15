@@ -28,8 +28,15 @@ public class DeletePostController implements Controller {
         long id = Long.parseLong(request.getParameter("postId"));
         Post p = dao.getPopulatedPost(id);
         long threadId = p.getThread().getId();
+
+        // Vis tråd etter sletting
+        String view = "viewthread?threadId=" + threadId;
+        if (!p.isApproved()) {
+            // Vis ikke godkjente innlegg ved sletting av ikke godkjent post
+            view = "listunapproved";
+        }
         dao.delete(p);
-        return new ModelAndView(new RedirectView("viewthread?threadId=" + threadId));
+        return new ModelAndView(new RedirectView(view));
     }
 
     public void setDao(ForumDao dao) {
