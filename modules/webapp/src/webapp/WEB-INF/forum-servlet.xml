@@ -172,6 +172,9 @@
         <property name="validator">
             <bean class="no.kantega.forum.validator.ForumValidator"/>
         </property>
+        <property name="userProfileManager">
+            <ref bean="userProfileManager"/>
+        </property>        
     </bean>
 
     <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController">
