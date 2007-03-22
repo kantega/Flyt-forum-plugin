@@ -38,4 +38,13 @@
       </property>
     </bean>
 
+    <bean id="forumPermissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
+        <property name="groupResolver">
+            <ref bean="groupResolver"/>
+        </property>
+        <property name="administratorGroups">
+            <value>${forum.administratorgroups}</value>
+        </property>
+    </bean>
+
 </beans>

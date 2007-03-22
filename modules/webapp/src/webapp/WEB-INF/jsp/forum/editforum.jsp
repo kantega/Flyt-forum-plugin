@@ -44,6 +44,27 @@
                     </spring:bind>
                 </tr>
                 <tr class="forum-labelRow">
+                    <td valign="top"><spring:message code="forum.groups"/></td>
+                </tr>
+                <tr class="forum-tableRow0">
+                    <td>
+                        <div style="height: 150px; overflow:auto;">
+                            <c:forEach items="${groups}" var="group">
+                                <input type="checkbox" name="groups" value="<c:out value="${group.id}"/>"
+                                <c:forEach items="${forum.groups}" var="selectedGroup">
+                                        <c:if test="${group.id == selectedGroup}">
+                                            checked="checked"
+                                        </c:if>
+                                </c:forEach>
+                                > <c:out value="${group.name}"/><br>
+                            </c:forEach>
+                        </div>
+                        <p>
+                            <spring:message code="forum.groups.text"/>
+                        </p>
+                    </td>
+                </tr>
+                <tr class="forum-labelRow">
                     <td valign="top"><spring:message code="forum.moderate"/></td>
                 </tr>
                 <tr class="forum-tableRow0">

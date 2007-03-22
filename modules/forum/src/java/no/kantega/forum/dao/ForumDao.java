@@ -63,7 +63,6 @@ public class ForumDao {
         updateThreadCount(thread.getForum().getId());
     }
 
-
     // delete
     public void delete(Post post) {
         template.delete(post);
@@ -162,6 +161,7 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 Forum f = (Forum) session.get(Forum.class, new Long(forumId));
                 f.getThreads().size();
+                f.getGroups().size();
                 return f;
             }
         });
@@ -320,6 +320,7 @@ public class ForumDao {
             }
         });
     }
+
     public void updatePostCount(final long threadId) {
 
         template.execute(new HibernateCallback() {

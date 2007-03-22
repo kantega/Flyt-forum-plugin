@@ -101,7 +101,7 @@
         </property>
     </bean>
 
-    <bean id="forumCategoryListController" class="no.kantega.forum.control.ListCategoriesController">
+    <bean id="abstractForumViewController" abstract="true">
         <property name="dao">
             <ref bean="forumDao"/>
         </property>
@@ -109,9 +109,23 @@
             <ref bean="userResolver"/>
         </property>
         <property name="permissionManager">
-            <ref bean="permissionManager"/>
+            <ref bean="forumPermissionManager"/>
         </property>
     </bean>
+
+    <bean id="abstractForumFormController" abstract="true">
+        <property name="dao">
+            <ref bean="forumDao"/>
+        </property>
+        <property name="userResolver">
+            <ref bean="userResolver"/>
+        </property>
+        <property name="permissionManager">
+            <ref bean="forumPermissionManager"/>
+        </property>
+    </bean>
+
+    <bean id="forumCategoryListController" class="no.kantega.forum.control.ListCategoriesController" parent="abstractForumViewController"/>
 
     <bean id="forumCategoryViewController" class="no.kantega.forum.control.ViewCategoryController">
         <property name="dao">
@@ -119,10 +133,7 @@
         </property>
     </bean>
 
-    <bean id="editCategoryController" class="no.kantega.forum.control.EditCategoryController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="editCategoryController" class="no.kantega.forum.control.EditCategoryController" parent="abstractForumFormController">
         <property name="formView">
             <value>editcategory</value>
         </property>
@@ -149,17 +160,9 @@
         </property>
     </bean>
 
-    <bean id="forumViewController" class="no.kantega.forum.control.ViewForumController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
-    </bean>
+    <bean id="forumViewController" class="no.kantega.forum.control.ViewForumController" parent="abstractForumViewController"/>
 
-
-    <bean id="editForumController" class="no.kantega.forum.control.EditForumController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="editForumController" class="no.kantega.forum.control.EditForumController" parent="abstractForumFormController">
         <property name="formView">
             <value>editforum</value>
         </property>
@@ -175,6 +178,9 @@
         <property name="userProfileManager">
             <ref bean="userProfileManager"/>
         </property>        
+        <property name="groupManager">
+            <ref bean="groupManager"/>
+        </property>
     </bean>
 
     <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController">
@@ -189,16 +195,9 @@
         </property>
     </bean>
 
-    <bean id="threadViewController" class="no.kantega.forum.control.ViewThreadController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
-    </bean>
+    <bean id="threadViewController" class="no.kantega.forum.control.ViewThreadController" parent="abstractForumViewController"/>
 
-    <bean id="editThreadController" class="no.kantega.forum.control.EditThreadController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="editThreadController" class="no.kantega.forum.control.EditThreadController" parent="abstractForumFormController">
         <property name="formView">
             <value>editthread</value>
         </property>
@@ -220,17 +219,9 @@
         </property>
     </bean>
 
+    <bean id="postViewController" class="no.kantega.forum.control.ViewPostController" parent="abstractForumViewController"/>
 
-    <bean id="postViewController" class="no.kantega.forum.control.ViewPostController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
-    </bean>
-
-    <bean id="editPostController" class="no.kantega.forum.control.EditPostController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="editPostController" class="no.kantega.forum.control.EditPostController" parent="abstractForumFormController">
         <property name="formView">
             <value>editpost</value>
         </property>
@@ -242,9 +233,6 @@
         </property>
         <property name="validator">
             <bean class="no.kantega.forum.validator.PostValidator"/>
-        </property>
-        <property name="userResolver">
-            <ref bean="userResolver"/>
         </property>
         <property name="userProfileManager">
             <ref bean="userProfileManager"/>
@@ -263,17 +251,7 @@
         </property>
     </bean>
 
-    <bean id="listUnapprovedController" class="no.kantega.forum.control.ListUnapprovedController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
-        <property name="userResolver">
-            <ref bean="userResolver"/>
-        </property>
-        <property name="permissionManager">
-            <ref bean="permissionManager"/>
-        </property>
-    </bean>    
+    <bean id="listUnapprovedController" class="no.kantega.forum.control.ListUnapprovedController" parent="abstractForumViewController"/>
 
     <bean id="viewAttachmentController" class="no.kantega.forum.control.ViewAttachmentController">
         <property name="dao">
@@ -284,15 +262,6 @@
     <bean id="ajaxUserSearchController" class="no.kantega.forum.control.AjaxUserSearchController">
         <property name="userSearcher">
             <ref bean="userSearcher"/>
-        </property>
-    </bean>
-
-    <bean id="permissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
-        <property name="groupResolver">
-            <ref bean="groupResolver"/>
-        </property>
-        <property name="administratorGroups">
-            <value>${forum.administratorgroups}</value>
         </property>
     </bean>
 

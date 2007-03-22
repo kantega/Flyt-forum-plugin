@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.Iterator;
 
 import no.kantega.forum.model.Post;
 import no.kantega.forum.model.ForumThread;
@@ -57,6 +59,36 @@ public class  DefaultPermissionManager implements PermissionManager {
                 if (forum.isAnonymousPostAllowed() || user != null) {
                     return true;
                 }
+            }
+
+            if (permission == Permissions.VIEW) {
+                Forum forum = null;
+                if (object instanceof Forum) {
+                    forum = (Forum)object;
+                } else if (object instanceof ForumThread) {
+                    forum = ((ForumThread)object).getForum();
+                } else if (object instanceof Post) {
+                    forum = ((Post)object).getThread().getForum();
+                }
+                if (forum != null) {
+                    boolean isAuthorized = false;
+                    Set groups = forum.getGroups();
+                    if (groups == null || groups.isEmpty()) {
+                        isAuthorized = true;
+                    } else {
+                        Iterator it = groups.iterator();
+                        while (it.hasNext()) {
+                            String groupId = (String)it.next();
+                            if (groupResolver.isInGroup(user, groupId)) {
+                                isAuthorized = true;
+                                break;
+                            }                            
+                        }
+                    }
+
+                    return isAuthorized;
+                }
+
             }
 
             if (object instanceof Post) {

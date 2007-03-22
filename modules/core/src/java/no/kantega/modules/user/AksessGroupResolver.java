@@ -6,6 +6,7 @@ import com.opensymphony.oscache.base.algorithm.LRUCache;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.common.Aksess;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -17,6 +18,13 @@ public class AksessGroupResolver implements GroupResolver {
     private Logger log = Logger.getLogger(getClass());
 
     public boolean isInGroup(String user, String group) {
+        if (group.endsWith(Aksess.getEveryoneRole())) {
+            return true;
+        }
+
+        if (user == null) {
+            return false;
+        }
 
         Map roles;
 

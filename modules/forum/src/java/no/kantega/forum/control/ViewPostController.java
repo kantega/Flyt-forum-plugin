@@ -1,4 +1,4 @@
- package no.kantega.forum.control;
+package no.kantega.forum.control;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,24 +19,28 @@ import no.kantega.commons.util.StringHelper;
  * Time: 14:11:51
  * To change this template use File | Settings | File Templates.
  */
-public class ViewPostController implements Controller {
+public class ViewPostController extends AbstractForumViewController {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long id = Long.parseLong(request.getParameter("postId"));
         Post p = dao.getPopulatedPost(id);
 
-        Map map = new HashMap();
-        if (p != null) {
-            String body = p.getBody();
-            body = StringHelper.makeLinks(body);
-            body = StringHelper.replace(body, "\n", "<br>");
-            p.setBody(body);
-        }
+        if (!isAuthorized(request, p)) {
+            return new ModelAndView("closedforum", null);
+        } else {
+            Map map = new HashMap();
+            if (p != null) {
+                String body = p.getBody();
+                body = StringHelper.makeLinks(body);
+                body = StringHelper.replace(body, "\n", "<br>");
+                p.setBody(body);
+            }
 
-        map.put("post", p);
-        map.put("gotchildren", String.valueOf(dao.postGotChildren(p)));
-        return new ModelAndView("viewpost", map);
+            map.put("post", p);
+            map.put("gotchildren", String.valueOf(dao.postGotChildren(p)));
+            return new ModelAndView("viewpost", map);
+        }
     }
 
     public void setDao(ForumDao dao) {

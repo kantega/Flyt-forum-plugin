@@ -52,7 +52,6 @@
         <property name="username">
             <value>root</value>
         </property>
-
     </bean>
 
     <bean id="forumDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

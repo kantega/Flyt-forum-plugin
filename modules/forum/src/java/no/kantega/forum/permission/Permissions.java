@@ -27,4 +27,6 @@ public interface Permissions {
     long ATTACH_FILE = 8;
 
     long APPROVE_POST = 9;
+
+    long VIEW = 10;
 }

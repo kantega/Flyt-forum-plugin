@@ -41,6 +41,9 @@
             </c:if>
         </forum:haspermisson>
     </div>
+    <c:if test="${!post.approved}">
+        <div class="forum-message"><spring:message code="post.moderate.info"/></div>
+    </c:if>
 </kantega:section>
 
 <%@ include file="include/design/design.jsf"%>

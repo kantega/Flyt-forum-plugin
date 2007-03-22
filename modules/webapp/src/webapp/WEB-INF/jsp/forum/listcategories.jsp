@@ -14,7 +14,7 @@
     </div>
 
     <c:if test="${unapprovedPostCount != null && unapprovedPostCount > 0}">
-        <div>
+        <div class="forum-message">
         <a href="listunapproved"><spring:message code="forumcategory.unapprovedposts"/> <strong><c:out value="${unapprovedPostCount}"/></strong> <spring:message code="forumcategory.unapprovedposts2"/></a>
         </div>
     </c:if>

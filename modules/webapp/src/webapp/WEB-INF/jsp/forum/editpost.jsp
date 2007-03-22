@@ -77,7 +77,7 @@
                         <td>
                             <textarea name="body" rows="15" cols="50" class="forum-editpost-body"><c:out value="${status.value}"/></textarea>
                             <c:if test="${!post.approved}">
-                                <p><span class="forum-info"><spring:message code="post.moderate.info"/></span></p>
+                                <div class="forum-message"><spring:message code="post.moderate.info"/></div>
                             </c:if>
                         </td>
                         <td>

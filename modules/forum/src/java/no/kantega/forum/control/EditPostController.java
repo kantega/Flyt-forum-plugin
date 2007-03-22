@@ -54,7 +54,6 @@ public class EditPostController extends AbstractForumFormController {
     private static final String SOURCE = "EditPostController";
 
     private ForumDao dao;
-    private UserResolver userResolver;
     private UserProfileManager userProfileManager;
 
     private int maxImageWidth = 1024;
@@ -200,10 +199,17 @@ public class EditPostController extends AbstractForumFormController {
 
 
         Map map = new HashMap();
-        map.put("threadId", new Long(p.getThread().getId()));
-        map.put("postId", new Long(p.getId()));
 
-        return new ModelAndView(new RedirectView("viewthread"), map);
+        if (p.isApproved()) {
+            // Vis tråden hvis innlegget er godkjent
+            map.put("threadId", new Long(p.getThread().getId()));
+            map.put("postId", new Long(p.getId()));
+            return new ModelAndView(new RedirectView("viewthread"), map);
+        } else {
+            // Vis innlegget hvis det ikke er godkjent
+            map.put("postId", new Long(p.getId()));
+            return new ModelAndView(new RedirectView("viewpost"), map);
+        }
     }
 
     /**

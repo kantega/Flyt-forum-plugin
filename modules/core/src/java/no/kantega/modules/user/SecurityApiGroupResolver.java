@@ -4,6 +4,7 @@ import no.kantega.security.api.role.RoleManager;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.common.SystemException;
+import no.kantega.publishing.common.Aksess;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -14,6 +15,14 @@ public class SecurityApiGroupResolver implements GroupResolver {
     private RoleManager roleManager;
 
     public boolean isInGroup(String user, String group) {
+        if (group.endsWith(Aksess.getEveryoneRole())) {
+            return true;
+        }
+
+        if (user == null) {
+            return false;
+        }       
+
         Identity identity = SecurityApiHelper.createApiIdentity(user);
         try {
             // TODO: Caching

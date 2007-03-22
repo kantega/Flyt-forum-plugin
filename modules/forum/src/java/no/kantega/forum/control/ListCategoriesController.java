@@ -34,25 +34,31 @@ public class ListCategoriesController implements Controller {
 
         List cats = dao.getForumCategories();
 
+        String username = null;
+        ResolvedUser user = userResolver.resolveUser(request);
+        if (user != null) {
+            username = user.getUsername();
+        }
+
         for (int i = 0; i < cats.size(); i++) {
             ForumCategory category = (ForumCategory) cats.get(i);
             Iterator forums  = category.getForums().iterator();
-
             while (forums.hasNext()) {
                 Forum forum = (Forum) forums.next();
-                List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
-                if(lastPostsInForum.size() > 0) {
-                    forum.setLastPost((Post) lastPostsInForum.get(0));
+                if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
+                    // User does not have access to forum
+                    forums.remove();
+                } else {
+                    List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
+                    if(lastPostsInForum.size() > 0) {
+                        forum.setLastPost((Post) lastPostsInForum.get(0));
+                    }
                 }
-
             }
         }
 
 
-        ResolvedUser user = userResolver.resolveUser(request);
-        if (user != null && user.getUsername() != null) {
-            String username = user.getUsername();
-
+        if (username != null) {
             // Hent innlegg som brukeren kan godkjenne
             List myUnapprovedPosts = new ArrayList();
             List allUnapprovedPosts = dao.getUnapprovedPosts();

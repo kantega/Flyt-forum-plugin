@@ -1,9 +1,12 @@
 package no.kantega.modules.user;
 
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.commons.exception.SystemException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -14,8 +17,16 @@ import java.util.*;
  * To change this template use File | Settings | File Templates.
  */
 public class AksessUserResolver implements UserResolver {
+    private Logger log = Logger.getLogger(AksessUserResolver.class);
+
     public ResolvedUser resolveUser(HttpServletRequest request) {
-        SecuritySession session = (SecuritySession) request.getSession().getAttribute("aksess.securitySession");
+
+        SecuritySession session = null;
+        try {
+            session = SecuritySession.getInstance(request);
+        } catch (SystemException e) {
+            log.error(e);
+        }
 
         if(session == null || session.getUser() == null) {
             return null;

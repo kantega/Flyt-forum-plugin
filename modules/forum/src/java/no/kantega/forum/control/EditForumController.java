@@ -14,6 +14,7 @@ import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
 import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.GroupManager;
 
 import java.util.Date;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 public class EditForumController extends AbstractForumFormController {
     private ForumDao dao;
     private UserProfileManager userProfileManager;
+    private GroupManager groupManager;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         String forumId = request.getParameter("forumId");
@@ -53,6 +55,8 @@ public class EditForumController extends AbstractForumFormController {
         if (moderator != null && moderator.length() > 0) {
             referenceData.put("moderator", userProfileManager.getUserProfile(moderator));
         }
+
+        referenceData.put("groups", groupManager.getAllGroups());
 
         return referenceData;
     }
@@ -89,5 +93,9 @@ public class EditForumController extends AbstractForumFormController {
 
     public void setUserProfileManager(UserProfileManager userProfileManager) {
         this.userProfileManager = userProfileManager;
+    }
+
+    public void setGroupManager(GroupManager groupManager) {
+        this.groupManager = groupManager;
     }
 }

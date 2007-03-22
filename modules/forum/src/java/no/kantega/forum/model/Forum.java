@@ -24,6 +24,15 @@ public class Forum {
     private boolean attachmentsAllowed = false;
     private boolean approvalRequired = false;
     private String moderator;
+    private Set groups;
+
+    public Set getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set groups) {
+        this.groups = groups;
+    }
 
     public long getId() {
         return id;
@@ -128,4 +137,5 @@ public class Forum {
     public void setModerator(String moderator) {
         this.moderator = moderator;
     }
+
 }

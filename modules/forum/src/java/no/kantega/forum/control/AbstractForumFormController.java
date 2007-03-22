@@ -19,7 +19,7 @@ import no.kantega.modules.user.ResolvedUser;
  * Time: 9:47:19 AM
  * To change this template use File | Settings | File Templates.
  */
-public class AbstractForumFormController extends SimpleFormController implements InitializingBean {
+public class AbstractForumFormController extends SimpleFormController {
 
 
     protected PermissionManager permissionManager;
@@ -58,17 +58,19 @@ public class AbstractForumFormController extends SimpleFormController implements
         return true;
     }
 
-
-    public void afterPropertiesSet() throws Exception {
-        permissionManager = (PermissionManager) getApplicationContext().getBean("permissionManager", PermissionManager.class);
-        userResolver = (UserResolver) getApplicationContext().getBean("userResolver", UserResolver.class);
-    }
-
     public PermissionObject[] permissions(long permission) {
         return permissions(permission, null);
     }
 
     public PermissionObject[] permissions(long permission, Object object) {
         return new PermissionObject[] {new PermissionObject(permission, object)};
+    }
+
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public void setUserResolver(UserResolver userResolver) {
+        this.userResolver = userResolver;
     }
 }
