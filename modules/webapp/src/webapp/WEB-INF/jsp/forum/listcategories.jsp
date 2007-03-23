@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
+q<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
@@ -6,6 +6,7 @@
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <kantega:section id="tittel">
+    <spring:message code="forum.title"/>
 </kantega:section>
 
 <kantega:section id="innhold">
@@ -18,8 +19,6 @@
         <a href="listunapproved"><spring:message code="forumcategory.unapprovedposts"/> <strong><c:out value="${unapprovedPostCount}"/></strong> <spring:message code="forumcategory.unapprovedposts2"/></a>
         </div>
     </c:if>
-
-
 
     <kantega:section id="cats">
         <table width="100%" cellpadding="0" cellspacing="0" border="0">
@@ -79,12 +78,10 @@
         </c:otherwise>
 
     </c:choose>
-
     <forum:haspermisson permission="EDIT_CATEGORY">
         <br><br>
         <a href="editcategory"><spring:message code="forumcategory.addcategory"/></a>
     </forum:haspermisson>
-
 </kantega:section>
 
 <%@ include file="include/design/design.jsf" %>
