@@ -7,11 +7,19 @@
 
 <%@ include file="adddocument_part.jsp" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <spring:message code="documentlist.header" arguments="${project.name}"/>
 </kantega:section>
 
-<kantega:section id="documentlist">
+
+<kantega:section id="innhold">
+<script type="text/javascript">
+    function doSort(order) {
+        document.searchform.order.value = order;
+        document.searchform.submit();
+    }
+</script>
+<div class="heading"><spring:message code="documentlist.header" arguments="${project.name}"/></div>
 <c:choose>
 <c:when test="${not empty documents}">
     <table border="0" cellspacing="0">
@@ -60,25 +68,11 @@
 </c:choose>
 </kantega:section>
 
-<kantega:section id="content">
-<script type="text/javascript">
-    function doSort(order) {
-        document.searchform.order.value = order;
-        document.searchform.submit();
-    }
-</script>
-
-<form name="searchform" action="documentlist" method="POST">
-
-<table border="0" cellpadding="0" cellspacing="0" height="100%">
-<tr>
-<td valign="top">
+<kantega:section id="relatert innhold">
+    <form name="searchform" action="documentlist" method="POST">
+    <input type="hidden" name="order">
     <div class="activitylistsearch">
         <div class="heading2"><spring:message code="documentlist.search"/></div>
-        <input type="hidden" name="order">
-
-
-        <input type="hidden" name="projectId" value="<c:out value="${project.id}"/>">
 
         <div class="activitysearchsection">
             <spring:message code="documentlist.text"/>:
@@ -118,16 +112,9 @@
         </div>-->
 
     </div>
-</td>
-<td valign="top">
-<div class="activitylistmain">
-<div class="heading"><spring:message code="documentlist.header" arguments="${project.name}"/></div>
-    <kantega:getsection id="documentlist"/>
-</div>
 
-</td>
-</tr>
-</table>
-</form>
+    <input type="hidden" name="projectId" value="<c:out value="${project.id}"/>">
+    </form>
+
 </kantega:section>
 <%@ include file="include/design/design.jsf" %>

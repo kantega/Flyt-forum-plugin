@@ -6,11 +6,11 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <spring:message code="economy.edit"/>
 </kantega:section>
 
-<kantega:section id="content">
+<kantega:section id="innhold">
 
     <div class="contentmain">
     <div class="heading">

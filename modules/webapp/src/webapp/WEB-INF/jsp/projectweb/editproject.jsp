@@ -7,16 +7,16 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <c:choose>
         <c:when test="${project.id == 0}"><spring:message code="projectlist.addproject"/></c:when>
         <c:otherwise><c:out value="${project.name}"/></c:otherwise>
     </c:choose>
 </kantega:section>
 
-<kantega:section id="content">
+<kantega:section id="innhold">
 <div class="contentmain">
-<form method="POST">
+            <form method="POST">
                 <spring:bind path="project.id">
                     <input type="hidden" name="projectId" value="<c:out value="${status.value}"/>">
                 </spring:bind>

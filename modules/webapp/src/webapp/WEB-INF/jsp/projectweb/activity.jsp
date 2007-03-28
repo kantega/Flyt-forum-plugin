@@ -1,5 +1,3 @@
-<%@ page import="java.util.List,
-                 no.kantega.projectweb.model.Project"%>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -10,7 +8,7 @@
 <%@ include file="adddocument_part.jsp" %>
 
 
-<kantega:section id="title">
+<kantega:section id="tittel">
 <c:out value="${activity.project.name}"/>: <c:out value="${activity.title}"/>
 </kantega:section>
 
@@ -119,7 +117,7 @@
         </tr>
 </kantega:section>
 
-<kantega:section id="main">
+<kantega:section id="innhold">
     <script>
         function addComment() {
             document.getElementById("addcomment").style.display = 'block';
@@ -130,7 +128,7 @@
     <c:out value="${activity.description}"/><br>
 
         <pw:haspermission project="${activity.project}" permission="ACTIVITY_ADD_COMMENT">
-            <table width="500">
+            <table width="100%">
             <tr>
                     <td align="right">
                         <a class="button" style="vertical-align: middle;" href="javascript:addComment()"><img src="../bitmaps/projectweb/ikon_leggtilkommentar.gif" border="0"  style="vertical-align: middle;"><spring:message code="activity.addcomment"/></a>
@@ -150,9 +148,7 @@
                 </tr>
                 </table>
             </pw:haspermission>
-        <table width="500">
-
-
+        <table width="100%">
             <c:forEach items="${activity.comments}" var="comment">
                 <tr class="tableHeading" style="font-weight: normal;">
                     <td>
@@ -182,25 +178,16 @@
         </c:forEach>
 
 </kantega:section>
-<kantega:section id="content">
-    <table border="0" cellspacing="0">
-        <tr>
-            <td valign="top">
-                <div class="activitylistsearch">
-                    <table cellpadding="0" cellspacing="0">
-                        <kantega:getsection id="summary"/>
-                        <kantega:getsection id="economy"/>
-                        <kantega:getsection id="workflowactions"/>
-                        <kantega:getsection id="documents"/>
-                    </table>
-                </div>
-            </td>
-            <td valign="top">
-                <div class="activitylistmain">
-                    <kantega:getsection id="main"/>
-                </div>
-            </td>
-        </tr>
-    </table>
+
+<kantega:section id="relatert innhold">
+    <div class="activitylistsearch">
+        <table cellpadding="0" cellspacing="0">
+            <kantega:getsection id="summary"/>
+            <kantega:getsection id="economy"/>
+            <kantega:getsection id="workflowactions"/>
+            <kantega:getsection id="documents"/>
+        </table>
+    </div>
 </kantega:section>
+
 <%@include file="include/design/design.jsf"%>

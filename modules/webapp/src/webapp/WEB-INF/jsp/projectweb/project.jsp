@@ -1,5 +1,3 @@
-<%@ page import="java.util.List,
-                 no.kantega.projectweb.model.Project"%>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
@@ -7,14 +5,14 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <c:out value="${project.name}"/>
 </kantega:section>
 
-<kantega:section id="content">
+<kantega:section id="innhold">
     <div class="contentmain">
     <div class="heading"><c:out value="${project.name}"/></div>
-    <table cellpadding="0" cellspacing="0" width="500">
+    <table cellpadding="0" cellspacing="0" width="100%">
         <c:if test="${mayEdit}">
             <tr>
                 <td></td>

@@ -1,8 +1,4 @@
 <%@ page import="no.kantega.publishing.common.Aksess"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
-<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-
 <%
     String design = Aksess.getConfiguration().getString("forum.designview");
     RequestDispatcher rd = request.getRequestDispatcher(design);

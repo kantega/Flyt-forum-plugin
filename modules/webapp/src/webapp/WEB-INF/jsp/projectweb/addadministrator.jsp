@@ -6,12 +6,12 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <spring:message code="administrators.add"/>
 </kantega:section>
 
 
-<kantega:section id="content">
+<kantega:section id="innhold">
     <div class="contentmain">
 
         <div class="heading"><spring:message code="administrators.add" /></div>

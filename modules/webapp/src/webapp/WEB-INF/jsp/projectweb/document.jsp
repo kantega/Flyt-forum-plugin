@@ -5,11 +5,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <c:out value="${document.project.name}"/>: <c:out value="${document.title}"/>
 </kantega:section>
 
 <kantega:section id="summary">
+    <div class="activitylistsearch">
+    <table cellpadding="0" cellspacing="0">
         <tr class="tableHeading">
             <td colspan="2"><spring:message code="document.summary"/></td>
         </tr>
@@ -63,9 +65,12 @@
                 </td>
             </tr>
         </pw:haspermission>
-    </kantega:section>
+    </table>
+    </div>
+</kantega:section>
 
-<kantega:section id="main">
+<kantega:section id="innhold">
+    <div class="activitylistmain">
     <div class="heading"><c:out value="${document.project.name}"/>: <c:out value="${document.title}"/></div>
     <c:forEach items="${document.activities}" var="activity">
         <spring:message code="document.activity"/>
@@ -79,25 +84,8 @@
     </a><br><br>
 
     <c:out value="${document.description}"/><br>
+    </div>
 </kantega:section>
 
-<kantega:section id="content">
-    <table border="0" cellspacing="0">
-        <tr>
-            <td valign="top">
-                <div class="activitylistsearch">
-                    <table cellpadding="0" cellspacing="0">
-                        <kantega:getsection id="summary"/>
-                    </table>
-                </div>
-            </td>
-            <td valign="top">
-                <div class="activitylistmain">
-                    <kantega:getsection id="main"/>
-                </div>
-    </td>
-    </tr>
-    </table>
-</kantega:section>
 
 <%@include file="include/design/design.jsf"%>

@@ -1,5 +1,3 @@
-<%@ page import="java.util.List,
-                 no.kantega.projectweb.model.Project"%>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <html>

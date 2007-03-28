@@ -3,6 +3,7 @@ package no.kantega.projectweb.util;
 import no.kantega.projectweb.model.Participant;
 import no.kantega.projectweb.control.participant.dto.ParticipantDto;
 import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserProfile;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -22,8 +23,11 @@ public class ProjectWebUtil {
             Participant participant = (Participant) participants.get(i);
             ParticipantDto dto = new ParticipantDto();
             dto.setParticipant(participant);
-            dto.setProfile(manager.getUserProfile(participant.getUser()));
-            dtos.add(dto);
+            UserProfile profile = manager.getUserProfile(participant.getUser());
+            if (profile != null) {
+                dto.setProfile(profile);
+                dtos.add(dto);
+            }
         }
         return dtos;
     }

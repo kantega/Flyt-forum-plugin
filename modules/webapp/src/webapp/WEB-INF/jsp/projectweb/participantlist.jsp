@@ -1,17 +1,15 @@
-<%@ page import="java.util.List,
-                 no.kantega.projectweb.model.Project" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     <spring:message code="participants.header" arguments="${project.name}"/>
 </kantega:section>
 
 
-<kantega:section id="content">
+<kantega:section id="innhold">
     <div class="contentmain">
     <script type="text/javascript" >
         function confirmDelete(pId, name) {

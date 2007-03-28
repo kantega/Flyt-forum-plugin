@@ -6,11 +6,11 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/projectweb" prefix="pw" %>
 
-<kantega:section id="title">
+<kantega:section id="tittel">
     Administrasjon
 </kantega:section>
 
-<kantega:section id="content">
+<kantega:section id="innhold">
     <div class="contentmain">
     <div class="heading"><spring:message code="admin.heading"/></div>
 
