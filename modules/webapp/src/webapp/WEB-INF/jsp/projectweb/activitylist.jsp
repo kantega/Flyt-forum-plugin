@@ -22,12 +22,72 @@
         document.searchform.view.value = view;
         document.searchform.submit();
     }
+
+
+    function updateView() {
+        document.searchform.submit();
+    }
 </script>
 
+<div class="heading"><c:out value="${project.name}"/></div>
+<table cellpadding="0" cellspacing="0" width="100%">
+    <c:if test="${mayEdit}">
+        <tr>
+            <td></td>
+            <td align="right" colspan="1">
+                <div style="padding-bottom: 5px">
+                    <a class="button" href="editproject?projectId=<c:out value="${project.id}"/>" style="vertical-align: middle;"><img src="../bitmaps/projectweb/ikon_rediger.gif" border="0" style="vertical-align: middle;"><spring:message code="project.actions.edit"/></a>
+                </div>
+            </td>
+        </tr>
 
+  </c:if>
+        <%
+        int c = 1;
+        %>
+    <tr class="tableRow<%=c++ % 2%>">
+        <td width="150"><strong><spring:message code="project.name"/>:</strong></td>
+        <td><c:out value="${project.name}"/></td>
+    </tr>
+    <tr class="tableRow<%=c++ % 2%>">
+        <td><strong><spring:message code="project.code"/>:</strong></td>
+        <td><c:out value="${project.code}"/></td>
+    </tr>
+
+    <tr class="tableRow<%=c++ % 2%>">
+        <td valign="top"><strong><spring:message code="project.goal"/>:</strong></td>
+        <td valign="top"><c:out value="${project.goal}"/></td>
+    </tr>
+    <tr class="tableRow<%=c++ % 2%>">
+        <td valign="top"><strong><spring:message code="project.status"/>:</strong></td>
+        <td valign="top"><c:out value="${project.status}"/></td>
+    </tr>
+    <tr class="tableRow<%=c++ % 2%>">
+        <td><strong><spring:message code="project.from-to"/>:</strong></td>
+        <td><fmt:formatDate value="${project.startDate}"/> - <fmt:formatDate value="${project.endDate}"/></td>
+    </tr>
+    <tr class="tableRow<%=c++ % 2%>">
+        <td><strong><spring:message code="project.leader"/>:</strong></td>
+        <td><pw:resolveuser user="${project.leader}"/></td>
+    </tr>
+
+
+    <tr class="tableRow<%=c++ % 2%>">
+        <td><strong><spring:message code="project.public"/>:</strong></td>
+        <td>
+            <c:choose>
+                <c:when test="${project.publicProject}"><spring:message code="general.yes"/></c:when>
+                <c:otherwise><spring:message code="general.no"/></c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+
+</table>
+
+<br>
 
 <div class="activitylistmain">
-<div class="heading"><spring:message code="activitylist.header" arguments="${project.name}"/></div>
+<div class="heading"><spring:message code="activitylist.header"/></div>
 
 <c:choose>
 <c:when test="${not empty activities}">
@@ -230,7 +290,7 @@
                     <c:set var="selected" value="true"/>
                 </c:if>
             </c:forEach>
-            <input type="checkbox" name="phases" value="<c:out value="${phase.id}"/>" <c:if test="${selected}">checked="checked"</c:if>><c:out value="${phase.name}"/><br>
+            <input type="checkbox" name="phases" onclick="updateView()" value="<c:out value="${phase.id}"/>" <c:if test="${selected}">checked="checked"</c:if>><c:out value="${phase.name}"/><br>
         </c:forEach>
 </div>
 
@@ -251,7 +311,7 @@
                     <c:set var="selected" value="true"/>
                 </c:if>
             </c:forEach>
-            <input type="checkbox" name="statuses" value="<c:out value="${status.id}"/>" <c:if test="${selected}">checked="checked"</c:if>><c:out value="${status.name}"/><br>
+            <input type="checkbox" name="statuses" onclick="updateView()" value="<c:out value="${status.id}"/>" <c:if test="${selected}">checked="checked"</c:if>><c:out value="${status.name}"/><br>
         </c:forEach>
 </div>
 
@@ -272,12 +332,12 @@
                     <c:set var="selected" value="true"/>
                 </c:if>
             </c:forEach>
-            <input type="checkbox" name="priorities" value="<c:out value="${priority.id}"/>" <c:if test="${selected}">checked="checked"</c:if>><c:out value="${priority.name}"/><br>
+            <input type="checkbox" name="priorities" onclick="updateView()" value="<c:out value="${priority.id}"/>" <c:if test="${selected}">checked="checked"</c:if>><c:out value="${priority.name}"/><br>
         </c:forEach>
 </div>
 <div class="activitysearchsection">
     <spring:message code="activity.assignee"/>:<br>
-    <select name="assignees" class="activitylistselect">
+    <select name="assignees" class="activitylistselect" onchange="updateView()">
         <option value="-1" <c:if test="${assignees[0] eq '-1'}">selected</c:if>><spring:message code="general.any"/></option>
         <c:forEach items="${allparticipants}" var="participant">
             <option value="<c:out value="${participant.profile.user}"/>"  <c:if test="${assignees[0] eq participant.profile.user}">selected</c:if>><c:out value="${participant.profile.fullName}"/></option>
@@ -286,7 +346,7 @@
 </div>
 <div class="activitysearchsection">
     <spring:message code="activity.reporter"/>:<br>
-    <select  name="reporters" class="activitylistselect">
+    <select  name="reporters" class="activitylistselect" onchange="updateView()">
         <option value="-1" <c:if test="${reporters[0] eq '-1'}">selected</c:if>><spring:message code="general.any"/></option>
         <c:forEach items="${allparticipants}" var="participant">
             <option value="<c:out value="${participant.profile.user}"/>" <c:if test="${reporters[0] eq participant.profile.user}">selected</c:if>><c:out value="${participant.profile.fullName}"/></option>

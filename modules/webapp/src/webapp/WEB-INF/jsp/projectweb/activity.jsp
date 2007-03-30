@@ -27,10 +27,6 @@
             <td><spring:message code="activity.phase"/>:</td>
             <td class="dottedTd"><c:out value="${activity.projectPhase.name}"/></td>
         </tr>
-<!--        <tr  class="tableRow<%=c++ % 2%>">
-            <td><spring:message code="activity.type"/>:</td>
-            <td class="dottedTd"><c:out value="${activity.type.name}"/></td>
-        </tr>-->
         <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="activity.status"/>:</td>
             <td class="dottedTd"><c:out value="${activity.status.name}"/></td>
@@ -94,42 +90,77 @@
 
 </kantega:section>
 
-<kantega:section id="documents">
-        <tr class="tableHeading">
-            <td colspan="2"><spring:message code="activity.documents"/></td>
-        </tr>
-    <%
-        int c = 0;
-    %>
-    <c:forEach items="${documents}" var="document" varStatus="status">
-        <tr class="tableRow<%=c++ % 2%>">
-            <td colspan="2">
-                <a href="document?documentId=<c:out value="${document.id}"/>&activityId=<c:out value="${activity.id}"/>">
-                     <pw:limittextlength value="${document.title}" length="17"/>
-                </a><br>
-            </td>
-        </tr>
-    </c:forEach>
-        <tr class="tableRow0">
-            <td colspan="2" align="right">
-                <kantega:getsection id="add_document"/>
-            </td>
-        </tr>
-</kantega:section>
-
 <kantega:section id="innhold">
-    <script>
+    <script language="Javascript" type="text/javascript">
         function addComment() {
             document.getElementById("addcomment").style.display = 'block';
+        }
+
+        function confirmDelete(id) {
+            if (confirm("<spring:message code="document.confirmdelete"/>")) {
+                document.deleteForm.documentId.value = id;
+                document.deleteForm.submit();
+            }
         }
     </script>
     <div class="heading"><c:out value="${activity.project.name}"/>: <c:out value="${activity.title}"/></div>
 
     <c:out value="${activity.description}"/><br>
-
+    <br>
+    <table border="0" cellspacing="0" width="100%">
+        <tr>
+            <td colspan="5" align="right">
+                <kantega:getsection id="add_document"/>
+            </td>
+        </tr>
+        <tr class="tableHeading">
+            <td><spring:message code="document.title"/></td>
+            <td><spring:message code="document.description"/></td>
+            <td><spring:message code="document.editdate"/></td>
+            <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
+                <c:set var="canEdit" value="true"/>
+                <td>&nbsp;</td>
+            </pw:haspermission>
+            <pw:haspermission project="${project}" permission="DELETE_DOCUMENT">
+                <c:set var="canDelete" value="true"/>
+                <td>&nbsp;</td>
+            </pw:haspermission>
+        </tr>
+        <c:forEach items="${documents}" var="document" varStatus="status">
+            <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
+                <td>
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>"><c:out
+                            value="${document.title}"/></a>
+                </td>
+                <td>
+                    <c:out value="${document.description}"/>
+                </td>
+                <td>
+                    <fmt:formatDate value="${document.editDate}"/>
+                </td>
+                <c:if test="${canEdit}">
+                    <td>
+                        <a class="button" style="vertical-align: middle;" href="editdocument?documentId=<c:out value="${document.id}"/>">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_rediger.gif" border="0">
+                         <spring:message code="general.edit"/>
+                     </a>
+                    </td>
+                </c:if>
+                <c:if test="${canDelete}">
+                    <td>
+                        <a class="button" style="vertical-align: middle;" href="Javascript:confirmDelete('<c:out value="${document.id}"/>')">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_slett.gif" border="0">
+                         <spring:message code="general.delete"/>
+                     </a>
+                    </td>
+                </c:if>
+            </tr>
+        </c:forEach>
+    </table>
+    <br>
         <pw:haspermission project="${activity.project}" permission="ACTIVITY_ADD_COMMENT">
             <table width="100%">
-            <tr>
+                <tr>
                     <td align="right">
                         <a class="button" style="vertical-align: middle;" href="javascript:addComment()"><img src="../bitmaps/projectweb/ikon_leggtilkommentar.gif" border="0"  style="vertical-align: middle;"><spring:message code="activity.addcomment"/></a>
                     </td>
@@ -146,24 +177,37 @@
                     </td>
 
                 </tr>
-                </table>
+            </table>
             </pw:haspermission>
-        <table width="100%">
+        <table width="100%" cellspacing="0" cellpadding="4">
+            <tr class="tableHeading">
+                <td>
+                    <spring:message code="activity.comments"/>
+                </td>
+            </tr>
+            <%
+                int c = 1;
+            %>
             <c:forEach items="${activity.comments}" var="comment">
                 <tr class="tableHeading" style="font-weight: normal;">
-                    <td>
+                    <td class="tableRow<%=(c%2)%>">
                         <span style="font-weight: bold;"><pw:resolveuser user="${comment.user}"/></span> (<fmt:formatDate value="${comment.date}" type="both"/>)
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="tableRow<%=(c%2)%>">
                         <spring:escapeBody><pw:text2html text="${comment.text}"/></spring:escapeBody>
                     </td>
                 </tr>
+                <%
+                    c++;
+                %>
             </c:forEach>
 
         </table>
-
+        <form name="deleteForm" action="deletedocument" method="POST">
+            <input name="documentId" type="hidden" value="">
+        </form>
 </kantega:section>
 
 <kantega:section id="workflowactions">
@@ -181,11 +225,10 @@
 
 <kantega:section id="relatert innhold">
     <div class="activitylistsearch">
-        <table cellpadding="0" cellspacing="0">
+        <table cellpadding="0" cellspacing="0" width="100%">
             <kantega:getsection id="summary"/>
             <kantega:getsection id="economy"/>
             <kantega:getsection id="workflowactions"/>
-            <kantega:getsection id="documents"/>
         </table>
     </div>
 </kantega:section>

@@ -24,7 +24,7 @@
 
         <form method="post" enctype="multipart/form-data">
             <c:if test="${activityId != null}">
-                <input type="hidden" name="activityId" value="${acivityId}">
+                <input type="hidden" name="activityId" value="<c:out value="${activityId}"/>">
             </c:if>
             <table>
                 <tr>

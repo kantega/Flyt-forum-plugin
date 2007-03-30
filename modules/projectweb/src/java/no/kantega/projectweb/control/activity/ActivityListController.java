@@ -11,8 +11,12 @@ import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.model.Project;
 import no.kantega.projectweb.model.Activity;
 import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.projectweb.activity.ActivityStatusManager;
 import no.kantega.projectweb.util.ProjectWebUtil;
+import no.kantega.projectweb.permission.PermissionManager;
+import no.kantega.projectweb.permission.GlobalPermissions;
+import no.kantega.projectweb.permission.Permissions;
 
 import java.util.*;
 
@@ -28,13 +32,21 @@ public class ActivityListController implements Controller {
     private ProjectWebDao dao;
     private UserProfileManager userProfileManager;
     private ActivityStatusManager statusManager;
+    private PermissionManager permissionManager;
+    private UserResolver userResolver;
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
         long projectId = Long.parseLong(request.getParameter("projectId"));
-        Project project = dao.getProject(projectId);
+        Project project = dao.getPopulatedProject(projectId);
         map.put("project", project);
+
+        String user = userResolver.resolveUser(request).getUsername();
+        boolean mayEdit = permissionManager.hasGlobalPermission(user, GlobalPermissions.ADMINISTRATOR) ||
+                permissionManager.hasPermission(user, Permissions.PROJECT_ADMINISTRATION, project);
+        map.put("mayEdit", new Boolean(mayEdit));
+
         List activities = new ArrayList();
         DetachedCriteria criteria = createCriteria(request, project);
         List a = dao.getActivitiesInProject(criteria);
@@ -232,4 +244,13 @@ public class ActivityListController implements Controller {
     public void setStatusManager(ActivityStatusManager statusManager) {
         this.statusManager = statusManager;
     }
+
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public void setUserResolver(UserResolver userResolver) {
+        this.userResolver = userResolver;
+    }
+
 }

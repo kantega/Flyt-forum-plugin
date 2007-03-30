@@ -97,15 +97,13 @@ public class EditDocumentController extends FormControllerSupport {
 
         //hvis dokumentet legges til en aktivitet
         String activityId = httpServletRequest.getParameter("activityId");
-        if (activityId!=null){
-
+        if (activityId != null){
             dao.saveDocumentWithActivity(Long.parseLong(activityId), document);
-        }
-        else{
+            return new ModelAndView(new RedirectView("activity"), "activityId", activityId);
+        } else{
             dao.saveOrUpdate(document);
+            return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
         }
-
-        return new ModelAndView(new RedirectView("document"), "documentId", Long.toString(document.getId()));
     }
 
 

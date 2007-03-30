@@ -28,7 +28,7 @@ public class EditProjectController extends FormControllerSupport implements Appl
     protected ModelAndView onSubmit(Object o) throws Exception {
         Project project = (Project) o;
         dao.saveOrUpdate(project);
-        return new ModelAndView(new RedirectView("project"), "projectId", Long.toString(project.getId()));
+        return new ModelAndView(new RedirectView("activitylist"), "projectId", Long.toString(project.getId()));
     }
 
     protected Map referenceData(HttpServletRequest httpServletRequest, Object object, Errors errors) throws Exception {

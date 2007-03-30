@@ -12,7 +12,10 @@ import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.projectweb.permission.PermissionManager;
 import no.kantega.projectweb.permission.GlobalPermissions;
 import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.model.ActivityStatus;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.commons.configuration.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,8 +50,23 @@ public class ProjectListController implements Controller {
             DetachedCriteria criteria = DetachedCriteria.forClass(Activity.class);
             criteria.add(Property.forName("assignee").eq(user));
 
-            List a = dao.getActivitiesInProject(criteria);
-            map.put("activities", a);
+            DetachedCriteria sc = criteria.createCriteria("status");
+
+            // Vis kun de med status som er bestemt skal vises
+            Configuration config = Aksess.getConfiguration();
+            String[] statuses = config.getStrings("projectweb.frontpage.showstatuses");
+            if (statuses != null) {
+                Long[] lStatuses = new Long[statuses.length];
+                for (int i = 0; i < statuses.length; i++) {
+                    ActivityStatus status = dao.getActivityStatusByCode(statuses[i]);
+                    if (status != null) {
+                        lStatuses[i] = new Long(status.getId());
+                    }
+                }
+                sc.add(Property.forName("id").in(lStatuses));
+            }
+            List activities = dao.getActivitiesInProject(criteria);
+            map.put("activities", activities);
         }
         return new ModelAndView("projectlist", map);
     }

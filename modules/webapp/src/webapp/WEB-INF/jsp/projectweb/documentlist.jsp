@@ -18,11 +18,18 @@
         document.searchform.order.value = order;
         document.searchform.submit();
     }
+
+    function confirmDelete(id) {
+        if (confirm("<spring:message code="document.confirmdelete"/>")) {
+            document.deleteForm.documentId.value = id;
+            document.deleteForm.submit();
+        }
+    }
 </script>
 <div class="heading"><spring:message code="documentlist.header" arguments="${project.name}"/></div>
 <c:choose>
 <c:when test="${not empty documents}">
-    <table border="0" cellspacing="0">
+    <table border="0" cellspacing="0" width="100%">
         <tr>
             <td colspan="4" align="right">
                 <kantega:getsection id="add_document"/>
@@ -31,26 +38,48 @@
         <tr class="tableHeading">
             <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
             <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
+            <td><spring:message code="document.description"/></td>
             <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
-            <td>&nbsp;</td>
+            <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
+                <c:set var="canEdit" value="true"/>
+                <td>&nbsp;</td>
+            </pw:haspermission>
+            <pw:haspermission project="${project}" permission="DELETE_DOCUMENT">
+                <c:set var="canDelete" value="true"/>
+                <td>&nbsp;</td>
+            </pw:haspermission>
         </tr>
         <c:forEach items="${documents}" var="document" varStatus="status">
-            <tr class="tableRow<c:out value="${status.count % 2}"/>">
+            <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
                 <td>
-                    <a href="document?documentId=<c:out value="${document.id}"/>"><c:out
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>"><c:out
                             value="${document.title}"/></a>
                 </td>
                 <td>
                     <c:out value="${document.category.name}"/>
                 </td>
                 <td>
-                    <c:out value="${document.editDate}"/>
+                    <c:out value="${document.description}"/>
                 </td>
                 <td>
-                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>">
-                        <spring:message code="documentlist.download"/>
-                    </a>
+                    <fmt:formatDate value="${document.editDate}"/>
                 </td>
+                <c:if test="${canEdit}">
+                    <td>
+                        <a class="button" style="vertical-align: middle;" href="editdocument?documentId=<c:out value="${document.id}"/>">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_rediger.gif" border="0">
+                         <spring:message code="general.edit"/>
+                     </a>
+                    </td>
+                </c:if>
+                <c:if test="${canDelete}">
+                    <td>
+                        <a class="button" style="vertical-align: middle;" href="Javascript:confirmDelete('<c:out value="${document.id}"/>')">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_slett.gif" border="0">
+                         <spring:message code="general.delete"/>
+                     </a>
+                    </td>
+                </c:if>
             </tr>
         </c:forEach>
     </table>
@@ -66,6 +95,11 @@
     </pw:haspermission>
 </c:otherwise>
 </c:choose>
+
+<form name="deleteForm" action="deletedocument" method="POST">
+    <input name="documentId" type="hidden" value="">
+</form>
+
 </kantega:section>
 
 <kantega:section id="relatert innhold">

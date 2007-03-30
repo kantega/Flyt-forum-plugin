@@ -330,6 +330,10 @@ public class ProjectWebDao {
     }
 
     public List getActivitiesInProject(final DetachedCriteria criteria) {
+        return getActivitiesInProject(criteria, -1);
+    }
+
+    public List getActivitiesInProject(final DetachedCriteria criteria, final int max) {
 
         Session session = null;
         try {
@@ -340,6 +344,9 @@ public class ProjectWebDao {
             exCriteria.setFetchMode("priority",FetchMode.JOIN);
             exCriteria.setFetchMode("status", FetchMode.JOIN);
             exCriteria.setFetchMode("projectPhase", FetchMode.JOIN);
+            if (max != -1) {
+                exCriteria.setMaxResults(max);
+            }
             return exCriteria.list();
         } finally {
             session.close();
