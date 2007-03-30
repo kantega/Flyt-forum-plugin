@@ -31,7 +31,7 @@
 <c:when test="${not empty documents}">
     <table border="0" cellspacing="0" width="100%">
         <tr>
-            <td colspan="4" align="right">
+            <td colspan="6" align="right">
                 <kantega:getsection id="add_document"/>
             </td>
         </tr>
