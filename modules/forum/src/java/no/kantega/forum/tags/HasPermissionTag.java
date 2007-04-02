@@ -50,7 +50,10 @@ public class HasPermissionTag extends ConditionalTagSupport {
                 }
             }
 
-            return manager.hasPermission(user, permissionId, o);
+            boolean hasP = manager.hasPermission(user, permissionId, o);
+            user = null;
+
+            return hasP;
 
 
         } catch (Exception e) {

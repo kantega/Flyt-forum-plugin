@@ -39,7 +39,12 @@ public class HasGlobalPermissionTag extends ConditionalTagSupport {
                 user = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest()).getUsername();
             }
 
-            return manager.hasGlobalPermission(user, permissionId);
+            boolean hasP =  manager.hasGlobalPermission(user, permissionId);
+
+            // Reset user value
+            user = null;
+
+            return hasP;
 
 
         } catch (Exception e) {

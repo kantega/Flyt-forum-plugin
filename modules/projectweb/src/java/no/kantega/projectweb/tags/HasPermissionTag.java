@@ -42,7 +42,9 @@ public class HasPermissionTag extends ConditionalTagSupport {
                 user = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest()).getUsername();
             }
 
-            return manager.hasPermission(user, permissionId, theProject);
+            boolean hasP = manager.hasPermission(user, permissionId, theProject);
+            user = null;
+            return hasP;
 
 
         } catch (Exception e) {

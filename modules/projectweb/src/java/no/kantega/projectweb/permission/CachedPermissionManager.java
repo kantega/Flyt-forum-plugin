@@ -19,7 +19,7 @@ public class CachedPermissionManager implements PermissionManager, PermissionInv
     private PermissionManager realPermissionManager;
 
     public boolean hasPermission(String user, long permission, Project project) {
-        String key = user +"-" + +permission + "-" + project.getId();
+        String key = user + "-" + permission + "-" + project.getId();
 
         Boolean permitted  = null;
         try {
@@ -36,7 +36,7 @@ public class CachedPermissionManager implements PermissionManager, PermissionInv
     }
 
     public boolean hasGlobalPermission(String user, long permission) {
-        String key = user +"-" + +permission;
+        String key = user + "-" + permission;
 
         Boolean permitted  = null;
         try {
@@ -49,6 +49,7 @@ public class CachedPermissionManager implements PermissionManager, PermissionInv
                 cache.cancelUpdate(key);
             }
         }
+
         return permitted.booleanValue();
 
     }
