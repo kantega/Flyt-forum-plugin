@@ -167,8 +167,19 @@
                 </tr>
                 <tr>
                     <td>
+                        <script type="text/javascript">
+                            function checkComment() {
+                                if (document.comment.text.value == "") {
+                                    alert('<spring:message code="activity.addcomment.missingtext"/>');
+                                    document.comment.focus();
+                                    return false;
+                                }
+
+                                return true;
+                            }
+                        </script>
                         <div id="addcomment" style="display: none">
-                            <form action="addactivitycomment" method="POST">
+                            <form action="addactivitycomment" name="comment" method="POST" onsubmit="return checkComment()">
                                 <input name="activityId" type="hidden" value="<c:out value="${activity.id}"/>">
                                 <textarea name="text" style="width: 100%; height: 100px"></textarea><br>
                                 <input type="submit" value="<spring:message code="activity.addcomment"/>">
