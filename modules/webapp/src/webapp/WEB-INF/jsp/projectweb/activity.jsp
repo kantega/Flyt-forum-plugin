@@ -103,7 +103,7 @@
             }
         }
     </script>
-    <div class="heading"><c:out value="${activity.project.name}"/>: <c:out value="${activity.title}"/></div>
+    <div class="heading"><spring:message code="activity.heading"/>: <c:out value="${activity.title}"/></div>
 
     <c:out value="${activity.description}"/><br>
     <br>
