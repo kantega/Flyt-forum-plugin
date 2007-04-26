@@ -34,13 +34,15 @@ public class  DefaultPermissionManager implements PermissionManager {
 
     
     private boolean getPermission(String user, long permission, Object object) {
+        boolean isAdmin = false;
 
         // Sjekk om bruker er forumadministrator
         if(user != null && !user.trim().equals("")) {
             for (int i = 0; i < administratorGroups.size(); i++) {
                 String group = (String) administratorGroups.get(i);
                 if(groupResolver.isInGroup(user, group)) {
-                    return true;
+                    isAdmin = true;
+                    break;
                 }
             }
         }
@@ -86,7 +88,7 @@ public class  DefaultPermissionManager implements PermissionManager {
                         }
                     }
 
-                    return isAuthorized;
+                    return isAdmin | isAuthorized;
                 }
 
             }
@@ -120,7 +122,7 @@ public class  DefaultPermissionManager implements PermissionManager {
             }
         }
 
-        return false;
+        return isAdmin;
     }
 
     private String getPermission(long value) {
@@ -144,4 +146,5 @@ public class  DefaultPermissionManager implements PermissionManager {
     public void setAdministratorGroups(String administratorGroups) {
         this.administratorGroups = Arrays.asList(administratorGroups.split(","));
     }
+
 }

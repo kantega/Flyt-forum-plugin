@@ -85,7 +85,7 @@
                         </td>
                     </spring:bind>
                 </tr>
-                <forum:haspermisson permission="ATTACH_FILE">
+                <forum:haspermisson permission="ATTACH_FILE" object="${post}">
                 <tr class="forum-labelRow">
                     <td valign="top" colspan="2"><spring:message code="post.attachments"/>:</td>
                 </tr>
