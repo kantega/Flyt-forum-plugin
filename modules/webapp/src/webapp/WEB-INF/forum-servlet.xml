@@ -148,11 +148,7 @@
         </property>
     </bean>
 
-    <bean id="deleteCategoryController" class="no.kantega.forum.control.DeleteCategoryController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
-    </bean>
+    <bean id="deleteCategoryController" class="no.kantega.forum.control.DeleteCategoryController" parent="abstractForumFormController"/>
 
     <bean id="forumListController" class="no.kantega.forum.control.ListForumsController">
         <property name="dao">
