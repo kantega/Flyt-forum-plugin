@@ -114,6 +114,8 @@ public class EditPostController extends AbstractForumFormController {
             if (replyId != null) {
                 String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
                 String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
+                String qWrote = getApplicationContext().getMessage("post.quote.wrote", new Object[0], RequestContextUtils.getLocale(request));
+
                 p.setReplyToId(Long.parseLong(replyId));
                 Post origPost = dao.getPost(Long.parseLong(replyId));
                 if(origPost.getSubject().startsWith("SV:")) {
@@ -121,7 +123,7 @@ public class EditPostController extends AbstractForumFormController {
                 } else {
                     p.setSubject("SV: " + origPost.getSubject());
                 }
-                String body = origPost.getBody();
+                String body = origPost.getAuthor() + " " + qWrote + ":\n\n" + origPost.getBody();
 
                 body = body.replaceAll("<blockquote>", qStart).replaceAll("</blockquote>", qEnd);
                 p.setBody(qStart + body + qEnd + "\n");
