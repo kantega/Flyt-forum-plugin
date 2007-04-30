@@ -123,9 +123,22 @@ public class EditPostController extends AbstractForumFormController {
                 } else {
                     p.setSubject("SV: " + origPost.getSubject());
                 }
-                String body = origPost.getAuthor() + " " + qWrote + ":\n\n" + origPost.getBody();
 
+                String qStr = "\n" + origPost.getAuthor() + " " + qWrote + ":\n\n";
+
+                String body = origPost.getBody();
                 body = body.replaceAll("<blockquote>", qStart).replaceAll("</blockquote>", qEnd);
+
+                int qEndInx = body.lastIndexOf(qEnd);
+                System.out.println("BODY:" + body);
+                if (qEndInx != -1) {
+                    System.out.println("sitat finnes" + qEndInx);
+                    body = body.substring(0, qEndInx + qEnd.length()) + qStr + body.substring(qEndInx + qEnd.length(), body.length());
+                } else {
+                    System.out.println("sitat finnes ikke" + qEndInx);
+                    body = qStr + body;
+                }
+
                 p.setBody(qStart + body + qEnd + "\n");
             }
             return p;
