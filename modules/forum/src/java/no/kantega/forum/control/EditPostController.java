@@ -130,12 +130,9 @@ public class EditPostController extends AbstractForumFormController {
                 body = body.replaceAll("<blockquote>", qStart).replaceAll("</blockquote>", qEnd);
 
                 int qEndInx = body.lastIndexOf(qEnd);
-                System.out.println("BODY:" + body);
                 if (qEndInx != -1) {
-                    System.out.println("sitat finnes" + qEndInx);
                     body = body.substring(0, qEndInx + qEnd.length()) + qStr + body.substring(qEndInx + qEnd.length(), body.length());
                 } else {
-                    System.out.println("sitat finnes ikke" + qEndInx);
                     body = qStr + body;
                 }
 
@@ -146,7 +143,6 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
-        System.out.println("Lagrer post");
 
         Post p = (Post) object;
 
