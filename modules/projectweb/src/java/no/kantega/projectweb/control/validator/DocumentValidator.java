@@ -19,9 +19,12 @@ public class DocumentValidator implements Validator {
 
 
     public void validate(Object o, Errors errors) {
-        Document dpcument = (Document) o;
-        if(dpcument.getTitle().length() < 3) {
+        Document document = (Document) o;
+        if (document.getTitle().length() < 3) {
             errors.rejectValue("title", "title.too-short", "Title to short");
+        }
+        if (document.getDocumentContent() == null) {
+            errors.rejectValue("documentContent", "documentContent.noFile", "File must be supplied");
         }
     }
 }
