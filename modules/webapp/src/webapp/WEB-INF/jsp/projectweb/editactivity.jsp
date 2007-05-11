@@ -32,7 +32,7 @@
                 <td>
                     <spring:bind path="activity.title">
                         <input name="title" value="<c:out value="${status.value}"/>">
-                        <c:out value="${status.errorMessage}"/>
+                        <spring:message code="activity.validation.${status.errorCode}" text="${status.errorMessage}"/>
                     </spring:bind>
                 </td>
             </tr>
@@ -46,7 +46,7 @@
                                 <option <c:if test="${phase.id == activity.projectPhase.id}">selected</c:if> value="<c:out value="${phase.id}"/>"><c:out value="${phase.name}"/></option>
                             </c:forEach>
                         </select>
-                        <c:out value="${status.errorMessage}"/>
+                        <spring:message code="activity.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         <br>
                     </spring:bind>
                 </td>
@@ -75,7 +75,7 @@
                                 <option <c:if test="${priority.id == activity.priority.id}">selected</c:if> value="<c:out value="${priority.id}"/>"><c:out value="${priority.name}"/></option>
                             </c:forEach>
                         </select>
-                        <c:out value="${status.errorMessage}"/>
+                        <spring:message code="activity.validation.${status.errorCode}" text="${status.errorMessage}"/>
                     </spring:bind>
 
                 </td>
