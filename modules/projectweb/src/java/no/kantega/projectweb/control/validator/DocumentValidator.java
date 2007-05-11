@@ -17,8 +17,11 @@ public class DocumentValidator implements Validator {
         return clazz.equals(Document.class);
     }
 
-    public void validate(Object o, Errors errors) {
-        
 
+    public void validate(Object o, Errors errors) {
+        Document dpcument = (Document) o;
+        if(dpcument.getTitle().length() < 3) {
+            errors.rejectValue("title", "title.too-short", "Title to short");
+        }
     }
 }
