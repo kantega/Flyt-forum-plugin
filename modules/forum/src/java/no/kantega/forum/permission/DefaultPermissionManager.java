@@ -86,6 +86,14 @@ public class  DefaultPermissionManager implements PermissionManager {
                                 break;
                             }                            
                         }
+
+                        if (!isAuthorized) {
+                            // Forum-moderator skal alltid ha tilgang
+                            if (user != null && user.equals(forum.getModerator())) {
+                                isAuthorized = true;
+                            }
+                        }
+
                     }
 
                     return isAdmin | isAuthorized;
