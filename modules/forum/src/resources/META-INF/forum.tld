@@ -30,6 +30,28 @@
     </tag>
 
     <tag>
+        <name>foreachforum</name>
+        <tagclass>no.kantega.forum.tags.ForEachForumTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Iterates over all forums or forums connection to users role etc</info>
+        <attribute>
+            <name>relevance</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
         <name>foreachpostinthread</name>
         <tagclass>no.kantega.forum.tags.ForEachPostInThreadTag</tagclass>
         <bodycontent>JSP</bodycontent>

@@ -1,19 +1,16 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.util.ForumUtil;
 import no.kantega.commons.util.StringHelper;
 
 /**
@@ -74,6 +71,11 @@ public class ViewThreadController extends AbstractForumViewController {
                 }
             }
             map.put("posts", posts);
+
+            // Legg inn tidspunkt for siste besøk
+            Date lastVisit = ForumUtil.updateLastVisit(request, response);
+            map.put("lastVisit", lastVisit);
+
             return new ModelAndView("viewthread", map);
         }
     }

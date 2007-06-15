@@ -12,6 +12,7 @@ import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
 
@@ -32,6 +33,9 @@ public class ListCategoriesController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
 
+        Date lastVisit = ForumUtil.updateLastVisit(request, response);
+        map.put("lastVisit", lastVisit);
+        
         List cats = dao.getForumCategories();
 
         String username = null;

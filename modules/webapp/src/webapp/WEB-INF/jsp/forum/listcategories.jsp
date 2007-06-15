@@ -26,6 +26,7 @@ q<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="is
             <c:forEach items="${categories}" var="category">
                 <c:set var="hascats" value="true"/>
                 <tr class="forum-labelRow">
+                    <td valign="top">&nbsp;</td>
                     <td valign="top">
                         <c:set var="canedit" value="false"/>
                         <forum:haspermisson permission="EDIT_CATEGORY" object="${category}">
@@ -46,6 +47,19 @@ q<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="is
 
                 <c:forEach var="forum" items="${category.forums}"  varStatus="status">
                     <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
+                        <td valign="top">
+                            <c:choose>
+                                <c:when test="${forum.lastPost != null && forum.lastPost.postDate.time > lastVisit.time}">
+                                    <img src="../bitmaps/forum/new.gif" alt="<spring:message code="post.icon.new"/>" title="<spring:message code="post.icon.new"/>">
+                                </c:when>
+                                <c:when test="${forum.numThreads > 10}">
+                                    <img src="../bitmaps/forum/hot.gif" alt="<spring:message code="post.icon.hot"/>" title="<spring:message code="post.icon.hot"/>">
+                                </c:when>
+                                <c:otherwise>
+                                    <img src="../bitmaps/forum/normal.gif" alt="">
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td valign="top">
                             <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
                             <c:if test="${forum.description != ''}">
@@ -82,6 +96,7 @@ q<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="is
         <br><br>
         <a href="editcategory"><spring:message code="forumcategory.addcategory"/></a>
     </forum:haspermisson>
+    <br>Sist besøk: <c:out value="${lastVisit}"/>
 </kantega:section>
 
 <%@ include file="include/design/design.jsf" %>

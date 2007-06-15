@@ -5,15 +5,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.util.ForumUtil;
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +61,10 @@ public class ViewForumController extends AbstractForumViewController {
                 }
             }
             map.put("threads", threads);
+
+            // Legg inn tidspunkt for siste besøk
+            Date lastVisit = ForumUtil.updateLastVisit(request, response);
+            map.put("lastVisit", lastVisit);
 
             return new ModelAndView("viewforum", map);
         }

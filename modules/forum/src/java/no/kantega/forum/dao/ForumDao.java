@@ -90,12 +90,28 @@ public class ForumDao {
     public List getForumCategories() {
         List list = template.find("from ForumCategory c left join fetch c.forums f order by c.name");
 
+        // Remove duplicates since Hibernate duplicates forums
         Set setItems = new LinkedHashSet(list);
         list.clear();
         list.addAll(setItems);
 
         return list;
     }
+
+    public List getForums() {
+        return template.find("from Forum f inner join fetch f.forumCategory c");
+    }
+
+    public List getForumsWithUserPostings(final String userId) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Forum f inner join fetch f.forumCategory c where f.id in (select t.forum.id from ForumThread t where t.id in (select p.thread.id from Post p where p.owner = ?))");
+                query.setString(0, userId);
+                return query.list();
+            }
+        });
+    }
+
 
     public List getLastPosts(final int n) {
         return (List) template.execute(new HibernateCallback() {
@@ -106,8 +122,26 @@ public class ForumDao {
                 return query.list();
             }
         });
-
     }
+
+    /*public int getNewPostCountInForum(final long forumId, Date lastVisit) {
+
+        Number n = (Number) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+
+                Post p = (Post) session.get(Post.class, new Long(postId));
+
+                Query q = session.createQuery("select count(*) from Post p where p.thread.id=? and p.id < ? and approved = 'Y'");
+
+                q.setLong(0, p.getThread().getId());
+                q.setLong(1, p.getId());
+
+                return q.uniqueResult();
+            }
+        });
+
+        return n.intValue();
+    }*/
 
     public List getLastPostsInForum(final long forumId, final int n) {
         return (List) template.execute(new HibernateCallback() {

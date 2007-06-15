@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.util.ForumUtil;
 import no.kantega.commons.util.StringHelper;
 
 /**
@@ -39,6 +41,11 @@ public class ViewPostController extends AbstractForumViewController {
 
             map.put("post", p);
             map.put("gotchildren", String.valueOf(dao.postGotChildren(p)));
+
+            // Legg inn tidspunkt for siste besøk
+            Date lastVisit = ForumUtil.updateLastVisit(request, response);
+            map.put("lastVisit", lastVisit);
+            
             return new ModelAndView("viewpost", map);
         }
     }
