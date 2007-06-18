@@ -124,24 +124,22 @@ public class ForumDao {
         });
     }
 
-    /*public int getNewPostCountInForum(final long forumId, Date lastVisit) {
+    public int getNewPostCountInForum(final long forumId, final Date lastVisit) {
 
         Number n = (Number) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
 
-                Post p = (Post) session.get(Post.class, new Long(postId));
+                Query q = session.createQuery("select count(*) from Post p where p.thread.forum.id=? and p.approved = 'Y' and p.postDate > ?");
 
-                Query q = session.createQuery("select count(*) from Post p where p.thread.id=? and p.id < ? and approved = 'Y'");
-
-                q.setLong(0, p.getThread().getId());
-                q.setLong(1, p.getId());
+                q.setLong(0, forumId);
+                q.setDate(1, lastVisit);
 
                 return q.uniqueResult();
             }
         });
 
         return n.intValue();
-    }*/
+    }
 
     public List getLastPostsInForum(final long forumId, final int n) {
         return (List) template.execute(new HibernateCallback() {

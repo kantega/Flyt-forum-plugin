@@ -1,6 +1,5 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +62,7 @@ public class ViewForumController extends AbstractForumViewController {
             map.put("threads", threads);
 
             // Legg inn tidspunkt for siste besøk
-            Date lastVisit = ForumUtil.updateLastVisit(request, response);
+            Date lastVisit = ForumUtil.getLastVisit(request, response, true);
             map.put("lastVisit", lastVisit);
 
             return new ModelAndView("viewforum", map);

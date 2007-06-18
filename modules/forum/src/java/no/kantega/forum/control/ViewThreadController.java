@@ -73,7 +73,7 @@ public class ViewThreadController extends AbstractForumViewController {
             map.put("posts", posts);
 
             // Legg inn tidspunkt for siste besøk
-            Date lastVisit = ForumUtil.updateLastVisit(request, response);
+            Date lastVisit = ForumUtil.getLastVisit(request, response, true);
             map.put("lastVisit", lastVisit);
 
             return new ModelAndView("viewthread", map);

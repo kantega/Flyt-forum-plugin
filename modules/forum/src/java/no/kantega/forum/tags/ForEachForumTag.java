@@ -7,6 +7,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import no.kantega.forum.permission.PermissionManager;
@@ -15,6 +16,7 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.util.ForumComparator;
+import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.publishing.spring.RootContext;
@@ -46,6 +48,7 @@ public class ForEachForumTag extends LoopTagSupport {
         PermissionManager permissionsManager = (PermissionManager) context.getBean("forumPermissionManager");
         UserResolver userResolver = (UserResolver) context.getBean("userResolver");
 
+        long t1 = new Date().getTime();
         i = null;
         Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
         if(daos.size() > 0) {
@@ -90,6 +93,16 @@ public class ForEachForumTag extends LoopTagSupport {
 
             List forums = new ArrayList(result.values());
             Collections.sort(forums, comparator);
+
+            Date lastVisit = ForumUtil.getLastVisit((HttpServletRequest)pageContext.getRequest(), (HttpServletResponse)pageContext.getResponse(), false);
+
+
+            // Finn antall nye innlegg
+            for (int j = 0; j < forums.size(); j++) {
+                Forum forum = (Forum) forums.get(j);
+                int num = dao.getNewPostCountInForum(forum.getId(), lastVisit);
+                forum.setNumNewPosts(num);
+            }
 
             i = forums.iterator();
 

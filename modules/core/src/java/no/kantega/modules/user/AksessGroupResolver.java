@@ -29,7 +29,8 @@ public class AksessGroupResolver implements GroupResolver {
         Map roles;
 
         try {
-            roles = (Map) cache.getFromCache(user, 5);
+            // Cache for one hour
+            roles = (Map) cache.getFromCache(user, 3600);
         } catch (NeedsRefreshException e) {
             try {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();

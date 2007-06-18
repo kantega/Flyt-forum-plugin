@@ -33,7 +33,7 @@ public class ListCategoriesController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map map = new HashMap();
 
-        Date lastVisit = ForumUtil.updateLastVisit(request, response);
+        Date lastVisit = ForumUtil.getLastVisit(request, response, true);
         map.put("lastVisit", lastVisit);
         
         List cats = dao.getForumCategories();

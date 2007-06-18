@@ -25,6 +25,7 @@ public class Forum {
     private boolean approvalRequired = false;
     private String moderator;
     private Set groups;
+    private int numNewPosts = 0;
 
     public Set getGroups() {
         return groups;
@@ -138,4 +139,11 @@ public class Forum {
         this.moderator = moderator;
     }
 
+    public int getNumNewPosts() {
+        return numNewPosts;
+    }
+
+    public void setNumNewPosts(int newPosts) {
+        this.numNewPosts = newPosts;
+    }
 }
