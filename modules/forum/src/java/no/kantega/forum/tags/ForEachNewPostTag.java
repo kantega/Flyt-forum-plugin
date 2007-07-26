@@ -10,10 +10,7 @@ import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.common.data.Content;
@@ -56,17 +53,22 @@ public class ForEachNewPostTag extends LoopTagSupport {
         if(daos.size() > 0) {
             ForumDao dao = (ForumDao) daos.values().iterator().next();
 
-            long fId = -1;
+            long fId[] = null;
             if (forumId != null) {
                 try {
                     forumId = (String) ExpressionEvaluationUtils.evaluate("forumId", forumId, String.class, pageContext);
                     if (forumId != null) {
-                        try {
-                            fId = Long.parseLong(forumId, 10);
-                        } catch (NumberFormatException e) {
-
+                        StringTokenizer tokens = new StringTokenizer(forumId, ",");
+                        fId = new long[tokens.countTokens()];
+                        int i = 0;
+                        while (tokens.hasMoreTokens()) {
+                            String tmp = tokens.nextToken();
+                            fId[i++] = Integer.parseInt(tmp);
                         }
+
                     }
+                } catch (NumberFormatException e) {
+
                 } catch (JspException e) {
                     log.error(e);
                     throw new JspTagException(e.getMessage());
@@ -84,10 +86,10 @@ public class ForEachNewPostTag extends LoopTagSupport {
                 det vi trenger og viser bare de første.  Er ikke perfekt... men bør fungere i de fleste tilfeller
              */
             List posts;
-            if (fId == -1) {
+            if (fId == null || fId.length == 0) {
                 posts = dao.getLastPosts(maxPosts*2);
             } else {
-                posts = dao.getLastPostsInForum(fId, maxPosts*2);
+                posts = dao.getLastPostsInForums(fId, maxPosts*2);
             }
 
             List authorizedPosts = new ArrayList();
@@ -98,6 +100,7 @@ public class ForEachNewPostTag extends LoopTagSupport {
                 }
             }
 
+            forumId = null;
 
             i = authorizedPosts.iterator();
         }

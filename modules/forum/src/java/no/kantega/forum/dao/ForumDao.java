@@ -151,7 +151,26 @@ public class ForumDao {
                 return query.list();
             }
         });
+    }
 
+    public List getLastPostsInForums(final long forumIds[], final int n) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                String whereClause = "";
+                for (int i = 0; i < forumIds.length; i++) {
+                    long fId = forumIds[i];
+                    whereClause += "p.thread.forum.id = ? and ";
+                }
+                Query query = session.createQuery("from Post p where " + whereClause + " p.approved = ? order by p.id desc");
+                for (int i = 0; i < forumIds.length; i++) {
+                    query.setLong(0, forumIds[i]);
+
+                }
+                query.setString(forumIds.length, "Y");
+                query.setMaxResults(n);
+                return query.list();
+            }
+        });
     }
 
 
