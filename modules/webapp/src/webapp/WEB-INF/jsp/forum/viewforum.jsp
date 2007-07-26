@@ -59,6 +59,7 @@
         </c:if>
         <table width="100%" cellpadding="0" cellspacing="0">
             <tr class="forum-labelRow">
+                <td valign="top">&nbsp;</td>
                 <td>
                     <spring:message code="thread.name"/>
                 </td>
@@ -72,6 +73,19 @@
             </tr>
             <c:forEach items="${threads}" var="thread" varStatus="status">
                 <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
+                    <td valign="top">
+                        <c:choose>
+                            <c:when test="${thread.lastPost != null && thread.lastPost.postDate.time > lastVisit.time}">
+                                <img src="../bitmaps/forum/thread_new.gif" alt="<spring:message code="post.icon.newthread"/>" title="<spring:message code="post.icon.newthread"/>">
+                            </c:when>
+                            <c:when test="${thread.numPosts > 10}">
+                                <img src="../bitmaps/forum/thread_hot.gif" alt="<spring:message code="post.icon.hotthread"/>" title="<spring:message code="post.icon.hotthread"/>">
+                            </c:when>
+                            <c:otherwise>
+                                <img src="../bitmaps/forum/thread_normal.gif" alt="">
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                     <td>
                         <a href="viewthread?threadId=<c:out value="${thread.id}"/>"><c:out value="${thread.name}"/></a>
                     </td>

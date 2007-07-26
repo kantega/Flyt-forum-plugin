@@ -50,13 +50,13 @@ q<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="is
                         <td valign="top">
                             <c:choose>
                                 <c:when test="${forum.lastPost != null && forum.lastPost.postDate.time > lastVisit.time}">
-                                    <img src="../bitmaps/forum/new.gif" alt="<spring:message code="post.icon.new"/>" title="<spring:message code="post.icon.new"/>">
+                                    <img src="../bitmaps/forum/forum_new.gif" alt="<spring:message code="post.icon.newforum"/>" title="<spring:message code="post.icon.newforum"/>">
                                 </c:when>
                                 <c:when test="${forum.numThreads > 10}">
-                                    <img src="../bitmaps/forum/hot.gif" alt="<spring:message code="post.icon.hot"/>" title="<spring:message code="post.icon.hot"/>">
+                                    <img src="../bitmaps/forum/forum_hot.gif" alt="<spring:message code="post.icon.hotforum"/>" title="<spring:message code="post.icon.hotforum"/>">
                                 </c:when>
                                 <c:otherwise>
-                                    <img src="../bitmaps/forum/normal.gif" alt="">
+                                    <img src="../bitmaps/forum/forum_normal.gif" alt="">
                                 </c:otherwise>
                             </c:choose>
                         </td>
