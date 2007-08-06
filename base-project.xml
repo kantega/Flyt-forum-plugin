@@ -4,7 +4,7 @@
   <id>ap-modules</id>
   <name>ap-modules</name>
   <groupId>ap-modules</groupId>
-  <currentVersion>1.2-dev</currentVersion>
+  <currentVersion>1.3</currentVersion>
   <organization>
     <name>Kantega</name>
     <url>http://www.kantega.no/</url>
@@ -22,20 +22,17 @@
       <issueTrackingUrl>
 
       </issueTrackingUrl>
-
   
   <siteAddress>http://www.kantega.no</siteAddress>
 
   <siteDirectory>
     /minbankid
   </siteDirectory>
-
-  <distributionDirectory>
-
-  </distributionDirectory>
-
 -->
-  <repository>
+  <distributionSite>maven.mogul.no</distributionSite>
+  <distributionDirectory>/var/www/html/maven/</distributionDirectory>
+  
+<repository>
     <connection>
       scm:subversion:file:///opt/svn/repo
     </connection>
