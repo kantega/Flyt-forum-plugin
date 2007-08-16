@@ -11,6 +11,7 @@ import java.util.Date;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.util.ForumUtil;
+import no.kantega.forum.util.ForumPostReadStatus;
 import no.kantega.commons.util.StringHelper;
 
 /**
@@ -43,6 +44,12 @@ public class ViewPostController extends AbstractForumViewController {
 
             // Legg inn tidspunkt for siste besøk
             Date lastVisit = ForumUtil.getLastVisit(request, response, true);
+
+            // Legg til at denne posten er lest siden siste besøk
+            if (lastVisit != null && p != null && p.getPostDate().getTime() > lastVisit.getTime()) {
+                new ForumPostReadStatus(request).addPost(p);
+            }
+
             map.put("lastVisit", lastVisit);
             
             return new ModelAndView("viewpost", map);

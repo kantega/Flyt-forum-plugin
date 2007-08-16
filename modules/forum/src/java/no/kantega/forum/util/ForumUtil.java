@@ -42,7 +42,7 @@ public class ForumUtil {
      * Henter tidspunkt for siste besøk fra cookie.  Lagrer nåværende tidspunkt i cookie.
      * @param request
      * @param response
-     * @param update
+     * @param update - oppdater ja / nei
      * @return siste besøk
      */
     public static Date getLastVisit(HttpServletRequest request, HttpServletResponse response, boolean update) {
@@ -69,14 +69,14 @@ public class ForumUtil {
                 lastVisit = new Date();
             }
 
-            if (update) {
-                // Lagre i sesjon
-                session.setAttribute(lastVisitCookieName, lastVisit);
-
-                // Lagre nytt tidspunkt i cookie
-                Cookie cookie = new Cookie(lastVisitCookieName, cookieDateFormat.format(new Date()));
-                response.addCookie(cookie);
-            }
+            // Lagre i sesjon
+            session.setAttribute(lastVisitCookieName, lastVisit);
+        }
+        
+        if (update) {
+            // Lagre nytt tidspunkt i cookie
+            Cookie cookie = new Cookie(lastVisitCookieName, cookieDateFormat.format(new Date()));
+            response.addCookie(cookie);
         }
 
         return lastVisit;

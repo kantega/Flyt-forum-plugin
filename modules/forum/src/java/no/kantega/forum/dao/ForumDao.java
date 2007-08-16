@@ -132,7 +132,7 @@ public class ForumDao {
                 Query q = session.createQuery("select count(*) from Post p where p.thread.forum.id=? and p.approved = 'Y' and p.postDate > ?");
 
                 q.setLong(0, forumId);
-                q.setDate(1, lastVisit);
+                q.setTimestamp(1, lastVisit);
 
                 return q.uniqueResult();
             }
@@ -158,12 +158,11 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 String whereClause = "";
                 for (int i = 0; i < forumIds.length; i++) {
-                    long fId = forumIds[i];
                     whereClause += "p.thread.forum.id = ? and ";
                 }
                 Query query = session.createQuery("from Post p where " + whereClause + " p.approved = ? order by p.id desc");
                 for (int i = 0; i < forumIds.length; i++) {
-                    query.setLong(0, forumIds[i]);
+                    query.setLong(i, forumIds[i]);
 
                 }
                 query.setString(forumIds.length, "Y");
@@ -173,6 +172,16 @@ public class ForumDao {
         });
     }
 
+    public List getPostsAfterDate(final Date lastVisit) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.approved = ? and p.postDate > ? order by p.id desc");
+                query.setString(0, "Y");
+                query.setTimestamp(1, lastVisit);
+                return query.list();
+            }
+        });
+    }
 
     public List getLastPostsInThread(final long threadId, final int n) {
         return (List) template.execute(new HibernateCallback() {

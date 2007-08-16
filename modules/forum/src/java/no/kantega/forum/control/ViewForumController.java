@@ -11,6 +11,7 @@ import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.util.ForumUtil;
+import no.kantega.forum.util.ForumPostReadStatus;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,6 +52,16 @@ public class ViewForumController extends AbstractForumViewController {
 
             map.put("forum", f);
 
+            // Hent nye poster siden siste besøk
+            ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
+            List unreadPosts = null;
+
+            Date lastVisit = ForumUtil.getLastVisit(request, response, true);
+            if (lastVisit != null) {
+                unreadPosts = dao.getPostsAfterDate(lastVisit);
+            }
+
+
             List threads = dao.getThreadsInForum(f.getId(), startIndex, maxThreads);
             for (int i = 0; i < threads.size(); i++) {
                 ForumThread thread = (ForumThread) threads.get(i);
@@ -58,12 +69,12 @@ public class ViewForumController extends AbstractForumViewController {
                 if(last.size() > 0) {
                     thread.setLastPost((Post)last.get(0));
                 }
+                if (unreadPosts != null) {
+                    readStatus.updateUnreadPostsInThread(unreadPosts, thread);
+                }
+
             }
             map.put("threads", threads);
-
-            // Legg inn tidspunkt for siste besøk
-            Date lastVisit = ForumUtil.getLastVisit(request, response, true);
-            map.put("lastVisit", lastVisit);
 
             return new ModelAndView("viewforum", map);
         }

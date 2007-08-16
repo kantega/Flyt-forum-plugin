@@ -22,6 +22,7 @@ public class ForumThread {
     private String owner;
     private int contentId;
     private boolean isApproved;
+    private int numNewPosts = 0;
 
     public long getId() {
         return id;
@@ -61,6 +62,14 @@ public class ForumThread {
 
     public void setNumPosts(int numPosts) {
         this.numPosts = numPosts;
+    }
+
+    public int getNumNewPosts() {
+        return numNewPosts;
+    }
+
+    public void setNumNewPosts(int numNewPosts) {
+        this.numNewPosts = numNewPosts;
     }
 
     public String getOwner() {

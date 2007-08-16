@@ -49,8 +49,8 @@ q<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="is
                     <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
                         <td valign="top">
                             <c:choose>
-                                <c:when test="${forum.lastPost != null && forum.lastPost.postDate.time > lastVisit.time}">
-                                    <img src="../bitmaps/forum/forum_new.gif" alt="<spring:message code="post.icon.newforum"/>" title="<spring:message code="post.icon.newforum"/>">
+                                <c:when test="${forum.numNewPosts > 0}">
+                                    <img src="../bitmaps/forum/forum_new.gif" alt="<c:out value="${forum.numNewPosts}"/> <spring:message code="post.icon.newforum"/>" title="<c:out value="${forum.numNewPosts}"/> <spring:message code="post.icon.newforum"/>">
                                 </c:when>
                                 <c:when test="${forum.numThreads > 10}">
                                     <img src="../bitmaps/forum/forum_hot.gif" alt="<spring:message code="post.icon.hotforum"/>" title="<spring:message code="post.icon.hotforum"/>">

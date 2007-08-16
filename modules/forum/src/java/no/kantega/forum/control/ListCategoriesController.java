@@ -13,6 +13,7 @@ import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.util.ForumUtil;
+import no.kantega.forum.util.ForumPostReadStatus;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
 
@@ -44,6 +45,14 @@ public class ListCategoriesController implements Controller {
             username = user.getUsername();
         }
 
+        // Hent nye poster siden siste besøk
+        ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
+        List unreadPosts = null;
+
+        if (lastVisit != null) {
+            unreadPosts = dao.getPostsAfterDate(lastVisit);
+        }
+
         for (int i = 0; i < cats.size(); i++) {
             ForumCategory category = (ForumCategory) cats.get(i);
             Iterator forums  = category.getForums().iterator();
@@ -56,6 +65,9 @@ public class ListCategoriesController implements Controller {
                     List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
                     if(lastPostsInForum.size() > 0) {
                         forum.setLastPost((Post) lastPostsInForum.get(0));
+                    }
+                    if (unreadPosts != null) {
+                        readStatus.updateUnreadPostsInForum(unreadPosts, forum);
                     }
                 }
             }

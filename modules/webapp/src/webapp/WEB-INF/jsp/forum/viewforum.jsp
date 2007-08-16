@@ -69,14 +69,13 @@
                 <td>
                     <spring:message code="thread.posts"/>
                 </td>
-
             </tr>
             <c:forEach items="${threads}" var="thread" varStatus="status">
                 <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
                     <td valign="top">
                         <c:choose>
-                            <c:when test="${thread.lastPost != null && thread.lastPost.postDate.time > lastVisit.time}">
-                                <img src="../bitmaps/forum/thread_new.gif" alt="<spring:message code="post.icon.newthread"/>" title="<spring:message code="post.icon.newthread"/>">
+                            <c:when test="${thread.numNewPosts > 0}">
+                                <img src="../bitmaps/forum/thread_new.gif" alt="<c:out value="${thread.numNewPosts}"/> <spring:message code="post.icon.newthread"/>" title="<c:out value="${thread.numNewPosts}"/> <spring:message code="post.icon.newthread"/>">
                             </c:when>
                             <c:when test="${thread.numPosts > 10}">
                                 <img src="../bitmaps/forum/thread_hot.gif" alt="<spring:message code="post.icon.hotthread"/>" title="<spring:message code="post.icon.hotthread"/>">

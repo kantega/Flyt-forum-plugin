@@ -32,7 +32,7 @@ public class ForEachForumTag extends LoopTagSupport {
 
     private Iterator i = null;
 
-    private Logger log = Logger.getLogger(ForEachNewPostTag.class);
+    private Logger log = Logger.getLogger(ForEachForumTag.class);
 
 
     protected Object next() throws JspTagException {
