@@ -5,6 +5,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
+import no.kantega.forum.permission.PermissionObject;
+import no.kantega.forum.permission.Permissions;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +18,13 @@ import javax.servlet.http.HttpServletResponse;
  * Time: 12:40:31
  * To change this template use File | Settings | File Templates.
  */
-public class DeleteForumController implements Controller {
+public class DeleteForumController extends AbstractForumFormController {
     private ForumDao dao;
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
+        return permissions(Permissions.EDIT_FORUM, null);
+    }
+    public ModelAndView handleRequestInternal (HttpServletRequest request, HttpServletResponse response) throws Exception {
         long id = Long.parseLong(request.getParameter("forumId"));
         Forum f = dao.getPopulatedForum(id);
         long catId = f.getForumCategory().getId();

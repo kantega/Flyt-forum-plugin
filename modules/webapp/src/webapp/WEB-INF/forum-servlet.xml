@@ -179,10 +179,7 @@
         </property>
     </bean>
 
-    <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="deleteForumController" class="no.kantega.forum.control.DeleteForumController" parent="abstractForumFormController">
     </bean>
 
     <bean id="startThreadController" class="no.kantega.forum.control.StartThreadController">
@@ -209,10 +206,7 @@
     </bean>
 
 
-    <bean id="deleteThreadController" class="no.kantega.forum.control.DeleteThreadController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="deleteThreadController" class="no.kantega.forum.control.DeleteThreadController" parent="abstractForumFormController">
     </bean>
 
     <bean id="postViewController" class="no.kantega.forum.control.ViewPostController" parent="abstractForumViewController"/>
@@ -241,10 +235,7 @@
         </property>
     </bean>
 
-    <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController">
-        <property name="dao">
-            <ref bean="forumDao"/>
-        </property>
+    <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController" parent="abstractForumFormController">
     </bean>
 
     <bean id="listUnapprovedController" class="no.kantega.forum.control.ListUnapprovedController" parent="abstractForumViewController"/>

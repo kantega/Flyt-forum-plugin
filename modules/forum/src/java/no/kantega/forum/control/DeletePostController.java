@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.PermissionObject;
+import no.kantega.forum.permission.Permissions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,10 +19,15 @@ import no.kantega.forum.model.Post;
  * Time: 12:38:26
  * To change this template use File | Settings | File Templates.
  */
-public class DeletePostController implements Controller {
+public class DeletePostController extends AbstractForumFormController {
     private ForumDao dao;
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
+        long id = Long.parseLong(request.getParameter("postId"));
+        return permissions(Permissions.EDIT_POST, dao.getPost(id));
+    }
+
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if(!request.getMethod().equals("POST")) {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return null;
