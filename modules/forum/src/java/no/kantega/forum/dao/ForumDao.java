@@ -158,9 +158,12 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 String whereClause = "";
                 for (int i = 0; i < forumIds.length; i++) {
-                    whereClause += "p.thread.forum.id = ? and ";
+                    if (i > 0) {
+                        whereClause += " or ";
+                    }
+                    whereClause += "p.thread.forum.id = ? ";
                 }
-                Query query = session.createQuery("from Post p where " + whereClause + " p.approved = ? order by p.id desc");
+                Query query = session.createQuery("from Post p where (" + whereClause + ") and p.approved = ? order by p.id desc");
                 for (int i = 0; i < forumIds.length; i++) {
                     query.setLong(i, forumIds[i]);
 
