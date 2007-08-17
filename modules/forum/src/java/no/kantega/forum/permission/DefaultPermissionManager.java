@@ -25,11 +25,7 @@ public class  DefaultPermissionManager implements PermissionManager {
     private List administratorGroups;
 
     public boolean hasPermission(String user, long permission, Object object) {
-        boolean has = getPermission(user, permission, object);
-
-        String o = object == null ? "null" : object.toString();
-        log.debug((has ? "Accepted" : "Rejected") +" permission " + getPermission(permission) +" for user " + (user == null ? "null" : user) +" on object " +o);
-        return has;
+        return getPermission(user, permission, object);
     }
 
     
@@ -56,7 +52,7 @@ public class  DefaultPermissionManager implements PermissionManager {
                 }
             }
 
-            if(permission == Permissions.EDIT_THREAD && object instanceof Forum) {
+            if((permission == Permissions.ADD_THREAD || permission == Permissions.EDIT_THREAD) && object instanceof Forum) {
                 Forum forum = (Forum)object;
                 if (forum.isAnonymousPostAllowed() || user != null) {
                     return true;

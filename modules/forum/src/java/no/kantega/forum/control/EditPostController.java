@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamResult;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.*;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.permission.PermissionObject;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserProfileManager;
@@ -60,6 +61,23 @@ public class EditPostController extends AbstractForumFormController {
     private int maxImageHeight = 768;
     private String imageFormat = "jpg";
 
+    public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
+        String threadId = request.getParameter("threadId");
+        String forumId = request.getParameter("forumId");
+
+        if(threadId != null) {
+            ForumThread thread = dao.getThread(Long.parseLong(threadId));
+            return permissions(Permissions.POST_IN_THREAD, thread);
+        } else if (forumId != null) {
+            Forum forum = dao.getForum(Long.parseLong(forumId));
+            return permissions(Permissions.ADD_THREAD, forum);
+        } else {
+            long id = Long.parseLong(request.getParameter("postId"));
+            Post p = dao.getPost(id);
+            return permissions(Permissions.EDIT_POST, p);
+        }
+    }
+
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         String postId = request.getParameter("postId");
 
@@ -78,7 +96,7 @@ public class EditPostController extends AbstractForumFormController {
             return post;
         } else {
             String threadId = request.getParameter("threadId");
-            String replyId = request.getParameter("replayId");
+            String replyId = request.getParameter("replyId");
 
             ForumThread t = null;
             if(threadId != null) {
@@ -166,6 +184,7 @@ public class EditPostController extends AbstractForumFormController {
         }
 
         p.setApproved(approved);
+
         dao.saveOrUpdate(p);
 
         // Lagring av vedlegg
@@ -179,7 +198,6 @@ public class EditPostController extends AbstractForumFormController {
                 }
             }
         }
-
 
 
         // Send varsling til moderator om nytt innlegg

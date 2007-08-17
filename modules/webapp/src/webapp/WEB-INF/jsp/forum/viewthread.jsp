@@ -111,7 +111,7 @@
                             </forum:haspermisson>
 
                             <forum:haspermisson permission="POST_IN_THREAD" object="${thread}">
-                                <a href="editpost?replayId=<c:out value="${post.id}"/>&threadId=<c:out value="${post.thread.id}"/>">Svar</a>
+                                <a href="editpost?replyId=<c:out value="${post.id}"/>&threadId=<c:out value="${post.thread.id}"/>">Svar</a>
                             </forum:haspermisson>
 
                             <forum:haspermisson permission="DELETE_POST" object="${post}">
