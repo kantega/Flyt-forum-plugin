@@ -1,5 +1,7 @@
 package no.kantega.forum.util;
 
+import no.kantega.publishing.common.Aksess;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -76,6 +78,12 @@ public class ForumUtil {
         if (update) {
             // Lagre nytt tidspunkt i cookie
             Cookie cookie = new Cookie(lastVisitCookieName, cookieDateFormat.format(new Date()));
+            cookie.setMaxAge(3*30*24*60*60);//Ca 3 måneder
+            String path = Aksess.getContextPath();
+            if (path == null || path.equals("")) {
+                path = "/";
+            }
+            cookie.setPath(path);//Setter cookien tilgjengelig for hele applikasjonen, ikke bare forum.
             response.addCookie(cookie);
         }
 
