@@ -36,7 +36,7 @@
                     <table cellpadding="0" cellspacing="0" width="100%">
                         <tr class="tableHeading">
                             <td><spring:message code="project.name"/></td>
-                            <td><spring:message code="project.leader"/></td>
+                            <td colspan="2"><spring:message code="project.leader"/></td>
                         </tr>
                         <c:forEach items="${projects}" var="project" varStatus="status">
                             <tr class="tableRow<c:out value="${status.count % 2}"/>">
