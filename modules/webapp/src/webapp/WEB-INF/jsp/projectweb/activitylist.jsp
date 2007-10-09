@@ -148,6 +148,7 @@
     </table>
 </c:when>
 <c:when test="${param.view eq 'time'}">
+    <div id="tidslinje">
     <table border="0" cellspacing="0" width="100%">
         <%
             Activity firstActivity = (Activity) request.getAttribute("firstactivity");
@@ -179,7 +180,7 @@
         </tr>
         <tr class="tableHeading">
             <td>Tittel</td>
-            <td>
+            <td width="300">
                 <table width="100%">
                     <tr class="tableHeading">
                         <td>
@@ -226,10 +227,9 @@
                 <td>
                     <a href="activity?activityId=<c:out value="${activity.activity.id}"/>"><c:out value="${activity.activity.title}"/></a>
                 </td>
-                <td class="dottedTd">
-
+                <td class="dottedTd" width="300">
                     <div style="width: 100%; height: 15px" title="<c:if test="${activity.activity.startDate != null}">Fra: <fmt:formatDate value="${activity.activity.startDate}"/></c:if> <c:if test="${activity.activity.endDate != null}">Til: <fmt:formatDate value="${activity.activity.endDate}"/></c:if>">
-                        <div style="position: relative; left: <%=(int)(start*500)%>px; width:<%=(int)(widtd*500)%>px; height:80%; background-color: <%=color%>; margin:2px; border: <%=border%>;" ></div>
+                        <div style="position: relative; left: <%=(int)(start*300)%>px; width:<%=(int)(widtd*300)%>px; height:80%; background-color: <%=color%>; margin:2px; border: <%=border%>;" ></div>
                     </div>
                 </td>
 
@@ -239,6 +239,7 @@
             </tr>
         </c:forEach>
     </table>
+    </div>
 
 </c:when>
 </c:choose>

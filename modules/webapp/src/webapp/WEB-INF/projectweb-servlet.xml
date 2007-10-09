@@ -65,6 +65,16 @@
                         </property>
                     </bean>
                 </entry>
+                <entry key="/deleteproject">
+                    <bean class="no.kantega.projectweb.control.project.DeleteProjectController" parent="daoAware">
+                        <property name="userResolver">
+                            <ref bean="userResolver"/>
+                        </property>
+                        <property name="permissionManager">
+                            <ref bean="permissionManager"/>
+                        </property>
+                    </bean>
+                </entry>
             </map>
         </property>
     </bean>
@@ -441,6 +451,15 @@
     <bean id="activityStatusManager" class="no.kantega.projectweb.activity.SimpleActivityStatusManager" parent="daoAware"/>
 
     <bean id="projectListController" class="no.kantega.projectweb.control.project.ProjectListController" parent="daoAware">
+        <property name="userResolver">
+            <ref bean="userResolver"/>
+        </property>
+        <property name="permissionManager">
+            <ref bean="permissionManager"/>
+        </property>
+    </bean>
+
+    <bean id="deleteProjectController" class="no.kantega.projectweb.control.project.DeleteProjectController" parent="daoAware">
         <property name="userResolver">
             <ref bean="userResolver"/>
         </property>

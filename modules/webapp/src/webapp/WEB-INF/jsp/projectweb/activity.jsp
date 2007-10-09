@@ -141,7 +141,7 @@
                 <c:if test="${canEdit}">
                     <td>
                         <a class="button" style="vertical-align: middle;" href="editdocument?documentId=<c:out value="${document.id}"/>">
-                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_rediger.gif" border="0">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/ikon_rediger.gif" border="0">
                          <spring:message code="general.edit"/>
                      </a>
                     </td>
@@ -149,7 +149,7 @@
                 <c:if test="${canDelete}">
                     <td>
                         <a class="button" style="vertical-align: middle;" href="Javascript:confirmDelete('<c:out value="${document.id}"/>')">
-                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_slett.gif" border="0">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0">
                          <spring:message code="general.delete"/>
                      </a>
                     </td>
