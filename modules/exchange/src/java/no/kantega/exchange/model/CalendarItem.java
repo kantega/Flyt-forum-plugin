@@ -14,6 +14,7 @@ public class CalendarItem {
     private Date endtime;
     private String location = "";
     private String description = "";
+    private boolean allday = false;
 
     public String getSubject() {
         return subject;
@@ -53,5 +54,13 @@ public class CalendarItem {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean getAllday() {
+        return allday;
+    }
+
+    public void setAllday(boolean allday) {
+        this.allday = allday;
     }
 }

@@ -13,8 +13,8 @@ import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.modules.exchange.ExchangeSession;
-import no.kantega.publishing.modules.exchange.MailItem;
+import no.kantega.exchange.util.ExchangeSession;
+import no.kantega.exchange.model.MailItem;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 

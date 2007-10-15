@@ -10,13 +10,12 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.modules.exchange.ExchangeSession;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.exchange.util.ExchangeSession;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
