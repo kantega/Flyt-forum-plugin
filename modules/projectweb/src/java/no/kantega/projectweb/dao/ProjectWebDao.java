@@ -463,4 +463,41 @@ public class ProjectWebDao {
     public void setPermissionInvalidator(PermissionInvalidator permissionInvalidator) {
         this.permissionInvalidator = permissionInvalidator;
     }
+
+    public void deleteProject(final long projectId) {
+        template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                Project project = (Project)session.get(Project.class, new Long(projectId));
+                // Fjerner deltagere i prosjektet
+                List participants = getProjectParticipants( projectId );
+                Iterator iter = participants.iterator();
+                while( iter.hasNext()){
+                    Participant participant = (Participant) iter.next();
+                    System.out.println("Fjerner bruker: " + participant.getUser() + " fra prosjekt: " + project.getName());
+                    removeParticipantFromProject( participant.getId(), projectId);
+                }
+                // Fjerner dokumenter fra prosjektet
+                Set documents = project.getDocuments();
+                iter = documents.iterator();
+                while( iter.hasNext() ){
+                    Document doc = (Document) iter.next();
+                    session.delete(doc);
+                    session.flush();
+                }
+                // Fjerner aktiviteter på prosjektet
+                Set activities = project.getActivities();
+                iter = activities.iterator();
+                while( iter.hasNext() ) {
+                    Activity activity = (Activity) iter.next();
+                    session.delete(activity);
+                    session.flush();
+                }
+                session.delete(project);
+                return null;
+            }
+        });
+        if(permissionInvalidator != null) {
+            permissionInvalidator.invalidate();
+        }
+    }
 }

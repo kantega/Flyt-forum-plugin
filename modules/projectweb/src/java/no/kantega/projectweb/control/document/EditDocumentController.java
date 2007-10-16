@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 
 import no.kantega.projectweb.model.Document;
 import no.kantega.projectweb.model.DocumentContent;
+import no.kantega.projectweb.model.DocumentCategory;
 import no.kantega.projectweb.dao.ProjectWebDao;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserResolver;
@@ -48,10 +49,19 @@ public class EditDocumentController extends FormControllerSupport {
         }
         else{
             document = new Document();
+            document.setTitle(request.getParameter("doctitle"));
+            document.setDescription(request.getParameter("docDescription"));
+            String catId = request.getParameter("docCat");
+            if( catId != null ){
+                DocumentCategory docCat = new DocumentCategory();
+                docCat.setId(Long.parseLong(catId));
+                document.setCategory(docCat);
+            }
             DocumentContent content = new DocumentContent();
             document.setDocumentContent(content);
             long projectId = Long.parseLong(request.getParameter("projectId"));
             document.setProject(dao.getProject(projectId));
+
         }
 
         document.setEditDate(new Date());
@@ -65,14 +75,11 @@ public class EditDocumentController extends FormControllerSupport {
             MultipartHttpServletRequest request = (MultipartHttpServletRequest) httpServletRequest;
             MultipartFile file  = request.getFile("contentFile");
 
-
+            String newDocument = httpServletRequest.getParameter("newdocument");
             //slik at dersom man ikke laster opp noe så forkastes ikke det som er
             if (file.getSize()>0){
                 document.setFileName(file.getOriginalFilename());
                 document.setContentType(file.getContentType());
-
-
-
                 String user = userResolver.resolveUser(request).getUsername();
                 document.setUploader(user);
                 document.getDocumentContent().setContent(file.getBytes());
@@ -86,6 +93,19 @@ public class EditDocumentController extends FormControllerSupport {
                     log.error("Error extracting text from document " + document.getFileName());
                 }
             }
+            if( file.getSize()<1 && "true".equals(newDocument)){
+                // Nytt dokument og blank innhold ikke lov
+                // Dette kan sikkert gjøres mer elegant med en eller annen Spring validator.
+                Map map = new HashMap();
+                map.put("document",document);
+                map.put("errormessage","Kan ikke laste opp tomt dokument");
+                map.put("doctitle", document.getTitle());
+                map.put("docCat", new Long(document.getCategory().getId()));
+                map.put("docDescription", document.getDescription());
+                map.put("projectId",new Long(document.getProject().getId()));
+                return new ModelAndView( new RedirectView("editdocument"),map);
+            }
+
         }
         if (document.getTitle()==null || "".equals(document.getTitle())){
             String fileName = document.getFileName();

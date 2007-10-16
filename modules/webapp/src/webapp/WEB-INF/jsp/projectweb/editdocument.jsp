@@ -26,6 +26,9 @@
             <c:if test="${activityId != null}">
                 <input type="hidden" name="activityId" value="<c:out value="${activityId}"/>">
             </c:if>
+            <c:if test="${document.id == 0}">
+                <input type="hidden" name="newdocument" value="true"/>
+            </c:if>
             <table>
                 <tr>
                     <td><spring:message code="document.title"/>:</td>
@@ -47,14 +50,18 @@
                             </select>
                             <c:out value="${status.errorMessage}"/>
                         </spring:bind>
-
                     </td>
                 </tr>
                 <tr>
                     <td><spring:message code="document.file"/>:</td>
                     <td>
-                              <input type="file" name="contentFile">
-
+                        <input type="file" name="contentFile">
+                        <%
+                            String errorMsg = request.getParameter("errormessage");
+                            if( errorMsg != null){
+                                out.println(errorMsg);
+                            }
+                        %>
                     </td>
                 </tr>
                 <tr>

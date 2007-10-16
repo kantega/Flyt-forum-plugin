@@ -115,7 +115,6 @@
         </tr>
         <tr class="tableHeading">
             <td><spring:message code="document.title"/></td>
-            <td><spring:message code="document.description"/></td>
             <td><spring:message code="document.editdate"/></td>
             <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
                 <c:set var="canEdit" value="true"/>
@@ -129,11 +128,7 @@
         <c:forEach items="${documents}" var="document" varStatus="status">
             <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
                 <td>
-                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>"><c:out
-                            value="${document.title}"/></a>
-                </td>
-                <td>
-                    <c:out value="${document.description}"/>
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>" title="<c:out value="${document.description}"/>"><c:out value="${document.title}"/></a>
                 </td>
                 <td>
                     <fmt:formatDate value="${document.editDate}"/>
@@ -141,7 +136,7 @@
                 <c:if test="${canEdit}">
                     <td>
                         <a class="button" style="vertical-align: middle;" href="editdocument?documentId=<c:out value="${document.id}"/>">
-                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_rediger.gif" border="0">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/ikon_rediger.gif" border="0">
                          <spring:message code="general.edit"/>
                      </a>
                     </td>
@@ -149,7 +144,7 @@
                 <c:if test="${canDelete}">
                     <td>
                         <a class="button" style="vertical-align: middle;" href="Javascript:confirmDelete('<c:out value="${document.id}"/>')">
-                         <img style="vertical-align: middle" src="../bitmaps/projectweb/mini_slett.gif" border="0">
+                         <img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0">
                          <spring:message code="general.delete"/>
                      </a>
                     </td>
