@@ -98,9 +98,11 @@ public class ActivityListController implements Controller {
             criteria.add(tx);
         }
 
-        // Phases
-        if(phases != null && phases.length > 0) {
+        // Faser
+        List allPhases = dao.getProjectPhases();
 
+        // Dersom alle faser er valgt søker vi ikke på fase, i tilfelle fase ikke er angitt
+        if(phases != null && phases.length > 0 && phases.length != allPhases.size()) {
             boolean any = false;
             Long[] lphases = new Long[phases.length];
             for (int i = 0; i < phases.length; i++) {
@@ -116,8 +118,8 @@ public class ActivityListController implements Controller {
                 }
                 sc.add(Property.forName("id").in(lphases));
             }
-
         }
+        
         // Activitytype
         if(types != null && types.length > 0) {
 
@@ -219,8 +221,6 @@ public class ActivityListController implements Controller {
         }
 
         return criteria;
-
-
     }
 
     private Map referenceData(HttpServletRequest request, Project project) {

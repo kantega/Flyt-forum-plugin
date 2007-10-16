@@ -38,7 +38,6 @@
         <tr class="tableHeading">
             <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
             <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
-            <td><spring:message code="document.description"/></td>
             <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
             <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
                 <c:set var="canEdit" value="true"/>
@@ -52,14 +51,10 @@
         <c:forEach items="${documents}" var="document" varStatus="status">
             <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
                 <td>
-                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>"><c:out
-                            value="${document.title}"/></a>
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>" title="<c:out value="${document.description}"/>"><c:out value="${document.title}"/></a>
                 </td>
                 <td>
                     <c:out value="${document.category.name}"/>
-                </td>
-                <td>
-                    <c:out value="${document.description}"/>
                 </td>
                 <td>
                     <fmt:formatDate value="${document.editDate}"/>
@@ -114,8 +109,7 @@
             <table>
                 <tr>
                     <td><input name="text" value="<c:out value="${text[0]}"/>" class="activitylistsearchinput"></td>
-                    <td><a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif"
-                                                                      border="0"></a></td>
+                    <td><a href="Javascript:document.searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a></td>
                 </tr>
             </table>
 
@@ -139,11 +133,6 @@
 
             </select>
         </div>
-
-
-        <!--<div align="center">
-            <a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a>
-        </div>-->
 
     </div>
 

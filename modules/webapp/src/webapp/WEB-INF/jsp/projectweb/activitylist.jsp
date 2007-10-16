@@ -270,7 +270,7 @@
     <table>
         <tr>
             <td><input name="text" value="<c:out value="${text[0]}"/>" class="activitylistsearchinput"></td>
-            <td><a href="Javascript:searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a></td>
+            <td><a href="Javascript:document.searchform.submit()"><img src="../bitmaps/projectweb/sok.gif" border="0"></a></td>
 
         </tr>
     </table>

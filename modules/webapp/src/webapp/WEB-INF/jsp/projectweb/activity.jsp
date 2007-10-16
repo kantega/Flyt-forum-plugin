@@ -115,7 +115,6 @@
         </tr>
         <tr class="tableHeading">
             <td><spring:message code="document.title"/></td>
-            <td><spring:message code="document.description"/></td>
             <td><spring:message code="document.editdate"/></td>
             <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
                 <c:set var="canEdit" value="true"/>
@@ -129,11 +128,7 @@
         <c:forEach items="${documents}" var="document" varStatus="status">
             <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
                 <td>
-                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>"><c:out
-                            value="${document.title}"/></a>
-                </td>
-                <td>
-                    <c:out value="${document.description}"/>
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>" title="<c:out value="${document.description}"/>"><c:out value="${document.title}"/></a>
                 </td>
                 <td>
                     <fmt:formatDate value="${document.editDate}"/>
