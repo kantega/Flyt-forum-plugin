@@ -12,6 +12,7 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.util.ForumUtil;
 
 import java.util.Date;
 
@@ -59,6 +60,10 @@ public class EditThreadController extends AbstractForumFormController {
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
         ForumThread t = (ForumThread) object;
+        if (ForumUtil.isSpam(request)) {
+            return new ModelAndView(new RedirectView("nospam"));
+        }       
+
         dao.saveOrUpdate(t);
         return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewforum?forumId="+t.getForum().getId()));
     }

@@ -1,48 +1,48 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.RequestContextUtils;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.validation.BindException;
-import org.cyberneko.html.parsers.SAXParser;
-import org.xml.sax.InputSource;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.apache.xml.serializer.OutputPropertiesFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.stream.StreamResult;
-
-import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.*;
-import no.kantega.forum.permission.Permissions;
-import no.kantega.forum.permission.PermissionObject;
-import no.kantega.modules.user.UserResolver;
-import no.kantega.modules.user.ResolvedUser;
-import no.kantega.modules.user.UserProfileManager;
-import no.kantega.modules.user.UserProfile;
-import no.kantega.commons.media.ImageHelper;
-import no.kantega.commons.media.ImageInfo;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.media.ImageHelper;
+import no.kantega.commons.media.ImageInfo;
+import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.Attachment;
+import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.PermissionObject;
+import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.util.ForumUtil;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserProfile;
+import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.mailsender.MailSender;
+import org.apache.xml.serializer.OutputPropertiesFactory;
+import org.cyberneko.html.parsers.SAXParser;
+import org.springframework.validation.BindException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.view.RedirectView;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URL;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -163,7 +163,10 @@ public class EditPostController extends AbstractForumFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
 
         Post p = (Post) object;
-
+        if (ForumUtil.isSpam(request)) {
+            return new ModelAndView(new RedirectView("nospam"));
+        }
+        
         ResolvedUser user = userResolver.resolveUser(request);
 
         p.setBody(cleanup(p.getBody(), request));
