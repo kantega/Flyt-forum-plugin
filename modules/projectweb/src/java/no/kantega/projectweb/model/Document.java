@@ -1,5 +1,8 @@
 package no.kantega.projectweb.model;
 
+import no.kantega.commons.media.MimeType;
+import no.kantega.commons.media.MimeTypes;
+
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
@@ -19,6 +22,7 @@ public class Document implements WorkflowParticipator {
     private String uploader;
     private Set activities = new HashSet();
     private DocumentContent documentContent = new DocumentContent();
+    private MimeType mimeType;
 
     public long getId() {
         return id;
@@ -124,5 +128,27 @@ public class Document implements WorkflowParticipator {
 
     public void setDocumentContent(DocumentContent documentContent) {
         this.documentContent = documentContent;
+    }
+
+    public MimeType getMimeType() {
+        return MimeTypes.getMimeType(fileName);
+    }
+
+    public String getIconUrl(){
+        String url = "/aksess/bitmaps/mimetype/default.gif";
+        MimeType type  = getMimeType();
+        if( type.getType().equals("application/msword") || type.getType().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")){
+            url = "/aksess/bitmaps/mimetype/application/msword.gif";
+        }
+        else if(type.getType().equals("application/vnd.ms-excel") || type.getType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")){
+            url = "/aksess/bitmaps/mimetype/application/vnd.ms-excel.gif";
+        }
+        else if(type.getType().equals("application/vnd.ms-powerpoint") || type.getType().equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")){
+            url = "/aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.gif";
+        }
+        else if(type.getType().equals("application/pdf")){
+            url = "/aksess/bitmaps/mimetype/application/pdf.gif";
+        }
+        return url;
     }
 }

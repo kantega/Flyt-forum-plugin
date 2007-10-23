@@ -127,8 +127,8 @@
         </tr>
         <c:forEach items="${documents}" var="document" varStatus="status">
             <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
-                <td>
-                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>" title="<c:out value="${document.description}"/>"><c:out value="${document.title}"/></a>
+                <td><img style = "vertical-align: middle;" src="..<c:out value="${document.iconUrl}"/>"/>
+                    <a href="document?action=download&documentId=<c:out value="${document.id}"/>"  title="<c:out value="${document.description}"/>"><c:out value="${document.title}"/></a>
                 </td>
                 <td>
                     <fmt:formatDate value="${document.editDate}"/>

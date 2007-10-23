@@ -50,7 +50,7 @@
         </tr>
         <c:forEach items="${documents}" var="document" varStatus="status">
             <tr class="tableRow<c:out value="${status.count % 2}"/>" valign="top">
-                <td>
+                <td><img style = "vertical-align: middle;" src="..<c:out value="${document.iconUrl}"/>"/>
                     <a href="document?action=download&documentId=<c:out value="${document.id}"/>" title="<c:out value="${document.description}"/>"><c:out value="${document.title}"/></a>
                 </td>
                 <td>
