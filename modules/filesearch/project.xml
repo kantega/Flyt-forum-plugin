@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<project>
+
+    <extend>${basedir}/../../base-project.xml</extend>
+    <name>ap-modules filesearch</name>
+    <id>${pom.groupId}-filesearch</id>
+    <shortDescription>ap-modules filesearch</shortDescription>
+
+    <description>ap-modules filesearch</description>
+    <dependencies>
+
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-commons</artifactId>
+        <version>${aksess.version}</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+      <dependency>
+        <groupId>aksess</groupId>
+        <artifactId>aksess-core</artifactId>
+        <version>${aksess.version}</version>
+        <properties>
+          <war.bundle>true</war.bundle>
+        </properties>
+      </dependency>
+
+        <dependency>
+            <groupId>jcifs</groupId>
+            <artifactId>jcifs</artifactId>
+            <version>1.2.17-patched</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>lucene</groupId>
+            <artifactId>lucene</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
