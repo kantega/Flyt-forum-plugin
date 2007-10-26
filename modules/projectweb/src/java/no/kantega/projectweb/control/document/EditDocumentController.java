@@ -52,7 +52,7 @@ public class EditDocumentController extends FormControllerSupport {
             document.setTitle(request.getParameter("doctitle"));
             document.setDescription(request.getParameter("docDescription"));
             String catId = request.getParameter("docCat");
-            if( catId != null ){
+            if(catId != null ){
                 DocumentCategory docCat = new DocumentCategory();
                 docCat.setId(Long.parseLong(catId));
                 document.setCategory(docCat);

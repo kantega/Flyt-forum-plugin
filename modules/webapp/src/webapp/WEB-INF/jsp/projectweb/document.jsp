@@ -22,10 +22,6 @@
             <td><spring:message code="document.category"/>:</td>
             <td class="dottedTd"><c:out value="${document.category.name}"/></td>
         </tr>
-<%--    <tr  class="tableRow<%=c++ % 2%>">
-            <td><spring:message code="document.type"/>:</td>
-            <td class="dottedTd"><c:out value="${document.contentType}"/></td>
-        </tr>--%>
         <tr  class="tableRow<%=c++ % 2%>">
             <td><spring:message code="document.uploader"/>:</td>
             <td class="dottedTd"><pw:resolveuser user="${document.uploader}"/></td>

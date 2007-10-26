@@ -14,11 +14,12 @@
 
 <kantega:section id="summary">
         <tr class="tableHeading">
-            <td colspan="2"><spring:message code="activity.summary"/></td>
+            <td width="20%"><spring:message code="activity.summary"/></td>
+            <td width="80%"></td>
         </tr>
-    <%
-        int c = 0;
-    %>
+        <%
+            int c = 0;
+        %>
         <tr class="tableRow<%=c++ % 2%>">
             <td>Id:</td>
             <td class="dottedTd"><c:out value="${activity.project.code}"/><c:out value="${activity.id}"/></td>
@@ -54,7 +55,7 @@
         <pw:haspermission project="${activity.project}" permission="EDIT_ACTIVITY">
             <tr  class="tableRow0">
                 <td colspan="2"  align="right">
-                     <a href="editactivitysummary?activityId=<c:out value="${activity.id}"/>"><spring:message code="general.edit"/></a>
+                     <a class="button" href="editactivitysummary?activityId=<c:out value="${activity.id}"/>"><spring:message code="general.edit"/></a>
                 </td>
             </tr>
         </pw:haspermission>
@@ -83,7 +84,7 @@
         <pw:haspermission project="${activity.project}" permission="EDIT_ACTIVITY">
         <tr class="tableRow0">
             <td colspan="2" align="right">
-                 <a href="editactivityeconomy?activityId=<c:out value="${activity.id}"/>"><spring:message code="general.edit"/></a>
+                 <a class="button" href="editactivityeconomy?activityId=<c:out value="${activity.id}"/>"><spring:message code="general.edit"/></a>
             </td>
         </tr>
     </pw:haspermission>
@@ -107,6 +108,17 @@
 
     <c:out value="${activity.description}"/><br>
     <br>
+
+    <div class="activitylistsearch">
+        <table cellpadding="0" cellspacing="0" width="100%">
+            <kantega:getsection id="summary"/>
+            <kantega:getsection id="economy"/>
+            <kantega:getsection id="workflowactions"/>
+        </table>
+    </div>
+
+    <div class="heading"><spring:message code="activity.documents"/></div>
+
     <table border="0" cellspacing="0" width="100%">
         <tr>
             <td colspan="5" align="right">
@@ -115,6 +127,7 @@
         </tr>
         <tr class="tableHeading">
             <td><spring:message code="document.title"/></td>
+            <td><spring:message code="document.category"/></td>            
             <td><spring:message code="document.editdate"/></td>
             <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
                 <c:set var="canEdit" value="true"/>
@@ -153,6 +166,8 @@
         </c:forEach>
     </table>
     <br>
+
+    <div class="heading"><spring:message code="activity.documents"/></div>    
         <pw:haspermission project="${activity.project}" permission="ACTIVITY_ADD_COMMENT">
             <table width="100%">
                 <tr>
@@ -185,12 +200,9 @@
                 </tr>
             </table>
             </pw:haspermission>
+
+
         <table width="100%" cellspacing="0" cellpadding="4">
-            <tr class="tableHeading">
-                <td>
-                    <spring:message code="activity.comments"/>
-                </td>
-            </tr>
             <%
                 int c = 1;
             %>
@@ -229,14 +241,5 @@
 
 </kantega:section>
 
-<kantega:section id="relatert innhold">
-    <div class="activitylistsearch">
-        <table cellpadding="0" cellspacing="0" width="100%">
-            <kantega:getsection id="summary"/>
-            <kantega:getsection id="economy"/>
-            <kantega:getsection id="workflowactions"/>
-        </table>
-    </div>
-</kantega:section>
 
 <%@include file="include/design/design.jsf"%>
