@@ -1,7 +1,5 @@
 package no.kantega.exchange.tags;
 
-import org.springframework.web.util.ExpressionEvaluationUtils;
-
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,12 +8,9 @@ import java.text.SimpleDateFormat;
 
 import com.intrinsyc.cdo.*;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.exchange.util.ExchangeSession;
 import no.kantega.exchange.model.CalendarItem;
-import no.kantega.commons.exception.SystemException;
+
 import no.kantega.commons.log.Log;
 
 /**
@@ -56,91 +51,70 @@ public class CalendarTag extends LoopTagSupport {
 
             boolean notdone = true;
             items = new ArrayList();
-            User user = null;
-            boolean validuser = false;
 
             // Declear some datetime formats
             SimpleDateFormat format_ex = new SimpleDateFormat("EEE MMM MM HH:mm:ss zzz yyyy");
             SimpleDateFormat format_in = new SimpleDateFormat("d/M/yy");
 
-            // Check and get userid of current or submitted user
-            SecuritySession session = SecuritySession.getInstance(request);
-            if (userid != null) {
-                userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
-                SecurityRealm realm = SecurityRealmFactory.getInstance();
+            // Start connection to cdo & exhange server
+            ExchangeSession Xsession = new ExchangeSession();
+            cdosession = Xsession.getInstance(userid, request, pageContext);
+
+            // retrieve appointments collection from the CalendarItem
+            Integer defaultCalendar = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderCalendar);
+            Folder calendar = new FolderProxy(cdosession.getDefaultFolder(defaultCalendar));
+
+            // get the message collection from the calendar
+            Messages calColl = new MessagesProxy(calendar.getMessages());
+            MessageFilter calFilter = new MessageFilterProxy(calColl.getFilter());
+
+            if (fromdate.equalsIgnoreCase("") || fromdate == null || fromdate.length() == 0) {
+                Calendar now = Calendar.getInstance();
+                fromdate = format_in.format(now.getTime());
+            }
+
+            if (todate.equalsIgnoreCase("") || todate == null || todate.length() == 0) {
+                Calendar now = Calendar.getInstance();
+                now.add(Calendar.DAY_OF_MONTH, 1);
+                todate = format_in.format(now.getTime());
+            }
+
+            new FieldsProxy(calFilter.getFields()).add(
+                    new Integer(CdoPropTags.CdoPR_START_DATE),
+                    new String(todate), // Remember to reverse the date
+                    null, null
+            );
+            new FieldsProxy(calFilter.getFields()).add(
+                    new Integer(CdoPropTags.CdoPR_END_DATE),
+                    new String(fromdate), // Remember to reverse the date
+                    null, null
+            );
+
+            do {
                 try {
-                    user = realm.lookupUser(userid);
-                    validuser = true;
-                } catch (SystemException e) {
-                }
-            } else {
-                user = session.getUser();
-                userid = user.getId().substring(user.getId().indexOf(":") + 1);
-                validuser = true;
-            }
+                    AppointmentItem appo = new AppointmentItemProxy(calColl.getNext());
+                    CalendarItem ci = new CalendarItem();
 
-            if (validuser) {
+                    no.kantega.exchange.model.CalendarItem cis = new CalendarItem();
 
-                // Start connection to cdo & exhange server
-                ExchangeSession Xsession = new ExchangeSession();
-                cdosession = Xsession.getInstance(userid, request);
+                    ci.setSubject(appo.getSubject().toString());
+                    ci.setLocation(appo.getLocation().toString());
+                    ci.setDescription(appo.getText().toString());
+                    ci.setStarttime(format_ex.parse(appo.getStartTime().toString()));
+                    ci.setEndtime(format_ex.parse(appo.getEndTime().toString()));
 
-                // retrieve appointments collection from the CalendarItem
-                Integer defaultCalendar = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderCalendar);
-                Folder calendar = new FolderProxy(cdosession.getDefaultFolder(defaultCalendar));
-
-                // get the message collection from the calendar
-                Messages calColl = new MessagesProxy(calendar.getMessages());
-                MessageFilter calFilter = new MessageFilterProxy(calColl.getFilter());
-
-                if (fromdate.equalsIgnoreCase("") || fromdate == null || fromdate.length() == 0) {
-                    Calendar now = Calendar.getInstance();
-                    fromdate = format_in.format(now.getTime());
-                }
-
-                if (todate.equalsIgnoreCase("") || todate == null || todate.length() == 0) {
-                    Calendar now = Calendar.getInstance();
-                    now.add(Calendar.DAY_OF_MONTH, 1);
-                    todate = format_in.format(now.getTime());
-                }
-
-                new FieldsProxy(calFilter.getFields()).add(
-                        new Integer(CdoPropTags.CdoPR_START_DATE),
-                        new String(todate), // Remember to reverse the date
-                        null, null
-                );
-                new FieldsProxy(calFilter.getFields()).add(
-                        new Integer(CdoPropTags.CdoPR_END_DATE),
-                        new String(fromdate), // Remember to reverse the date
-                        null, null
-                );
-
-                do {
-                    try {
-                        AppointmentItem appo = new AppointmentItemProxy(calColl.getNext());
-                        CalendarItem ci = new CalendarItem();
-
-                        no.kantega.exchange.model.CalendarItem cis = new CalendarItem();
-
-                        ci.setSubject(appo.getSubject().toString());
-                        ci.setLocation(appo.getLocation().toString());
-                        ci.setDescription(appo.getText().toString());
-                        ci.setStarttime(format_ex.parse(appo.getStartTime().toString()));
-                        ci.setEndtime(format_ex.parse(appo.getEndTime().toString()));
-
-                        // Check if event is all day
-                        if(appo.getAllDayEvent().toString().equals("true")){
-                            ci.setAllday(true);
-                        }
-
-                        items.add(ci);
-                        i = items.iterator();
-                    } catch (IllegalArgumentException e) {
-                        notdone = false;
+                    // Check if event is all day
+                    if (appo.getAllDayEvent().toString().equals("true")) {
+                        ci.setAllday(true);
                     }
+
+                    items.add(ci);
+                    i = items.iterator();
+                } catch (IllegalArgumentException e) {
+                    notdone = false;
                 }
-                while (notdone);
             }
+            while (notdone);
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             throw new JspTagException(SOURCE + ":" + e.getMessage());

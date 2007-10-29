@@ -1,11 +1,7 @@
 package no.kantega.exchange.tags;
 
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.exchange.util.ExchangeSession;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 
 import javax.servlet.jsp.tagext.TagSupport;
@@ -14,7 +10,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.util.ExpressionEvaluationUtils;
 import com.intrinsyc.cdo.*;
 
 /**
@@ -39,25 +34,9 @@ public class GlobalAddressListTag extends TagSupport {
             boolean validuser = false;
             String results = "";
 
-            SecuritySession session = SecuritySession.getInstance(request);
-            if (userid != null) {
-                userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
-                SecurityRealm realm = SecurityRealmFactory.getInstance();
-                try {
-                    user = realm.lookupUser(userid);
-                    validuser = true;
-                } catch (SystemException e) {
-                }
-            } else {
-                user = session.getUser();
-                userid = user.getId().substring(user.getId().indexOf(":") + 1);
-                validuser = true;
-            }
-
-            if (validuser) {
                 // Start connection to cdo & exhange server
                 ExchangeSession Xsession = new ExchangeSession();
-                cdosession = Xsession.getInstance(userid, request);
+                cdosession = Xsession.getInstance(userid, request, pageContext);
 
                 // get the Global Address List
                 AddressListProxy addressList = new AddressListProxy(cdosession.getAddressList(
@@ -81,7 +60,7 @@ public class GlobalAddressListTag extends TagSupport {
 
                 out = pageContext.getOut();
                 out.write(results);
-            }
+
         } catch (IllegalArgumentException
                 e) {
             System.out.println("No appointment found.\n" +

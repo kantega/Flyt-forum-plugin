@@ -9,13 +9,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.exchange.util.ExchangeSession;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import org.springframework.web.util.ExpressionEvaluationUtils;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -37,25 +32,9 @@ public class GetUnreadTag extends TagSupport {
             User user = null;
             boolean validuser = false;
 
-
-            SecuritySession session = SecuritySession.getInstance(request);
-            if (userid != null) {
-                userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
-                SecurityRealm realm = SecurityRealmFactory.getInstance();
-                try {
-                    user = realm.lookupUser(userid);
-                    validuser = true;
-                } catch (SystemException e) {
-                }
-            } else {
-                user = session.getUser();
-                userid = user.getId().substring(user.getId().indexOf(":") + 1);
-                validuser = true;
-            }
-            if (validuser) {
-                // Start connection to cdo & exhange server
+                // Start connection to cdo & exchange server
                 ExchangeSession Xsession = new ExchangeSession();
-                cdosession = Xsession.getInstance(userid, request);
+                cdosession = Xsession.getInstance(userid, request, pageContext);
 
                 // retrieve the inbox folder
                 Integer folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
@@ -76,7 +55,7 @@ public class GetUnreadTag extends TagSupport {
 
                 out = pageContext.getOut();
                 out.write(new Integer(unreads).toString());
-            }
+          //  }
 
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);

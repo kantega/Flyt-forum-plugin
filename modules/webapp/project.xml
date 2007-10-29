@@ -288,7 +288,25 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-       
+
+           <dependency>
+      <groupId>j-integra</groupId>
+      <artifactId>cdo</artifactId>
+      <version>2.7</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>j-integra</groupId>
+      <artifactId>jintegra</artifactId>
+      <version>2.7</version>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     </dependencies>
 
 </project>

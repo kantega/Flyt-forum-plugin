@@ -1,21 +1,13 @@
 package no.kantega.exchange.tags;
 
-import org.apache.log4j.Logger;
-import org.springframework.web.util.ExpressionEvaluationUtils;
-
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import com.intrinsyc.cdo.*;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.exchange.util.ExchangeSession;
 import no.kantega.exchange.model.MailItem;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 
 /**
@@ -61,70 +53,51 @@ public class MailTag extends LoopTagSupport {
 
             boolean notdone = true;
             items = new ArrayList();
-            User user = null;
-            boolean validuser = false;
             Integer folderType = null;
             Folder box = null;
 
-            SecuritySession session = SecuritySession.getInstance(request);
-            if (userid != null) {
-                userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
-                SecurityRealm realm = SecurityRealmFactory.getInstance();
-                try {
-                    user = realm.lookupUser(userid);
-                    validuser = true;
-                } catch (SystemException e) {
-                }
+            // Start connection to cdo & exchange server
+            ExchangeSession Xsession = new ExchangeSession();
+            cdosession = Xsession.getInstance(userid, request, pageContext);
+            mailbox = Xsession.getUserid();
+
+            if (mailbox != null && !"".equals(mailbox)) {
+                // TODO: Find out order of inputs and how to get folder by names
+                box = new FolderProxy(cdosession.getFolder(mailbox, ""));
             } else {
-                user = session.getUser();
-                userid = user.getId().substring(user.getId().indexOf(":") + 1);
-                validuser = true;
+                folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
+                box = new FolderProxy(cdosession.getDefaultFolder(folderType));
             }
 
-            if (validuser) {
+            // get the message collection from the inbox
+            Messages mesColl = new MessagesProxy(box.getMessages());
 
-                // Start connection to cdo & exchange server
-                ExchangeSession Xsession = new ExchangeSession();
-                cdosession = Xsession.getInstance(userid, request);
+            int count = ((Integer) mesColl.getCount()).intValue();
+            for (int k = 1; k <= count; k++) {
 
+                MailItem ei = new MailItem();
+                Message message = new MessageProxy(mesColl.getItem(new Integer(k)));
 
-                if (mailbox != null && !"".equals(mailbox)) {
-                    // TODO: Find out order of inputs and how to get folder by names
-                    box = new FolderProxy(cdosession.getFolder(mailbox, ""));
-                } else {
-                    folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
-                    box = new FolderProxy(cdosession.getDefaultFolder(folderType));
-                }
-
-                // get the message collection from the inbox
-                Messages mesColl = new MessagesProxy(box.getMessages());
-
-                int count = ((Integer) mesColl.getCount()).intValue();
-                for (int k = 1; k <= count; k++) {
-
-                    MailItem ei = new MailItem();
-                    Message message = new MessageProxy(mesColl.getItem(new Integer(k)));
-
-                    if (unreadonly) {
-                        if (!message.getUnread().toString().equalsIgnoreCase("true")) {
-                            skip = true;
-                        }
+                if (unreadonly) {
+                    if (!message.getUnread().toString().equalsIgnoreCase("true")) {
+                        skip = true;
                     }
-                    if (!skip) {
-                        AddressEntry sender = new AddressEntryProxy(message.getSender());
-                        ei.setSender(sender.getName().toString());
-                        ei.setSubject(message.getSubject().toString());
-                        ei.setReceived((Date) message.getTimeReceived());        // Might not work
-                        ei.setSensitivity(message.getSensitivity().toString());
-                        ei.setImportance(message.getImportance().toString());
-                        ei.setBody(message.getText().toString());
-                        ei.setRecipients(message.getRecipients().toString());
-                        items.add(ei);
-                        i = items.iterator();
-                    }
-                    skip = false;
                 }
+                if (!skip) {
+                    AddressEntry sender = new AddressEntryProxy(message.getSender());
+                    ei.setSender(sender.getName().toString());
+                    ei.setSubject(message.getSubject().toString());
+                    ei.setReceived((Date) message.getTimeReceived());        // Might not work
+                    ei.setSensitivity(message.getSensitivity().toString());
+                    ei.setImportance(message.getImportance().toString());
+                    ei.setBody(message.getText().toString());
+                    ei.setRecipients(message.getRecipients().toString());
+                    items.add(ei);
+                    i = items.iterator();
+                }
+                skip = false;
             }
+            //   }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             throw new JspTagException(SOURCE + ":" + e.getMessage());
