@@ -15,6 +15,7 @@ public class CalendarItem {
     private String location = "";
     private String description = "";
     private boolean allday = false;
+    private boolean noevents = true;
 
     public String getSubject() {
         return subject;
@@ -62,5 +63,13 @@ public class CalendarItem {
 
     public void setAllday(boolean allday) {
         this.allday = allday;
+    }
+
+    public boolean getNoevents() {
+        return noevents;
+    }
+
+    public void setNoevents(boolean noevents) {
+        this.noevents = noevents;
     }
 }

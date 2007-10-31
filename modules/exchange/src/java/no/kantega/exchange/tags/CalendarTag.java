@@ -90,13 +90,12 @@ public class CalendarTag extends LoopTagSupport {
                     null, null
             );
 
+            int n = 0;
             do {
+                CalendarItem ci = new CalendarItem();
                 try {
+
                     AppointmentItem appo = new AppointmentItemProxy(calColl.getNext());
-                    CalendarItem ci = new CalendarItem();
-
-                    no.kantega.exchange.model.CalendarItem cis = new CalendarItem();
-
                     ci.setSubject(appo.getSubject().toString());
                     ci.setLocation(appo.getLocation().toString());
                     ci.setDescription(appo.getText().toString());
@@ -104,14 +103,20 @@ public class CalendarTag extends LoopTagSupport {
                     ci.setEndtime(format_ex.parse(appo.getEndTime().toString()));
 
                     // Check if event is all day
-                    if (appo.getAllDayEvent().toString().equals("true")) {
+                    if ("true".equalsIgnoreCase(appo.getAllDayEvent().toString())) {
                         ci.setAllday(true);
                     }
-
+                    ci.setNoevents(false);
                     items.add(ci);
                     i = items.iterator();
+                    n++;
+
                 } catch (IllegalArgumentException e) {
                     notdone = false;
+                    if(n==0){
+                        items.add(ci);
+                        i = items.iterator();
+                    }
                 }
             }
             while (notdone);
