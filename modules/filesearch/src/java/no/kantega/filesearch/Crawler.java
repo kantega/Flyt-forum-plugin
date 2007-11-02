@@ -56,6 +56,7 @@ public class Crawler implements DocumentProvider {
                 URL url = smbFile.getURL();
                 Document doc = new Document();                doc.add(new Field(Fields.TITLE, smbFile.getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
                 doc.add(new Field(Fields.DOCTYPE, TYPE_FILE_ON_SHARE, Field.Store.YES, Field.Index.UN_TOKENIZED));
+                /*
                 log.debug("Owner: " + smbFile.getOwnerUser().getAccountName());
                 ACE[] security = smbFile.getSecurity();
                 for (int i = 0; i < security.length; i++) {
@@ -65,6 +66,7 @@ public class Crawler implements DocumentProvider {
                         doc.add(new Field(FILE_OWNER, ace.getSID().getAccountName().toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));
                     }
                 }
+                */
                 doc.add(new Field(Fields.SITE_ID, Integer.toString(siteId), Field.Store.YES, Field.Index.UN_TOKENIZED));
                 doc.add(new Field(FILE_NAME, smbFile.getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
                 doc.add(new Field(FILE_PATH, url.getPath(), Field.Store.YES, Field.Index.UN_TOKENIZED));
