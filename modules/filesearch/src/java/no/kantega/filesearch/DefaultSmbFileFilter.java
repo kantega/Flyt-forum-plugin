@@ -12,6 +12,7 @@ import jcifs.smb.SmbException;
  * To change this template use File | Settings | File Templates.
  */
 public class DefaultSmbFileFilter implements SmbFileFilter {
+    private long sizeLimit = 10000000;
     public boolean accept(SmbFile smbFile) throws SmbException {
         if(smbFile.getName().startsWith("~")) {
             return false;
@@ -19,6 +20,13 @@ public class DefaultSmbFileFilter implements SmbFileFilter {
         if(smbFile.getName().startsWith(".")) {
             return false;
         }
+        if(sizeLimit > 0 && smbFile.length() > sizeLimit) {
+            return false;
+        }
         return true;
+    }
+
+    public void setSizeLimit(long sizeLimit) {
+        this.sizeLimit = sizeLimit*1000;
     }
 }
