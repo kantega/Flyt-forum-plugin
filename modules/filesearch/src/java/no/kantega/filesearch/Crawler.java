@@ -12,6 +12,8 @@ import no.kantega.publishing.search.index.provider.DocumentProvider;
 import no.kantega.publishing.search.index.provider.DocumentProviderHandler;
 import no.kantega.publishing.search.index.rebuild.ProgressReporter;
 import no.kantega.publishing.search.model.SearchHit;
+import no.kantega.publishing.search.model.SearchHitContext;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
@@ -160,7 +162,7 @@ public class Crawler implements DocumentProvider {
     }
 
     public Document provideDocument(String string) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public Term getDeleteTerm(String string) {
@@ -175,7 +177,7 @@ public class Crawler implements DocumentProvider {
         return new FileSearchHit();
     }
     
-    public void processSearchHit(SearchHit searchHit, Document document) {
+    public void processSearchHit(SearchHit searchHit, SearchHitContext context, Document document) {
         FileSearchHit hit = (FileSearchHit) searchHit;
         String host = document.get(FILE_HOST);
         String path = document.get(FILE_PATH);
