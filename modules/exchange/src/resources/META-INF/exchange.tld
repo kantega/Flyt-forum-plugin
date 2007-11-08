@@ -135,7 +135,13 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+    </tag>
 
+    <tag>
+       <name>active</name>
+       <tagclass>no.kantega.exchange.tags.GetActiveTag</tagclass>
+       <bodycontent>JSP</bodycontent>
+       <info>Check</info>
     </tag>
 
 </taglib>
