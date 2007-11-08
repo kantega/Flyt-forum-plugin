@@ -29,8 +29,19 @@ public class GetActiveTag extends BodyTagSupport {
     private String userid = null;
 
     public int doStartTag() throws JspException {
+        try {
+            Configuration config = Aksess.getConfiguration();
+            String active = config.getString("jintegra.exchange.active");
+            if ("true".equalsIgnoreCase(active)) {
+                return EVAL_BODY_AGAIN;
+            }
+            return SKIP_BODY;
 
-        return EVAL_BODY_AGAIN;
+        } catch (Exception e) {
+            Log.error(SOURCE, e, null, null);
+            throw new JspTagException(SOURCE + ":" + e.getMessage());
+        }
+
     }
 
     public int doAfterBody() throws JspException {
