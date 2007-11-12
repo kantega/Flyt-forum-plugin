@@ -50,7 +50,6 @@
         <forum:haspermisson permission="EDIT_THREAD" object="${thread}">
              | <a href="editthread?threadId=<c:out value="${thread.id}"/>"><spring:message code="thread.edit"/> </a>
         </forum:haspermisson>
-
         <forum:haspermisson permission="DELETE_THREAD" object="${thread}">
             | <a href="javascript:deleteThread(<c:out value="${thread.id}"/>)"><spring:message code="thread.delete"/> </a>
         </forum:haspermisson>

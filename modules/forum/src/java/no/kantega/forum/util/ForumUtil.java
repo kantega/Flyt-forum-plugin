@@ -2,17 +2,18 @@ package no.kantega.forum.util;
 
 import no.kantega.publishing.common.Aksess;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Cookie;
+import javax.servlet.jsp.JspWriter;
 import java.io.BufferedReader;
-import java.io.StringReader;
 import java.io.IOException;
-import java.util.Date;
+import java.io.StringReader;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,6 +25,8 @@ import java.text.ParseException;
 public class ForumUtil {
     private static String lastVisitCookieName = "forumLastVisit";
     private static DateFormat cookieDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+    private static String NOSPAM_KEY = "567-234-NoSpam-Please";
 
     public String quoteString(String quoteMark, String string) {
         try {
@@ -88,5 +91,20 @@ public class ForumUtil {
         }
 
         return lastVisit;
+    }
+
+    public static void getNoSpamCode(JspWriter out) throws IOException {
+        for (int i = 0; i < NOSPAM_KEY.length(); i++) {
+            out.println("a += '" + NOSPAM_KEY.charAt(i) + "';\n");
+        }
+    }
+
+    public static boolean isSpam(HttpServletRequest request) {
+        String code = request.getParameter("nospam");
+        if (code != null && code.equals(NOSPAM_KEY)) {
+            return false;
+        }
+
+        return true;
     }
 }

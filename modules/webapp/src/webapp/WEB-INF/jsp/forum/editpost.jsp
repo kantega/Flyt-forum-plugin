@@ -1,3 +1,4 @@
+<%@ page import="no.kantega.forum.util.ForumUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -11,7 +12,20 @@
 
 <kantega:section id="innhold">
     <div class="contentmain">
-        <form method="POST" enctype="multipart/form-data">
+        <script type="text/javascript">
+            function submitForm() {
+                var form = document.editpost;
+                var a = '';
+                <%
+                ForumUtil.getNoSpamCode(out);
+                %>
+                form.nospam.value = a;
+                form.submit();
+            }
+        </script>
+        <noscript><h1><spring:message code="post.noscript"/></h1></noscript>
+        <form method="POST" enctype="multipart/form-data" name="editpost">
+            <input type="hidden" name="nospam" value="">
             <spring:bind path="post.id">
                 <input type="hidden" name="id" value="<c:out value="${status.value}"/>">
             </spring:bind>
@@ -114,10 +128,9 @@
                 <tr class="forum-tableRow0">
                     <td colspan="2" align="right">
                         <c:choose>
-                            <c:when test="${post.thread.id == 0}"><input type="submit" class="submit" value="<spring:message code="thread.edit.save"/>"></c:when>
-                            <c:when test="${post.id == 0}"><input type="submit" class="submit" value="<spring:message code="post.edit.savenew"/>"></c:when>
-                            <c:otherwise><input type="submit" class="submit" value="<spring:message code="post.edit.save"/>"></c:otherwise>
-
+                            <c:when test="${post.thread.id == 0}"><input type="button" class="submit" onclick="submitForm()" value="<spring:message code="thread.edit.save"/>"></c:when>
+                            <c:when test="${post.id == 0}"><input type="button" class="submit" onclick="submitForm()" value="<spring:message code="post.edit.savenew"/>"></c:when>
+                            <c:otherwise><input type="button" class="submit" onclick="submitForm()" value="<spring:message code="post.edit.save"/>"></c:otherwise>
                         </c:choose>
                         <input type="button" class="button" onclick="history.back();" value="<spring:message code="cancel"/>">
                     </td>

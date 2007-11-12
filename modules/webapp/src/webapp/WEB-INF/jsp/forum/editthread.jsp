@@ -1,3 +1,4 @@
+<%@ page import="no.kantega.forum.util.ForumUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -8,8 +9,21 @@
 </kantega:section>
 
 <kantega:section id="innhold">
+    <script type="text/javascript">
+        function submitForm() {
+            var form = document.editthread;
+            var a = '';
+            <%
+            ForumUtil.getNoSpamCode(out);
+            %>
+            form.nospam.value = a;
+            form.submit();
+        }
+    </script>
+    <noscript><h1><spring:message code="post.noscript"/></h1></noscript>
     <div class="contentmain">
-        <form method="POST">
+        <form method="POST" name="editthread">
+            <input type="hidden" name="nospam" value="">
             <spring:bind path="thread.id">
                 <input type="hidden" name="id" value="<c:out value="${status.value}"/>">
             </spring:bind>
@@ -44,7 +58,7 @@
                 </tr>
                 <tr class="forum-tableRow1">
                     <td colspan="2" align="left">
-                        <input type="submit" class="submit" value="<spring:message code="thread.edit.save"/>">
+                        <input type="button" class="submit" onclick="submitForm()" value="<spring:message code="thread.edit.save"/>">
                         <input type="button" class="button" onclick="history.back();" value="<spring:message code="cancel"/>">
                     </td>
                 </tr>
