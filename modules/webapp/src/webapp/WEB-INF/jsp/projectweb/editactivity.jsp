@@ -24,7 +24,7 @@
         </c:choose>
         </div>
 
-    <form method="post">
+    <form name="editform" method="post">
 
         <table>
             <tr>
@@ -34,6 +34,7 @@
                         <input name="title" value="<c:out value="${status.value}"/>">
                         <spring:message code="activity.validation.${status.errorCode}" text="${status.errorMessage}"/>
                     </spring:bind>
+                    <script type="text/javascript">document.editform.title.focus()</script>
                 </td>
             </tr>
             <tr>

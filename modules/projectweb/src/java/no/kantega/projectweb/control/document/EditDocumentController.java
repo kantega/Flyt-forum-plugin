@@ -1,30 +1,30 @@
 package no.kantega.projectweb.control.document;
 
+import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserResolver;
+import no.kantega.osworkflow.BasicWorkflowFactory;
+import no.kantega.projectweb.control.FormControllerSupport;
+import no.kantega.projectweb.dao.ProjectWebDao;
+import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.model.Document;
+import no.kantega.projectweb.model.DocumentCategory;
+import no.kantega.projectweb.model.DocumentContent;
+import no.kantega.publishing.search.extraction.TextExtractor;
+import no.kantega.publishing.search.extraction.TextExtractorSelector;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Property;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.validation.Errors;
-import org.springframework.validation.BindException;
-import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Date;
 import java.io.ByteArrayInputStream;
-
-import no.kantega.projectweb.model.Document;
-import no.kantega.projectweb.model.DocumentContent;
-import no.kantega.projectweb.model.DocumentCategory;
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.modules.user.UserProfileManager;
-import no.kantega.modules.user.UserResolver;
-import no.kantega.projectweb.control.FormControllerSupport;
-import no.kantega.osworkflow.BasicWorkflowFactory;
-import no.kantega.publishing.search.extraction.TextExtractorSelector;
-import no.kantega.publishing.search.extraction.TextExtractor;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -117,13 +117,20 @@ public class EditDocumentController extends FormControllerSupport {
 
         //hvis dokumentet legges til en aktivitet
         String activityId = httpServletRequest.getParameter("activityId");
-        if (activityId != null){
-            dao.saveDocumentWithActivity(Long.parseLong(activityId), document);
-            return new ModelAndView(new RedirectView("activity"), "activityId", activityId);
+        String addActivityIdId = httpServletRequest.getParameter("addActivityId");
+        if (activityId != null || addActivityIdId != null){
+            dao.saveDocumentWithActivity(Long.parseLong(activityId != null ? activityId : addActivityIdId), document);   
         } else{
             dao.saveOrUpdate(document);
+        }
+
+        String attachedActivityId = httpServletRequest.getParameter("attachedActivityId");
+        if(attachedActivityId != null && !"".equals(attachedActivityId)) {
+            return new ModelAndView(new RedirectView("activity"), "activityId", attachedActivityId);
+        } else {
             return new ModelAndView(new RedirectView("documentlist"), "projectId", Long.toString(document.getProject().getId()));
         }
+
     }
 
 
@@ -133,6 +140,20 @@ public class EditDocumentController extends FormControllerSupport {
         map.put("categories", dao.getDocumentCategories());
         map.put("project", document.getProject());
         map.put("activityId", httpServletRequest.getParameter("activityId"));
+        map.put("attachedActivityId", httpServletRequest.getParameter("attachedActivityId"));
+        DetachedCriteria c = DetachedCriteria.forClass(Activity.class).add(Property.forName("project").eq(document.getProject()));
+        List list = dao.getActivitiesInProject(c);
+        for(Iterator i = document.getActivities().iterator(); i.hasNext();) {
+            Activity a = (Activity) i.next();
+            for (int j = 0; j < list.size(); j++) {
+                Activity b = (Activity) list.get(j);
+                if(b.getId() == a.getId()) {
+                    list.remove(b);
+                }
+            }
+            
+        }
+        map.put("activities", list);
         return map;
     }
 

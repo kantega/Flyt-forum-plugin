@@ -135,7 +135,7 @@
                 </td>
                 <c:if test="${canEdit}">
                     <td>
-                        <a class="button" style="vertical-align: middle;" href="editdocument?documentId=<c:out value="${document.id}"/>">
+                        <a class="button" style="vertical-align: middle;" href="editdocument?documentId=<c:out value="${document.id}"/>&amp;attachedActivityId=<c:out value="${activity.id}"/>">
                          <img style="vertical-align: middle" src="../bitmaps/projectweb/ikon_rediger.gif" border="0">
                          <spring:message code="general.edit"/>
                      </a>
@@ -213,6 +213,7 @@
         </table>
         <form name="deleteForm" action="deletedocument" method="POST">
             <input name="documentId" type="hidden" value="">
+            <input name="activityId" type="hidden" value="<c:out value="${activity.id}"/>">
         </form>
 </kantega:section>
 

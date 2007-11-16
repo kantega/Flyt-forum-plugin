@@ -22,10 +22,13 @@
             </c:choose>
         </div>
 
-        <form method="post" enctype="multipart/form-data">
+        <form name="editform" method="post" enctype="multipart/form-data">
             <c:if test="${activityId != null}">
                 <input type="hidden" name="activityId" value="<c:out value="${activityId}"/>">
             </c:if>
+            <input type="hidden" name="attachedActivityId" value="<c:out value="${attachedActivityId}"/>">
+            <input type="hidden" name="detatchActivity" value="">
+
             <c:if test="${document.id == 0}">
                 <input type="hidden" name="newdocument" value="true"/>
             </c:if>
@@ -74,6 +77,26 @@
 
                     </td>
                 </tr>
+                <c:if test="${activityId == null}">
+                    <tr>
+                        <td valign="top"><spring:message code="document.activities"/>:</td>
+                        <td>
+
+                            <c:forEach items="${document.activities}" var="activity">
+                                <c:out value="${activity.title}"/><br/>
+                            </c:forEach>
+                            <c:if test="${not empty(activities)}">
+                                <br/><br/>
+                                <select name="addActivityId">
+                                    <option value=""><spring:message code="document.attachactivity"/></option>
+                                    <c:forEach items="${activities}" var="activity">
+                                        <option value="<c:out value="${activity.id}"/>"><c:out value="${activity.title}"/></option>
+                                    </c:forEach>
+                                </select>
+                            </c:if>
+                        </td>
+                    </tr>
+                </c:if>
             </table>
             <input type="submit" value="<spring:message code="general.save"/>">
         </form>
