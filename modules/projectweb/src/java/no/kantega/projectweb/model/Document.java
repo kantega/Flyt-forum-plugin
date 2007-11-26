@@ -3,9 +3,7 @@ package no.kantega.projectweb.model;
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 
 public class Document implements WorkflowParticipator {
@@ -120,6 +118,21 @@ public class Document implements WorkflowParticipator {
 
     protected void setActivities(Set activities) {
         this.activities = activities;
+    }
+
+    public void setActivity(Activity activity) {
+        
+        List a = new ArrayList(getActivities());
+
+        for (int i = 0; i < a.size(); i++) {
+            Activity ac = (Activity) a.get(i);
+            getActivities().remove(ac);
+            ac.getDocuments().remove(this);
+
+
+        }
+        //getActivities().add(activity);
+        //activity.getDocuments().add(this);
     }
 
     public DocumentContent getDocumentContent() {

@@ -117,12 +117,9 @@ public class EditDocumentController extends FormControllerSupport {
 
         //hvis dokumentet legges til en aktivitet
         String activityId = httpServletRequest.getParameter("activityId");
-        String addActivityIdId = httpServletRequest.getParameter("addActivityId");
-        if (activityId != null || addActivityIdId != null){
-            dao.saveDocumentWithActivity(Long.parseLong(activityId != null ? activityId : addActivityIdId), document);   
-        } else{
-            dao.saveOrUpdate(document);
-        }
+
+        dao.saveDocumentWithActivity(activityId != null && !"".equals(activityId) ? Long.parseLong(activityId) : 0, document);
+
 
         String attachedActivityId = httpServletRequest.getParameter("attachedActivityId");
         if(attachedActivityId != null && !"".equals(attachedActivityId)) {
@@ -142,18 +139,10 @@ public class EditDocumentController extends FormControllerSupport {
         map.put("activityId", httpServletRequest.getParameter("activityId"));
         map.put("attachedActivityId", httpServletRequest.getParameter("attachedActivityId"));
         DetachedCriteria c = DetachedCriteria.forClass(Activity.class).add(Property.forName("project").eq(document.getProject()));
-        List list = dao.getActivitiesInProject(c);
-        for(Iterator i = document.getActivities().iterator(); i.hasNext();) {
-            Activity a = (Activity) i.next();
-            for (int j = 0; j < list.size(); j++) {
-                Activity b = (Activity) list.get(j);
-                if(b.getId() == a.getId()) {
-                    list.remove(b);
-                }
-            }
-            
-        }
-        map.put("activities", list);
+
+        Set activities = document.getActivities();
+        map.put("selectedActivity", activities == null || activities.size() == 0 ? null : activities.iterator().next());
+        map.put("allActivities", dao.getActivitiesInProject(c));
         return map;
     }
 

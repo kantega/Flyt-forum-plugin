@@ -27,7 +27,6 @@
                 <input type="hidden" name="activityId" value="<c:out value="${activityId}"/>">
             </c:if>
             <input type="hidden" name="attachedActivityId" value="<c:out value="${attachedActivityId}"/>">
-            <input type="hidden" name="detatchActivity" value="">
 
             <c:if test="${document.id == 0}">
                 <input type="hidden" name="newdocument" value="true"/>
@@ -79,18 +78,13 @@
                 </tr>
                 <c:if test="${activityId == null}">
                     <tr>
-                        <td valign="top"><spring:message code="document.activities"/>:</td>
+                        <td valign="top"><spring:message code="document.activity"/>:</td>
                         <td>
-
-                            <c:forEach items="${document.activities}" var="activity">
-                                <c:out value="${activity.title}"/><br/>
-                            </c:forEach>
-                            <c:if test="${not empty(activities)}">
-                                <br/><br/>
-                                <select name="addActivityId">
-                                    <option value=""><spring:message code="document.attachactivity"/></option>
-                                    <c:forEach items="${activities}" var="activity">
-                                        <option value="<c:out value="${activity.id}"/>"><c:out value="${activity.title}"/></option>
+                            <c:if test="${not empty(allActivities)}">
+                                <select name="activityId">
+                                    <option value="" <c:if test="${selectedActivity == null}">selected</c:if>><spring:message code="document.noactivity"/></option>
+                                    <c:forEach items="${allActivities}" var="activity">
+                                        <option value="<c:out value="${activity.id}"/>" <c:if test="${selectedActivity != null && activity.id == selectedActivity.id}">selected</c:if>><c:out value="${activity.title}"/></option>
                                     </c:forEach>
                                 </select>
                             </c:if>

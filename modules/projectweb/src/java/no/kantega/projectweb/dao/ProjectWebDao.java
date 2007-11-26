@@ -35,10 +35,28 @@ public class ProjectWebDao {
     public void saveDocumentWithActivity(final long activityId, final Document document){
         template.execute(new HibernateCallback(){
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-                Activity a = (Activity) session.get(Activity.class, new Long(activityId));
-                a.addToDocuments(document);
-                session.saveOrUpdate(a);
                 session.saveOrUpdate(document);
+                Document  d = (Document) session.load(Document.class, new Long(document.getId()));
+
+                
+                List activities = new ArrayList(d.getActivities());
+
+
+                for (int i = 0; i < activities.size(); i++) {
+                    Activity ac = (Activity) activities.get(i);
+                    Activity ac1 = (Activity) session.get(Activity.class, new Long(ac.getId()));
+                    d.getActivities().remove(ac1);
+                    ac1.getDocuments().remove(d);
+                }
+
+                if(activityId > 0) {
+                    Activity a = (Activity) session.load(Activity.class, new Long(activityId));
+                    a.addToDocuments(d);
+                    session.saveOrUpdate(a);
+                }
+
+                session.saveOrUpdate(d);
+                                
                 return null;
             }
         }
