@@ -78,9 +78,15 @@ public class DocumentListController implements Controller {
                 sc.add(Property.forName("id").in(lcategories));
             }
 
+        } else {
+            DetachedCriteria sc = criteria.createCriteria("category");
+            if(order != null && order.equals("category")) {
+                sc.addOrder(Property.forName("name").asc());
+            }
+
         }
 
-        if (order != null && order.equals("title")) {
+        if (order != null && (order.equals("title") || order.equals("editDate"))) {
             criteria.addOrder(Order.asc(order));
         }
 

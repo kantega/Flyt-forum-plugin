@@ -159,6 +159,11 @@ public class ActivityListController implements Controller {
                 sc.add(Property.forName("id").in(lStatuses));
             }
 
+        } else {
+            DetachedCriteria sc = criteria.createCriteria("status");
+            if(order != null && order.equals("status")) {
+                sc.addOrder(Property.forName("name").asc());
+            }
         }
 
 
@@ -183,6 +188,7 @@ public class ActivityListController implements Controller {
         }
         // Assignees
         if(assignees != null && assignees.length > 0) {
+
             boolean any = false;
             for (int i = 0; i < assignees.length; i++) {
                 if(assignees[i].equals("-1")) {
@@ -191,9 +197,6 @@ public class ActivityListController implements Controller {
 
             }
             if(!any) {
-                if(order.equals("assignee")) {
-                    criteria.addOrder(Property.forName("assignee").asc());
-                }
                 criteria.add(Property.forName("assignee").in(assignees));
             }
         }
@@ -216,7 +219,7 @@ public class ActivityListController implements Controller {
         if(order != null &&
                 (order.equals("title") ||
                  order.equals("estimatedLeftHours") ||
-                 order.equals("usedHours"))) {
+                 order.equals("usedHours") || order.equals("assignee") || order.equals("endDate"))) {
                 criteria.addOrder(Order.asc(order));
         }
 

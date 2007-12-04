@@ -38,7 +38,7 @@
         <tr class="tableHeading">
             <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
             <td><a href="javascript:doSort('category')"><spring:message code="document.category"/></a></td>
-            <td><a href="javascript:doSort('editdate')"><spring:message code="document.editdate"/></a></td>
+            <td><a href="javascript:doSort('editDate')"><spring:message code="document.editdate"/></a></td>
             <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
                 <c:set var="canEdit" value="true"/>
                 <td>&nbsp;</td>
