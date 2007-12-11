@@ -50,7 +50,7 @@ public class AvailabilityTag extends TagSupport {
 
     private boolean imageshow = false;
 
-    public final static String DEFAULT_EXCHANGE_DIR = "/aksess/bitmaps/exchange/";
+    public final static String DEFAULT_EXCHANGE_DIR = "/bitmaps/exchange/";
 
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
