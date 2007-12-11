@@ -29,7 +29,7 @@ import org.springframework.web.util.ExpressionEvaluationUtils;
 public class ExchangeSession {
     private static String SOURCE = "ExchangeSession";
     private static Session session = null;
-    public String id = null;
+    private String id = null;
     User user = null;
 
     public Session getInstance(String userid, HttpServletRequest request, PageContext pageContext) throws ConfigurationException {
@@ -74,21 +74,24 @@ public class ExchangeSession {
                         String s = session.getName().toString();
                         String[] a = s.split("_");
                         mailboxnew = a[1];
-                        if (userid.equalsIgnoreCase(mailboxnew)) {
+                        if (this.id.equalsIgnoreCase(mailboxnew)) {
                             mailboxreuse = true;
                         } else {
                             mailboxreuse = false;
                             session.logoff();
                         }
 
+                    } catch (AutomationException e) {
+                        // Missing name in session, meaning there is no established session
                     } catch (Exception e) {
+
                     }
 
                     if (!mailboxreuse) {
                         // logon to the Exchange Server
                         session.logon(null, null, new Boolean(false), new Boolean(true),
                                 new Boolean(false), new Boolean(false),
-                                exchangeServer + "\n" + id);
+                                exchangeServer + "\n" + this.id);
                     }
                 }else{
                     throw new InvalidCredentialsException("No credentials or userid given", SOURCE);                    
@@ -128,23 +131,23 @@ public class ExchangeSession {
             // Check users credentials
             SecuritySession session = SecuritySession.getInstance(request);
             if (userid != null) {
-                id = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
+                this.id = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
                     realm.lookupUser(userid);
-                    id = userid;
+                    this.id = userid;
                     return true;
                 } catch (no.kantega.commons.exception.SystemException e) {
-                    id = null;
+                    this.id = "";
                     throw new InvalidCredentialsException("No credentials or userid given", SOURCE);
                 }
             } else {
                 try {
                     user = session.getUser();
-                    id = user.getId().substring(user.getId().indexOf(":") + 1);
+                    this.id = user.getId().substring(user.getId().indexOf(":") + 1);
                     return true;
                 } catch (Exception e) {
-                    id = null;
+                    this.id = "";
                     throw new InvalidCredentialsException("No credentials or userid given", SOURCE);
                 }
             }
@@ -152,7 +155,7 @@ public class ExchangeSession {
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }
-        id = null;
+        this.id = "";
         return false;
     }
 
@@ -171,6 +174,6 @@ public class ExchangeSession {
     }
 
     public String getUserid() {
-        return id;
+        return this.id;
     }
 }
