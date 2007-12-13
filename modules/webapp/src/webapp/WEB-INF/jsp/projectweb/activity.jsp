@@ -91,7 +91,15 @@
 </kantega:section>
 
 <kantega:section id="innhold">
+    <form method="get" action="activity" name="orderform">
+        <input type="hidden" name="activityId" value="<c:out value="${activity.id}"/>">
+        <input type="hidden" name="order" value="title">
+    </form>
     <script language="Javascript" type="text/javascript">
+        function doSort(order) {
+            document.orderform.order.value = order;
+            document.orderform.submit();
+        }
         function addComment() {
             document.getElementById("addcomment").style.display = 'block';
         }
@@ -114,8 +122,8 @@
             </td>
         </tr>
         <tr class="tableHeading">
-            <td><spring:message code="document.title"/></td>
-            <td><spring:message code="document.editdate"/></td>
+            <td><a href="javascript:doSort('title')"><spring:message code="document.title"/></a></td>
+            <td><a href="javascript:doSort('editDate')"><spring:message code="document.editdate"/></a></td>
             <pw:haspermission project="${project}" permission="EDIT_DOCUMENT">
                 <c:set var="canEdit" value="true"/>
                 <td>&nbsp;</td>

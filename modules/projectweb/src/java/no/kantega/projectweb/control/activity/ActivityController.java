@@ -1,25 +1,20 @@
 package no.kantega.projectweb.control.activity;
 
-import org.springframework.web.servlet.mvc.Controller;
+import com.opensymphony.workflow.Workflow;
+import com.opensymphony.workflow.loader.WorkflowDescriptor;
+import com.opensymphony.workflow.spi.Step;
+import no.kantega.modules.user.UserResolver;
+import no.kantega.osworkflow.BasicWorkflowFactory;
+import no.kantega.projectweb.dao.ProjectWebDao;
+import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.model.Document;
+import no.kantega.projectweb.viewmodel.WorkflowHistoryLine;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.Activity;
-import no.kantega.projectweb.viewmodel.WorkflowHistoryLine;
-import no.kantega.modules.user.UserResolver;
-import no.kantega.osworkflow.BasicWorkflowFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.opensymphony.workflow.Workflow;
-import com.opensymphony.workflow.spi.Step;
-import com.opensymphony.workflow.loader.WorkflowDescriptor;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -79,7 +74,26 @@ public class ActivityController implements Controller{
         }
         map.put("current", current);
 
-        map.put("documents", activity.getDocuments());
+        final String order = request.getParameter("order");
+
+        List documents = new ArrayList(activity.getDocuments());
+
+        /* eirbjo: Kind of a hack, we should have done this using criteria api, but I don't have
+         *         time to figure that out.
+         */
+        Collections.sort(documents, new Comparator() {
+            public int compare(Object o, Object o1) {
+                Document d = (Document) o;
+                Document d1 = (Document) o1;
+                if("editDate".equals(order)) {
+                    return d.getEditDate().compareTo(d1.getEditDate());
+                } else {
+                    return d.getTitle().compareTo(d1.getTitle());
+                }
+            }
+        });
+        map.put("documents", documents);
+
         return new ModelAndView("activity", map);
     }
 
