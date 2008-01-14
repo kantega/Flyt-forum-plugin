@@ -149,17 +149,21 @@ public class Document implements WorkflowParticipator {
 
     public String getIconUrl(){
         String url = "/aksess/bitmaps/mimetype/default.gif";
-        MimeType type  = getMimeType();
-        if( type.getType().equals("application/msword") || type.getType().equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")){
+        String type = getContentType();
+        if( type.equals("application/msword") ||
+            type.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+            type.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.template")){
             url = "/aksess/bitmaps/mimetype/application/msword.gif";
         }
-        else if(type.getType().equals("application/vnd.ms-excel") || type.getType().equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")){
+        else if(type.equals("application/vnd.ms-excel") ||
+                type.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")){
             url = "/aksess/bitmaps/mimetype/application/vnd.ms-excel.gif";
         }
-        else if(type.getType().equals("application/vnd.ms-powerpoint") || type.getType().equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")){
+        else if(type.equals("application/vnd.ms-powerpoint") ||
+                type.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")){
             url = "/aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.gif";
         }
-        else if(type.getType().equals("application/pdf")){
+        else if(type.equals("application/pdf")){
             url = "/aksess/bitmaps/mimetype/application/pdf.gif";
         }
         return url;
