@@ -118,7 +118,7 @@
 	  <dependency>
             <groupId>aksess</groupId>
             <artifactId>aksess-plugin</artifactId>
-            <version>1.16</version>
+            <version>1.22</version>
             <type>plugin</type>
 	  </dependency>
 	</dependencies>
