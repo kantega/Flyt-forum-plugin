@@ -40,7 +40,8 @@ public class DeleteProjectController implements Controller {
             long projectId = Long.parseLong(request.getParameter("projectid"));
             Project project = dao.getProject(projectId);
             String user = userResolver.resolveUser(request).getUsername();
-            if (permissionManager.hasPermission(user, Permissions.PROJECT_ADMINISTRATION, project)){
+            if (permissionManager.hasPermission(user, Permissions.PROJECT_ADMINISTRATION, project) ||
+                permissionManager.hasGlobalPermission(user, GlobalPermissions.ADMINISTRATOR)){
                 dao.deleteProject(projectId);
                 if(permissionManager.hasGlobalPermission(user, GlobalPermissions.ADMINISTRATOR)) {
                     map.put("projects", dao.getProjectList());

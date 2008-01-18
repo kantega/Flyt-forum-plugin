@@ -46,7 +46,6 @@ public class ActivityListController implements Controller {
         boolean mayEdit = permissionManager.hasGlobalPermission(user, GlobalPermissions.ADMINISTRATOR) ||
                 permissionManager.hasPermission(user, Permissions.PROJECT_ADMINISTRATION, project);
         map.put("mayEdit", new Boolean(mayEdit));
-
         List activities = new ArrayList();
         DetachedCriteria criteria = createCriteria(request, project);
         List a = dao.getActivitiesInProject(criteria);

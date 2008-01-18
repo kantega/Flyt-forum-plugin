@@ -27,6 +27,12 @@
     function updateView() {
         document.searchform.submit();
     }
+    function confirmDelete(id) {
+        if (confirm("<spring:message code="project.confirmdelete"/>")) {
+            document.deleteProject.projectid.value = id;
+            document.deleteProject.submit();
+        }
+    }
 </script>
 
 <div class="heading"><c:out value="${project.name}"/></div>
@@ -37,6 +43,7 @@
             <td align="right" colspan="1">
                 <div style="padding-bottom: 5px">
                     <a class="button" href="editproject?projectId=<c:out value="${project.id}"/>" style="vertical-align: middle;"><img src="../bitmaps/projectweb/ikon_rediger.gif" border="0" style="vertical-align: middle;"><spring:message code="project.actions.edit"/></a>
+                    <a class="button" style="vertical-align: middle;" href="Javascript:confirmDelete('<c:out value="${project.id}"/>')"><img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0"><spring:message code="project.edit.delete"/></a>
                 </div>
             </td>
         </tr>
@@ -360,6 +367,9 @@
 
 </div>
 
+</form>
+<form name="deleteProject" action="deleteproject" method="POST">
+    <input name="projectid" type="hidden" value="">
 </form>
 </kantega:section>
 <%@include file="include/design/design.jsf"%>

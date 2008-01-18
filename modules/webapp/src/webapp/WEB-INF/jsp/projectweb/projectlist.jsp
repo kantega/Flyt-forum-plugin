@@ -9,14 +9,6 @@
 </kantega:section>
 
 <kantega:section id="innhold">
-    <script type="text/javascript">
-    function confirmDelete(id) {
-        if (confirm("<spring:message code="project.confirmdelete"/>")) {
-            document.deleteProject.projectid.value = id;
-            document.deleteProject.submit();
-        }
-    }
-</script>
     <div class="contentmain">
         <table cellpadding="0" cellspacing="0" width="100%">
             <pw:hasglobalpermission permission="ADMINISTRATOR">
@@ -36,7 +28,7 @@
                     <table cellpadding="0" cellspacing="0" width="100%">
                         <tr class="tableHeading">
                             <td><spring:message code="project.name"/></td>
-                            <td colspan="2"><spring:message code="project.leader"/></td>
+                            <td><spring:message code="project.leader"/></td>
                         </tr>
                         <c:forEach items="${projects}" var="project" varStatus="status">
                             <tr class="tableRow<c:out value="${status.count % 2}"/>">
@@ -48,12 +40,6 @@
                                 <td valign="top" class="dottedTd">
                                     <c:set var="fullName"><pw:resolveuser user="${project.leader}" info="fullName"/></c:set>
                                     <c:out value="${fullName}"/>
-                                </td>
-                                <td>
-                                    <a class="button" style="vertical-align: middle;" href="Javascript:confirmDelete('<c:out value="${project.id}"/>')">
-                                    <img style="vertical-align: middle" src="../bitmaps/projectweb/slett.gif" border="0">
-                                    <spring:message code="general.delete"/>
-                                    </a>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -89,8 +75,5 @@
         </table>
 
     </div>
-<form name="deleteProject" action="deleteproject" method="POST">
-    <input name="projectid" type="hidden" value="">
-</form>
 </kantega:section>
 <%@include file="include/design/design.jsf"%>
