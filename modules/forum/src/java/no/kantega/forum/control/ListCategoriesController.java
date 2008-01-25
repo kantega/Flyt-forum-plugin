@@ -53,26 +53,34 @@ public class ListCategoriesController implements Controller {
             unreadPosts = dao.getPostsAfterDate(lastVisit);
         }
 
-        for (int i = 0; i < cats.size(); i++) {
-            ForumCategory category = (ForumCategory) cats.get(i);
-            Iterator forums  = category.getForums().iterator();
-            while (forums.hasNext()) {
-                Forum forum = (Forum) forums.next();
-                if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
-                    // User does not have access to forum
-                    forums.remove();
-                } else {
-                    List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
-                    if(lastPostsInForum.size() > 0) {
-                        forum.setLastPost((Post) lastPostsInForum.get(0));
-                    }
-                    if (unreadPosts != null) {
-                        readStatus.updateUnreadPostsInForum(unreadPosts, forum);
-                    }
-                }
-            }
-        }
+	    boolean canCreateForum = permissionManager.hasPermission(username, Permissions.EDIT_FORUM, null);
 
+
+		Iterator catsIterator = cats.iterator();
+
+		while (catsIterator.hasNext()){
+			ForumCategory cat = (ForumCategory) catsIterator.next();
+			Iterator forumIterator = cat.getForums().iterator();
+			while (forumIterator.hasNext()){
+				Forum forum = (Forum) forumIterator.next();
+				System.out.println(" >> "+ forum.getName() );
+				if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
+					// User does not have access to forum
+					forumIterator.remove();
+
+				} else {
+					List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
+					if(lastPostsInForum.size() > 0) {
+						forum.setLastPost((Post) lastPostsInForum.get(0));
+					}
+					if (unreadPosts != null) {
+						readStatus.updateUnreadPostsInForum(unreadPosts, forum);
+					}
+				}
+
+			}
+			if (cat.getForums().isEmpty() && !canCreateForum) catsIterator.remove();
+		}
 
         if (username != null) {
             // Hent innlegg som brukeren kan godkjenne
