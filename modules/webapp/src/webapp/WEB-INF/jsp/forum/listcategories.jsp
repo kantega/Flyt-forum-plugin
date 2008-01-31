@@ -81,6 +81,18 @@
                 </c:forEach>
             </c:forEach>
         </table>
+
+        <div class="forum-icon-descriptions">
+            <div class="forum-icon-description">
+                <img src="../bitmaps/forum/forum_normal.gif" alt="<spring:message code="post.icon.normalforum.description"/>" title="<spring:message code="post.icon.normalforum.description"/>"> <spring:message code="post.icon.normalforum.description"/>
+            </div>
+            <div class="forum-icon-description">
+                <img src="../bitmaps/forum/forum_hot.gif" alt="<spring:message code="post.icon.hotforum.description"/>" title="<spring:message code="post.icon.hotforum.description"/>"> <spring:message code="post.icon.hotforum.description"/>
+            </div>
+            <div class="forum-icon-description">
+                <img src="../bitmaps/forum/forum_new.gif" alt="<spring:message code="post.icon.newforum.description"/>" title="<spring:message code="post.icon.newforum.description"/>"> <spring:message code="post.icon.newforum.description"/>
+            </div>
+        </div>
     </kantega:section>
     <c:choose>
         <c:when test="${hascats != 'true'}">

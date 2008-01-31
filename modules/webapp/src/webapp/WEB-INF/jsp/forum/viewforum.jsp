@@ -101,6 +101,18 @@
                 </tr>
             </c:forEach>
         </table>
+
+        <div class="forum-icon-descriptions">
+            <div class="forum-icon-description">
+                <img src="../bitmaps/forum/thread_normal.gif" alt="<spring:message code="post.icon.normalthread.description"/>" title="<spring:message code="post.icon.normalthread.description"/>"> <spring:message code="post.icon.normalthread.description"/>
+            </div>
+            <div class="forum-icon-description">
+                <img src="../bitmaps/forum/thread_hot.gif" alt="<spring:message code="post.icon.hotthread.description"/>" title="<spring:message code="post.icon.hotthread.description"/>"> <spring:message code="post.icon.hotthread.description"/>
+            </div>
+            <div class="forum-icon-description">
+                <img src="../bitmaps/forum/thread_new.gif" alt="<spring:message code="post.icon.newthread.description"/>" title="<spring:message code="post.icon.newthread.description"/>"> <spring:message code="post.icon.newthread.description"/>
+            </div>
+        </div>
     </c:otherwise>
     </c:choose>
 
