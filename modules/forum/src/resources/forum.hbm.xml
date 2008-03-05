@@ -73,7 +73,7 @@
         <property name="replyToId" type="long"/>
         <property name="author"/>
         <property name="subject"/>
-        <property name="body" length="1000"/>
+        <property name="body" type="text" />
         <property name="postDate" type="timestamp"/>
         <property name="owner"/>
         <set name="attachments" order-by="attachmentId" cascade="all-delete-orphan" lazy="false">
