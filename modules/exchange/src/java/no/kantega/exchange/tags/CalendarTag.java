@@ -1,17 +1,21 @@
 package no.kantega.exchange.tags;
 
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.text.SimpleDateFormat;
-
 import com.intrinsyc.cdo.*;
-import no.kantega.publishing.security.data.User;
-import no.kantega.exchange.util.ExchangeSession;
-import no.kantega.exchange.model.CalendarItem;
-
 import no.kantega.commons.log.Log;
+import no.kantega.exchange.model.CalendarItem;
+import no.kantega.exchange.util.ExchangeSession;
+import no.kantega.publishing.security.SecuritySession;
+import org.springframework.web.util.ExpressionEvaluationUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.LoopTagSupport;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -22,7 +26,7 @@ public class CalendarTag extends LoopTagSupport {
 
     private static final String SOURCE = "exchange.CalendarTag";
     private Iterator i;
-    private String userid;
+    private String userid = null;
     private String fromdate = ""; // format: "1/9/07"
     private String todate = "";   // format: "2/9/07"
     //private String dateformat = "";  // Thu Sep 20 13:00:00 CEST 2007  // EEE MMM MM HH:mm:ss z yyyy
@@ -90,20 +94,33 @@ public class CalendarTag extends LoopTagSupport {
                     null, null
             );
 
+            SecuritySession session = SecuritySession.getInstance(request);
+            String uid = session.getUser().getId();
+            boolean showPrivate = false;
+            if (userid == null || userid.equalsIgnoreCase(uid)) {
+                showPrivate = true;
+            }
+
             int n = 0;
             do {
                 CalendarItem ci = new CalendarItem();
                 try {
-
                     AppointmentItem appo = new AppointmentItemProxy(calColl.getNext());
                     ci.setSubject(appo.getSubject().toString());
                     ci.setLocation(appo.getLocation().toString());
                     ci.setDescription(appo.getText().toString());
                     ci.setStarttime(format_ex.parse(appo.getStartTime().toString()));
                     ci.setEndtime(format_ex.parse(appo.getEndTime().toString()));
+                    Object sensitivity = appo.getSensitivity();
+                    if (sensitivity != null && "2".equals(sensitivity.toString()) && !showPrivate) {
+                        // Don't show private appointments for other than current user
+                        ci.setSubject("Privat avtale");
+                        ci.setLocation("");
+                        ci.setDescription("");
+                    }
 
                     // Check if event is all day
-                    if ("true".equalsIgnoreCase(appo.getAllDayEvent().toString())) {
+                    if (appo.getAllDayEvent() != null && "true".equalsIgnoreCase(appo.getAllDayEvent().toString())) {
                         ci.setAllday(true);
                     }
                     ci.setNoevents(false);
@@ -120,6 +137,9 @@ public class CalendarTag extends LoopTagSupport {
                 }
             }
             while (notdone);
+
+            userid = null;
+
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             throw new JspTagException(SOURCE + ":" + e.getMessage());
@@ -127,6 +147,14 @@ public class CalendarTag extends LoopTagSupport {
     }
 
     public void setUserid(String userid) {
+        if (userid != null && userid.startsWith("$")){
+            try {
+                userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
+            } catch (JspException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+
         this.userid = userid;
     }
 

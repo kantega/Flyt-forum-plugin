@@ -2,6 +2,7 @@ package no.kantega.exchange.tags;
 
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -9,6 +10,7 @@ import com.intrinsyc.cdo.*;
 import no.kantega.exchange.util.ExchangeSession;
 import no.kantega.exchange.model.MailItem;
 import no.kantega.commons.log.Log;
+import org.springframework.web.util.ExpressionEvaluationUtils;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -105,6 +107,14 @@ public class MailTag extends LoopTagSupport {
     }
 
     public void setUserid(String userid) {
+        if (userid != null && userid.startsWith("$")){
+            try {
+                userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
+            } catch (JspException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+        
         this.userid = userid;
     }
 

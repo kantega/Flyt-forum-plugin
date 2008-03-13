@@ -144,7 +144,11 @@ public class ExchangeSession {
             } else {
                 try {
                     user = session.getUser();
-                    this.id = user.getId().substring(user.getId().indexOf(":") + 1);
+                    String uid = user.getId();
+                    if (uid.indexOf(":") != -1) {
+                        uid = uid.substring(uid.indexOf(":") + 1);
+                    }
+                    this.id = uid;
                     return true;
                 } catch (Exception e) {
                     this.id = "";
