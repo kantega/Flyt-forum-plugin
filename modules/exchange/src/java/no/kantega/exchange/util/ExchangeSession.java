@@ -144,12 +144,14 @@ public class ExchangeSession {
             } else {
                 try {
                     user = session.getUser();
-                    String uid = user.getId();
-                    if (uid.indexOf(":") != -1) {
-                        uid = uid.substring(uid.indexOf(":") + 1);
+                    if (user != null) {
+                        String uid = user.getId();
+                        if (uid.indexOf(":") != -1) {
+                            uid = uid.substring(uid.indexOf(":") + 1);
+                        }
+                        this.id = uid;
+                        return true;                       
                     }
-                    this.id = uid;
-                    return true;
                 } catch (Exception e) {
                     this.id = "";
                     throw new InvalidCredentialsException("No credentials or userid given", SOURCE);

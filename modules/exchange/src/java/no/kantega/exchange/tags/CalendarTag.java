@@ -95,7 +95,10 @@ public class CalendarTag extends LoopTagSupport {
             );
 
             SecuritySession session = SecuritySession.getInstance(request);
-            String uid = session.getUser().getId();
+            String uid = null;
+            if (session.getUser() != null) {
+                uid = session.getUser().getId();
+            }
             boolean showPrivate = false;
             if (userid == null || userid.equalsIgnoreCase(uid)) {
                 showPrivate = true;
