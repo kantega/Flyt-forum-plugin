@@ -43,18 +43,15 @@ public class GetUnreadTag extends TagSupport {
                 // get the message collection from the inbox
                 Messages messages = new MessagesProxy(inbox.getMessages());
 
+           MessageFilter f = new MessageFilterProxy(messages.getFilter());
+            f.setUnread(Boolean.TRUE);
+            messages.setFilter(f);
+
                 // loop through the message collection and count unreads
                 int count = ((Integer) messages.getCount()).intValue();
-                for (int i = 1; i <= count; i++) {
-                    Message message = new MessageProxy(messages.getItem(new Integer(i)));
-
-                    if (message.getUnread().toString().equalsIgnoreCase("true")) {
-                        unreads++;
-                    }
-                }
 
                 out = pageContext.getOut();
-                out.write(new Integer(unreads).toString());
+                out.write(Integer.toString(count));
           //  }
 
         } catch (Exception e) {
