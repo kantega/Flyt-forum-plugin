@@ -88,7 +88,7 @@ public class ActivityController implements Controller{
                 if("editDate".equals(order)) {
                     return d.getEditDate().compareTo(d1.getEditDate());
                 } else {
-                    return d.getTitle().compareTo(d1.getTitle());
+                    return d.getTitle().toLowerCase().compareTo(d1.getTitle().toLowerCase());
                 }
             }
         });
