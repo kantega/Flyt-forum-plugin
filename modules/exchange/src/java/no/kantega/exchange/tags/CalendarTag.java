@@ -142,6 +142,8 @@ public class CalendarTag extends LoopTagSupport {
             while (notdone);
 
             userid = null;
+            fromdate = "";
+            todate = "";
 
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
