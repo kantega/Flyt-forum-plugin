@@ -12,10 +12,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -112,8 +109,8 @@ public class CalendarTag extends LoopTagSupport {
                     ci.setSubject(appo.getSubject().toString());
                     ci.setLocation(appo.getLocation().toString());
                     ci.setDescription(appo.getText().toString());
-                    ci.setStarttime(format_ex.parse(appo.getStartTime().toString()));
-                    ci.setEndtime(format_ex.parse(appo.getEndTime().toString()));
+                    ci.setStarttime((Date)appo.getStartTime());
+                    ci.setEndtime((Date) appo.getEndTime());
                     Object sensitivity = appo.getSensitivity();
                     if (sensitivity != null && "2".equals(sensitivity.toString()) && !showPrivate) {
                         // Don't show private appointments for other than current user
