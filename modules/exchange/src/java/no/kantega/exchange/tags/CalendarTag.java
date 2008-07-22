@@ -66,7 +66,7 @@ public class CalendarTag extends LoopTagSupport {
             // retrieve appointments collection from the CalendarItem
 //            Integer defaultCalendar = new Integer();
 //            Folder calendar = new FolderProxy(cdosession.getDefaultFolder(defaultCalendar));
-            Folder calendar = new FolderProxy(session.getDefaultFolder(CdoDefaultFolderTypes.CdoDefaultFolderCalendar));
+            Folder calendar = new FolderProxy(session.getDefaultFolder(Integer.valueOf(CdoDefaultFolderTypes.CdoDefaultFolderCalendar)));
 
             // get the message collection from the calendar
             Messages calColl = new MessagesProxy(calendar.getMessages());

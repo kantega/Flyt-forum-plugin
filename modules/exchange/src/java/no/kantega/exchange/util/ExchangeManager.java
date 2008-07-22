@@ -4,6 +4,7 @@ import com.linar.jintegra.AuthInfo;
 
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.ServletRequest;
 import java.util.concurrent.*;
 
@@ -64,10 +65,11 @@ public class ExchangeManager {
         String userId = lookupUserId(id, pageContext);
         if (userId != null && !userId.equals("")) {
             try {
-                session = doGetSession(userId, pageContext.getRequest());
+                session = doGetSession(userId, pageContext);
                 if (!session.isLoggedOn()) {
                     session.logon(exchangeServerAddress, userId);
                 }
+//                pageContext.getSession().setAttribute("cdosession", session);
                 pageContext.getRequest().setAttribute("cdosession", session);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -86,15 +88,18 @@ public class ExchangeManager {
      * @throws Exception if an exception occures
      */
     public static boolean verifyConnection(PageContext pageContext) throws Exception {
-        return doGetSession(null, pageContext.getRequest()) != null;
+        CdoSessionWrapper session = doGetSession(null, pageContext);
+        pageContext.getRequest().setAttribute("cdosession", session);
+        return session != null;
     }
 
-    private static CdoSessionWrapper doGetSession(String userId, ServletRequest request) throws Exception {
-        CdoSessionWrapper session = (CdoSessionWrapper)request.getAttribute("cdosession");
+    private static CdoSessionWrapper doGetSession(String userId, PageContext pageContext) throws Exception {
+        CdoSessionWrapper session = (CdoSessionWrapper)pageContext.getRequest().getAttribute("cdosession");
+//        CdoSessionWrapper session = (CdoSessionWrapper)pageContext.getSession().getAttribute("cdosession");
 
         // If CDOsession is present in request, if not get it
         if (session != null) {
-            if (!validateSession(userId, session)) {
+            if (session.isLoggedOn() && !validateSession(userId, session)) {
                 try {
                     session.logoff();
                 } catch (Exception e) {

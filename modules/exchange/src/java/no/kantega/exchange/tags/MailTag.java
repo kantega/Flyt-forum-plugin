@@ -76,7 +76,7 @@ public class MailTag extends LoopTagSupport {
 //                box = new FolderProxy(cdosession.getFolder(mailbox, ""));
                 box = new FolderProxy(session.getFolder(mailbox, ""));
             } else {
-                folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
+                folderType = Integer.valueOf(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
 //                box = new FolderProxy(cdosession.getDefaultFolder(folderType));
                 box = new FolderProxy(session.getDefaultFolder(folderType));
             }

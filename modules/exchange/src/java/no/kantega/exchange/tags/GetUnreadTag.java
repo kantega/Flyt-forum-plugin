@@ -44,7 +44,7 @@ public class GetUnreadTag extends TagSupport {
             // retrieve the inbox folder
 //            Integer folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
 //            Folder inbox = new FolderProxy(cdosession.getDefaultFolder(folderType));
-            Folder inbox = new FolderProxy(session.getDefaultFolder(CdoDefaultFolderTypes.CdoDefaultFolderInbox));
+            Folder inbox = new FolderProxy(session.getDefaultFolder(Integer.valueOf(CdoDefaultFolderTypes.CdoDefaultFolderInbox)));
 
             // get the message collection from the inbox
             Messages messages = new MessagesProxy(inbox.getMessages());
@@ -54,7 +54,7 @@ public class GetUnreadTag extends TagSupport {
             messages.setFilter(f);
 
             // loop through the message collection and count unreads
-            int count = (Integer)messages.getCount();
+            int count = ((Integer)messages.getCount()).intValue();
 
             out = pageContext.getOut();
             out.write(Integer.toString(count));

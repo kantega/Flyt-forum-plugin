@@ -42,7 +42,7 @@ public class GlobalAddressListTag extends TagSupport {
 
                 // get the Global Address List
 //                AddressListProxy addressList = new AddressListProxy(cdosession.getAddressList(new Integer(CdoAddressListTypes.CdoAddressListGAL)));
-                AddressListProxy addressList = new AddressListProxy(session.getAddressList(CdoAddressListTypes.CdoAddressListGAL));
+                AddressListProxy addressList = new AddressListProxy(session.getAddressList(Integer.valueOf(CdoAddressListTypes.CdoAddressListGAL)));
                 // get the collection of addresses
                 AddressEntriesProxy addressEntries = new AddressEntriesProxy(
                         addressList.getAddressEntries());

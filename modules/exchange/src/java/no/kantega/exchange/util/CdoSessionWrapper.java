@@ -4,6 +4,8 @@ import com.intrinsyc.cdo.Session;
 
 import java.util.concurrent.*;
 
+import no.kantega.commons.log.Log;
+
 /**
  * User: tarkil
  * Date: Jul 21, 2008
@@ -79,15 +81,16 @@ public class CdoSessionWrapper {
     private Object execute(Callable callableObject) {
         Object retVal = null;
         Future f = executorService.submit(callableObject);
+        long start = System.nanoTime();
         try {
             retVal = f.get(ExchangeManager.getTimeout(), ExchangeManager.getUnit());
         } catch (Exception e) {
+            Log.debug(SOURCE, "Timeout after: " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
             e.printStackTrace();
         }
         return retVal;
     }
 
-    @Override
     protected void finalize() throws Throwable {
         super.finalize();
         try {
