@@ -1,13 +1,13 @@
 package no.kantega.exchange.tags;
 
 import no.kantega.publishing.security.data.User;
-import no.kantega.exchange.util.ExchangeSession;
+import no.kantega.exchange.util.CdoSessionWrapper;
+import no.kantega.exchange.util.ExchangeManager;
 import no.kantega.commons.log.Log;
 
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.intrinsyc.cdo.*;
@@ -27,20 +27,22 @@ public class GlobalAddressListTag extends TagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
         JspWriter out;
-        Session cdosession = null;
-
+//        Session cdosession = null;
+        CdoSessionWrapper session = null;
         try {
             User user = null;
             boolean validuser = false;
             String results = "";
 
                 // Start connection to cdo & exhange server
-                ExchangeSession Xsession = new ExchangeSession();
-                cdosession = Xsession.getInstance(userid, request, pageContext);
+//                ExchangeSession Xsession = new ExchangeSession();
+//                cdosession = Xsession.getCdoSession(userid, request, pageContext);
+//                cdosession = ExchangeSession.getSession(userid, pageContext);
+                session = ExchangeManager.getSession(userid, pageContext);
 
                 // get the Global Address List
-                AddressListProxy addressList = new AddressListProxy(cdosession.getAddressList(
-                        new Integer(CdoAddressListTypes.CdoAddressListGAL)));
+//                AddressListProxy addressList = new AddressListProxy(cdosession.getAddressList(new Integer(CdoAddressListTypes.CdoAddressListGAL)));
+                AddressListProxy addressList = new AddressListProxy(session.getAddressList(CdoAddressListTypes.CdoAddressListGAL));
                 // get the collection of addresses
                 AddressEntriesProxy addressEntries = new AddressEntriesProxy(
                         addressList.getAddressEntries());
@@ -61,19 +63,13 @@ public class GlobalAddressListTag extends TagSupport {
                 out = pageContext.getOut();
                 out.write(results);
 
-        } catch (IllegalArgumentException
-                e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("No appointment found.\n" +
-                            "Make sure there is at least one appointment exists in you filter.\n"
-            );
+                            "Make sure there is at least one appointment exists in you filter.\n");
             e.printStackTrace();
-        } catch (Exception
-                e) {
+        } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
-
-
         return SKIP_BODY;
     }
 
@@ -81,7 +77,6 @@ public class GlobalAddressListTag extends TagSupport {
         userid = null;
         return EVAL_PAGE;
     }
-
 
     public void setUserid(String userid) {
         this.userid = userid;

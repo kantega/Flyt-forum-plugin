@@ -3,7 +3,8 @@ package no.kantega.exchange.tags;
 import com.intrinsyc.cdo.*;
 import no.kantega.commons.log.Log;
 import no.kantega.exchange.model.CalendarItem;
-import no.kantega.exchange.util.ExchangeSession;
+import no.kantega.exchange.util.CdoSessionWrapper;
+import no.kantega.exchange.util.ExchangeManager;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.util.ExpressionEvaluationUtils;
 
@@ -44,12 +45,11 @@ public class CalendarTag extends LoopTagSupport {
     }
 
     protected void prepare() throws JspTagException {
-
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-        Session cdosession = null;
+//        Session cdosession = null;
+        CdoSessionWrapper session = null;
         try {
-
             boolean notdone = true;
             items = new ArrayList();
 
@@ -58,12 +58,15 @@ public class CalendarTag extends LoopTagSupport {
             SimpleDateFormat format_in = new SimpleDateFormat("d/M/yy");
 
             // Start connection to cdo & exhange server
-            ExchangeSession Xsession = new ExchangeSession();
-            cdosession = Xsession.getInstance(userid, request, pageContext);
+//            ExchangeSession Xsession = new ExchangeSession();
+//            cdosession = Xsession.getCdoSession(userid, request, pageContext);
+//            cdosession = ExchangeSession.getSession(userid, pageContext);
+            session = ExchangeManager.getSession(userid, pageContext);
 
             // retrieve appointments collection from the CalendarItem
-            Integer defaultCalendar = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderCalendar);
-            Folder calendar = new FolderProxy(cdosession.getDefaultFolder(defaultCalendar));
+//            Integer defaultCalendar = new Integer();
+//            Folder calendar = new FolderProxy(cdosession.getDefaultFolder(defaultCalendar));
+            Folder calendar = new FolderProxy(session.getDefaultFolder(CdoDefaultFolderTypes.CdoDefaultFolderCalendar));
 
             // get the message collection from the calendar
             Messages calColl = new MessagesProxy(calendar.getMessages());
@@ -91,10 +94,10 @@ public class CalendarTag extends LoopTagSupport {
                     null, null
             );
 
-            SecuritySession session = SecuritySession.getInstance(request);
+            SecuritySession securitySession = SecuritySession.getInstance(request);
             String uid = null;
-            if (session.getUser() != null) {
-                uid = session.getUser().getId();
+            if (securitySession.getUser() != null) {
+                uid = securitySession.getUser().getId();
             }
             boolean showPrivate = false;
             if (userid == null || userid.equalsIgnoreCase(uid)) {
@@ -144,7 +147,6 @@ public class CalendarTag extends LoopTagSupport {
 
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
     }
 

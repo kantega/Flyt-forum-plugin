@@ -7,7 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import com.intrinsyc.cdo.*;
-import no.kantega.exchange.util.ExchangeSession;
+import no.kantega.exchange.util.CdoSessionWrapper;
+import no.kantega.exchange.util.ExchangeManager;
 import no.kantega.exchange.model.MailItem;
 import no.kantega.commons.log.Log;
 import org.springframework.web.util.ExpressionEvaluationUtils;
@@ -20,6 +21,7 @@ import org.springframework.web.util.ExpressionEvaluationUtils;
 public class MailTag extends LoopTagSupport {
 
     private static final String SOURCE = "exchange.MailTag";
+
     private Iterator i;
     private String userid;
     private String mailbox = "";
@@ -30,6 +32,7 @@ public class MailTag extends LoopTagSupport {
 
     private boolean unreadonly = false;
     //private boolean filter = false;
+
 
     protected Object next() throws JspTagException {
         if (i != null) {
@@ -49,7 +52,8 @@ public class MailTag extends LoopTagSupport {
 
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-        Session cdosession = null;
+//        Session cdosession = null;
+        CdoSessionWrapper session = null;
         boolean skip = false;
         try {
 
@@ -59,16 +63,22 @@ public class MailTag extends LoopTagSupport {
             Folder box = null;
 
             // Start connection to cdo & exchange server
-            ExchangeSession Xsession = new ExchangeSession();
-            cdosession = Xsession.getInstance(userid, request, pageContext);
-            mailbox = Xsession.getUserid();
+//            ExchangeSession Xsession = new ExchangeSession();
+//            cdosession = Xsession.getCdoSession(userid, request, pageContext);
+//            cdosession = ExchangeSession.getSession(userid, pageContext);
+            session = ExchangeManager.getSession(userid, pageContext);
+
+//            mailbox = Xsession.getUserid();
+            mailbox = userid;
 
             if (mailbox != null && !"".equals(mailbox)) {
                 // TODO: Find out order of inputs and how to get folder by names
-                box = new FolderProxy(cdosession.getFolder(mailbox, ""));
+//                box = new FolderProxy(cdosession.getFolder(mailbox, ""));
+                box = new FolderProxy(session.getFolder(mailbox, ""));
             } else {
                 folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
-                box = new FolderProxy(cdosession.getDefaultFolder(folderType));
+//                box = new FolderProxy(cdosession.getDefaultFolder(folderType));
+                box = new FolderProxy(session.getDefaultFolder(folderType));
             }
 
             // get the message collection from the inbox
@@ -99,10 +109,8 @@ public class MailTag extends LoopTagSupport {
                 }
                 skip = false;
             }
-            //   }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
     }
 
@@ -114,7 +122,6 @@ public class MailTag extends LoopTagSupport {
                 Log.error(SOURCE, e, null, null);
             }
         }
-        
         this.userid = userid;
     }
 

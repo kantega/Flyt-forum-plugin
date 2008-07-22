@@ -1,0 +1,51 @@
+package no.kantega.exchange.util;
+
+import no.kantega.commons.log.Log;
+
+import java.util.concurrent.Callable;
+
+import com.intrinsyc.cdo.Session;
+
+/**
+ * User: tarkil
+ * Date: Jul 18, 2008
+ * Time: 9:15:33 AM
+ */
+public class JIntegraActionWrapper implements Callable {
+
+    private static final String SOURCE = JIntegraActionWrapper.class.toString();
+
+    public static final int ACTION_LOGON = 1;
+    public static final int ACTION_LOGOFF = 2;
+
+    private Session session;
+    private int action;
+    private Object[] params;
+
+    
+    public JIntegraActionWrapper(Session session, int action, Object[] params) {
+        this.session = session;
+        this.action = action;
+        this.params = params;
+    }
+
+    public Object call() throws Exception {
+        Object retVal = null;
+        long start = System.nanoTime();
+        switch (action) {
+            case ACTION_LOGON:
+                retVal = session.logon(null, null, new Boolean(false), new Boolean(true),
+                        new Boolean(false), new Boolean(false),
+                        params[0] + "\n" + params[1]);
+                break;
+            case ACTION_LOGOFF:
+                retVal = session.logoff();
+                break;
+            default:
+                break;
+        }
+        Log.info(SOURCE, "Action: " + action + " in " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
+        return retVal;
+    }
+    
+}

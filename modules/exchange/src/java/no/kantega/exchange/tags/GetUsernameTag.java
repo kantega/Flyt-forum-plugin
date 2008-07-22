@@ -1,17 +1,15 @@
 package no.kantega.exchange.tags;
 
-import no.kantega.exchange.util.ExchangeSession;
-import no.kantega.commons.log.Log;
-
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-
-import com.intrinsyc.cdo.Session;
 import com.intrinsyc.cdo.AddressEntry;
 import com.intrinsyc.cdo.AddressEntryProxy;
+import no.kantega.commons.log.Log;
+import no.kantega.exchange.util.CdoSessionWrapper;
+import no.kantega.exchange.util.ExchangeManager;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -19,32 +17,29 @@ import com.intrinsyc.cdo.AddressEntryProxy;
  * Time: 12:15:06 PM
  */
 public class GetUsernameTag extends TagSupport {
-    private static final java.lang.String SOURCE = "exchange.GetUserNameTag";
+
+    private static final String SOURCE = GetUsernameTag.class.toString();
 
     private String userid = null;
 
+
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-
         JspWriter out;
-        Session cdosession = null;
+        CdoSessionWrapper session = null;
         try {
             // Start connection to cdo & exhange server
-            ExchangeSession Xsession = new ExchangeSession();
-            cdosession = Xsession.getInstance(userid, request, pageContext);
+            session = ExchangeManager.getSession(userid, pageContext);
 
             // print the current user for this Session
-            AddressEntry Xuser = new AddressEntryProxy(cdosession.getCurrentUser());
+            AddressEntry Xuser = new AddressEntryProxy(session.getCurrentUser());
 
             out = pageContext.getOut();
             out.write(Xuser.getName().toString());
 
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
-
-
         return SKIP_BODY;
     }
 
@@ -56,5 +51,5 @@ public class GetUsernameTag extends TagSupport {
     public void setUserid(String userid) {
         this.userid = userid;
     }
-}
 
+}

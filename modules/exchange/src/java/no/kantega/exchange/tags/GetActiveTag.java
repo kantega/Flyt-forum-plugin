@@ -1,22 +1,12 @@
 package no.kantega.exchange.tags;
 
-import com.intrinsyc.cdo.Session;
-import com.intrinsyc.cdo.AddressEntry;
-import com.intrinsyc.cdo.AddressEntryProxy;
-
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-
-import no.kantega.exchange.util.ExchangeSession;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
+import no.kantega.exchange.util.ExchangeManager;
 import no.kantega.publishing.common.Aksess;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -24,44 +14,47 @@ import no.kantega.publishing.common.Aksess;
  * Time: 12:15:06 PM
  */
 public class GetActiveTag extends BodyTagSupport {
-    private static final String SOURCE = "exchange.GetActiveTag";
+
+    private static final String SOURCE = GetActiveTag.class.toString();
 
     private String userid = null;
 
+
     public int doStartTag() throws JspException {
+        int retVal = SKIP_BODY;
         try {
-            Configuration config = Aksess.getConfiguration();
-            String active = config.getString("jintegra.exchange.active");
-            if ("true".equalsIgnoreCase(active)) {
-                return EVAL_BODY_AGAIN;
+//            Configuration config = Aksess.getConfiguration();
+//            String active = config.getString("jintegra.exchange.active");
+//            if ("true".equalsIgnoreCase(active)) {
+//                retVal = EVAL_BODY_AGAIN;
+//            }
+
+            boolean active = Aksess.getConfiguration().getBoolean("jintegra.exchange.active", false);
+            active &= ExchangeManager.verifyConnection(pageContext);
+
+            if (active) {
+                retVal = EVAL_BODY_BUFFERED;
             }
-            return SKIP_BODY;
 
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
-
+        return retVal;
     }
 
     public int doAfterBody() throws JspException {
-
-
         try {
             Configuration config = Aksess.getConfiguration();
             String active = config.getString("jintegra.exchange.active");
 
             if ("true".equalsIgnoreCase(active)) {
                 bodyContent.writeOut(getPreviousOut());
-            } else {
             }
 
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
-
-        return SKIP_BODY;
+        return EVAL_PAGE;
     }
 
 }

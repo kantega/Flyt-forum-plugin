@@ -1,35 +1,19 @@
 package no.kantega.exchange.tags;
 
-import com.linar.jintegra.AutomationException;
-import com.intrinsyc.cdo.AddressEntry;
-import com.intrinsyc.cdo.AddressEntryProxy;
-import com.intrinsyc.cdo.Folder;
-import com.intrinsyc.cdo.FolderProxy;
-import com.intrinsyc.cdo.Message;
-import com.intrinsyc.cdo.MessageProxy;
-import com.intrinsyc.cdo.Messages;
-import com.intrinsyc.cdo.MessagesProxy;
-import com.intrinsyc.cdo.Session;
-import com.intrinsyc.cdo.Recipient;
-import com.intrinsyc.cdo.Recipients;
-import com.intrinsyc.cdo.RecipientProxy;
-import com.intrinsyc.cdo.RecipientsProxy;
+import com.intrinsyc.cdo.*;
+import no.kantega.commons.log.Log;
+import no.kantega.exchange.util.CdoSessionWrapper;
+import no.kantega.exchange.util.ExchangeManager;
+import no.kantega.publishing.common.Aksess;
+import org.springframework.web.util.ExpressionEvaluationUtils;
 
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.log.Log;
-import no.kantega.exchange.util.ExchangeSession;
-
+import javax.servlet.jsp.tagext.TagSupport;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.io.File;
-
-import org.springframework.web.util.ExpressionEvaluationUtils;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -37,6 +21,7 @@ import org.springframework.web.util.ExpressionEvaluationUtils;
  * Time: 12:13:25 PM
  */
 public class AvailabilityTag extends TagSupport {
+
     private static final String SOURCE = "exchange.AvailabilityTag";
 
     private String userid;
@@ -52,11 +37,12 @@ public class AvailabilityTag extends TagSupport {
 
     public final static String DEFAULT_EXCHANGE_DIR = "/bitmaps/exchange/";
 
+
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
         JspWriter out;
-        Session cdosession = null;
+        CdoSessionWrapper session = null;
         try {
             SimpleDateFormat format_ex = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss aa");
             SimpleDateFormat time_in = new SimpleDateFormat("HH:mm");
@@ -87,11 +73,10 @@ public class AvailabilityTag extends TagSupport {
             }
 
             // Start connection to cdo & exhange server
-            ExchangeSession Xsession = new ExchangeSession();
-            cdosession = Xsession.getInstance(userid, request, pageContext);
+            session = ExchangeManager.getSession(userid, pageContext);
 
             // Create a message in Inbox
-            Folder inbox = new FolderProxy(cdosession.getInbox());
+            Folder inbox = new FolderProxy(session.getInbox());
             Messages messages = new MessagesProxy(inbox.getMessages());
             Message message = new MessageProxy(messages.add("Subject", "text", null, null));
 
@@ -150,25 +135,28 @@ public class AvailabilityTag extends TagSupport {
             } else {
                 out.write(freeBusy);
             }
-
-        } catch (AutomationException e) {
-        } catch (IllegalArgumentException e) {
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
         return SKIP_BODY;
     }
 
-    public int doEndTag
-            () throws JspException {
+    public int doEndTag () throws JspException {
         userid = null;
         return EVAL_PAGE;
     }
 
-    public void setUserid
-            (String
-                    userid) {
+
+
+
+
+
+
+
+
+
+
+    public void setUserid (String userid) {
         try {
             this.userid = ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
         } catch (JspException e) {
@@ -176,47 +164,34 @@ public class AvailabilityTag extends TagSupport {
         }
     }
 
-    public void setStarttime
-            (String
-                    starttime) {
+    public void setStarttime (String starttime) {
         this.starttime = starttime;
     }
 
-    public void setEndtime
-            (String
-                    endtime) {
+    public void setEndtime (String endtime) {
         this.endtime = endtime;
     }
 
-    public void setTimeslot
-            (String
-                    timeslot) {
+    public void setTimeslot (String timeslot) {
         this.timeslot = timeslot;
     }
 
-    public void setMultislot
-            (String
-                    multislot) {
+    public void setMultislot (String multislot) {
         this.multislot = multislot;
     }
 
-    public void setImage
-            (String
-                    image) {
+    public void setImage (String image) {
         if (image.equalsIgnoreCase("true")) {
             imageshow = true;
         }
         this.image = image;
     }
 
-    public String getCssclass
-            () {
+    public String getCssclass () {
         return cssclass;
     }
 
-    public void setCssclass
-            (String
-                    cssclass) {
+    public void setCssclass (String cssclass) {
         try {
             this.cssclass = ExpressionEvaluationUtils.evaluateString("cssclass", cssclass, pageContext);
         } catch (JspException e) {
@@ -224,15 +199,12 @@ public class AvailabilityTag extends TagSupport {
         }
     }
 
-    public String getAlt
-            () {
+    public String getAlt () {
         return alt;
     }
 
-    public void setAlt
-            (String
-                    alt) {
+    public void setAlt (String alt) {
         this.alt = alt;
     }
-}
 
+}
