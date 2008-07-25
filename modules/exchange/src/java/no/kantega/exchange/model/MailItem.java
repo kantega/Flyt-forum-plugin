@@ -11,11 +11,13 @@ public class MailItem {
 
     private String subject = "";
     private String body = "";
+    private boolean unread = false;
     private String sender = "";
     private Date received;
     private String importance = "";
     private String sensitivity = "";
     private String recipients = "";
+    private String url = "";
 
     public String getSender() {
         return sender;
@@ -23,6 +25,14 @@ public class MailItem {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public boolean isUnread() {
+        return unread;
+    }
+
+    public void setUnread(boolean unread) {
+        this.unread = unread;
     }
 
     public String getSubject() {
@@ -72,4 +82,13 @@ public class MailItem {
     public void setRecipients(String recipients) {
         this.recipients = recipients;
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
 }

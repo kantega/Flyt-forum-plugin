@@ -34,6 +34,7 @@ public class ExchangeManager {
     private static String exchangeServerAddress = "";
     private static long timeout = 2000;
     private static final TimeUnit unit = TimeUnit.MILLISECONDS;
+    private static int cacheTimeLimit = 300;
 
     private static ExecutorService executorService;
 
@@ -46,6 +47,7 @@ public class ExchangeManager {
             cdoServerAddress = config.getString("jintegra.exchange.cdoserver");
             exchangeServerAddress = config.getString("jintegra.exchange.server");
             timeout = config.getLong("jintegra.exchange.timeout.milliseconds", 2000);
+            cacheTimeLimit = config.getInt("jintegra.exchange.cache.seconds", 300);
             AuthInfo.setDefault(domain, username, password);
         } catch (ConfigurationException e) {
             e.printStackTrace();
@@ -93,6 +95,35 @@ public class ExchangeManager {
         return session != null;
     }
 
+    public static String lookupUserId(String userid, PageContext pageContext) {
+        String id = "";
+
+        try {
+            // Check users credentials
+            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+            SecuritySession session = SecuritySession.getInstance(request);
+
+            if (userid != null) {
+                ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
+                SecurityRealm realm = SecurityRealmFactory.getInstance();
+                realm.lookupUser(userid);
+                id = userid;
+            } else {
+                User user = session.getUser();
+                if (user != null) {
+                    String uid = user.getId();
+                    if (uid.indexOf(":") != -1) {
+                        uid = uid.substring(uid.indexOf(":") + 1);
+                    }
+                    id = uid;
+                }
+            }
+        } catch (Exception e) {
+            Log.error(SOURCE, e, null, null);
+        }
+        return id;
+    }
+
     private static CdoSessionWrapper doGetSession(String userId, PageContext pageContext) throws Exception {
         CdoSessionWrapper session = (CdoSessionWrapper)pageContext.getRequest().getAttribute("cdosession");
 //        CdoSessionWrapper session = (CdoSessionWrapper)pageContext.getSession().getAttribute("cdosession");
@@ -134,41 +165,16 @@ public class ExchangeManager {
         return valid;
     }
 
-    private static String lookupUserId(String userid, PageContext pageContext) {
-        String id = "";
-
-        try {
-            // Check users credentials
-            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-            SecuritySession session = SecuritySession.getInstance(request);
-
-            if (userid != null) {
-                ExpressionEvaluationUtils.evaluateString("userid", userid, pageContext);
-                SecurityRealm realm = SecurityRealmFactory.getInstance();
-                realm.lookupUser(userid);
-                id = userid;
-            } else {
-                User user = session.getUser();
-                if (user != null) {
-                    String uid = user.getId();
-                    if (uid.indexOf(":") != -1) {
-                        uid = uid.substring(uid.indexOf(":") + 1);
-                    }
-                    id = uid;
-                }
-            }
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-        }
-        return id;
-    }
-
     public static long getTimeout() {
         return timeout;
     }
 
     public static TimeUnit getUnit() {
         return unit;
+    }
+
+    public static int getCacheTimeLimit() {
+        return cacheTimeLimit;
     }
 
 }

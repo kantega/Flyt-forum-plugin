@@ -44,7 +44,7 @@ public class JIntegraActionWrapper implements Callable {
             default:
                 break;
         }
-        Log.info(SOURCE, "Action: " + action + " in " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
+        Log.debug(SOURCE, "Action: " + action + " with param: " + (params != null && params.length == 2 ? "[" + params[0] + ", " + params[1] + "]": null) + " in " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
         return retVal;
     }
     

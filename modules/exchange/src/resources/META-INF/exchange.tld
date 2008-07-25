@@ -111,27 +111,37 @@
     </tag>
 
     <tag>
-       <name>mail</name>
-       <tagclass>no.kantega.exchange.tags.MailTag</tagclass>
-       <bodycontent>JSP</bodycontent>
-       <info>Check users Free/Busy information</info>
+        <name>mail</name>
+        <tagclass>no.kantega.exchange.tags.MailTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Hent en liste med brukerens mail</info>
         <attribute>
-             <name>var</name>
-             <required>true</required>
-             <rtexprvalue>true</rtexprvalue>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-           <name>userid</name>
-           <required>false</required>
-           <rtexprvalue>true</rtexprvalue>
-       </attribute>
-       <attribute>
-           <name>mailbox</name>
-           <required>false</required>
-           <rtexprvalue>true</rtexprvalue>
-       </attribute>
+            <name>userid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>mailbox</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
         <attribute>
             <name>unread</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>max</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>fields</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

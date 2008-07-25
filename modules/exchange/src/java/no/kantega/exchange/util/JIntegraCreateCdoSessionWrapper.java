@@ -27,7 +27,7 @@ public class JIntegraCreateCdoSessionWrapper implements Callable {
     public Object call() throws Exception {
         long start = System.nanoTime();
         Session session = new Session(cdoServerAddress);
-        Log.info(SOURCE, "Created session in " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
+        Log.debug(SOURCE, "Created session with server: \"" + cdoServerAddress + "\" in " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
         return session;
     }
 
