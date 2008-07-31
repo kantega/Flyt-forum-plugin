@@ -493,6 +493,7 @@
             <props>
                 <prop key="hibernate.dialect">${projectweb.dialect.hibernate3}</prop>
                 <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
             </props>
         </property>
         <property name="schemaUpdate">
@@ -515,6 +516,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${projectweb.dialect.hibernate2}</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
             </props>
         </property>
         <property name="schemaUpdate">
