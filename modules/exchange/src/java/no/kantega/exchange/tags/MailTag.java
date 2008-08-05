@@ -180,8 +180,20 @@ public class MailTag extends LoopTagSupport {
         }
     }
 
-    public void setMax(int max) {
-        this.max = max;
+    public void setMax(String max) {
+        if (max != null && max.startsWith("$")){
+            try {
+                this.max = ExpressionEvaluationUtils.evaluateInteger("max", max, pageContext);
+            } catch (JspException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        } else {
+            try {
+                this.max = Integer.parseInt(max);
+            } catch (NumberFormatException e) {
+                this.max = 0;
+            }
+        }
     }
 
     public void setFields(String fields) {
