@@ -34,7 +34,6 @@ public class ExchangeManager {
     private static String exchangeServerAddress = "";
     private static long timeout = 2000;
     private static final TimeUnit unit = TimeUnit.MILLISECONDS;
-    private static int cacheTimeLimit = 300;
 
     private static ExecutorService executorService;
 
@@ -47,7 +46,6 @@ public class ExchangeManager {
             cdoServerAddress = config.getString("jintegra.exchange.cdoserver");
             exchangeServerAddress = config.getString("jintegra.exchange.server");
             timeout = config.getLong("jintegra.exchange.timeout.milliseconds", 2000);
-            cacheTimeLimit = config.getInt("jintegra.exchange.cache.seconds", 300);
             AuthInfo.setDefault(domain, username, password);
         } catch (ConfigurationException e) {
             e.printStackTrace();
@@ -172,9 +170,4 @@ public class ExchangeManager {
     public static TimeUnit getUnit() {
         return unit;
     }
-
-    public static int getCacheTimeLimit() {
-        return cacheTimeLimit;
-    }
-
 }

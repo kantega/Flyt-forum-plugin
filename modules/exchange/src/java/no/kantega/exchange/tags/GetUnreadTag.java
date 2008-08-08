@@ -27,24 +27,13 @@ public class GetUnreadTag extends TagSupport {
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-//        Session cdosession = null;
         CdoSessionWrapper session = null;
         JspWriter out;
         try {
-            int unreads = 0;
-            User user = null;
-            boolean validuser = false;
-
-            // Start connection to cdo & exchange server
-//            ExchangeSession Xsession = new ExchangeSession();
-//            cdosession = Xsession.getCdoSession(userid, request, pageContext);
-//            cdosession = ExchangeSession.getSession(userid, pageContext);
             session = ExchangeManager.getSession(userid, pageContext);
 
             // retrieve the inbox folder
-//            Integer folderType = new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox);
-//            Folder inbox = new FolderProxy(cdosession.getDefaultFolder(folderType));
-            Folder inbox = new FolderProxy(session.getDefaultFolder(Integer.valueOf(CdoDefaultFolderTypes.CdoDefaultFolderInbox)));
+            Folder inbox = new FolderProxy(session.getDefaultFolder(new Integer(CdoDefaultFolderTypes.CdoDefaultFolderInbox)));
 
             // get the message collection from the inbox
             Messages messages = new MessagesProxy(inbox.getMessages());
