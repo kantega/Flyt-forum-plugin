@@ -1,10 +1,10 @@
 package no.kantega.exchange.util;
 
 import com.intrinsyc.cdo.Session;
-
-import java.util.concurrent.*;
-
 import no.kantega.commons.log.Log;
+
+import java.util.Date;
+import java.util.concurrent.*;
 
 /**
  * User: tarkil
@@ -55,7 +55,9 @@ public class CdoSessionWrapper {
     }
 
     public Object getDefaultFolder(Object defaultFolderType) {
-        return getObject(JIntegraGetObjectWrapper.OBJECT_DEFAULT_FOLDER, new Object[]{defaultFolderType});
+        Object o = getObject(JIntegraGetObjectWrapper.OBJECT_DEFAULT_FOLDER, new Object[]{defaultFolderType});
+        System.out.println(o);
+        return o;
     }
 
     public Object getCurrentUser() {
@@ -80,13 +82,17 @@ public class CdoSessionWrapper {
 
     private Object execute(Callable callableObject) {
         Object retVal = null;
+        long start = new Date().getTime();
+
         Future f = executorService.submit(callableObject);
-        long start = System.nanoTime();
         try {
             retVal = f.get(ExchangeManager.getTimeout(), ExchangeManager.getUnit());
-        } catch (Exception e) {
-            Log.debug(SOURCE, "Timeout after: " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);
-            e.printStackTrace();
+        } catch (TimeoutException te) {
+            Log.debug(SOURCE, "Timeout after: " + ((new Date().getTime() - start)) + " millisecs", null, null);
+        } catch (ExecutionException ee) {
+            Log.error(SOURCE, ee, null, null);
+        } catch (InterruptedException ie) {
+            Log.error(SOURCE, ie, null, null);
         }
         return retVal;
     }

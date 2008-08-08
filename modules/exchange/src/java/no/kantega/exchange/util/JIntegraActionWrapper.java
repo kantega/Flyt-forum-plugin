@@ -34,9 +34,7 @@ public class JIntegraActionWrapper implements Callable {
         long start = System.nanoTime();
         switch (action) {
             case ACTION_LOGON:
-                retVal = session.logon(null, null, new Boolean(false), new Boolean(true),
-                        new Boolean(false), new Boolean(false),
-                        params[0] + "\n" + params[1]);
+                retVal = session.logon(null, null, new Boolean(false), new Boolean(true), new Integer(0), new Boolean(true), params[0] + "\n" + params[1]);
                 break;
             case ACTION_LOGOFF:
                 retVal = session.logoff();

@@ -25,6 +25,7 @@ public class JIntegraCreateCdoSessionWrapper implements Callable {
     }
 
     public Object call() throws Exception {
+        com.linar.jintegra.Log.logImmediately(3, "jintegra.log");        
         long start = System.nanoTime();
         Session session = new Session(cdoServerAddress);
         Log.debug(SOURCE, "Created session with server: \"" + cdoServerAddress + "\" in " + ((System.nanoTime() - start) / 1000000.0) + " millisecs", null, null);

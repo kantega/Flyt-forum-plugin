@@ -32,7 +32,7 @@ public class ExchangeManager {
     private static String password = "";
     private static String cdoServerAddress = "";
     private static String exchangeServerAddress = "";
-    private static long timeout = 2000;
+    private static long timeout = 5000;
     private static final TimeUnit unit = TimeUnit.MILLISECONDS;
 
     private static ExecutorService executorService;
@@ -45,7 +45,7 @@ public class ExchangeManager {
             password = config.getString("jintegra.exchange.admin.pass");
             cdoServerAddress = config.getString("jintegra.exchange.cdoserver");
             exchangeServerAddress = config.getString("jintegra.exchange.server");
-            timeout = config.getLong("jintegra.exchange.timeout.milliseconds", 2000);
+            timeout = config.getLong("jintegra.exchange.timeout.milliseconds", 5000);
             AuthInfo.setDefault(domain, username, password);
         } catch (ConfigurationException e) {
             e.printStackTrace();
