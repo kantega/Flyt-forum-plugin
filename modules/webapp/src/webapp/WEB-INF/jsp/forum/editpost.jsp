@@ -89,7 +89,7 @@
                 <tr class="forum-tableRow0">
                     <spring:bind path="post.body">
                         <td>
-                            <textarea name="body" rows="15" cols="50" class="forum-editpost-body"><c:out value="${status.value}"/></textarea>
+                            <textarea name="body" rows="15" class="forum-editpost-body"><c:out value="${status.value}"/></textarea>
                             <c:if test="${!post.approved}">
                                 <div class="forum-message"><spring:message code="post.moderate.info"/></div>
                             </c:if>

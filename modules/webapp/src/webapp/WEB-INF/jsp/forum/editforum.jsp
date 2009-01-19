@@ -38,7 +38,7 @@
                 <tr class="forum-tableRow0">
                     <spring:bind path="forum.description">
                         <td>
-                            <textarea name="description" rows="5" cols="50" class="forum-editforum-description"><c:out value="${status.value}"/></textarea>
+                            <textarea name="description" rows="5" class="forum-editforum-description"><c:out value="${status.value}"/></textarea>
                             <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
                         </td>
                     </spring:bind>
