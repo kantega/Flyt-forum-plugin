@@ -7,12 +7,12 @@ import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.search.extraction.TextExtractor;
 import no.kantega.publishing.search.extraction.TextExtractorSelector;
-import no.kantega.publishing.search.index.Fields;
-import no.kantega.publishing.search.index.provider.DocumentProvider;
-import no.kantega.publishing.search.index.provider.DocumentProviderHandler;
-import no.kantega.publishing.search.index.rebuild.ProgressReporter;
-import no.kantega.publishing.search.model.SearchHit;
-import no.kantega.publishing.search.model.SearchHitContext;
+import no.kantega.search.index.Fields;
+import no.kantega.search.index.provider.DocumentProvider;
+import no.kantega.search.index.provider.DocumentProviderHandler;
+import no.kantega.search.index.rebuild.ProgressReporter;
+import no.kantega.search.result.SearchHit;
+import no.kantega.search.result.SearchHitContext;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.DateTools;
@@ -56,7 +56,8 @@ public class Crawler implements DocumentProvider {
                 }
 
                 URL url = smbFile.getURL();
-                Document doc = new Document();                doc.add(new Field(Fields.TITLE, smbFile.getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+                Document doc = new Document();
+                doc.add(new Field(Fields.TITLE, smbFile.getName(), Field.Store.YES, Field.Index.UN_TOKENIZED));
                 doc.add(new Field(Fields.DOCTYPE, TYPE_FILE_ON_SHARE, Field.Store.YES, Field.Index.UN_TOKENIZED));
                 /*
                 log.debug("Owner: " + smbFile.getOwnerUser().getAccountName());
@@ -185,6 +186,7 @@ public class Crawler implements DocumentProvider {
 
         hit.setOwner(owner);
         hit.setUrl("file://" + host + path);
+        hit.setTitle(document.get(Fields.TITLE));
         
         List trails = new ArrayList();
         File parent = new File(path).getParentFile();

@@ -1,12 +1,15 @@
 package no.kantega.filesearch;
 
-import no.kantega.publishing.search.model.SearchHit;
+import no.kantega.search.result.SearchHit;
 
 import java.util.List;
 
-public class FileSearchHit extends SearchHit {
+
+public class FileSearchHit implements SearchHit {
     private List trail;
     private String owner;
+    private String url;
+    private String title;
 
     public List getTrail() {
         return trail;
@@ -22,5 +25,21 @@ public class FileSearchHit extends SearchHit {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

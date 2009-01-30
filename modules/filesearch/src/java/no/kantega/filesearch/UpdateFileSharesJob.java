@@ -1,8 +1,8 @@
 package no.kantega.filesearch;
 
-import no.kantega.publishing.search.index.IndexManager;
 import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
-import no.kantega.publishing.search.index.rebuild.ProgressReporter;
+import no.kantega.search.index.IndexManager;
+import no.kantega.search.index.rebuild.ProgressReporter;
 
 public class UpdateFileSharesJob {
     private IndexManager indexManager;
