@@ -99,7 +99,7 @@
     </build>
 
     <properties>
-        <aksess.version>6.0-SNAPSHOT</aksess.version>
+        <aksess.version>5.17pre1</aksess.version>
         <securityapi.version>1.8</securityapi.version>
         <springframework.version>2.5.5</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>

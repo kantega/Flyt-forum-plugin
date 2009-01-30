@@ -17,19 +17,21 @@
             <groupId>no.kantega.publishing</groupId>
             <artifactId>aksess-commons</artifactId>
             <version>${aksess.version}</version>
-
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>no.kantega.publishing</groupId>
             <artifactId>aksess-core</artifactId>
             <version>${aksess.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>no.kantega.publishing</groupId>
             <artifactId>aksess-search</artifactId>
             <version>${aksess.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
