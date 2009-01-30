@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>no.kantega.aksess.modules</groupId>
+    <artifactId>aksess-modules</artifactId>
+    <packaging>pom</packaging>
+    <version>1.7-SNAPSHOT</version>
+    <name>Aksess Modules</name>
+    <url>http://tbbc.no</url>
+    <scm>
+        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/aksess-modules/trunk</connection>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>subversion</id>
+            <name>Kantega Maven Repository</name>
+            <url>http://maven.mogul.no/maven2/external</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>subversioninternal</id>
+            <name>Kantega Internal Maven Repository</name>
+            <url>http://maven.mogul.no/maven2/internal</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>subversionsnapshots</id>
+            <name>Kantega Snapshot Maven Repository</name>
+            <url>http://maven.mogul.no/maven2/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>subversion</id>
+            <url>http://subversion.kantega.no/maven2/external</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>subversioninternal</id>
+            <url>http://subversion.kantega.no/maven2/internal</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <modules>
+        <module>modules/core</module>
+        <module>modules/exchange</module>
+        <module>modules/filesearch</module>
+        <module>modules/forum</module>
+        <module>modules/projectweb</module>
+        <module>modules/webapp</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins> 
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <properties>
+        <aksess.version>6.0-SNAPSHOT</aksess.version>
+        <securityapi.version>1.8</securityapi.version>
+        <springframework.version>2.5.5</springframework.version>
+        <hibernate.version>3.2.6.ga</hibernate.version>
+    </properties>
+
+</project>
+
