@@ -11,6 +11,24 @@
         <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/trunk</connection>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>maven</id>
+            <name>Aksess internal repository</name>
+            <url>scpexe://subversion.kantega.no/var/www/html/maven2/internal</url>
+        </repository>
+        <snapshotRepository>
+            <id>maven</id>
+            <name>Aksess snapshots repository</name>
+            <url>scpexe://subversion.kantega.no/var/www/html/maven2/snapshots</url>
+        </snapshotRepository>
+        <site>
+            <id>maven</id>
+            <name>Aksess website</name>
+            <url>scpexe://subversion.kantega.no/var/www/html/aksess/</url>
+        </site>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>subversion</id>
