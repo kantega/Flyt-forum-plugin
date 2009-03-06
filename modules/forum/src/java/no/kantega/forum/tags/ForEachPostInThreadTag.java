@@ -48,17 +48,9 @@ public class ForEachPostInThreadTag extends LoopTagSupport {
         if(daos.size() > 0) {
             ForumDao dao = (ForumDao) daos.values().iterator().next();
 
-            long tId = 0;
+            long tId;
             if (threadId != null) {
-                try {
-                    threadId = (String) ExpressionEvaluationUtils.evaluate("threadId", threadId, String.class, pageContext);
-                    if (threadId != null) {
-                        tId = Long.parseLong(threadId, 10);
-                    }
-                } catch (JspException e) {
-                    log.error(e);
-                    throw new JspTagException(e.getMessage());
-                }
+                tId = Long.parseLong(threadId, 10);
             } else {
                 HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();                
                 Content content = (Content)request.getAttribute("aksess_this");

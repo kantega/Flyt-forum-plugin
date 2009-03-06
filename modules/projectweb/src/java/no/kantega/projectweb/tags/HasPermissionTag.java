@@ -22,7 +22,7 @@ import no.kantega.modules.user.UserResolver;
  * To change this template use File | Settings | File Templates.
  */
 public class HasPermissionTag extends ConditionalTagSupport {
-    private String project;
+    private Project project;
     private String user;
     private String permission;
 
@@ -31,7 +31,6 @@ public class HasPermissionTag extends ConditionalTagSupport {
         try {
             WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
             PermissionManager manager = (PermissionManager) context.getBean("permissionManager");
-            Project theProject = (Project) ExpressionEvaluationUtils.evaluate("project", project, Project.class, pageContext);
 
             Class c = Permissions.class;
             Field field = c.getField(permission);
@@ -42,7 +41,7 @@ public class HasPermissionTag extends ConditionalTagSupport {
                 user = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest()).getUsername();
             }
 
-            boolean hasP = manager.hasPermission(user, permissionId, theProject);
+            boolean hasP = manager.hasPermission(user, permissionId, project);
             user = null;
             return hasP;
 
@@ -61,7 +60,7 @@ public class HasPermissionTag extends ConditionalTagSupport {
         this.permission = permission;
     }
 
-    public void setProject(String project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 

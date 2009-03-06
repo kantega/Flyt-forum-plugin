@@ -56,8 +56,6 @@ public class ForEachNewPostTag extends LoopTagSupport {
             long fId[] = null;
             if (forumId != null) {
                 try {
-                    forumId = (String) ExpressionEvaluationUtils.evaluate("forumId", forumId, String.class, pageContext);
-                    if (forumId != null) {
                         StringTokenizer tokens = new StringTokenizer(forumId, ",");
                         fId = new long[tokens.countTokens()];
                         int i = 0;
@@ -66,12 +64,8 @@ public class ForEachNewPostTag extends LoopTagSupport {
                             fId[i++] = Integer.parseInt(tmp);
                         }
 
-                    }
                 } catch (NumberFormatException e) {
-
-                } catch (JspException e) {
                     log.error(e);
-                    throw new JspTagException(e.getMessage());
                 }
             }
 
