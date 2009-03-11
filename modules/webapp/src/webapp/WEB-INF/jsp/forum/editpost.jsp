@@ -1,6 +1,6 @@
 <%@ page import="no.kantega.forum.util.ForumUtil" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="modules" uri="http://www.kantega.no/aksess/tags/modules" %>
@@ -70,7 +70,11 @@
 
                 </modules:userprofile>
                 <tr class="forum-labelRow">
-                    <td valign="top" colspan="2"><spring:message code="post.subject"/>:</td>
+                    <td valign="top" colspan="2">
+                    <c:choose>
+                        <c:when test="${post.thread.id == 0}"><spring:message code="post.subject.new"/></c:when>
+                    <c:otherwise><spring:message code="post.subject"/></c:otherwise>
+                </c:choose>:</td>
                 </tr>
 
                 <tr class="forum-tableRow0">
