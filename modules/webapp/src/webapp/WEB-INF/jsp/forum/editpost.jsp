@@ -70,7 +70,11 @@
 
                 </modules:userprofile>
                 <tr class="forum-labelRow">
-                    <td valign="top" colspan="2"><spring:message code="post.subject"/>:</td>
+                    <td valign="top" colspan="2">
+                    <c:choose>
+                        <c:when test="${post.thread.id == 0}"><spring:message code="post.subject.new"/></c:when>
+                    <c:otherwise><spring:message code="post.subject"/></c:otherwise>
+                </c:choose>:</td>
                 </tr>
 
                 <tr class="forum-tableRow0">
