@@ -12,6 +12,7 @@ import java.lang.reflect.Field;
 
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.model.Post;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.publishing.spring.RootContext;
@@ -24,7 +25,7 @@ import no.kantega.publishing.spring.RootContext;
  * To change this template use File | Settings | File Templates.
  */
 public class HasPermissionTag extends ConditionalTagSupport {
-    private String object;
+    private Object object;
     private String user;
     private String permission;
 
@@ -33,11 +34,6 @@ public class HasPermissionTag extends ConditionalTagSupport {
         try {
             WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
             PermissionManager manager = (PermissionManager) context.getBean("forumPermissionManager");
-            Object o  = null;
-
-            if(object != null) {
-                o = ExpressionEvaluationUtils.evaluate("object", object, Object.class, pageContext);
-            }
             Class c = Permissions.class;
             Field field = c.getField(permission);
             long permissionId = field.getLong(null);
@@ -50,7 +46,7 @@ public class HasPermissionTag extends ConditionalTagSupport {
                 }
             }
 
-            boolean hasP = manager.hasPermission(user, permissionId, o);
+            boolean hasP = manager.hasPermission(user, permissionId, object);
             user = null;
 
             return hasP;
@@ -75,7 +71,7 @@ public class HasPermissionTag extends ConditionalTagSupport {
         this.permission = permission;
     }
 
-    public void setObject(String object) {
+    public void setObject(Object object) {
         this.object = object;
     }
 
