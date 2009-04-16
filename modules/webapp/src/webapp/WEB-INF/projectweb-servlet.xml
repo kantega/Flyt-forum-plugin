@@ -7,6 +7,12 @@
 
 <beans>
 
+    <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+        <property name="sessionFactory" ref="sessionFactory"/>
+         <property name="flushModeName" value="FLUSH_AUTO"/>
+    </bean>
+
+
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="interceptors">
             <list>
@@ -20,8 +26,10 @@
                         <value>project</value>
                     </property>
                 </bean>
+                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
+
         <property name="urlMap">
             <map>
                 <entry key="/">
@@ -91,6 +99,7 @@
                         <value>participants</value>
                     </property>
                 </bean>
+                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -163,6 +172,7 @@
                         <value>activities</value>
                     </property>
                 </bean>
+                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -262,6 +272,7 @@
                         <value>documents</value>
                     </property>
                 </bean>
+                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -357,6 +368,7 @@
                         <value>admin</value>
                     </property>
                 </bean>
+                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -487,35 +499,19 @@
             <ref bean="projectwebDataSource"/>
         </property>
         <property name="mappingResources">
-            <value>projectweb.hbm.xml</value>
+            <list>
+                <value>projectweb.hbm.xml</value>
+                <value>com/opensymphony/workflow/spi/hibernate3/HibernateWorkflowEntry.hbm.xml</value>
+                <value>com/opensymphony/workflow/spi/hibernate3/HibernateHistoryStep.hbm.xml</value>
+                <value>com/opensymphony/workflow/spi/hibernate3/HibernateCurrentStep.hbm.xml</value>
+                <value>com/opensymphony/module/propertyset/hibernate3/PropertySetItemImpl.hbm.xml</value>
+            </list>
         </property>
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${projectweb.dialect.hibernate3}</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
-            </props>
-        </property>
-        <property name="schemaUpdate">
-            <value>true</value>
-        </property>
-    </bean>
-
-    <bean id="sessionFactory2" class="org.springframework.orm.hibernate.LocalSessionFactoryBean">
-        <property name="dataSource">
-            <ref bean="projectwebDataSource"/>
-        </property>
-        <property name="mappingResources">
-            <list>
-                <value>com/opensymphony/workflow/spi/hibernate/HibernateWorkflowEntry.hbm.xml</value>
-                <value>com/opensymphony/workflow/spi/hibernate/HibernateHistoryStep.hbm.xml</value>
-                <value>com/opensymphony/workflow/spi/hibernate/HibernateCurrentStep.hbm.xml</value>
-                <value>com/opensymphony/module/propertyset/hibernate/PropertySetItemImpl.hbm.xml</value>
-            </list>
-        </property>
-        <property name="hibernateProperties">
-            <props>
-                <prop key="hibernate.dialect">${projectweb.dialect.hibernate2}</prop>
             </props>
         </property>
         <property name="schemaUpdate">
@@ -547,8 +543,8 @@
 
 
     <bean id="workflowStore"
-          class="com.opensymphony.workflow.spi.hibernate.SpringHibernateWorkflowStore">
-        <property name="sessionFactory"><ref bean="sessionFactory2"/></property>
+          class="com.opensymphony.workflow.spi.hibernate3.SpringHibernateWorkflowStore">
+        <property name="sessionFactory"><ref bean="sessionFactory"/></property>
         <!--
     Optional PropertySet delegate, in case you want
     to use another PropertySet store that is not HibernateStore
@@ -556,10 +552,15 @@
     <ref local="propertySetDelegate"/>
     </property>
         -->
+        <property name="propertySetDelegate">
+            <bean class="com.opensymphony.workflow.spi.hibernate3.DefaultHibernatePropertySetDelegate">
+                <property name="sessionFactory" ref="sessionFactory"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="workflowFactory"
-          class="com.opensymphony.workflow.loader.SpringWorkflowFactory"
+          class="com.opensymphony.workflow.spi.hibernate.SpringWorkflowFactory"
           init-method="init">
         <property name="resource"><value>workflows.xml</value></property>
         <property name="reload"><value>true</value></property>
