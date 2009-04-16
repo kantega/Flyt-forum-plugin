@@ -40,7 +40,6 @@ public class ActivityController implements Controller{
         map.put("project", activity.getProject());
         Workflow workflow = (Workflow) workflowFactory.createBasicWorkflow(userResolver.resolveUser(request).getUsername());
 
-        Thread.sleep(2000);
         final WorkflowDescriptor wd = workflow.getWorkflowDescriptor(workflow.getWorkflowName(activity.getWorkflowId()));
 
         int[] actionIds = workflow.getAvailableActions(activity.getWorkflowId(), null);
