@@ -3,11 +3,11 @@
     <groupId>no.kantega.aksess.modules</groupId>
     <artifactId>aksess-modules</artifactId>
     <packaging>pom</packaging>
-    <version>1.9</version>
+    <version>1.10-SNAPSHOT</version>
     <name>Aksess Modules</name>
     <url>http://tbbc.no</url>
     <scm>
-        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/tags/aksess-modules-1.9</connection>
+        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/trunk</connection>
     </scm>
 
     <distributionManagement>
