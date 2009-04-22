@@ -84,7 +84,7 @@
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>osworkflow</artifactId>
-            <version>3.0.0-2008-04-16</version>
+            <version>3.0.0-2009-04-16</version>
         </dependency>
 
         <dependency>
