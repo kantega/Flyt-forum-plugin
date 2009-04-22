@@ -3,12 +3,12 @@
     <parent>
         <groupId>no.kantega.aksess.modules</groupId>
         <artifactId>aksess-modules</artifactId>
-        <version>svn up</version>
+        <version>1.11-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>aksess-modules-forum</artifactId>
-  <version>1.10</version>
+  <version>1.11-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Aksess modules forum</name>
 
