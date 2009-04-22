@@ -9,13 +9,15 @@
 
     <bean id="openSessionInViewInterceptor" class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
         <property name="sessionFactory" ref="sessionFactory"/>
-         <property name="flushModeName" value="FLUSH_AUTO"/>
+         <property name="flushModeName" value="FLUSH_ALWAYS"/>
+
     </bean>
 
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="interceptors">
             <list>
+                <ref bean="openSessionInViewInterceptor"/>
                 <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
                     <property name="userResolver">
                         <ref bean="userResolver"/>
@@ -26,7 +28,6 @@
                         <value>project</value>
                     </property>
                 </bean>
-                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
 
@@ -89,6 +90,7 @@
     <bean id="urlMapping2" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="interceptors">
             <list>
+                <ref bean="openSessionInViewInterceptor"/>
                 <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
                     <property name="userResolver">
                         <ref bean="userResolver"/>
@@ -99,7 +101,6 @@
                         <value>participants</value>
                     </property>
                 </bean>
-                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -162,6 +163,7 @@
     <bean id="urlMapping3" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="interceptors">
             <list>
+                <ref bean="openSessionInViewInterceptor"/>
                 <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
                     <property name="userResolver">
                         <ref bean="userResolver"/>
@@ -172,7 +174,6 @@
                         <value>activities</value>
                     </property>
                 </bean>
-                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -262,6 +263,7 @@
     <bean id="urlMapping3b" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="interceptors">
             <list>
+                <ref bean="openSessionInViewInterceptor"/>
                 <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
                     <property name="userResolver">
                         <ref bean="userResolver"/>
@@ -272,7 +274,6 @@
                         <value>documents</value>
                     </property>
                 </bean>
-                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -347,6 +348,7 @@
     <bean id="urlMapping4" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="interceptors">
             <list>
+                <ref bean="openSessionInViewInterceptor"/>
                 <bean class="no.kantega.projectweb.interceptors.UserResolvedInterceptor">
                     <property name="userResolver">
                         <ref bean="userResolver"/>
@@ -368,7 +370,6 @@
                         <value>admin</value>
                     </property>
                 </bean>
-                <ref bean="openSessionInViewInterceptor"/>
             </list>
         </property>
         <property name="urlMap">
@@ -501,7 +502,7 @@
         <property name="mappingResources">
             <list>
                 <value>projectweb.hbm.xml</value>
-                <value>com/opensymphony/workflow/spi/hibernate3/HibernateWorkflowEntry.hbm.xml</value>
+                <value>hbm/HibernateWorkflowEntry.hbm.xml</value>
                 <value>com/opensymphony/workflow/spi/hibernate3/HibernateHistoryStep.hbm.xml</value>
                 <value>com/opensymphony/workflow/spi/hibernate3/HibernateCurrentStep.hbm.xml</value>
                 <value>com/opensymphony/module/propertyset/hibernate3/PropertySetItemImpl.hbm.xml</value>
@@ -510,8 +511,9 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">${projectweb.dialect.hibernate3}</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
             </props>
         </property>
         <property name="schemaUpdate">

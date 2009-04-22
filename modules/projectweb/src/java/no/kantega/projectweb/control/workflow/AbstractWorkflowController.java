@@ -32,8 +32,7 @@ public abstract class AbstractWorkflowController implements Controller {
         Workflow workflow = workflowFactory.createBasicWorkflow(userResolver.resolveUser(request).getUsername());
 
         workflow.doAction(workflowId, action, getArgs(request));
-        response.sendRedirect(getRedirectUrl(request));
-        return null;
+        return new ModelAndView("delay_redirect", "url", getRedirectUrl(request));
     }
 
     public abstract String getRedirectUrl(HttpServletRequest request);

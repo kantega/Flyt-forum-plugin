@@ -6,7 +6,7 @@
 <hibernate-mapping package="no.kantega.projectweb.model">
 
   <class name="Project" table="projectweb_project">
-    <cache usage="read-write"/>
+
     <id name="id" column="projectId" type="long">
       <generator class="increment"/>
     </id>
@@ -38,7 +38,7 @@
   </class>
 
   <class name="Activity" table="projectweb_activity">
-    <cache usage="read-write"/>
+
     <id name="id" column="activityId" type="long">
       <generator class="increment"/>
     </id>
@@ -71,7 +71,7 @@
   </class>
 
   <class name="ActivityType" table="projectweb_activitytype">
-    <cache usage="read-write"/>
+
     <id name="id" column="activityTypeId" type="long">
       <generator class="increment"/>
     </id>
@@ -79,7 +79,7 @@
   </class>
 
   <class name="ProjectPhase" table="projectweb_projectphase">
-    <cache usage="read-write"/>
+
     <id name="id" column="projectPhaseId" type="long">
       <generator class="increment"/>
     </id>
@@ -87,7 +87,7 @@
   </class>
 
   <class name="ActivityPriority" table="projectweb_activitypriorities">
-    <cache usage="read-write"/>
+
      <id name="id" column="activityPriorityId" type="long">
        <generator class="increment"/>
      </id>
@@ -95,7 +95,7 @@
    </class>
 
   <class name="ActivityStatus" table="projectweb_activitystatuses">
-    <cache usage="read-write"/>
+
     <id name="id" column="activityStatusId" type="long">
       <generator class="increment"/>
     </id>
@@ -105,7 +105,7 @@
   </class>
 
     <class name="DocumentCategory" table="projectweb_documentcategories">
-        <cache usage="read-write"/>
+        
         <id name="id" column="documentCategoryId" type="long">
             <generator class="increment"/>
         </id>
