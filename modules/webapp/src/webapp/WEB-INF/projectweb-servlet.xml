@@ -502,10 +502,11 @@
         <property name="mappingResources">
             <list>
                 <value>projectweb.hbm.xml</value>
-                <value>hbm/HibernateWorkflowEntry.hbm.xml</value>
+                <value>com/opensymphony/workflow/spi/hibernate3/HibernateWorkflowEntry.hbm.xml</value>
                 <value>com/opensymphony/workflow/spi/hibernate3/HibernateHistoryStep.hbm.xml</value>
                 <value>com/opensymphony/workflow/spi/hibernate3/HibernateCurrentStep.hbm.xml</value>
-                <value>com/opensymphony/module/propertyset/hibernate3/PropertySetItemImpl.hbm.xml</value>
+                <!-- Overridden to prevent lookup of old 2.0 DTD over the network -->
+                <value>hbm/PropertySetItemImpl.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
