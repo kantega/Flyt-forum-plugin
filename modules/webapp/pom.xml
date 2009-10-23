@@ -14,8 +14,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>no.kantega.publishing</groupId>
-            <artifactId>aksess-core</artifactId>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-core</artifactId>
             <version>${aksess.version}</version>
             <scope>provided</scope>
         </dependency>
