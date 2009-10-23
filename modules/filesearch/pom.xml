@@ -3,7 +3,7 @@
     <parent>
         <groupId>no.kantega.aksess.modules</groupId>
         <artifactId>aksess-modules</artifactId>
-        <version>1.12-SNAPSHOT</version>
+        <version>1.12</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,22 +13,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>no.kantega.publishing</groupId>
-            <artifactId>aksess-commons</artifactId>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-commons</artifactId>
             <version>${aksess.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>no.kantega.publishing</groupId>
-            <artifactId>aksess-core</artifactId>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-core</artifactId>
             <version>${aksess.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>no.kantega.publishing</groupId>
-            <artifactId>aksess-search</artifactId>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-search</artifactId>
             <version>${aksess.version}</version>
             <scope>provided</scope>
         </dependency>

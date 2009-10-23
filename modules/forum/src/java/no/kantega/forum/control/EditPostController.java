@@ -3,7 +3,6 @@ package no.kantega.forum.control;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
-import no.kantega.commons.media.ImageHelper;
 import no.kantega.commons.media.ImageInfo;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
@@ -13,6 +12,7 @@ import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.util.ForumUtil;
+import no.kantega.forum.util.ImageHelper;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserProfile;
 import no.kantega.modules.user.UserProfileManager;
@@ -283,7 +283,7 @@ public class EditPostController extends AbstractForumFormController {
                             ByteArrayOutputStream bos = new ByteArrayOutputStream();
                             bos.write(bytes);
 
-                            ByteArrayOutputStream bout = ImageHelper.resizeImage(bos, maxImageWidth, maxImageHeight, imageFormat, Aksess.getOutputImageQuality());
+                            ByteArrayOutputStream bout = ImageHelper.resizeImage(bos, maxImageWidth, maxImageHeight, imageFormat, 85);
                             bytes = bout.toByteArray();
                             size = bytes.length;
                             if (filename.indexOf(".") != -1) {
