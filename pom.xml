@@ -67,6 +67,31 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <profiles>
+        <profile>
+            <id>legacy</id>
+            <distributionManagement>
+                <repository>
+                    <id>subversion</id>
+                    <name>subversion.kantega.no</name>
+                    <url>scpexe://subversion.kantega.no/var/www/html/maven/</url>
+                    <layout>legacy</layout>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>local</id>
+            <distributionManagement>
+                <repository>
+                    <id>loc</id>
+                    <name>local</name>
+                    <url>file:///${user.home}/.maven/repository</url>
+                    <layout>legacy</layout>
+                </repository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
     <modules>
         <module>modules/core</module>
         <module>modules/exchange</module>
@@ -116,8 +141,8 @@
     </build>
 
     <properties>
-        <aksess.version>5.17pre1</aksess.version>
-        <securityapi.version>1.8</securityapi.version>
+        <aksess.version>6.1.1</aksess.version>
+        <securityapi.version>1.10</securityapi.version>
         <springframework.version>2.5.5</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
     </properties>

@@ -8,12 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletOutputStream;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.media.ImageHelper;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
+import no.kantega.forum.util.ImageHelper;
 
 import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -45,7 +44,7 @@ public class ViewAttachmentController extends AbstractController {
                 if (mimeType.indexOf("image") != -1 && (width != -1 || height != -1)) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     bos.write(attachment.getData());
-                    ByteArrayOutputStream tmp = ImageHelper.resizeImage(bos, width, height, "jpg", 80);
+                    ByteArrayOutputStream tmp = ImageHelper.resizeImage(bos, width, height, "jpg", 85);
                     out.write(tmp.toByteArray());
 
                 } else {
