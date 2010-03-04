@@ -86,6 +86,8 @@
             <one-to-many class="Attachment"/>
         </set>
         <property name="approved" not-null="false" type="yes_no"/>
+        <property name="ratingScore" type="float"/>
+        <property name="numberOfRatings" type="integer"/>
     </class>
 
     <class name="Attachment" table="forum_attachment">

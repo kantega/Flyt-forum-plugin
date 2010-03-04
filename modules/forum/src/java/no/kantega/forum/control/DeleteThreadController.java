@@ -9,9 +9,11 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.listeners.ForumListener;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +38,14 @@ public class DeleteThreadController extends AbstractForumFormController {
         long id = Long.parseLong(request.getParameter("threadId"));
         ForumThread t = dao.getThread(id);
         long forumId = t.getForum().getId();
+
+        Map ratingNotificationListenerBeans = getApplicationContext().getBeansOfType(ForumListener.class);
+        if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
+            for (ForumListener notificationListener : (Iterable<? extends ForumListener>) ratingNotificationListenerBeans.values()) {
+                notificationListener.beforeThreadDelete(t);
+            }
+        }
+        
         dao.delete(t);
         return new ModelAndView(new RedirectView("viewforum?forumId=" + forumId));
     }

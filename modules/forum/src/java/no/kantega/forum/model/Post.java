@@ -2,6 +2,7 @@ package no.kantega.forum.model;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,6 +22,11 @@ public class Post {
     private Set attachments;
     private String author;
     private boolean isApproved;
+
+    private Float ratingScore = 0f;
+    private Integer numberOfRatings = 0;
+
+    private List<Post> replyPosts;
 
     public long getId() {
         return id;
@@ -100,5 +106,29 @@ public class Post {
 
     public void setApproved(boolean approved) {
         isApproved = approved;
+    }
+
+    public Float getRatingScore() {
+        return ratingScore;
+    }
+
+    public void setRatingScore(Float ratingScore) {
+        this.ratingScore = ratingScore;
+    }
+
+    public Integer getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(Integer numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
+    }
+
+    public List<Post> getReplyPosts() {
+        return replyPosts;
+    }
+
+    public void setReplyPosts(List<Post> replyPosts) {
+        this.replyPosts = replyPosts;
     }
 }

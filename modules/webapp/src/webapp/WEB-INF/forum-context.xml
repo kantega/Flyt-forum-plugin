@@ -48,4 +48,12 @@
         </property>
     </bean>
 
+    <bean id="forumPostRatingNotificationListener" class="no.kantega.forum.listeners.PostRatingNotificationListener">
+        <property name="dao" ref="forumDao"/>
+    </bean>
+
+    <bean id="forumDeletePostOrThreadNotificationListener" class="no.kantega.forum.listeners.ForumDeletePostOrThreadNotificationListener">
+        <property name="ratingService" ref="ratingService"/>
+    </bean>
+
 </beans>
