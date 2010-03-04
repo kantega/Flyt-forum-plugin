@@ -18,10 +18,12 @@ import no.kantega.modules.user.UserProfile;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -160,6 +162,21 @@ public class EditPostController extends AbstractForumFormController {
         }
     }
 
+    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{
+        Map referenceData = new HashMap();
+
+        Post post = (Post)command;
+        String forumId = request.getParameter("forumId");
+
+        if (forumId != null && post.getThread().getForum().getTopicMapId() != null) {
+            // This is a new thread, allow user to add topics
+            referenceData.put("addTopics", Boolean.TRUE);
+        }
+
+        return referenceData;
+    }
+
+
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
 
         Post p = (Post) object;
@@ -201,7 +218,6 @@ public class EditPostController extends AbstractForumFormController {
                 }
             }
         }
-
 
         // Send varsling til moderator om nytt innlegg
         String moderator = p.getThread().getForum().getModerator();
@@ -305,6 +321,18 @@ public class EditPostController extends AbstractForumFormController {
         }
         post.setAttachments(attachments);
 
+
+        // Cannot bind directly, save topics on thread
+        String[] topicIds = request.getParameterValues("topics");
+        if (topicIds != null && topicIds.length > 0) {
+            Set topics = new HashSet();
+            for (String t : topicIds) {
+                if (t != null && t.length() > 0) {
+                    topics.add(t);
+                }
+            }            
+            post.getThread().setTopics(topics);
+        }
     }
 
     private String cleanup(String body, HttpServletRequest request) {

@@ -22,7 +22,7 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-      <attribute>
+        <attribute>
             <name>user</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -142,4 +142,31 @@
         </attribute>
     </tag>
 
+    <tag>
+        <name>getpostswithtopic</name>
+        <tagclass>no.kantega.forum.tags.GetPostsWithTopicTag</tagclass>
+        <bodycontent>empty</bodycontent>
+        <info>Iterates over posts with given topics</info>
+        <attribute>
+            <name>maxPosts</name>
+            <required>maxPosts</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>topicMapId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>topicIds</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    
 </taglib>

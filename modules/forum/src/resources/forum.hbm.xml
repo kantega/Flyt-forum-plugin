@@ -43,6 +43,7 @@
             <key column="forumId"/>
             <element column="groupId" type="string"/>
         </set>
+        <property name="topicMapId"/>
     </class>
 
     <class name="ForumThread" table="forum_thread">
@@ -61,7 +62,11 @@
             <key column="threadId"/>
             <one-to-many class="Post"/>
         </set>
-        <property name="approved" not-null="false" type="yes_no"/>        
+        <property name="approved" not-null="false" type="yes_no"/>
+        <set name="topics" table="forum_thread_topics" lazy="false">
+            <key column="threadId"/>
+            <element column="topicId" type="string"/>
+        </set>
     </class>
 
     <class name="Post" table="forum_post">

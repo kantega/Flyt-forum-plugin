@@ -52,11 +52,11 @@
                             <c:forEach items="${groups}" var="group">
                                 <input type="checkbox" name="groups" value="<c:out value="${group.id}"/>"
                                 <c:forEach items="${forum.groups}" var="selectedGroup">
-                                        <c:if test="${group.id == selectedGroup}">
-                                            checked="checked"
-                                        </c:if>
+                                <c:if test="${group.id == selectedGroup}">
+                                       checked="checked"
+                                </c:if>
                                 </c:forEach>
-                                > <c:out value="${group.name}"/><br>
+                                        > <c:out value="${group.name}"/><br>
                             </c:forEach>
                         </div>
                         <p>
@@ -69,36 +69,36 @@
                 </tr>
                 <tr class="forum-tableRow0">
                     <td>
-                    <p>
-                    <spring:message code="forum.moderator.name"/>:<br>
-                    <spring:bind path="forum.moderator">
-                        <input type="hidden" id="moderator" name="moderator" value="<c:out value="${status.value}"/>">
-                        <input type="text" id="moderatortext" name="moderatortext" size="50" maxlength="64" class="forum-editforum-moderator" value="<c:out value="${moderator.fullName}"/>">
-                        <script type="text/javascript">
-                            Autocomplete.setup({'inputField' :'moderator', url:'searchusers', 'minChars' :3 });
-                        </script>
-                        <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
-                    </spring:bind>
-                    </p>
-                    <p>
-                        <spring:message code="forum.moderator.text"/>
-                    </p>
+                        <p>
+                            <spring:message code="forum.moderator.name"/>:<br>
+                            <spring:bind path="forum.moderator">
+                                <input type="hidden" id="moderator" name="moderator" value="<c:out value="${status.value}"/>">
+                                <input type="text" id="moderatortext" name="moderatortext" size="50" maxlength="64" class="forum-editforum-moderator" value="<c:out value="${moderator.fullName}"/>">
+                                <script type="text/javascript">
+                                    Autocomplete.setup({'inputField' :'moderator', url:'searchusers', 'minChars' :3 });
+                                </script>
+                                <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
+                            </spring:bind>
+                        </p>
+                        <p>
+                            <spring:message code="forum.moderator.text"/>
+                        </p>
 
-                    <p>
-                    <spring:bind path="forum.anonymousPostAllowed">
-                        <input type="hidden" name="_<c:out value="${status.expression}"/>">
-                        <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
-                                <c:if test="${status.value}">checked</c:if>/>
-                        <spring:message code="forum.anonymous.allow"/>
-                    </spring:bind>
-                    <br>
-                    <spring:bind path="forum.approvalRequired">
-                        <input type="hidden" name="_<c:out value="${status.expression}"/>">
-                        <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
-                                <c:if test="${status.value}">checked</c:if>/>
-                        <spring:message code="forum.anonymous.moderate"/>
-                    </spring:bind>
-                    </p>
+                        <p>
+                            <spring:bind path="forum.anonymousPostAllowed">
+                                <input type="hidden" name="_<c:out value="${status.expression}"/>">
+                                <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
+                                       <c:if test="${status.value}">checked</c:if>/>
+                                <spring:message code="forum.anonymous.allow"/>
+                            </spring:bind>
+                            <br>
+                            <spring:bind path="forum.approvalRequired">
+                                <input type="hidden" name="_<c:out value="${status.expression}"/>">
+                                <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
+                                       <c:if test="${status.value}">checked</c:if>/>
+                                <spring:message code="forum.anonymous.moderate"/>
+                            </spring:bind>
+                        </p>
                     </td>
                 </tr>
                 <tr class="forum-labelRow">
@@ -109,11 +109,32 @@
                         <spring:bind path="forum.attachmentsAllowed">
                             <input type="hidden" name="_<c:out value="${status.expression}"/>">
                             <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
-                                    <c:if test="${status.value}">checked</c:if>/>
+                                   <c:if test="${status.value}">checked</c:if>/>
                             <spring:message code="forum.attachments.allow"/>
                         </spring:bind>
                     </td>
                 </tr>
+                <c:if test="${not empty topicMaps}">
+                    <tr class="forum-labelRow">
+                        <td valign="top"><spring:message code="forum.topicmaps"/></td>
+                    </tr>
+                    <tr class="forum-tableRow0">
+                        <td>
+                            <spring:bind path="forum.topicMapId">
+                            <select name="${status.expression}">
+                                <c:forEach items="${topicMaps}" var="topicMap">
+                                    <option value="${topicMap.id}" <c:if test="${topicMap.id == forum.topicMapId}">selected</c:if>>
+                                        <c:out value="${topicMap.name}"/>
+                                    </option>
+                                </c:forEach>
+                            </select>
+                            </spring:bind>
+                            <p>
+                                <spring:message code="forum.topicmaps.text"/>
+                            </p>
+                        </td>
+                    </tr>
+                </c:if>
                 <tr class="forum-tableRow1">
                     <td align="left">
                         <input type="submit" class="submit" value="<spring:message code="forum.edit.save"/>">

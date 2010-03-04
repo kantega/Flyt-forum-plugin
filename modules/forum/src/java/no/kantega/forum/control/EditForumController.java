@@ -15,6 +15,7 @@ import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.GroupManager;
+import no.kantega.publishing.common.service.TopicMapService;
 
 import java.util.Date;
 import java.util.Map;
@@ -57,6 +58,9 @@ public class EditForumController extends AbstractForumFormController {
         }
 
         referenceData.put("groups", groupManager.getAllGroups());
+
+        TopicMapService topicService = new TopicMapService(request);        
+        referenceData.put("topicMaps", topicService.getTopicMaps());
 
         return referenceData;
     }

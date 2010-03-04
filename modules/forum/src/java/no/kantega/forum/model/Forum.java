@@ -26,6 +26,7 @@ public class Forum {
     private String moderator;
     private Set groups;
     private int numNewPosts = 0;
+    private Integer topicMapId = null;
 
     public Set getGroups() {
         return groups;
@@ -145,5 +146,13 @@ public class Forum {
 
     public void setNumNewPosts(int newPosts) {
         this.numNewPosts = newPosts;
+    }
+
+    public Integer getTopicMapId() {
+        return topicMapId;
+    }
+
+    public void setTopicMapId(Integer topicMapId) {
+        this.topicMapId = topicMapId;
     }
 }

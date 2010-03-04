@@ -23,6 +23,7 @@ public class ForumThread {
     private int contentId;
     private boolean isApproved;
     private int numNewPosts = 0;
+    private Set topics;
 
     public long getId() {
         return id;
@@ -118,6 +119,14 @@ public class ForumThread {
 
     public void setApproved(boolean approved) {
         isApproved = approved;
-    }    
+    }
+
+    public Set getTopics() {
+        return topics;
+    }
+
+    public void setTopics(Set topics) {
+        this.topics = topics;
+    }
 }
 
