@@ -462,12 +462,12 @@ public class ForumDao {
     }
 
 
-    public long getThreadAboutContent(final Content content) {
+    public long getThreadAboutContent(final int contentId) {
 
         List l = (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query q = session.createQuery("select t.id from ForumThread t where t.contentId=?");
-                q.setInteger(0, content.getId());
+                q.setInteger(0, contentId);
                 return q.list();
             }
         });

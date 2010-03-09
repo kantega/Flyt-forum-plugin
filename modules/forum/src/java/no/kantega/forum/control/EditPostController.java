@@ -2,8 +2,10 @@ package no.kantega.forum.control;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.media.ImageInfo;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.Forum;
@@ -18,7 +20,9 @@ import no.kantega.modules.user.UserProfile;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
@@ -64,15 +68,39 @@ public class EditPostController extends AbstractForumFormController {
     private String imageFormat = "jpg";
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
-        String threadId = request.getParameter("threadId");
-        String forumId = request.getParameter("forumId");
+        RequestParameters param = new RequestParameters(request);
+        long threadId = param.getLong("threadId");
+        long forumId = param.getLong("forumId");
+        int contentId = param.getInt("contentId");
 
-        if(threadId != null) {
-            ForumThread thread = dao.getThread(Long.parseLong(threadId));
+        if(threadId != -1) {
+            ForumThread thread = dao.getThread(threadId);
             return permissions(Permissions.POST_IN_THREAD, thread);
-        } else if (forumId != null) {
-            Forum forum = dao.getForum(Long.parseLong(forumId));
+        } else if (forumId != -1) {
+            Forum forum = dao.getForum(forumId);
             return permissions(Permissions.ADD_THREAD, forum);
+        } else if (contentId != -1) {
+            long tId = dao.getThreadAboutContent(contentId);
+            if (tId > 0) {
+                ForumThread thread = dao.getThread(tId);
+                return permissions(Permissions.POST_IN_THREAD, thread);
+            } else {
+                ContentManagementService cms = new ContentManagementService(request);
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setContentId(contentId);
+                Content content = null;
+                try {
+                    content = cms.getContent(cid);
+                    if (content != null && content.getForumId() > 0) {
+                        Forum f = dao.getForum(forumId);
+                        return permissions(Permissions.ADD_THREAD, f);
+                    }
+
+                } catch (NotAuthorizedException e) {
+                    Log.error(this.getClass().getName(), "Content has no forum defined" + contentId, null, null);
+                }
+                return null;
+            }
         } else {
             long id = Long.parseLong(request.getParameter("postId"));
             Post p = dao.getPost(id);
@@ -81,11 +109,11 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        String postId = request.getParameter("postId");
+        RequestParameters param = new RequestParameters(request);
+        long postId = param.getLong("postId");
 
-        if (postId != null && !postId.equals("0")) {
-            long id = Long.parseLong(postId);
-            Post post = dao.getPopulatedPost(id);
+        if (postId != -1) {
+            Post post = dao.getPopulatedPost(postId);
             if (post != null) {
                 String body = post.getBody();
                 String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
@@ -97,18 +125,14 @@ public class EditPostController extends AbstractForumFormController {
             }
             return post;
         } else {
-            String threadId = request.getParameter("threadId");
-            String replyId = request.getParameter("replyId");
+            long threadId = param.getLong("threadId");
+            long replyId = param.getLong("replyId");
 
             ForumThread t = null;
-            if(threadId != null) {
-                long id = Long.parseLong(threadId);
-                t = dao.getThread(id);
+            if(threadId != -1) {
+                t = dao.getThread(threadId);
             } else {
-                String forumId = request.getParameter("forumId");
-                Forum f = dao.getForum(Long.parseLong(forumId));
-                t = new ForumThread();
-                t.setForum(f);
+                t = getThreadFromParams(request);
             }
 
             Post p = new Post();
@@ -131,13 +155,13 @@ public class EditPostController extends AbstractForumFormController {
             p.setApproved(approved);
 
 
-            if (replyId != null) {
+            if (replyId != -1) {
                 String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
                 String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
                 String qWrote = getApplicationContext().getMessage("post.quote.wrote", new Object[0], RequestContextUtils.getLocale(request));
 
-                p.setReplyToId(Long.parseLong(replyId));
-                Post origPost = dao.getPost(Long.parseLong(replyId));
+                p.setReplyToId(replyId);
+                Post origPost = dao.getPost(replyId);
                 if(origPost.getSubject().startsWith("SV:")) {
                     p.setSubject(origPost.getSubject());
                 } else {
@@ -162,13 +186,48 @@ public class EditPostController extends AbstractForumFormController {
         }
     }
 
+    private ForumThread getThreadFromParams(HttpServletRequest request) throws NotAuthorizedException {
+        RequestParameters param = new RequestParameters(request);
+        int contentId = param.getInt("contentId");
+        long forumId = param.getLong("forumId");
+
+        ForumThread t = null;
+        if (contentId != -1) {
+            long tId = dao.getThreadAboutContent(contentId);
+            if (tId > 0) {
+                // Thread exists for this content
+                t = dao.getThread(tId);
+            } else {
+                // Create thread for content
+                ContentManagementService cms = new ContentManagementService(request);
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setContentId(contentId);
+                Content content = cms.getContent(cid);
+                if (content != null && content.getForumId() > 0) {
+                    Forum f = dao.getForum(forumId);
+                    t = new ForumThread();
+                    t.setContentId(contentId);
+                    t.setForum(f);
+                } else {
+                    Log.error(this.getClass().getName(), "Content does not exists or has no forum defined:" + contentId, null, null);
+                }
+            }
+        } else {
+            Forum f = dao.getForum(forumId);
+            t = new ForumThread();
+            t.setForum(f);
+        }
+        return t;
+    }
+
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{
         Map referenceData = new HashMap();
 
         Post post = (Post)command;
         String forumId = request.getParameter("forumId");
+        String contentId = request.getParameter("contentId");
 
-        if (forumId != null && post.getThread().getForum().getTopicMapId() != null) {
+        if ((forumId != null || contentId != null) && post.getThread().getForum().getTopicMapId() != null) {
             // This is a new thread, allow user to add topics
             referenceData.put("addTopics", Boolean.TRUE);
         }
@@ -248,7 +307,10 @@ public class EditPostController extends AbstractForumFormController {
 
         Map map = new HashMap();
 
-        if (p.isApproved()) {
+        String redirect = request.getParameter("redirect");
+        if (redirect != null && redirect.startsWith("/")) {
+            return new ModelAndView(new RedirectView(redirect));
+        } else if (p.isApproved()) {
             // Vis tråden hvis innlegget er godkjent
             map.put("threadId", new Long(p.getThread().getId()));
             map.put("postId", new Long(p.getId()));

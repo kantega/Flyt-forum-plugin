@@ -69,7 +69,7 @@ public class NewPostLinkTag extends BodyTagSupport {
                 ForumDao dao = (ForumDao) daos.values().iterator().next();
                 Content content = (Content)request.getAttribute("aksess_this");
                 if (content != null && content.getId() > 0) {
-                    long threadId = dao.getThreadAboutContent(content);
+                    long threadId = dao.getThreadAboutContent(content.getId());
                     long forumId = content.getForumId();
                     if (threadId > 0) {
                         url = Aksess.getContextPath() + "/forum/editpost?threadId=" + threadId;

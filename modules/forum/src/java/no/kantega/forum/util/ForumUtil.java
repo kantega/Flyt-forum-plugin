@@ -101,7 +101,7 @@ public class ForumUtil {
 
     public static boolean isSpam(HttpServletRequest request) {
         String code = request.getParameter("nospam");
-        if (code != null && code.equals(NOSPAM_KEY)) {
+        if ((code == null) || (!code.equals(NOSPAM_KEY))) {
             return false;
         }
 

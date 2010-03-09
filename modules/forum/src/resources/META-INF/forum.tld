@@ -178,5 +178,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
+    <tag>
+        <name>ifcontenthasforum</name>
+        <tagclass>no.kantega.forum.tags.IfContentHasForumTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Display body if content has forum</info>
+    </tag>
     
 </taglib>

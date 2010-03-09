@@ -47,12 +47,13 @@ public class AbstractForumFormController extends SimpleFormController {
             userName = user.getUsername();
         }
         PermissionObject[] permissions = getRequiredPermissions(request);
+        if (permissions != null) {
+            for (int i = 0; i < permissions.length; i++) {
+                PermissionObject permissionObject = permissions[i];
 
-        for (int i = 0; i < permissions.length; i++) {
-            PermissionObject permissionObject = permissions[i];
-
-            if(!permissionManager.hasPermission(userName, permissionObject.getPermission(), permissionObject.getObject())) {
-                return false;
+                if(!permissionManager.hasPermission(userName, permissionObject.getPermission(), permissionObject.getObject())) {
+                    return false;
+                }
             }
         }
         return true;

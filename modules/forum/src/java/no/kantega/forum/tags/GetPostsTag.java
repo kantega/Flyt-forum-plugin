@@ -32,7 +32,7 @@ public class GetPostsTag extends SimpleTagSupport {
 
             List l = new ArrayList();
             if (contentPage != null) {
-                threadId = dao.getThreadAboutContent(contentPage);
+                threadId = dao.getThreadAboutContent(contentPage.getId());
             }
 
             if (threadId != -1) {

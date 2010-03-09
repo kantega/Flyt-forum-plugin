@@ -54,7 +54,7 @@ public class ForEachPostInThreadTag extends LoopTagSupport {
             } else {
                 HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();                
                 Content content = (Content)request.getAttribute("aksess_this");
-                tId = dao.getThreadAboutContent(content);
+                tId = dao.getThreadAboutContent(content.getId());
             }
 
             List l = new ArrayList();

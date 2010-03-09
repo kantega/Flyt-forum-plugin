@@ -33,8 +33,8 @@ public class StartThreadController extends AbstractController  {
         if(c.getForumId() <= 0) {
             log.error("Content " + c.getId() +" does not have a forum attached to it");
             return null;
-        } else if(dao.getThreadAboutContent(c) > 0) {
-            log.error("Content " + c.getId() +" already has thread " +dao.getThreadAboutContent(c) +" created for it");
+        } else if(dao.getThreadAboutContent(c.getId()) > 0) {
+            log.error("Content " + c.getId() +" already has thread " +dao.getThreadAboutContent(c.getId()) +" created for it");
             return null;
         }
         else {
