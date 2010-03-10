@@ -39,7 +39,7 @@ public class DefaultForumProvider implements ForumProvider {
     }
 
     public long getThreadAboutContent(Content content) {
-        return dao.getThreadAboutContent(content);
+        return dao.getThreadAboutContent(content.getId());
     }
 
     public void setDao(ForumDao dao) {
