@@ -32,7 +32,7 @@
         <repository>
             <id>subversion</id>
             <name>Kantega Maven Repository</name>
-            <url>http://maven.mogul.no/maven2/external</url>
+            <url>http://maven.kantega.lan/maven2/external</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -40,7 +40,7 @@
         <repository>
             <id>subversioninternal</id>
             <name>Kantega Internal Maven Repository</name>
-            <url>http://maven.mogul.no/maven2/internal</url>
+            <url>http://maven.kantega.lan/maven2/internal</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
