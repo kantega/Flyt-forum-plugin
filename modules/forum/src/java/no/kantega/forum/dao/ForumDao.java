@@ -113,6 +113,16 @@ public class ForumDao {
         });
     }
 
+    public List getUserPostings(final String userId) {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.owner = ? order by p.postDate desc");
+                query.setString(0, userId);
+                return query.list();
+            }
+        });
+    }
+
 
     public List getLastPosts(final int n) {
         return (List) template.execute(new HibernateCallback() {
@@ -368,8 +378,8 @@ public class ForumDao {
         return (children.size() > 0);
     }
 
-    public List getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
-        return (List) template.execute(new HibernateCallback() {
+    public List<ForumThread> getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
+        return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ?");
                 q.setLong(0, forumId);

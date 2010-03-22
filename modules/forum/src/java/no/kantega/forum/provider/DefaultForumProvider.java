@@ -42,6 +42,10 @@ public class DefaultForumProvider implements ForumProvider {
         return dao.getThreadAboutContent(content.getId());
     }
 
+    public List getUserPostings(String userid) {
+        return dao.getUserPostings(userid);
+    }
+
     public void setDao(ForumDao dao) {
         this.dao = dao;
     }
