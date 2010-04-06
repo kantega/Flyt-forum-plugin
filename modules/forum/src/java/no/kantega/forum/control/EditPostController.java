@@ -92,7 +92,7 @@ public class EditPostController extends AbstractForumFormController {
                 try {
                     content = cms.getContent(cid);
                     if (content != null && content.getForumId() > 0) {
-                        Forum f = dao.getForum(forumId);
+                        Forum f = dao.getForum(content.getForumId());
                         return permissions(Permissions.ADD_THREAD, f);
                     }
 
@@ -204,7 +204,7 @@ public class EditPostController extends AbstractForumFormController {
                 cid.setContentId(contentId);
                 Content content = cms.getContent(cid);
                 if (content != null && content.getForumId() > 0) {
-                    Forum f = dao.getForum(forumId);
+                    Forum f = dao.getForum(content.getForumId());
                     t = new ForumThread();
                     t.setContentId(contentId);
                     t.setForum(f);
