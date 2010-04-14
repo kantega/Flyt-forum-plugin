@@ -206,6 +206,7 @@ public class EditPostController extends AbstractForumFormController {
                 if (content != null && content.getForumId() > 0) {
                     Forum f = dao.getForum(content.getForumId());
                     t = new ForumThread();
+                    t.setTopics(getTopicsFromRequest(request));
                     t.setContentId(contentId);
                     t.setForum(f);
                 } else {
@@ -215,9 +216,19 @@ public class EditPostController extends AbstractForumFormController {
         } else {
             Forum f = dao.getForum(forumId);
             t = new ForumThread();
+            t.setTopics(getTopicsFromRequest(request));
             t.setForum(f);
         }
         return t;
+    }
+
+    private Set getTopicsFromRequest(HttpServletRequest request) {
+        Set<String> topics = new TreeSet<String>();
+        String[] topicArray = request.getParameterValues("topic");
+        for (String t : topicArray) {
+            topics.add(t);
+        }
+        return topics;
     }
 
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{

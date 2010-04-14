@@ -19,7 +19,7 @@ public class GetPostsTag extends SimpleTagSupport {
     private int topicMapId = -1;
     private List<String> topicIds = null;
     private Content contentPage;
-    private int maxResults = -1;
+    private int maxPosts = -1;
     private long threadId = -1;
     private boolean threaded = false;
 
@@ -36,13 +36,13 @@ public class GetPostsTag extends SimpleTagSupport {
             }
 
             if (threadId != -1) {
-                l = dao.getPostsInThread(threadId, 0, maxResults, false);
+                l = dao.getPostsInThread(threadId, 0, maxPosts, false);
                 if (threaded) {
                     ForumThreader ft = new ForumThreader();
                     l = ft.organizePostsInThread(l);
                 }
             } else if (topicMapId > 0) {
-                l = dao.getPostsWithTopicIds(topicMapId, topicIds, maxResults);
+                l = dao.getPostsWithTopicIds(topicMapId, topicIds, maxPosts);
             }
 
 
@@ -51,7 +51,7 @@ public class GetPostsTag extends SimpleTagSupport {
 
         topicMapId = -1;
         topicIds = null;
-        maxResults = -1;
+        maxPosts = -1;
         contentPage = null;
         threadId = -1;
         threaded = false;
@@ -69,8 +69,8 @@ public class GetPostsTag extends SimpleTagSupport {
         this.topicIds = topicIds;
     }
 
-    public void setMaxResults(int maxResults) {
-        this.maxResults = maxResults;
+    public void setMaxPosts(int maxPosts) {
+        this.maxPosts = maxPosts;
     }
 
     public void setVar(String var) {

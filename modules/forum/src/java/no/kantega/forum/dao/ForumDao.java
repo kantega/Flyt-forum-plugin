@@ -162,8 +162,21 @@ public class ForumDao {
     }
 
     public List getPostsWithTopicIds(final int topicMapId, final List<String> topicIds, final int maxResults) {
-        if (topicIds.size() == 0) {
-            return new ArrayList();
+
+        if (topicIds == null || topicIds.size() == 0) {
+            return (List) template.execute(new HibernateCallback() {
+                public Object doInHibernate(Session session) throws HibernateException {
+                    StringBuffer q = new StringBuffer();
+                    q.append("from Post p where p.approved = ? and p.thread.forum.topicMapId = ? order by p.id desc");
+                    Query query = session.createQuery(q.toString());
+                    query.setString(0, "Y");
+                    query.setInteger(1, topicMapId);
+                    if (maxResults != -1) {
+                        query.setMaxResults(maxResults);
+                    }
+                    return query.list();
+                }
+            });
         }
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
@@ -172,7 +185,7 @@ public class ForumDao {
                 for (int i = 0; i < topicIds.size(); i++) {
                     if (i > 0) {
                         q.append(" and ");
-                    }                    
+                    }
                     q.append(" ? in elements(topics) ");
                 }
                 q.append(") order by p.id desc");
