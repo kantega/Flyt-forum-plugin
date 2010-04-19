@@ -141,7 +141,7 @@
     </build>
 
     <properties>
-        <aksess.version>6.2.1-SNAPSHOT</aksess.version>
+        <aksess.version>7.0ea-SNAPSHOT</aksess.version>
         <securityapi.version>1.10</securityapi.version>
         <springframework.version>2.5.5</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>

@@ -24,6 +24,10 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
+import no.kantega.publishing.api.rating.RatingNotificationListener;
+import no.kantega.publishing.api.comments.CommentNotificationListener;
+import no.kantega.publishing.api.comments.CommentNotification;
+import no.kantega.publishing.spring.RootContext;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.springframework.validation.BindException;
@@ -253,7 +257,7 @@ public class EditPostController extends AbstractForumFormController {
         if (ForumUtil.isSpam(request)) {
             return new ModelAndView(new RedirectView("nospam"));
         }
-        
+
         ResolvedUser user = userResolver.resolveUser(request);
 
         p.setBody(cleanup(p.getBody(), request));
@@ -276,6 +280,20 @@ public class EditPostController extends AbstractForumFormController {
         p.setApproved(approved);
 
         dao.saveOrUpdate(p);
+
+        if (p.getThread().getContentId() > 0) {
+            CommentNotification notification = new CommentNotification();
+            notification.setContext("content");
+            notification.setObjectId("" + p.getThread().getContentId());
+            ForumThread thread = dao.getThread(p.getThread().getId());
+            notification.setNumberOfComments(thread.getNumPosts());
+            Map commentNotificationListenerBeans = RootContext.getInstance().getBeansOfType(CommentNotificationListener.class);
+            if (commentNotificationListenerBeans != null && commentNotificationListenerBeans.size() > 0)  {
+                for (CommentNotificationListener notificationListener : (Iterable<? extends CommentNotificationListener>) commentNotificationListenerBeans.values()) {
+                    notificationListener.newCommentNotification(notification);
+                }
+            }
+        }
 
         // Lagring av vedlegg
         Set attachments = p.getAttachments();
@@ -403,7 +421,7 @@ public class EditPostController extends AbstractForumFormController {
                 if (t != null && t.length() > 0) {
                     topics.add(t);
                 }
-            }            
+            }
             post.getThread().setTopics(topics);
         }
     }
