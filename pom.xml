@@ -3,11 +3,11 @@
     <groupId>no.kantega.aksess.modules</groupId>
     <artifactId>aksess-modules</artifactId>
     <packaging>pom</packaging>
-    <version>1.13-SNAPSHOT</version>
+    <version>1.12.1-SNAPSHOT</version>
     <name>Aksess Modules</name>
     <url>http://tbbc.no</url>
     <scm>
-        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/trunk</connection>
+        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/branches/aksess-modules-1.12</connection>
     </scm>
 
     <distributionManagement>
@@ -141,7 +141,7 @@
     </build>
 
     <properties>
-        <aksess.version>6.2.1-SNAPSHOT</aksess.version>
+        <aksess.version>6.2.4</aksess.version>
         <securityapi.version>1.10</securityapi.version>
         <springframework.version>2.5.5</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
