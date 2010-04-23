@@ -113,11 +113,33 @@ public class ForumDao {
         });
     }
 
-    public List getUserPostings(final String userId) {
-        return (List) template.execute(new HibernateCallback() {
+    /**
+     *
+     * @param userId
+     * @param max - max number of posts to get. Specify -1 for all.
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<Post> getUserPostings(final String userId, final int max) {
+        return (List<Post>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query query = session.createQuery("from Post p where p.owner = ? order by p.postDate desc");
-                query.setString(0, userId);
+                StringBuilder where = new StringBuilder();
+                String[] users = userId.split(",");
+                for (int i = 0, usersLength = users.length; i < usersLength; i++) {
+                    if (i > 0) {
+                        where.append(",");
+                    }
+                    where.append("?");
+                }
+                Query query = session.createQuery("from Post p where p.owner IN (" + where.toString() + ") order by p.postDate desc");
+                if (max != -1) {
+                    query.setMaxResults(max);    
+                }
+                for (int i = 0, usersLength = users.length; i < usersLength; i++) {
+                    String user = users[i];
+                    query.setString(i, user.trim());
+                }
+
                 return query.list();
             }
         });
