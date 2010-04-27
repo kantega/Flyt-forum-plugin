@@ -43,7 +43,11 @@ public class DefaultForumProvider implements ForumProvider {
     }
 
     public List getUserPostings(String userid) {
-        return dao.getUserPostings(userid);
+        return dao.getUserPostings(userid, -1);
+    }
+
+    public List getUserPostings(String userid, int max) {
+        return dao.getUserPostings(userid, max);
     }
 
     public void setDao(ForumDao dao) {
