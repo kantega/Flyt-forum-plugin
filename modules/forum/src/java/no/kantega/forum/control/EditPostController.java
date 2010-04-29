@@ -290,6 +290,7 @@ public class EditPostController extends AbstractForumFormController {
             notification.setCommentId(String.valueOf(p.getId()));
             notification.setCommentTitle(p.getSubject());
             notification.setCommentSummary(p.getBody());
+            notification.setCommentAuthor(p.getAuthor());
             Map commentNotificationListenerBeans = RootContext.getInstance().getBeansOfType(CommentNotificationListener.class);
             if (commentNotificationListenerBeans != null && commentNotificationListenerBeans.size() > 0)  {
                 for (CommentNotificationListener notificationListener : (Iterable<? extends CommentNotificationListener>) commentNotificationListenerBeans.values()) {
