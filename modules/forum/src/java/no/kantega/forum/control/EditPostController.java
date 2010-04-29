@@ -287,6 +287,9 @@ public class EditPostController extends AbstractForumFormController {
             notification.setObjectId("" + p.getThread().getContentId());
             ForumThread thread = dao.getThread(p.getThread().getId());
             notification.setNumberOfComments(thread.getNumPosts());
+            notification.setCommentId(String.valueOf(p.getId()));
+            notification.setCommentTitle(p.getSubject());
+            notification.setCommentSummary(p.getBody());
             Map commentNotificationListenerBeans = RootContext.getInstance().getBeansOfType(CommentNotificationListener.class);
             if (commentNotificationListenerBeans != null && commentNotificationListenerBeans.size() > 0)  {
                 for (CommentNotificationListener notificationListener : (Iterable<? extends CommentNotificationListener>) commentNotificationListenerBeans.values()) {
