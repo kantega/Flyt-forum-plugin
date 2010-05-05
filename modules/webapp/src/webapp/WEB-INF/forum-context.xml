@@ -56,4 +56,6 @@
         <property name="ratingService" ref="ratingService"/>
     </bean>
 
+    <bean id="forumCommentNotificationListener" class="no.kantega.publishing.comments.ContentCommentNotificationListener"/>
+
 </beans>
