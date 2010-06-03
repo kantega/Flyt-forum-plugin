@@ -229,8 +229,10 @@ public class EditPostController extends AbstractForumFormController {
     private Set getTopicsFromRequest(HttpServletRequest request) {
         Set<String> topics = new TreeSet<String>();
         String[] topicArray = request.getParameterValues("topic");
-        for (String t : topicArray) {
-            topics.add(t);
+        if (topicArray != null ){
+            for (String t : topicArray) {
+                topics.add(t);
+            }
         }
         return topics;
     }
