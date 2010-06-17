@@ -98,6 +98,13 @@
                                        <c:if test="${status.value}">checked</c:if>/>
                                 <spring:message code="forum.anonymous.moderate"/>
                             </spring:bind>
+                            <br>
+                            <spring:bind path="forum.notifyAllNewPosts">
+                                <input type="hidden" name="_<c:out value="${status.expression}"/>">
+                                <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
+                                       <c:if test="${status.value}">checked</c:if>/>
+                                <spring:message code="forum.notification.all"/>
+                            </spring:bind>
                         </p>
                     </td>
                 </tr>

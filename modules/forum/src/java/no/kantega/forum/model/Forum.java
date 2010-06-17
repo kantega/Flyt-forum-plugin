@@ -23,6 +23,7 @@ public class Forum {
     private boolean anonymousPostAllowed = true;
     private boolean attachmentsAllowed = false;
     private boolean approvalRequired = false;
+    private boolean notifyAllNewPosts = false;
     private String moderator;
     private Set groups;
     private int numNewPosts = 0;
@@ -130,6 +131,14 @@ public class Forum {
 
     public void setApprovalRequired(boolean approvalRequired) {
         this.approvalRequired = approvalRequired;
+    }
+
+    public boolean isNotifyAllNewPosts() {
+        return notifyAllNewPosts;
+    }
+
+    public void setNotifyAllNewPosts(boolean notifyAllNewPosts) {
+        this.notifyAllNewPosts = notifyAllNewPosts;
     }
 
     public String getModerator() {

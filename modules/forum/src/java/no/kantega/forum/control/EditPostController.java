@@ -291,7 +291,8 @@ public class EditPostController extends AbstractForumFormController {
 
         // Send varsling til moderator om nytt innlegg
         String moderator = p.getThread().getForum().getModerator();
-        if (!p.isApproved() && moderator != null && moderator.length() > 0) {
+        Forum f = p.getThread().getForum();
+        if ((!p.isApproved() || f.isNotifyAllNewPosts()) && moderator != null && moderator.length() > 0) {
             UserProfile profile = userProfileManager.getUserProfile(moderator);
             if (profile != null && profile.getEmail() != null && profile.getEmail().indexOf("@") != -1) {
                 Configuration config = Aksess.getConfiguration();
@@ -303,10 +304,13 @@ public class EditPostController extends AbstractForumFormController {
                 Map param = new HashMap();
                 param.put("baseurl", Aksess.getApplicationUrl());
                 param.put("post", p);
+                param.put("forum", f);
+                
 
                 try {
                     Log.debug(SOURCE, "Sender varsel om nytt innlegg til " + profile.getEmail(), null, null);
-                    MailSender.send(from, profile.getEmail(), "Forum, nytt innlegg:" + p.getSubject(), "forum-newpost.vm", param);
+                    String mailTemplate = (!p.isApproved()) ? "forum-newpost.vm" : "forum-newpost-autoapproved.vm";
+                    MailSender.send(from, profile.getEmail(), "Forum, nytt innlegg:" + p.getSubject(), mailTemplate, param);
                 } catch (Exception e) {
                     Log.error(SOURCE, e, null, null);
                 }
@@ -314,6 +318,7 @@ public class EditPostController extends AbstractForumFormController {
                 Log.info(SOURCE, "Fant ikke brukerprofil/epost for " + moderator, null, null);
             }
         }
+
 
 
         Map map = new HashMap();
