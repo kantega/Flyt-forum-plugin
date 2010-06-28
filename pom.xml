@@ -48,7 +48,7 @@
         <repository>
             <id>subversionsnapshots</id>
             <name>Kantega Snapshot Maven Repository</name>
-            <url>http://maven.mogul.no/maven2/snapshots</url>
+            <url>http://maven.kantega.lan/maven2/snapshots</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -141,7 +141,7 @@
     </build>
 
     <properties>
-        <aksess.version>7.0ea-SNAPSHOT</aksess.version>
+        <aksess.version>7.0.3</aksess.version>
         <securityapi.version>1.10</securityapi.version>
         <springframework.version>2.5.5</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
