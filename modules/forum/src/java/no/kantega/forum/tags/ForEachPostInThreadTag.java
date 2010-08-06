@@ -1,5 +1,6 @@
 package no.kantega.forum.tags;
 
+import no.kantega.forum.util.ForumThreader;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.forum.dao.ForumDao;
@@ -30,6 +31,7 @@ public class ForEachPostInThreadTag extends LoopTagSupport {
     private int firstResult = 0;
     private int maxPosts = -1;
     private boolean reverse;
+    private boolean threaded = false;
 
     private Logger log = Logger.getLogger(ForEachPostInThreadTag.class);
 
@@ -60,6 +62,10 @@ public class ForEachPostInThreadTag extends LoopTagSupport {
             List l = new ArrayList();
             if (tId > 0) {
                 l = dao.getPostsInThread(tId, firstResult, maxPosts, reverse);
+                if (threaded) {
+                   ForumThreader ft = new ForumThreader();
+                    l = ft.organizePostsInThread(l);
+                }
             }
             i = l.iterator();
         }
@@ -80,5 +86,9 @@ public class ForEachPostInThreadTag extends LoopTagSupport {
 
     public void setReverse(boolean reverse) {
         this.reverse = reverse;
+    }
+
+    public void setThreaded(boolean threaded) {
+        this.threaded = threaded;
     }
 }

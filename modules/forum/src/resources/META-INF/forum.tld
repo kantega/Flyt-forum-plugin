@@ -89,6 +89,11 @@
         <bodycontent>JSP</bodycontent>
         <info>Iterates over posts in a given thread, if no thread is given the current content objects thread will be used</info>
         <attribute>
+            <name>threadId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>firstResult</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -100,6 +105,11 @@
         </attribute>
         <attribute>
             <name>reverse</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>threaded</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
