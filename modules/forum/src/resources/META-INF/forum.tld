@@ -52,6 +52,38 @@
     </tag>
 
     <tag>
+        <name>foreachthreadinforum</name>
+        <tagclass>no.kantega.forum.tags.ForEachThreadInForumTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <info>Iterates over thread in a given forum</info>
+        <attribute>
+            <name>forumId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>startIndex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxThreads</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
         <name>foreachpostinthread</name>
         <tagclass>no.kantega.forum.tags.ForEachPostInThreadTag</tagclass>
         <bodycontent>JSP</bodycontent>
