@@ -257,7 +257,7 @@ public class EditPostController extends AbstractForumFormController {
 
         Post p = (Post) object;
         if (ForumUtil.isSpam(request)) {
-            return new ModelAndView(new RedirectView("nospam"));
+            return new ModelAndView("nospam");
         }
 
         ResolvedUser user = userResolver.resolveUser(request);
