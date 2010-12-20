@@ -1,5 +1,6 @@
 package no.kantega.forum.control;
 
+import no.kantega.commons.log.Log;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -65,9 +66,8 @@ public class ListCategoriesController implements Controller {
 				Forum forum = (Forum) forumIterator.next();
 				System.out.println(" >> "+ forum.getName() );
 				if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
-					// User does not have access to forum
+                    Log.info(this.getClass().getName(), "User does not have access to forum", null, null);
 					forumIterator.remove();
-
 				} else {
 					List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
 					if(lastPostsInForum.size() > 0) {
