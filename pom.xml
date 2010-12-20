@@ -8,7 +8,7 @@
     <url>http://tbbc.no</url>
     <scm>
         <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/branches/aksess-modules-1.12</connection>
-    </scm>                                              
+    </scm>
 
     <distributionManagement>
         <repository>
@@ -119,7 +119,7 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
-        </plugins> 
+        </plugins>
         <sourceDirectory>src/java</sourceDirectory>
         <resources>
             <resource>
@@ -136,6 +136,19 @@
                         <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0</version>
+                    <configuration>
+                        <remoteTagging>true</remoteTagging>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <goals>deploy</goals>
+                        <username>hudson</username>
+                        <password>${hudson.password}</password>
+                    </configuration>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>
