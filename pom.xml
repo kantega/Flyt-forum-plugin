@@ -3,7 +3,7 @@
     <groupId>no.kantega.aksess.modules</groupId>
     <artifactId>aksess-modules</artifactId>
     <packaging>pom</packaging>
-    <version>1.16-SNAPSHOT</version>
+        <version>1.16-SNAPSHOT</version>
     <name>Aksess Modules</name>
     <url>http://tbbc.no</url>
     <scm>
@@ -109,6 +109,28 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate</artifactId>
+                <version>${hibernate.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
