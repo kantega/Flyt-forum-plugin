@@ -409,7 +409,7 @@ public class ForumDao {
     }
 
     public boolean postGotChildren(final Post p) {
-        List children = template.find("from Post p where p.replyToId=?",String.valueOf(p.getId()));
+        List children = template.find("from Post p where p.replyToId=?",p.getId());
         return (children.size() > 0);
     }
 
