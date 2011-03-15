@@ -155,4 +155,12 @@ public class Forum {
     public void setTopicMapId(Integer topicMapId) {
         this.topicMapId = topicMapId;
     }
+
+    public boolean isClosed() {
+        if (groups == null || groups.isEmpty() || groups.contains("everyone")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
