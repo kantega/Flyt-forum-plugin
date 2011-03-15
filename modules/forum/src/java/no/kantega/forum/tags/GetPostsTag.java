@@ -30,7 +30,7 @@ public class GetPostsTag extends SimpleTagSupport {
         if(daos.size() > 0) {
             ForumDao dao = (ForumDao) daos.values().iterator().next();
 
-            List l = new ArrayList();
+            List l;
             if (contentPage != null) {
                 threadId = dao.getThreadAboutContent(contentPage.getId());
             }
@@ -43,8 +43,9 @@ public class GetPostsTag extends SimpleTagSupport {
                 }
             } else if (topicMapId > 0) {
                 l = dao.getPostsWithTopicIds(topicMapId, topicIds, maxPosts);
+            } else {
+                l = dao.getLastPosts(maxPosts);
             }
-
 
             ((PageContext)getJspContext()).getRequest().setAttribute(var, l);
         }

@@ -131,4 +131,12 @@ public class Post {
     public void setReplyPosts(List<Post> replyPosts) {
         this.replyPosts = replyPosts;
     }
+
+    public boolean isContentComment() {
+        if (this.getThread() == null) {
+            return false;
+        }
+
+        return this.getThread().isContentComment();
+    }
 }

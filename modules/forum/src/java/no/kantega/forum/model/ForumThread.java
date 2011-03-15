@@ -128,5 +128,14 @@ public class ForumThread {
     public void setTopics(Set topics) {
         this.topics = topics;
     }
+
+    public boolean isContentComment() {
+        if (getContentId() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
