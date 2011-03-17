@@ -53,6 +53,16 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>opensource.kantega.no</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+        </repository>
 
     </repositories>
 
