@@ -11,7 +11,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.io.IOException;
 
 public class GetPostsTag extends SimpleTagSupport {
@@ -30,17 +30,14 @@ public class GetPostsTag extends SimpleTagSupport {
         if(daos.size() > 0) {
             ForumDao dao = (ForumDao) daos.values().iterator().next();
 
-            List l;
+            List l = Collections.EMPTY_LIST;
             if (contentPage != null) {
                 threadId = dao.getThreadAboutContent(contentPage.getId());
-            }
-
-            if (threadId != -1) {
-                l = dao.getPostsInThread(threadId, 0, maxPosts, false);
-                if (threaded) {
-                    ForumThreader ft = new ForumThreader();
-                    l = ft.organizePostsInThread(l);
+                if (threadId != -1) {
+                    l = getPostsInThread(dao);
                 }
+            } else if (threadId != -1) {
+                l = getPostsInThread(dao);
             } else if (topicMapId > 0) {
                 l = dao.getPostsWithTopicIds(topicMapId, topicIds, maxPosts);
             } else {
@@ -59,6 +56,16 @@ public class GetPostsTag extends SimpleTagSupport {
 
         var = "post";
 
+    }
+
+    private List getPostsInThread(ForumDao dao) {
+        List l;
+        l = dao.getPostsInThread(threadId, 0, maxPosts, false);
+        if (threaded) {
+            ForumThreader ft = new ForumThreader();
+            l = ft.organizePostsInThread(l);
+        }
+        return l;
     }
 
 
