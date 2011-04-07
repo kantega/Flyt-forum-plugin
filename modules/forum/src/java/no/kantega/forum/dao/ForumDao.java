@@ -416,9 +416,9 @@ public class ForumDao {
     public List<ForumThread> getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ?");
+                Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ? order by t.createdDate desc");
                 q.setLong(0, forumId);
-                q.setString(1, "Y");
+                q.setString(1, "Y");        
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
 
