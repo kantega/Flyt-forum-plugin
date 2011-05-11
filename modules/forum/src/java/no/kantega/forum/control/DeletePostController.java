@@ -1,6 +1,7 @@
 package no.kantega.forum.control;
 
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.context.ApplicationContext;
 
@@ -41,7 +42,11 @@ public class DeletePostController extends AbstractForumFormController {
         long threadId = p.getThread().getId();
 
         // Vis tråd etter sletting
-        String view = "viewthread?threadId=" + threadId;
+        String view =request.getParameter("redirect");
+        if(view == null || view.length() < 1){
+            view = "viewthread?threadId=" + threadId;
+        }
+
         if (!p.isApproved()) {
             // Vis ikke godkjente innlegg ved sletting av ikke godkjent post
             view = "listunapproved";
@@ -53,8 +58,15 @@ public class DeletePostController extends AbstractForumFormController {
                 notificationListener.beforePostDelete(p);
             }
         }
-        
-        dao.delete(p);
+        boolean postGotChildren = dao.postGotChildren(p);
+        if(postGotChildren){
+            String deletedText = getApplicationContext().getMessage("post.deletedText", new Object[0], RequestContextUtils.getLocale(request));
+            p.setBody(deletedText);
+            dao.saveOrUpdate(p);
+
+        }else{
+            dao.delete(p);
+        }
         return new ModelAndView(new RedirectView(view));
     }
 
