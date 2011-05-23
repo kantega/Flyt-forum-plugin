@@ -1,22 +1,20 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
-import no.kantega.forum.util.ForumUtil;
 import no.kantega.forum.util.ForumPostReadStatus;
-import no.kantega.modules.user.UserResolver;
+import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -63,11 +61,9 @@ public class ListCategoriesController implements Controller {
 			Iterator forumIterator = cat.getForums().iterator();
 			while (forumIterator.hasNext()){
 				Forum forum = (Forum) forumIterator.next();
-				System.out.println(" >> "+ forum.getName() );
 				if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
 					// User does not have access to forum
 					forumIterator.remove();
-
 				} else {
 					List lastPostsInForum = dao.getLastPostsInForum(forum.getId(), 1);
 					if(lastPostsInForum.size() > 0) {

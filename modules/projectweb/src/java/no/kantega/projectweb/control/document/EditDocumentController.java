@@ -87,7 +87,7 @@ public class EditDocumentController extends FormControllerSupport {
                 try {
                     TextExtractor extractor = textExtractorSelector.select(document.getFileName());
                     if(extractor != null) {
-                        document.getDocumentContent().setContentText(extractor.extractText(new ByteArrayInputStream(document.getDocumentContent().getContent())));
+                        document.getDocumentContent().setContentText(extractor.extractText(new ByteArrayInputStream(document.getDocumentContent().getContent()), document.getFileName()));
                     }
                 } catch (Throwable e) {
                     log.error("Error extracting text from document " + document.getFileName());

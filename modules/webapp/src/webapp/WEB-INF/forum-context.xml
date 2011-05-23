@@ -7,7 +7,7 @@
 
 <beans>
 
-  <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="close">
+  <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="">
       <property name="dataSource">
         <ref bean="forumDataSource"/>
       </property>

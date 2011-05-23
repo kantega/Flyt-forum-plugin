@@ -66,6 +66,9 @@
                 <entry key="/searchusers">
                     <ref bean="ajaxUserSearchController"/>
                 </entry>
+                <entry key="/listPosts">
+                    <ref bean="ajaxListThreadsController"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -258,6 +261,15 @@
         <property name="maxUploadSize">
             <value>5000000</value>
         </property>
+    </bean>
+
+    <!--
+    <bean id="annotationHandlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="order" value="2"/>
+    </bean>
+    -->
+    <bean id="ajaxListThreadsController" class="no.kantega.forum.control.ajax.ListThreadsController">
+        <constructor-arg ref="forumDao"/>
     </bean>
 
 </beans>

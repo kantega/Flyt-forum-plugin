@@ -77,7 +77,7 @@ public class Crawler implements DocumentProvider {
                 doc.add(new Field(FILE_URL, url.toString(), Field.Store.YES, Field.Index.UN_TOKENIZED));
                 doc.add(new Field(Fields.FILE_TYPE, getSuffix(smbFile.getName()).toLowerCase(), Field.Store.YES, Field.Index.UN_TOKENIZED));
                 doc.add(new Field(FILE_URL_AND_LAST_MODIFIED, smbFile.getURL().toString() +":" + smbFile.getLastModified(), Field.Store.YES, Field.Index.UN_TOKENIZED));
-                String text = extractor.extractText(smbFile.getInputStream());
+                String text = extractor.extractText(smbFile.getInputStream(), smbFile.getName());
                 String summary = text.substring(0, (text.length() > Fields.SUMMARY_LENGTH) ? Fields.SUMMARY_LENGTH : text.length())  + (text.length() > Fields.SUMMARY_LENGTH  ? "..." : "");
                 doc.add(new Field(Fields.CONTENT, smbFile.getName() +" " + text, Field.Store.NO, Field.Index.TOKENIZED));
                 doc.add(new Field(Fields.SUMMARY, summary, Field.Store.YES, Field.Index.NO));
