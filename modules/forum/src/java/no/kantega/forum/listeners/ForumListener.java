@@ -7,6 +7,8 @@ import no.kantega.forum.model.ForumThread;
  *
  */
 public interface ForumListener {
-    public void beforePostDelete(Post p);
+    public void afterPostSavedOrUpdated(Post post);
+    public void beforePostDelete(Post post);
+    public void afterPostDelete(Post post);
     public void beforeThreadDelete(ForumThread t);
 }

@@ -7,7 +7,7 @@
 
 <beans>
 
-  <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="">
+  <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
       <property name="dataSource">
         <ref bean="forumDataSource"/>
       </property>
@@ -58,4 +58,11 @@
 
     <bean id="forumCommentNotificationListener" class="no.kantega.publishing.comments.ContentCommentNotificationListener"/>
 
+      <bean id="forumPostService" class="no.kantega.forum.service.ForumPostService">
+        <constructor-arg ref="forumDao"/>
+    </bean>
+
+    <bean id="commentNotificationForumListener" class="no.kantega.forum.listeners.CommentNotificationForumListener">
+        <constructor-arg ref="forumDao"/>
+    </bean>
 </beans>

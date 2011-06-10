@@ -1,15 +1,13 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.Post;
+import no.kantega.forum.listeners.ForumListener;
 import no.kantega.forum.model.ForumThread;
-import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
-import no.kantega.forum.listeners.ForumListener;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +37,7 @@ public class DeleteThreadController extends AbstractForumFormController {
         ForumThread t = dao.getThread(id);
         long forumId = t.getForum().getId();
 
-        Map ratingNotificationListenerBeans = getApplicationContext().getBeansOfType(ForumListener.class);
+        Map ratingNotificationListenerBeans =  BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), ForumListener.class);
         if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
             for (ForumListener notificationListener : (Iterable<? extends ForumListener>) ratingNotificationListenerBeans.values()) {
                 notificationListener.beforeThreadDelete(t);

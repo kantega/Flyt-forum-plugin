@@ -176,7 +176,7 @@
         </property>
         <property name="userProfileManager">
             <ref bean="userProfileManager"/>
-        </property>        
+        </property>
         <property name="groupManager">
             <ref bean="groupManager"/>
         </property>
@@ -230,6 +230,9 @@
         <property name="userProfileManager">
             <ref bean="userProfileManager"/>
         </property>
+        <property name="forumPostService">
+            <ref bean="forumPostService"/>
+        </property>
     </bean>
 
     <bean id="approvePostController" class="no.kantega.forum.control.ApprovePostController">
@@ -239,6 +242,9 @@
     </bean>
 
     <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController" parent="abstractForumFormController">
+        <property name="forumPostService">
+            <ref bean="forumPostService"/>
+        </property>
     </bean>
 
     <bean id="listUnapprovedController" class="no.kantega.forum.control.ListUnapprovedController" parent="abstractForumViewController"/>

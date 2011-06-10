@@ -1,11 +1,11 @@
 package no.kantega.forum.control;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.media.ImageInfo;
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.Forum;
@@ -13,6 +13,7 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
+import no.kantega.forum.service.ForumPostService;
 import no.kantega.forum.util.ForumUtil;
 import no.kantega.forum.util.ImageHelper;
 import no.kantega.modules.user.ResolvedUser;
@@ -24,10 +25,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
-import no.kantega.publishing.api.rating.RatingNotificationListener;
-import no.kantega.publishing.api.comments.CommentNotificationListener;
-import no.kantega.publishing.api.comments.CommentNotification;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.springframework.validation.BindException;
@@ -70,6 +67,7 @@ public class EditPostController extends AbstractForumFormController {
     private int maxImageWidth = 1024;
     private int maxImageHeight = 768;
     private String imageFormat = "jpg";
+    private ForumPostService service;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         RequestParameters param = new RequestParameters(request);
@@ -150,7 +148,7 @@ public class EditPostController extends AbstractForumFormController {
             p.setPostDate(new Date());
             p.setThread(t);
 
-            // Angi om det trengs å godkjenne innlegget eller ikke
+            // Angi om det trengs ï¿½ godkjenne innlegget eller ikke
             String username = null;
             if (user != null) {
                 username = user.getUsername();
@@ -271,7 +269,7 @@ public class EditPostController extends AbstractForumFormController {
         }
 
         boolean approved = permissionManager.hasPermission(username, Permissions.APPROVE_POST, p);
-        // Lag ny tråd først hvis det er aktuelt
+        // Lag ny trï¿½d fï¿½rst hvis det er aktuelt
         if(p.getThread().getId() == 0) {
             p.getThread().setName(p.getSubject());
             p.getThread().setNumPosts(0);
@@ -281,37 +279,7 @@ public class EditPostController extends AbstractForumFormController {
 
         p.setApproved(approved);
 
-        dao.saveOrUpdate(p);
-
-        if (p.getThread().getContentId() > 0) {
-            CommentNotification notification = new CommentNotification();
-            notification.setContext("content");
-            notification.setObjectId("" + p.getThread().getContentId());
-            ForumThread thread = dao.getThread(p.getThread().getId());
-            notification.setNumberOfComments(thread.getNumPosts());
-            notification.setCommentId(String.valueOf(p.getId()));
-            notification.setCommentTitle(p.getSubject());
-            notification.setCommentSummary(p.getBody());
-            notification.setCommentAuthor(p.getAuthor());
-            Map commentNotificationListenerBeans = RootContext.getInstance().getBeansOfType(CommentNotificationListener.class);
-            if (commentNotificationListenerBeans != null && commentNotificationListenerBeans.size() > 0)  {
-                for (CommentNotificationListener notificationListener : (Iterable<? extends CommentNotificationListener>) commentNotificationListenerBeans.values()) {
-                    notificationListener.newCommentNotification(notification);
-                }
-            }
-        }
-
-        // Lagring av vedlegg
-        Set attachments = p.getAttachments();
-        if (attachments != null) {
-            Iterator it = attachments.iterator();
-            while(it.hasNext()) {
-                Attachment attachment = (Attachment)it.next();
-                if (attachment.getId() > 0) {
-                    dao.saveOrUpdate(attachment);
-                }
-            }
-        }
+        service.saveOrUpdate(p);
 
         // Send varsling til moderator om nytt innlegg
         String moderator = p.getThread().getForum().getModerator();
@@ -346,7 +314,7 @@ public class EditPostController extends AbstractForumFormController {
         if (redirect != null && redirect.startsWith("/")) {
             return new ModelAndView(new RedirectView(redirect));
         } else if (p.isApproved()) {
-            // Vis tråden hvis innlegget er godkjent
+            // Vis trï¿½den hvis innlegget er godkjent
             map.put("threadId", new Long(p.getThread().getId()));
             map.put("postId", new Long(p.getId()));
             return new ModelAndView(new RedirectView("viewthread"), map);
@@ -512,5 +480,9 @@ public class EditPostController extends AbstractForumFormController {
 
     public void setUserProfileManager(UserProfileManager userProfileManager) {
         this.userProfileManager = userProfileManager;
+    }
+    
+    public void setForumPostService(ForumPostService forumPostService) {
+        this.service = forumPostService;
     }
 }

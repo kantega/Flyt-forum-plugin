@@ -1,21 +1,16 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.RequestContextUtils;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.context.ApplicationContext;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
-import no.kantega.forum.listeners.ForumListener;
+import no.kantega.forum.service.ForumPostService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.view.RedirectView;
 
-import java.util.Map;
-import java.util.Collection;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +21,7 @@ import java.util.Collection;
  */
 public class DeletePostController extends AbstractForumFormController {
     private ForumDao dao;
+    private ForumPostService service;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("postId"));
@@ -41,7 +37,7 @@ public class DeletePostController extends AbstractForumFormController {
         Post p = dao.getPopulatedPost(id);
         long threadId = p.getThread().getId();
 
-        // Vis tråd etter sletting
+        // Vis trï¿½d etter sletting
         String view =request.getParameter("redirect");
         if(view == null || view.length() < 1){
             view = "viewthread?threadId=" + threadId;
@@ -52,25 +48,25 @@ public class DeletePostController extends AbstractForumFormController {
             view = "listunapproved";
         }
 
-        Map ratingNotificationListenerBeans = getApplicationContext().getBeansOfType(ForumListener.class);
-        if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
-            for (ForumListener notificationListener : (Iterable<? extends ForumListener>) ratingNotificationListenerBeans.values()) {
-                notificationListener.beforePostDelete(p);
-            }
-        }
-        boolean postGotChildren = dao.postGotChildren(p);
-        if(postGotChildren){
-            String deletedText = getApplicationContext().getMessage("post.deletedText", new Object[0], RequestContextUtils.getLocale(request));
-            p.setBody(deletedText);
-            dao.saveOrUpdate(p);
 
-        }else{
-            dao.delete(p);
+        String deletedText = getApplicationContext().getMessage("post.deletedText", new Object[0], RequestContextUtils.getLocale(request));
+        service.deletePost(p, deletedText);
+
+        if(isAjaxRequest(request)) {
+            return new ModelAndView("ajax-deletepost");
         }
         return new ModelAndView(new RedirectView(view));
     }
 
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+    }
+
     public void setDao(ForumDao dao) {
         this.dao = dao;
+    }
+
+    public void setForumPostService(ForumPostService forumPostService) {
+        this.service = forumPostService;
     }
 }

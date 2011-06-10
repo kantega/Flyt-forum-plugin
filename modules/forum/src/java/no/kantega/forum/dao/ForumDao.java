@@ -145,7 +145,6 @@ public class ForumDao {
         });
     }
 
-
     public List getLastPosts(final int n) {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
@@ -352,7 +351,6 @@ public class ForumDao {
         });
     }
 
-    // get
     public Forum getForum(final long forumId) {
         return (Forum) template.find("from Forum f inner join fetch f.forumCategory c where f.id=?", new Long(forumId)).get(0);
     }
