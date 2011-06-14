@@ -184,7 +184,7 @@
     </build>
 
     <properties>
-        <aksess.version>7.2.7-SNAPSHOT</aksess.version>
+        <aksess.version>7.2.8</aksess.version>
         <securityapi.version>1.10</securityapi.version>
         <springframework.version>3.0.5.RELEASE</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
