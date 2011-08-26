@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
-<taglib>
-    <tlibversion>1.0</tlibversion>
-    <jspversion>1.1</jspversion>
-    <shortname>aksess publisering</shortname>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Aksess Project Taglibs</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>forum</short-name>
     <uri>http://www.kantega.no/aksess/tags/forum</uri>
-    <info>Aksess Project Taglibs</info>
 
     <tag>
+        <description>Evaluates the body if the user has a given permisson on a given object</description>
         <name>haspermisson</name>
-        <tagclass>no.kantega.forum.tags.HasPermissionTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Evaluates the body if the user has a given permisson on a given object</info>
+        <tag-class>no.kantega.forum.tags.HasPermissionTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>object</name>
             <required>false</required>
@@ -30,10 +31,10 @@
     </tag>
 
     <tag>
+        <description>Iterates over all forums or forums connection to users role etc</description>
         <name>foreachforum</name>
-        <tagclass>no.kantega.forum.tags.ForEachForumTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Iterates over all forums or forums connection to users role etc</info>
+        <tag-class>no.kantega.forum.tags.ForEachForumTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>relevance</name>
             <required>false</required>
@@ -52,10 +53,10 @@
     </tag>
 
     <tag>
+        <description>Iterates over thread in a given forum</description>
         <name>foreachthreadinforum</name>
-        <tagclass>no.kantega.forum.tags.ForEachThreadInForumTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Iterates over thread in a given forum</info>
+        <tag-class>no.kantega.forum.tags.ForEachThreadInForumTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>forumId</name>
             <required>true</required>
@@ -84,10 +85,10 @@
     </tag>
 
     <tag>
+        <description>Iterates over posts in a given thread, if no thread is given the current content objects thread will be used</description>
         <name>foreachpostinthread</name>
-        <tagclass>no.kantega.forum.tags.ForEachPostInThreadTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Iterates over posts in a given thread, if no thread is given the current content objects thread will be used</info>
+        <tag-class>no.kantega.forum.tags.ForEachPostInThreadTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>threadId</name>
             <required>false</required>
@@ -100,7 +101,7 @@
         </attribute>
         <attribute>
             <name>maxPosts</name>
-            <required>maxPosts</required>
+            <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -126,10 +127,10 @@
     </tag>
 
     <tag>
+        <description>Iterates over new posts in a given thread</description>
         <name>foreachnewpost</name>
-        <tagclass>no.kantega.forum.tags.ForEachNewPostTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Iterates over new posts in a given thread</info>
+        <tag-class>no.kantega.forum.tags.ForEachNewPostTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>maxPosts</name>
             <required>false</required>
@@ -153,10 +154,10 @@
     </tag>
 
     <tag>
+        <description>Create a link for a new thread or post</description>
         <name>newpostlink</name>
-        <tagclass>no.kantega.forum.tags.NewPostLinkTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Create a link for a new thread or post</info>
+        <tag-class>no.kantega.forum.tags.NewPostLinkTag</tag-class>
+        <body-content>JSP</body-content>
         <attribute>
             <name>accesskey</name>
             <required>false</required>
@@ -185,13 +186,13 @@
     </tag>
 
     <tag>
+        <description>Iterates over posts with given topics</description>
         <name>getposts</name>
-        <tagclass>no.kantega.forum.tags.GetPostsTag</tagclass>
-        <bodycontent>empty</bodycontent>
-        <info>Iterates over posts with given topics</info>
+        <tag-class>no.kantega.forum.tags.GetPostsTag</tag-class>
+        <body-content>empty</body-content>
         <attribute>
             <name>maxPosts</name>
-            <required>maxPosts</required>
+            <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
@@ -208,7 +209,7 @@
             <name>contentPage</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <name>var</name>
             <required>true</required>
@@ -222,10 +223,39 @@
     </tag>
 
     <tag>
+        <description>Display body if content has forum</description>
         <name>ifcontenthasforum</name>
-        <tagclass>no.kantega.forum.tags.IfContentHasForumTag</tagclass>
-        <bodycontent>JSP</bodycontent>
-        <info>Display body if content has forum</info>
+        <tag-class>no.kantega.forum.tags.IfContentHasForumTag</tag-class>
+        <body-content>JSP</body-content>
     </tag>
-    
+
+    <tag>
+        <description>Renders the given forum as "a wall"</description>
+        <name>wall-render</name>
+        <tag-class>no.kantega.forum.tags.wall.RenderWallTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>sharebox</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Prints required javascript and css files for the forum wall</description>
+        <name>wall-headerdependencies</name>
+        <tag-class>no.kantega.forum.tags.wall.RenderWallScriptsAndCssTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>forumid</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxthreads</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
 </taglib>

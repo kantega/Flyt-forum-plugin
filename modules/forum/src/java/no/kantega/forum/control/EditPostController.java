@@ -193,6 +193,8 @@ public class EditPostController extends AbstractForumFormController {
         int contentId = param.getInt("contentId");
         long forumId = param.getLong("forumId");
 
+        ResolvedUser user = userResolver.resolveUser(request);
+
         ForumThread t = null;
         if (contentId != -1) {
             long tId = dao.getThreadAboutContent(contentId);
@@ -208,8 +210,13 @@ public class EditPostController extends AbstractForumFormController {
                 if (content != null && content.getForumId() > 0) {
                     Forum f = dao.getForum(content.getForumId());
                     t = new ForumThread();
+                    t.setCreatedDate(new Date());
+                    if (user != null) {
+                        t.setOwner(user.getUsername());
+                    }
                     t.setTopics(getTopicsFromRequest(request));
                     t.setContentId(contentId);
+
                     t.setForum(f);
                 } else {
                     Log.error(this.getClass().getName(), "Content does not exists or has no forum defined:" + contentId, null, null);
@@ -218,6 +225,10 @@ public class EditPostController extends AbstractForumFormController {
         } else {
             Forum f = dao.getForum(forumId);
             t = new ForumThread();
+            t.setCreatedDate(new Date());
+            if (user != null) {
+                t.setOwner(user.getUsername());
+            }
             t.setTopics(getTopicsFromRequest(request));
             t.setForum(f);
         }
@@ -270,7 +281,10 @@ public class EditPostController extends AbstractForumFormController {
 
         boolean approved = permissionManager.hasPermission(username, Permissions.APPROVE_POST, p);
         // Lag ny tr�d f�rst hvis det er aktuelt
-        if(p.getThread().getId() == 0) {
+
+        boolean isNewThread = p.getThread().isNew();
+
+        if (isNewThread) {
             p.getThread().setName(p.getSubject());
             p.getThread().setNumPosts(0);
             p.getThread().setApproved(approved);
@@ -313,6 +327,17 @@ public class EditPostController extends AbstractForumFormController {
         String redirect = request.getParameter("redirect");
         if (redirect != null && redirect.startsWith("/")) {
             return new ModelAndView(new RedirectView(redirect));
+        } else if (isAjaxRequest(request)) {
+            if (isNewThread) {
+                ForumThread t = p.getThread();
+                t.setPosts(new TreeSet());
+                t.getPosts().add(p);
+                map.put("thread", t);
+                return new ModelAndView("ajax-thread", map);
+            } else {
+                map.put("post", p);
+                return new ModelAndView("ajax-post", map);
+            }
         } else if (p.isApproved()) {
             // Vis tr�den hvis innlegget er godkjent
             map.put("threadId", new Long(p.getThread().getId()));
@@ -418,6 +443,8 @@ public class EditPostController extends AbstractForumFormController {
                 legalTags.add("b");
                 legalTags.add("br");
                 legalTags.add("strong");
+                legalTags.add("p");
+                legalTags.add("a");
 
             }
 
@@ -470,6 +497,10 @@ public class EditPostController extends AbstractForumFormController {
 
     }
 
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With")) || request.getParameter("ajax") != null;
+    }
+
     public void setDao(ForumDao dao) {
         this.dao = dao;
     }
@@ -481,7 +512,7 @@ public class EditPostController extends AbstractForumFormController {
     public void setUserProfileManager(UserProfileManager userProfileManager) {
         this.userProfileManager = userProfileManager;
     }
-    
+
     public void setForumPostService(ForumPostService forumPostService) {
         this.service = forumPostService;
     }

@@ -33,6 +33,10 @@ public class ForumThread {
         this.id = id;
     }
 
+    public boolean isNew() {
+        return id == 0;
+    }
+
     public Forum getForum() {
         return forum;
     }
