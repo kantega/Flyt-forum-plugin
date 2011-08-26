@@ -54,7 +54,7 @@
         <property name="name"/>
         <property name="description"/>
         <many-to-one name="forum" column="forumId" not-null="false" class="Forum" lazy="false"/>
-        <property name="createdDate" type="date"/>
+        <property name="createdDate" type="timestamp"/>
         <property name="numPosts"/>
         <property name="owner"/>
         <property name="contentId"/>
