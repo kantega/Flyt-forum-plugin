@@ -7,6 +7,6 @@
     <%@include file="sharebox.jsp"%>
 </c:if>
 <div id="oa-forum-loading-animation">
-    <img style="vertical-align:middle;margin-right:10px;" src="<aksess:geturl/>/bitmaps/intranett/loading.gif"><span><kantega:label key="forum.share.wall.loading.label" bundle="forum"/></span>
+    <img style="vertical-align:middle;margin-right:10px;" src="<aksess:geturl/>/bitmaps/forum/ajax-loader.gif"><span><kantega:label key="forum.share.wall.loading.label" bundle="forum"/></span>
 </div>
 <div id="oa-forum-forumContent"></div>

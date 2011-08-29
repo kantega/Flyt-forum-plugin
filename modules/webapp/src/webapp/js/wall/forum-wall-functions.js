@@ -52,7 +52,6 @@ $(document).ready(function(){
                         }, 1200);
                     });
                 });
-                //$form.closest(".oa-forum-tab-container").animate({height:containerHeight}, 200);
             });
             return true;
         },
@@ -228,4 +227,13 @@ $(document).ready(function(){
             }
         }
     });
+
+    // Handles deleting posts
+    $(".oa-forum-deletePost").live("click", function(event){
+        event.preventDefault();
+        var deleteUrl = $(this).attr("href");
+        $.post(deleteUrl, function(data, textStatus, jqXHR){
+            alert(data);
+        }, "json");
+    })
 });

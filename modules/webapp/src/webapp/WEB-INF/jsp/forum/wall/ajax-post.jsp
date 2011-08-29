@@ -17,7 +17,7 @@
             <strong><a href="${userProfileUrl}"><c:out value="${post.author}"/></a></strong>
         </div>
         <forum:haspermisson permission="DELETE_POST" object="${post}">
-            <a class="oa-forum-deletePost" href="javascript:deletePost(<c:out value="${post.id}"/>)"><kantega:label key="forum.wall.deletepost.label" bundle="forum"/></a>
+            <a class="oa-forum-deletePost" href="<aksess:geturl/>/forum/deletepost?postId=<c:out value="${post.id}"/>"><kantega:label key="forum.wall.deletepost.label" bundle="forum"/></a>
         </forum:haspermisson>
 
         <div class="oa-forum-forum-body">
