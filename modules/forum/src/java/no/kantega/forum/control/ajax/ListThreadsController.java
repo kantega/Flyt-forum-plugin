@@ -40,6 +40,6 @@ public class ListThreadsController implements Controller {
         List<ForumThread> threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow);
 
         model.put("threads", threads);
-        return new ModelAndView("threads", model);
+        return new ModelAndView("wall/threads", model);
     }
 }
