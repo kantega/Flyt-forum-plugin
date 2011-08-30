@@ -333,10 +333,10 @@ public class EditPostController extends AbstractForumFormController {
                 t.setPosts(new TreeSet());
                 t.getPosts().add(p);
                 map.put("thread", t);
-                return new ModelAndView("ajax-thread", map);
+                return new ModelAndView("wall/ajax-thread", map);
             } else {
                 map.put("post", p);
-                return new ModelAndView("ajax-post", map);
+                return new ModelAndView("wall/ajax-post", map);
             }
         } else if (p.isApproved()) {
             // Vis tr�den hvis innlegget er godkjent

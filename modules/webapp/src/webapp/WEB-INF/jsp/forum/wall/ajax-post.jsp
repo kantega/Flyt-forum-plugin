@@ -26,7 +26,7 @@
         <c:if test="${post.attachments != null}">
             <div class="oa-forum-forum-attachments">
                 <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
-                    <a href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0"></a>
+                    <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank"><img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0"></a>
                 </c:forEach>
             </div>
         </c:if>

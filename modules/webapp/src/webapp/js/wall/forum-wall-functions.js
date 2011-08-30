@@ -1,27 +1,43 @@
-if (typeof jQuery == 'undefined') {
-    alert("jQuery is not loaded! OpenAksess forum requires jQuery to function.");
-} else {
-    if (!jQuery.fn.prettyDate) {
-        alert('The OpenAksess jQuery plugin "prettyDate" is not loaded! OpenAksess forum requires "prettyDate" to function properly.');
-    }
-    if (!jQuery.fn.ajaxForm) {
-        alert('The jQuery plugin "ajaxForm" is not loaded! OpenAksess forum requires "ajaxForm" to function properly.');
-    }
-}
-
 $(document).ready(function(){
 
     $('#oa-forum-sharebox .oa-forum-sharefield').elastic();
 
-    // Handles posting of status and photo
-    $('#oa-forum-tab-container-status .oa-forum-ajaxForm,  #oa-forum-tab-container-photo .oa-forum-ajaxForm').ajaxForm({
+    // Handles posting of status
+    $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
+            if ($form.find("textarea").val().trim().length > 0 && $form.find("label").text().trim != $form.find("textarea").val().trim()) {
+                var containerHeight = $form.parent().height();
+                $form.parent().css("height", containerHeight);
+                $form.fadeOut(300, function(){
+                    $('<div class="oa-forum-submit-animation">Submitting...</div>').css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
+                });
+                return true;
+            }
+            return false;
+        },
+        resetForm: true,
+        success: prependNewThread
+    });
+
+    // Handles posting of photo
+    $('#oa-forum-tab-container-photo .oa-forum-ajaxForm').ajaxForm({
+        beforeSubmit: function(arr, $form, options) {
+            // If a comment is not set, set it to empty
+            if ($form.find("label").text().trim == $form.find("textarea").val().trim()){
+                $form.find("textarea").val("");
+            }
+            if ($form.find('input[type="file"]').val().trim().length < 1) {
+                alert("Please choose a file to upload");
+                return false;
+            }
+
             var containerHeight = $form.parent().height();
             $form.parent().css("height", containerHeight);
             $form.fadeOut(300, function(){
                 $('<div class="oa-forum-submit-animation">Submitting...</div>').css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
             });
             return true;
+
         },
         resetForm: true,
         success: prependNewThread
@@ -235,5 +251,57 @@ $(document).ready(function(){
         $.post(deleteUrl, function(data, textStatus, jqXHR){
             alert(data);
         }, "json");
-    })
+    });
+
+    // Handles viewing larger versions of images
+    $(".oa-forum-attachment").live("click", function(event){
+        var $imgLink = $(this);
+        if ($imgLink.find("img").length){
+            event.preventDefault();
+            $imgLink.removeClass("oa-forum-attachment").addClass("oa-forum-attachment-image-fullsize");
+            var $img = $imgLink.find("img");
+
+            // Setting the img width before changing the img "src" attripute
+            var origImgWidth = $img.width();
+            var origImgHeight = $img.height();
+            $img.data("origImgWidth", origImgWidth);
+            $img.data("origImgHeight", origImgHeight);
+            $img.css("width", origImgWidth + "px");
+            $img.css("height", origImgHeight + "px");
+
+            // Finding and setting the max width and height for the large version of the image
+            var $attachmentContainer = $imgLink.closest(".oa-forum-forum-attachments");
+            var maxImgWidth = $attachmentContainer.width() - 10; // Extra padding
+            var multiplyHeightBy = Math.round(maxImgWidth / origImgWidth );
+            var maxImgHeight = Math.round(origImgHeight * multiplyHeightBy);
+
+            // Replacing the img url with the new img width and height.
+            //emgs-intranett-webapp/forum/viewattachment?attachmentId=20&amp;width=500&amp;height=500
+            var newImgSrc = $img.attr("src").substring(0, $img.attr("src").indexOf("width="));
+            newImgSrc += "width=" + maxImgWidth + "&amp;height=" + maxImgHeight;
+
+            $img.attr("src", newImgSrc);
+            $img.animate({
+                width: maxImgWidth,
+                height: maxImgHeight
+            }, 400, function() {
+
+            });
+        }
+    });
+
+    $(".oa-forum-attachment-image-fullsize").live("click", function(event){
+        event.preventDefault();
+        var $imgLink = $(this);
+        $imgLink.removeClass("oa-forum-attachment-image-fullsize").addClass("oa-forum-attachment");
+        var $img = $imgLink.find("img");
+
+        $img.animate({
+            width: $img.data("origImgWidth"),
+            height: $img.data("origImgHeight")
+        }, 400, function() {
+
+        });
+    });
+
 });
