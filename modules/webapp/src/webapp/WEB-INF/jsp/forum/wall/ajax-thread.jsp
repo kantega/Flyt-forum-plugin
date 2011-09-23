@@ -10,19 +10,9 @@
         <c:forEach items="${thread.posts}" var="post" varStatus="postsStatus">
             <c:set var="hiddenPost" value="false" scope="page"/>
             <c:if test="${postsStatus.count > 1 && !postsStatus.last}">
-                <c:if test="${postsStatus.index == 1}">
-                    <div class="oa-forum-post oa-forum-mediablock oa-forum-collapsedComments">
-                        <div class="oa-forum-mediablockContent"><a href="" class="oa-forum-showFullThread">View ${fn:length(thread.posts) - 2} more comments</a></div>
-                    </div>
-                </c:if>
                 <c:set var="hiddenPost" value="true" scope="page"/>
             </c:if>
             <%@ include file="ajax-post.jsp" %>
-            <c:if test="${fn:length(thread.posts) == 1}">
-                <div class="oa-forum-post oa-forum-mediablock oa-forum-collapsedComments">
-                    <div class="oa-forum-mediablockContent"><a href="#" class="oa-forum-showReplyForm">Leave a comment</a></div>
-                </div>
-            </c:if>
         </c:forEach>
     </div>
 

@@ -41,7 +41,14 @@ public class ForumPostService implements ApplicationContextAware{
         }else{
             runBeforePostDeletedNotification(post);
             dao.delete(post);
+            deleteThreadIfPostIsOnlyPostInThread(post);
             runAfterPostDeletedNotification(post);
+        }
+    }
+
+    private void deleteThreadIfPostIsOnlyPostInThread(Post post){
+        if (post.getThread().getNumPosts() == 1) {
+            dao.delete(post.getThread());
         }
     }
 

@@ -9,3 +9,6 @@
         <%@ include file="ajax-thread.jsp" %>
     </c:forEach>
 </div>
+<div id="submit-animation" style="display: none;">
+    <span class="oa-forum-submit-animation"><img class="oa-forum-posting-loading-animation" src="<aksess:geturl/>/bitmaps/forum/ajax-loader.gif">Submitting...</span>
+</div>

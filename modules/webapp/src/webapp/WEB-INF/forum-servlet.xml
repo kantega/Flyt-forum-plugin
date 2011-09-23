@@ -69,6 +69,9 @@
                 <entry key="/listPosts">
                     <ref bean="ajaxListThreadsController"/>
                 </entry>
+                <entry key="/getPageInfo">
+                    <ref bean="pageInfoController"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -277,5 +280,11 @@
     <bean id="ajaxListThreadsController" class="no.kantega.forum.control.ajax.ListThreadsController">
         <constructor-arg ref="forumDao"/>
     </bean>
+
+    <bean class="no.kantega.forum.control.GetPageInfoController" id="pageInfoController">
+        <property name="jsonView" ref="aksessJsonView"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+
 
 </beans>

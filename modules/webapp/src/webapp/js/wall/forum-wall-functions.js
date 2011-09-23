@@ -5,15 +5,21 @@ $(document).ready(function(){
     // Handles posting of status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
-            if ($form.find("textarea").val().trim().length > 0 && $form.find("label").text().trim != $form.find("textarea").val().trim()) {
-                var containerHeight = $form.parent().height();
-                $form.parent().css("height", containerHeight);
-                $form.fadeOut(300, function(){
-                    $('<div class="oa-forum-submit-animation">Submitting...</div>').css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
-                });
-                return true;
+            if ($form.find("textarea").val().trim().length < 1 ) {
+                alert("Please write something to share before posting");
+                return false;
             }
-            return false;
+            if($form.find("label").text().trim() == $form.find("textarea").val().trim()) {
+                alert("Please write something to share before posting");
+                return false;
+            }
+
+            var containerHeight = $form.parent().height();
+            $form.parent().css("height", containerHeight);
+            $form.fadeOut(300, function(){
+                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
+            });
+            return true;
         },
         resetForm: true,
         success: prependNewThread
@@ -23,7 +29,7 @@ $(document).ready(function(){
     $('#oa-forum-tab-container-photo .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
             // If a comment is not set, set it to empty
-            if ($form.find("label").text().trim == $form.find("textarea").val().trim()){
+            if ($form.find("label").text().trim() == $form.find("textarea").val().trim()){
                 $form.find("textarea").val("");
             }
             if ($form.find('input[type="file"]').val().trim().length < 1) {
@@ -34,7 +40,7 @@ $(document).ready(function(){
             var containerHeight = $form.parent().height();
             $form.parent().css("height", containerHeight);
             $form.fadeOut(300, function(){
-                $('<div class="oa-forum-submit-animation">Submitting...</div>').css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
+                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
             });
             return true;
 
@@ -57,8 +63,8 @@ $(document).ready(function(){
                 // 3
                 $container.animate({height: containerHeightNewForm + "px"}, 400, function(){
                     // 4
-                    var $animation = $('<div class="oa-forum-submit-animation">Submitting...</div>');
-                    $animation.css("line-height", containerHeightNewForm  + "px").css("text-align", "center").hide().appendTo($container).fadeIn(300, function(){
+                    var $animation = $("#submit-animation span").clone(false).css("line-height", containerHeightNewForm  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
+                    $animation.css("line-height", containerHeightNewForm  + "px").css("text-align", "center").css("display", "block").hide().appendTo($container).fadeIn(300, function(){
                         window.setTimeout(function(){
                             // 5
                             $animation.fadeOut(300, function(){
@@ -73,11 +79,11 @@ $(document).ready(function(){
         },
         success: prependNewThreadForLink,
         beforeSerialize: function($form, options) {
-            var body = '<a href="' + $("#oa-forum-link-ShareUrl").val() + '" class="">' + $("#oa-forum-link-shareTitle").val() + '</a>';
-            body += '<p class="oa-forum-fadedText">' + $form.find("input[name='shareurl']").val() + '</p>';
+            var body = '<a target="_blank" href="' + $form.find("input[name='shareurl']").val() + '" class="">' + $("#oa-forum-link-shareTitle").val() + '</a>';
+            body += '<p class="oa-forum-fadedText oa-forum-link-url-description">' + $form.find("input[name='shareurl']").val() + '</p>';
             var comment = $("#oa-forum-link-shareComment").val();
             if (comment != "") {
-                body += '<p>' + comment + '</p>';
+                body += '<p class="oa-forum-link-comment">' + comment + '</p>';
             }
             $(".oa-forum-link-preview-container input[name=body]").val(body);
         },
@@ -88,12 +94,13 @@ $(document).ready(function(){
     function prependNewThread(responseText, statusText, xhr, $form)  {
         // Hide animation, show form
         window.setTimeout(function(){     // Timeout to allow the animation to complete
-            $(".oa-forum-submit-animation").fadeOut(300, function(){
+            $form.parent().find(".oa-forum-submit-animation").fadeOut(300, function(){
                 $form.fadeIn(300);
                 var $newThread = $(responseText);
-                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: "en"});
+                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
                 $newThread.hide().prependTo(".oa-forum-threads").slideDown();
                 $(this).remove();
+                $form.find("textarea").addClass("oa-forum-fadedText");
             });
         }, 1200);
     }
@@ -102,10 +109,10 @@ $(document).ready(function(){
     function prependNewThreadForLink(responseText, statusText, xhr, $form)  {
         // Hide animation, show form
         window.setTimeout(function(){     // Timeout to allow the animation to complete
-            $(".oa-forum-submit-animation").fadeOut(300, function(){
+            $form.closest(".oa-forum-tab-container").find(".oa-forum-submit-animation").fadeOut(300, function(){
                 $("#oa-forum-linkform-step1").fadeIn(300);
                 var $newThread = $(responseText);
-                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: "en"});
+                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
                 $newThread.hide().prependTo(".oa-forum-threads").slideDown();
                 $(this).remove();
             });
@@ -147,34 +154,45 @@ $(document).ready(function(){
     var $linkPreviewContainer = $(".oa-forum-link-preview-container");
     $linkPreviewContainer.hide();
     $("#oa-forum-linkform-step1").submit(function(event){
-        event.preventDefault();
-        var $oaLinkFormStep1 = $(this);
-        // Animating posting process
-        var containerHeight = $oaLinkFormStep1.parent().height();
-        $oaLinkFormStep1.parent().css("height", containerHeight);
-        $oaLinkFormStep1.fadeOut(300, function(){
-            $('<div class="oa-forum-submit-animation">Submitting...</div>').css("line-height", containerHeight  + "px").hide().appendTo($oaLinkFormStep1.parent()).fadeIn(300);
-        });
-        var formAction = $oaLinkFormStep1.attr("action");
-        var shareUrl = $("#oa-forum-link-shareUrl").val();
-        $.getJSON(formAction + shareUrl, function(data) {
-            window.setTimeout(function(){
-                $linkPreviewContainer.find(".oa-forum-title a").text(data["title"]).attr("href", data["url"]);
-                $linkPreviewContainer.find(".oa-forum-shareurl").text(data["url"]);
-                $("#oa-forum-linkform-step2").find("input[name='shareurl']").val(data["url"]);
-                $("#oa-forum-link-shareTitle").val(data["title"]);
-                var $animation = $oaLinkFormStep1.parent().find(".oa-forum-submit-animation");
-                $animation.fadeOut(300, function(){
-                    var height = $linkPreviewContainer.css("height");
-                    $oaLinkFormStep1.parent().animate({height:height}, 200, function(){
-                        $linkPreviewContainer.fadeIn(300);
-                        $animation.remove();
-                        var $inputField = $("#oa-forum-link-shareUrl");
-                        $inputField.val($inputField.siblings("label").text());
+        var $form = $(this);
+        if ($form.find(".oa-forum-sharefield").val().trim().length < 1 ) {
+            alert("Please provide a link to share before posting");
+            event.preventDefault();
+        }
+        if($form.find("label").text().trim() == $form.find(".oa-forum-sharefield").val().trim()) {
+            alert("Please provide a link to share before posting");
+            event.preventDefault();
+        } else {
+            // Process link
+            event.preventDefault();
+            var $oaLinkFormStep1 = $(this);
+            // Animating posting process
+            var containerHeight = $oaLinkFormStep1.parent().height();
+            $oaLinkFormStep1.parent().css("height", containerHeight);
+            $oaLinkFormStep1.fadeOut(300, function(){
+                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").css("display", "block").hide().appendTo($oaLinkFormStep1.parent()).fadeIn(300);
+            });
+            var formAction = $oaLinkFormStep1.attr("action");
+            var shareUrl = $("#oa-forum-link-shareUrl").val();
+            var jqXHR = $.getJSON(formAction + shareUrl, function(data) {
+                window.setTimeout(function(){
+                    $linkPreviewContainer.find(".oa-forum-title a").text(data["title"]).attr("href", data["url"]);
+                    $linkPreviewContainer.find(".oa-forum-shareurl").text(data["url"]);
+                    $("#oa-forum-linkform-step2").find("input[name='shareurl']").val(data["url"]);
+                    $("#oa-forum-link-shareTitle").val(data["title"]);
+                    var $animation = $oaLinkFormStep1.parent().find(".oa-forum-submit-animation");
+                    $animation.fadeOut(300, function(){
+                        var height = $linkPreviewContainer.css("height");
+                        $oaLinkFormStep1.parent().animate({height:height}, 200, function(){
+                            $linkPreviewContainer.fadeIn(300);
+                            $animation.remove();
+                            var $inputField = $("#oa-forum-link-shareUrl");
+                            $inputField.val($inputField.siblings("label").text());
+                        });
                     });
-                })
-            }, 500);
-        });
+                }, 500);
+            });
+        }
     });
 
 // Handles loading and animation of the wall.
@@ -183,7 +201,7 @@ $(document).ready(function(){
     var forumWallUrl = contextPath + "/forum/listPosts?forumId=" + forumId + "&numberOfPostsToShow=" + maxthreads;
     $forumContent.load(forumWallUrl, function(responseText, textStatus, XMLHttpRequest){
         $(".oa-forum-date", $forumContent).each(function(){
-            $(this).prettyDate({serverTime: serverTime, locale: "en"});
+            $(this).prettyDate({serverTime: serverTime, locale: locale});
         });
         window.setTimeout(function() { // Pausing for 200 ms for better user experience
             $("#oa-forum-loading-animation").fadeOut(200, function(){
@@ -195,7 +213,7 @@ $(document).ready(function(){
 // link listener to display hidden comments in a thread.
     $(".oa-forum-showFullThread").live("click", function(event){
         event.preventDefault();
-        $(this).closest(".oa-forum-collapsedComments").hide();
+        $(this).hide();
         $(this).closest(".oa-forum-posts").find(".oa-forum-post").removeClass("oa-forum-hidden");
     });
 
@@ -223,13 +241,13 @@ $(document).ready(function(){
                 var containerHeight = $commentForm.parent().height();
                 $commentForm.parent().css("height", containerHeight);
                 $commentForm.fadeOut(300, function(){
-                    $('<div class="oa-forum-submit-animation">Submitting...</div>').css("line-height", containerHeight  + "px").hide().appendTo($commentForm.parent()).fadeIn(300);
+                    $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(300);
                 });
 
                 $.post(commentFormAction, formParams, function(data) {
                     window.setTimeout(function(){
                         var $newPost = $(data);
-                        $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: "en"});
+                        $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
                         $newPost.hide();
                         $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
                         var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
@@ -248,10 +266,17 @@ $(document).ready(function(){
     $(".oa-forum-deletePost").live("click", function(event){
         event.preventDefault();
         var deleteUrl = $(this).attr("href");
+        var $post = $(this).closest(".oa-forum-post");
         $.post(deleteUrl, function(data, textStatus, jqXHR){
-            alert(data);
+            if (data["deleted"]) {
+                alert("Deleted post");
+                $post.slideUp("normal", function(){
+
+                });
+            }
         }, "json");
     });
+
 
     // Handles viewing larger versions of images
     $(".oa-forum-attachment").live("click", function(event){
@@ -270,13 +295,12 @@ $(document).ready(function(){
             $img.css("height", origImgHeight + "px");
 
             // Finding and setting the max width and height for the large version of the image
-            var $attachmentContainer = $imgLink.closest(".oa-forum-forum-attachments");
-            var maxImgWidth = $attachmentContainer.width() - 10; // Extra padding
+            var $attachmentContainer = $imgLink.closest(".oa-forum-attachments");
+            var maxImgWidth = $attachmentContainer.width(); // Extra padding
             var multiplyHeightBy = Math.round(maxImgWidth / origImgWidth );
             var maxImgHeight = Math.round(origImgHeight * multiplyHeightBy);
 
             // Replacing the img url with the new img width and height.
-            //emgs-intranett-webapp/forum/viewattachment?attachmentId=20&amp;width=500&amp;height=500
             var newImgSrc = $img.attr("src").substring(0, $img.attr("src").indexOf("width="));
             newImgSrc += "width=" + maxImgWidth + "&amp;height=" + maxImgHeight;
 
@@ -303,5 +327,7 @@ $(document).ready(function(){
 
         });
     });
+
+
 
 });
