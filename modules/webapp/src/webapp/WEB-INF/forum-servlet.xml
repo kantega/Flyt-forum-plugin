@@ -72,6 +72,9 @@
                 <entry key="/getPageInfo">
                     <ref bean="pageInfoController"/>
                 </entry>
+                <entry key="/like">
+                    <ref bean="RatingController"/>
+                </entry>
             </map>
         </property>
     </bean>
@@ -272,13 +275,14 @@
         </property>
     </bean>
 
-    <!--
+
     <bean id="annotationHandlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
         <property name="order" value="2"/>
     </bean>
-    -->
+
     <bean id="ajaxListThreadsController" class="no.kantega.forum.control.ajax.ListThreadsController">
         <constructor-arg ref="forumDao"/>
+        <constructor-arg ref="ratingService"/>
     </bean>
 
     <bean class="no.kantega.forum.control.GetPageInfoController" id="pageInfoController">
@@ -286,5 +290,9 @@
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
 
+    <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController">
+        <property name="jsonView" ref="aksessJsonView"/>
+        <property name="ratingService" ref="ratingService"/>
+    </bean>
 
 </beans>

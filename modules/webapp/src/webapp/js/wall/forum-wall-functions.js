@@ -277,6 +277,30 @@ $(document).ready(function(){
         }, "json");
     });
 
+    $(".oa-forum-like-link").live("click", function(event){
+        event.preventDefault();
+        $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
+        /*
+         Ferdig? Bør oppdatere teksten på lenka.
+           */
+        $(this).text("You like this");
+    });
+
+    // attach handler to form's submit event
+    $('.oa-forum-likeForm').live("submit", function() {
+        $(this).ajaxSubmit({success: updateLikeStatusOfPost});
+        return false;
+    });
+
+    function updateLikeStatusOfPost(responseText, statusText, xhr, $form) {
+        var url = $form.attr("action") + "?objectId=" + $form.find("input[name='objectId']").val() + "&context=" + $form.find("input[name=context]").val();
+        $.getJSON(url, function(data) {
+            if ($form.closest(".oa-forum-post").find(".oa-forum-likes").length) {
+                $form.closest(".oa-forum-post").find(".oa-forum-likes");
+            }
+        });
+    }
+
 
     // Handles viewing larger versions of images
     $(".oa-forum-attachment").live("click", function(event){

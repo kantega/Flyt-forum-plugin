@@ -15,7 +15,6 @@
             <%@ include file="ajax-post.jsp" %>
         </c:forEach>
     </div>
-
     <div class="oa-forum-mediablock oa-forum-reply <c:if test="${fn:length(thread.posts) == 1}">oa-forum-hidden</c:if>">
         <div class="oa-forum-mediablockContent oa-forum-reply">
             <form action="${pageContext.request.contextPath}/forum/editpost" id="ForumReply${thread.id}">

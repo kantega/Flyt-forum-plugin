@@ -71,7 +71,7 @@
     margin: 0 0 10px 15px;
     padding-top: 10px;
 }
-.oa-forum-thread .oa-forum-post.oa-forum-mediablock, .oa-forum-thread .oa-forum-mediablock.oa-forum-reply{
+.oa-forum-thread .oa-forum-post.oa-forum-mediablock, .oa-forum-thread .oa-forum-mediablock.oa-forum-reply, .oa-forum-thread .oa-forum-mediablock.oa-forum-likes{
     margin-left:60px;
 }
 .oa-forum-posts .oa-forum-post.oa-forum-mediablock:first-child{
@@ -147,4 +147,9 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 }
 .oa-forum-submit-animation{
     color:#999;
+}
+.oa-forum-likes{
+    background: #F1F1F1;
+    border: 1px solid #CCCCCC;
+    padding: 2px;
 }
