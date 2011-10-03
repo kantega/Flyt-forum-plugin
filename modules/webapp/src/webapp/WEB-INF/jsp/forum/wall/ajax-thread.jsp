@@ -20,8 +20,8 @@
             <form action="${pageContext.request.contextPath}/forum/editpost" id="ForumReply${thread.id}">
                 <div>
                     <input type="hidden" name="threadId" value="${thread.id}">
-                    <label class="oa-forum-hidden"><kantega:label key="forum.comment.inputfield.label" bundle="forum"/></label>
-                    <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-comment-reply oa-forum-fadedText"><kantega:label key="forum.comment.inputfield.label" bundle="forum"/></textarea>
+                    <label class="oa-forum-hidden"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></label>
+                    <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-comment-reply oa-forum-fadedText"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></textarea>
                 </div>
             </form>
         </div>
