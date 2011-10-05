@@ -3,6 +3,7 @@ package no.kantega.forum.control;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GetPageInfoController implements Controller{
@@ -144,7 +146,14 @@ public class GetPageInfoController implements Controller{
 
 
     private boolean isLocalhost(String server, HttpServletRequest request) {
-        return siteCache.getSiteByHostname(server) != null || server.equalsIgnoreCase(request.getServerName());
+        List<Site> sites = siteCache.getSites();
+        for (Site site : sites) {
+            List<String> hosts = site.getHostnames();
+            if (hosts.contains(server)) {
+                return true;
+            }
+        }
+        return server.equalsIgnoreCase(request.getServerName());
     }
 
     public void setSiteCache(SiteCache siteCache) {

@@ -5,6 +5,9 @@
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
+<c:if test="${empty forumLocale}">
+    <c:set var="forumLocale" value="no_NO"/>
+</c:if>
 <div class="oa-forum-thread">
     <div class="oa-forum-posts">
         <c:forEach items="${thread.posts}" var="post" varStatus="postsStatus">
