@@ -265,16 +265,18 @@ $(document).ready(function(){
     // Handles deleting posts
     $(".oa-forum-deletePost").live("click", function(event){
         event.preventDefault();
-        var deleteUrl = $(this).attr("href");
-        var $post = $(this).closest(".oa-forum-post");
-        $.post(deleteUrl, function(data, textStatus, jqXHR){
-            if (data["deleted"]) {
-                alert("Deleted post");
-                $post.slideUp("normal", function(){
+        var confirmDelete = confirm("Slette melding?");
+        if (confirmDelete) {
+            var deleteUrl = $(this).attr("href");
+            var $post = $(this).closest(".oa-forum-post");
+            $.post(deleteUrl, function(data, textStatus, jqXHR){
+                if (data["deleted"]) {
+                    $post.slideUp("normal", function(){
 
-                });
-            }
-        }, "json");
+                    });
+                }
+            }, "json");
+        }
     });
 
     $(".oa-forum-like-link").live("click", function(event){
@@ -282,8 +284,9 @@ $(document).ready(function(){
         $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
         /*
          Ferdig? Bør oppdatere teksten på lenka.
-           */
-        $(this).text("You like this");
+         */
+        $(this).prev().after('<span class="oa-forum-has-liked">Du liker dette</span>');
+        $(this).remove();
     });
 
     // attach handler to form's submit event

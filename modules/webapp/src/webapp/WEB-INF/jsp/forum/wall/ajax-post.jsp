@@ -40,7 +40,7 @@
         <div class="oa-forum-metadata">
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
             <c:if test="${fn:length(thread.posts) == 1}">
-                &nbsp;|&nbsp; <a href="#" class="oa-forum-showReplyForm">Leave a comment</a>
+                &nbsp;|&nbsp; <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
             <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
                 &nbsp;|&nbsp; <a href="" class="oa-forum-showFullThread"><kantega:label key="forum.wall.morecomments.part1" bundle="forum" locale="${forumLocale}"/> ${fn:length(thread.posts) - 2} <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
@@ -92,7 +92,7 @@
                 </c:choose>
                 <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
             </c:forEach>
-            likes this
+            <kantega:label key="forum.wall.likes.this" bundle="forum" locale="${forumLocale}"/>
         </div>
     </c:if>
 </div>
