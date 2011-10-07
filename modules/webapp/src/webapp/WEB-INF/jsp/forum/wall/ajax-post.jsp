@@ -81,7 +81,7 @@
 
                     </c:when>
                     <c:when test="${status.index > 0 && status.last}">
-                        and
+                        og
                     </c:when>
                     <c:when test="${status.index > 0 && !status.last}">
                         ,
