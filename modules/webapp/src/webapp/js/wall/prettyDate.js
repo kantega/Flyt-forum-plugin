@@ -102,7 +102,7 @@
         "minutessince" : "%m minutter siden",
         "onehourago" : "1 time siden",
         "hoursago" : "%h timer siden",
-        "yesterday" : "i g&oslash;r kl %h:%m",
+        "yesterday" : "i g&aring;r kl %h:%m",
         "weekdays" : ["s&oslash;ndag kl %h:%m", "mandag kl %h:%m", "tirsdag kl %h:%m", "onsdag kl %h:%m", "torsdag kl %h:%m", "fredag kl %h:%m", "l&oslash;rdag kl %h:%m"],
         "months" : ["%d. januar kl %h %m", "%d. februar kl %h %m", "%d. mars kl %h %m", "%d. april kl %h %m", "%d. mai kl %h %m", "%d. juni kl %h %m", "%d. juli kl %h %m", "%d. august kl %h %m", "%d. september kl %h %m", "%d. oktober kl %h %m", "%d. november kl %h %m", "%d. desember kl %h %m"]
     };

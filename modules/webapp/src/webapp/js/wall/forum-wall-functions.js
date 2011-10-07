@@ -285,7 +285,7 @@ $(document).ready(function(){
         /*
          Ferdig? Bør oppdatere teksten på lenka.
          */
-        $(this).prev().after('<span class="oa-forum-has-liked">Du liker dette</span>');
+        $(this).next().before('<span class="oa-forum-has-liked">Du liker dette</span>');
         $(this).remove();
     });
 
