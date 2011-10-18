@@ -1,17 +1,15 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletOutputStream;
-
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
 import no.kantega.forum.util.ImageHelper;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -39,7 +37,7 @@ public class ViewAttachmentController extends AbstractController {
                 }
 
                 response.setContentType(mimeType);
-                response.addHeader("Content-Disposition", "inline; filename=" + attachment.getFileName());
+                response.addHeader("Content-Disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
 
                 if (mimeType.indexOf("image") != -1 && (width != -1 || height != -1)) {
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();

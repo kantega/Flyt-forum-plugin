@@ -94,7 +94,7 @@
 				
 				// This function will update the height of the textarea if necessary 
 				function update(forced) {
-					
+					$twin.width($textarea.width());
 					// Get curated content from the textarea.
 					var textareaContent = $textarea.val().replace(/&/g,'&amp;').replace(/ {2}/g, '&nbsp;').replace(/<|>/g, '&gt;').replace(/\n/g, '<br />');
 					
