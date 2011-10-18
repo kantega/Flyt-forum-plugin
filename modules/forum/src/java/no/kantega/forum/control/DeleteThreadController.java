@@ -11,7 +11,9 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +38,8 @@ public class DeleteThreadController extends AbstractForumFormController {
         long id = Long.parseLong(request.getParameter("threadId"));
         ForumThread t = dao.getThread(id);
         long forumId = t.getForum().getId();
+        Set posts = new HashSet(dao.getLastPostsInThread(t.getId(), 10000));
+        t.setPosts(posts);
 
         Map ratingNotificationListenerBeans =  BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), ForumListener.class);
         if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
@@ -43,9 +47,18 @@ public class DeleteThreadController extends AbstractForumFormController {
                 notificationListener.beforeThreadDelete(t);
             }
         }
-        
+
         dao.delete(t);
+
+        if(isAjaxRequest(request)) {
+            return new ModelAndView("ajax-deletethread");
+        }
+
         return new ModelAndView(new RedirectView("viewforum?forumId=" + forumId));
+    }
+
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
     }
 
     public void setDao(ForumDao dao) {

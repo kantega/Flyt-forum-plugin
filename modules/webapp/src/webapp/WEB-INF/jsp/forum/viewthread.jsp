@@ -48,7 +48,7 @@
             <a href="editpost?threadId=<c:out value="${thread.id}"/>"><spring:message code="post.add"/></a>
         </forum:haspermisson>
         <forum:haspermisson permission="EDIT_THREAD" object="${thread}">
-             | <a href="editthread?threadId=<c:out value="${thread.id}"/>"><spring:message code="thread.edit"/> </a>
+            | <a href="editthread?threadId=<c:out value="${thread.id}"/>"><spring:message code="thread.edit"/> </a>
         </forum:haspermisson>
         <forum:haspermisson permission="DELETE_THREAD" object="${thread}">
             | <a href="javascript:deleteThread(<c:out value="${thread.id}"/>)"><spring:message code="thread.delete"/> </a>
@@ -65,7 +65,7 @@
             <table width="100%" cellpadding="0" cellspacing="0" style="padding-bottom: 5px">
                 <tr>
                     <td align="right">
-                        <spring:message code="thread.pagexofy" arguments="${current+1},${pages}"/>: 
+                        <spring:message code="thread.pagexofy" arguments="${current+1},${pages}"/>:
 
                         <c:forEach var="index" items="${startindexes}" varStatus="status">
                             <c:if test="${startindex == index}">
@@ -127,7 +127,16 @@
                             <c:if test="${post.attachments != null}">
                                 <div class="forum-attachments">
                                     <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
-                                    <a href="viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><img src="viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0"></a>
+                                        <c:choose>
+                                            <c:when test="${attachment.image}">
+                                                <a href="viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><img src="viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0"></a>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank">
+                                                    <c:out value="${attachment.fileName}"/>
+                                                </a>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:forEach>
                                 </div>
                             </c:if>
@@ -141,7 +150,7 @@
         </c:otherwise>
     </c:choose>
 
-    <div style="padding-top: 10px;text-align:right;">    
+    <div style="padding-top: 10px;text-align:right;">
         <kantega:getsection id="controls"/>
     </div>
 </kantega:section>

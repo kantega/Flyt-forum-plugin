@@ -16,9 +16,9 @@
             function submitForm() {
                 var form = document.editpost;
                 var a = '';
-                <%
-                ForumUtil.getNoSpamCode(out);
-                %>
+            <%
+            ForumUtil.getNoSpamCode(out);
+            %>
                 form.nospam.value = a;
                 form.submit();
             }
@@ -39,42 +39,42 @@
             <table border="0" cellpadding="0" cellspacing="0">
 
                 <modules:userprofile var="user">
-                        <c:choose>
-                            <c:when test="${user == null}">
-                                <tr class="forum-labelRow">
-                                    <td valign="top" colspan="2"><spring:message code="post.name"/>:</td>
-                                </tr>
-                                <tr class="forum-tableRow0">
-                                    <spring:bind path="post.author">
-                                        <td>
-                                            <input type="text" size="50" name="author" value="<c:out value="${status.value}"/>" class="forum-editpost-author">
-                                        </td>
-                                        <td>
-                                            <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
-                                        </td>
-                                    </spring:bind>
-                                </tr>
-                            </c:when>
-                            <c:otherwise>
-                                <tr class="forum-labelRow">
-                                    <td valign="top" colspan="2"><spring:message code="post.name"/>:</td>
-                                </tr>
-
-                                <tr class="forum-tableRow0">
-                                    <td colspan="2">
-                                        <c:out value="${user.fullName}"/>
+                    <c:choose>
+                        <c:when test="${user == null}">
+                            <tr class="forum-labelRow">
+                                <td valign="top" colspan="2"><spring:message code="post.name"/>:</td>
+                            </tr>
+                            <tr class="forum-tableRow0">
+                                <spring:bind path="post.author">
+                                    <td>
+                                        <input type="text" size="50" name="author" value="<c:out value="${status.value}"/>" class="forum-editpost-author">
                                     </td>
-                                </tr>
-                            </c:otherwise>
-                        </c:choose>
+                                    <td>
+                                        <spring:message code="forum.validation.${status.errorCode}" text="${status.errorMessage}"/>
+                                    </td>
+                                </spring:bind>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <tr class="forum-labelRow">
+                                <td valign="top" colspan="2"><spring:message code="post.name"/>:</td>
+                            </tr>
+
+                            <tr class="forum-tableRow0">
+                                <td colspan="2">
+                                    <c:out value="${user.fullName}"/>
+                                </td>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
 
                 </modules:userprofile>
                 <tr class="forum-labelRow">
                     <td valign="top" colspan="2">
-                    <c:choose>
-                        <c:when test="${post.thread.id == 0}"><spring:message code="post.subject.new"/></c:when>
-                    <c:otherwise><spring:message code="post.subject"/></c:otherwise>
-                </c:choose>:</td>
+                        <c:choose>
+                            <c:when test="${post.thread.id == 0}"><spring:message code="post.subject.new"/></c:when>
+                            <c:otherwise><spring:message code="post.subject"/></c:otherwise>
+                        </c:choose>:</td>
                 </tr>
 
                 <tr class="forum-tableRow0">
@@ -104,30 +104,39 @@
                     </spring:bind>
                 </tr>
                 <forum:haspermisson permission="ATTACH_FILE" object="${post}">
-                <tr class="forum-labelRow">
-                    <td valign="top" colspan="2"><spring:message code="post.attachments"/>:</td>
-                </tr>
-                <tr class="forum-tableRow0">
-                    <td>
-                        <div class="forum-attachments-info">
-                            <spring:message code="post.attachments.info"/>
-                        </div>
+                    <tr class="forum-labelRow">
+                        <td valign="top" colspan="2"><spring:message code="post.attachments"/>:</td>
+                    </tr>
+                    <tr class="forum-tableRow0">
+                        <td>
+                            <div class="forum-attachments-info">
+                                <spring:message code="post.attachments.info"/>
+                            </div>
 
-                        <input type="file" name="attachment1"><br>
-                        <input type="file" name="attachment2"><br>
-                        <input type="file" name="attachment3"><br>
-                        <input type="file" name="attachment4"><br>
-                        <input type="file" name="attachment5"><br>
+                            <input type="file" name="attachment1"><br>
+                            <input type="file" name="attachment2"><br>
+                            <input type="file" name="attachment3"><br>
+                            <input type="file" name="attachment4"><br>
+                            <input type="file" name="attachment5"><br>
 
-                        <div class="forum-attachments-existing">
-                            <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
-                                <a href="viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><c:out value="${attachment.fileName}"/></a><br>
-                            </c:forEach>
-                        </div>
+                            <div class="forum-attachments-existing">
+                                <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
+                                    <c:choose>
+                                        <c:when test="${attachment.image}">
+                                            <a href="viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><c:out value="${attachment.fileName}"/></a><br>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank">
+                                                <c:out value="${attachment.fileName}"/>
+                                            </a>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+                            </div>
 
-                    </td>
-                    <td>&nbsp;</td>
-                </tr>
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
                 </forum:haspermisson>
                 <tr class="forum-tableRow0">
                     <td colspan="2" align="right">

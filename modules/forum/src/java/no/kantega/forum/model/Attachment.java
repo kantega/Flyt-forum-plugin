@@ -48,6 +48,11 @@ public class Attachment {
         this.mimeType = mimeType;
     }
 
+    public boolean isImage() {
+        String fn = fileName.toLowerCase();
+        return fn.endsWith(".png") || fn.endsWith(".jpg") || fn.endsWith(".jpeg") || fn.endsWith(".gif") || fn.endsWith(".bmp");
+    }
+
     public byte[] getData() {
         return data;
     }

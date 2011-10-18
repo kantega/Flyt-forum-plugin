@@ -369,31 +369,33 @@ public class EditPostController extends AbstractForumFormController {
             MultipartFile file = mRequest.getFile("attachment" + fileNo);
             while (file != null && file.getSize() > 0) {
                 String mimeType = file.getContentType();
-                if (mimeType.indexOf("image") != -1) {
-                    // We only accept images as file upload type for now
+                if (mimeType.contains("image") || isAnAllowedFileExtension(file.getOriginalFilename())) {
                     Attachment attachment = new Attachment();
 
                     byte[] bytes = file.getBytes();
                     long size = file.getSize();
                     String filename = file.getOriginalFilename();
+                    attachment.setFileName(filename);
+                    if (attachment.isImage()) {
 
-                    ImageInfo ii = new ImageInfo();
-                    ii.setInput(new ByteArrayInputStream(bytes));
+                        ImageInfo ii = new ImageInfo();
+                        ii.setInput(new ByteArrayInputStream(bytes));
 
-                    // Automatically shrink images to smaller size if needed
-                    if (ii.check()) {
-                        int width = ii.getWidth();
-                        int height = ii.getHeight();
+                        // Automatically shrink images to smaller size if needed
+                        if (ii.check()) {
+                            int width = ii.getWidth();
+                            int height = ii.getHeight();
 
-                        if (width > maxImageWidth && height > maxImageHeight) {
-                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                            bos.write(bytes);
+                            if (width > maxImageWidth && height > maxImageHeight) {
+                                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                                bos.write(bytes);
 
-                            ByteArrayOutputStream bout = ImageHelper.resizeImage(bos, maxImageWidth, maxImageHeight, imageFormat, 85);
-                            bytes = bout.toByteArray();
-                            size = bytes.length;
-                            if (filename.indexOf(".") != -1) {
-                                filename = filename.substring(0, filename.lastIndexOf(".")) + "." + imageFormat;
+                                ByteArrayOutputStream bout = ImageHelper.resizeImage(bos, maxImageWidth, maxImageHeight, imageFormat, 85);
+                                bytes = bout.toByteArray();
+                                size = bytes.length;
+                                if (filename.indexOf(".") != -1) {
+                                    filename = filename.substring(0, filename.lastIndexOf(".")) + "." + imageFormat;
+                                }
                             }
                         }
                     }
@@ -423,6 +425,21 @@ public class EditPostController extends AbstractForumFormController {
             }
             post.getThread().setTopics(topics);
         }
+    }
+
+    private boolean isAnAllowedFileExtension(String originalFilename) {
+        try {
+            String[] allowedFileExtensions = Aksess.getConfiguration().getString("forum.attachment.allowedfileextensions", "png,jpg,jpeg,gif,bmp").split(",");
+            for (String fileExtension : allowedFileExtensions) {
+                if (originalFilename.endsWith(fileExtension)) {
+                    return true;
+                }
+            }
+        } catch (ConfigurationException e) {
+            Log.error(this.getClass().getName(), "Error while reading Aksess config");
+        }
+        Log.info(this.getClass().getName(), "File extension is not allowed. To override the allowed file extensions add the following config key to your project configuration: forum.attachment.allowedfileextensions. This must be a comma separated list of file extensions. Example: jpg,doc,xls,ppt");
+        return false;
     }
 
     private String cleanup(String body, HttpServletRequest request) {

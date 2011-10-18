@@ -15,6 +15,7 @@
             <c:if test="${postsStatus.count > 1 && !postsStatus.last}">
                 <c:set var="hiddenPost" value="true" scope="page"/>
             </c:if>
+            <c:set var="postsStatus" value="${postsStatus}" scope="request"/>
             <%@ include file="ajax-post.jsp" %>
         </c:forEach>
     </div>

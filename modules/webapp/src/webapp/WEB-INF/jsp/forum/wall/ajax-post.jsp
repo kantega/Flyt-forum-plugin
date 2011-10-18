@@ -24,7 +24,15 @@
             <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
         </div>
         <forum:haspermisson permission="DELETE_POST" object="${post}">
-            <a class="oa-forum-deletePost" href="<aksess:geturl/>/forum/deletepost?postId=<c:out value="${post.id}"/>"></a>
+            <c:choose>
+                <c:when test="${postsStatus.index == 0}">
+                    <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
+                    <a class="oa-forum-deleteThread" href="<aksess:geturl/>/forum/deletethread?threadId=<c:out value="${post.thread.id}"/>"></a>
+                </c:when>
+                <c:otherwise>
+                    <a class="oa-forum-deletePost" href="<aksess:geturl/>/forum/deletepost?postId=<c:out value="${post.id}"/>"></a>
+                </c:otherwise>
+            </c:choose>
         </forum:haspermisson>
 
         <div class="oa-forum-body">
@@ -33,7 +41,18 @@
         <c:if test="${not empty post.attachments}">
             <div class="oa-forum-attachments">
                 <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
-                    <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank"><img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0"></a>
+                    <c:choose>
+                        <c:when test="${attachment.image}">
+                            <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank">
+                                <img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0">
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank">
+                                <c:out value="${attachment.fileName}"/>
+                            </a>
+                        </c:otherwise>
+                    </c:choose>
                 </c:forEach>
             </div>
         </c:if>

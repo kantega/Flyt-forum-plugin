@@ -48,7 +48,7 @@
 
 
 /*** Forum theme  **/
-.oa-forum-mediablock .oa-forum-deletePost{
+.oa-forum-mediablock .oa-forum-deletePost, .oa-forum-mediablock .oa-forum-deleteThread{
     width:16px;
     height:16px;
     background:url("../../bitmaps/forum/forum_delete.png") no-repeat 0 0;

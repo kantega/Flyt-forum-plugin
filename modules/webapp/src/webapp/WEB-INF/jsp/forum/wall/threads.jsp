@@ -10,5 +10,5 @@
     </c:forEach>
 </div>
 <div id="submit-animation" style="display: none;">
-    <span class="oa-forum-submit-animation"><img class="oa-forum-posting-loading-animation" src="<aksess:geturl/>/bitmaps/forum/ajax-loader.gif">Submitting...</span>
+    <span class="oa-forum-submit-animation"><img class="oa-forum-posting-loading-animation" src="<aksess:geturl/>/bitmaps/forum/ajax-loader.gif"><kantega:label key="forum.wall.submitting" bundle="forum" locale="${forumLocale}"/></span>
 </div>
