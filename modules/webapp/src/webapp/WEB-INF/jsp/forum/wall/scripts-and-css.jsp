@@ -28,6 +28,6 @@
     var maxthreads = <c:out value="${maxthreads}" default="20"/>;
     var locale = "<c:out value="${fn:substring(aksess_locale, 0, 2)}"/>";
 </script>
-<script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.js"/>"></script>
+<script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>
 
 

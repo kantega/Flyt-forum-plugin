@@ -53,6 +53,12 @@
         <url-pattern>/forum/*</url-pattern>
     </servlet-mapping>
 
+    <!-- jjs = Dynamic (jsp) JavaScript files -->
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jjs</url-pattern>
+    </servlet-mapping>
+
 
 
 </web-app>

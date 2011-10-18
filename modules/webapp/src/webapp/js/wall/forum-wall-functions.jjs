@@ -1,3 +1,6 @@
+//<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
+//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+
 $(document).ready(function(){
 
     $('#oa-forum-sharebox .oa-forum-sharefield').elastic();
@@ -6,11 +9,11 @@ $(document).ready(function(){
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
             if ($form.find("textarea").val().trim().length < 1 ) {
-                alert("Please write something to share before posting");
+                alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
             if($form.find("label").text().trim() == $form.find("textarea").val().trim()) {
-                alert("Please write something to share before posting");
+                alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
 
@@ -33,7 +36,7 @@ $(document).ready(function(){
                 $form.find("textarea").val("");
             }
             if ($form.find('input[type="file"]').val().trim().length < 1) {
-                alert("Please choose a file to upload");
+                alert('<kantega:label key="forum.wall.file.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
 
@@ -156,11 +159,11 @@ $(document).ready(function(){
     $("#oa-forum-linkform-step1").submit(function(event){
         var $form = $(this);
         if ($form.find(".oa-forum-sharefield").val().trim().length < 1 ) {
-            alert("Please provide a link to share before posting");
+            alert('<kantega:label key="forum.wall.linkpost.missing" bundle="forum" locale="${forumLocale}"/>');
             event.preventDefault();
         }
         if($form.find("label").text().trim() == $form.find(".oa-forum-sharefield").val().trim()) {
-            alert("Please provide a link to share before posting");
+            alert('<kantega:label key="forum.wall.linkpost.missing" bundle="forum" locale="${forumLocale}"/>');
             event.preventDefault();
         } else {
             // Process link
@@ -265,7 +268,7 @@ $(document).ready(function(){
     // Handles deleting posts
     $(".oa-forum-deletePost").live("click", function(event){
         event.preventDefault();
-        var confirmDelete = confirm("Slette melding?");
+        var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletepost" bundle="forum" locale="${forumLocale}"/>');
         if (confirmDelete) {
             var deleteUrl = $(this).attr("href");
             var $post = $(this).closest(".oa-forum-post");
@@ -279,13 +282,30 @@ $(document).ready(function(){
         }
     });
 
+    // Handles deleting threads
+    $(".oa-forum-deleteThread").live("click", function(event){
+        event.preventDefault();
+        var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletethread" bundle="forum" locale="${forumLocale}"/>');
+        if (confirmDelete) {
+            var deleteUrl = $(this).attr("href");
+            var $thread = $(this).closest(".oa-forum-thread");
+            $.post(deleteUrl, function(data, textStatus, jqXHR){
+                if (data["deleted"]) {
+                    $thread.slideUp("normal", function(){
+
+                    });
+                }
+            }, "json");
+        }
+    });
+
     $(".oa-forum-like-link").live("click", function(event){
         event.preventDefault();
         $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
         /*
          Ferdig? Bør oppdatere teksten på lenka.
          */
-        $(this).next().before('<span class="oa-forum-has-liked">Du liker dette</span>');
+        $(this).next().before('<span class="oa-forum-has-liked"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></span>');
         $(this).remove();
     });
 
