@@ -326,8 +326,9 @@ $(document).ready(function(){
 
 
     // Handles viewing larger versions of images
-    $(".oa-forum-attachment").live("click", function(event){
-        var $imgLink = $(this);
+    $(".oa-forum-attachment, .oa-forum-enlarge-photo").live("click", function(event){
+        var $attachmentContainer = $(this).closest(".oa-forum-attachments");
+        var $imgLink = $attachmentContainer.find(".oa-forum-attachment");
         if ($imgLink.find("img").length){
             event.preventDefault();
             $imgLink.removeClass("oa-forum-attachment").addClass("oa-forum-attachment-image-fullsize");
@@ -342,7 +343,6 @@ $(document).ready(function(){
             $img.css("height", origImgHeight + "px");
 
             // Finding and setting the max width and height for the large version of the image
-            var $attachmentContainer = $imgLink.closest(".oa-forum-attachments");
             var maxImgWidth = $attachmentContainer.width(); // Extra padding
             var multiplyHeightBy = Math.round(maxImgWidth / origImgWidth );
             var maxImgHeight = Math.round(origImgHeight * multiplyHeightBy);
@@ -356,14 +356,17 @@ $(document).ready(function(){
                 width: maxImgWidth,
                 height: maxImgHeight
             }, 400, function() {
-
+                $attachmentContainer.find(".oa-forum-enlarge-photo").addClass("oa-forum-hidden");
+                $attachmentContainer.find(".oa-forum-reduce-photo").removeClass("oa-forum-hidden");
+                $attachmentContainer.find(".oa-forum-download-original").removeClass("oa-forum-hidden");
             });
         }
     });
 
-    $(".oa-forum-attachment-image-fullsize").live("click", function(event){
+    $(".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo").live("click", function(event){
         event.preventDefault();
-        var $imgLink = $(this);
+        var $attachmentContainer = $(this).closest(".oa-forum-attachments");
+        var $imgLink = $attachmentContainer.find(".oa-forum-attachment-image-fullsize");
         $imgLink.removeClass("oa-forum-attachment-image-fullsize").addClass("oa-forum-attachment");
         var $img = $imgLink.find("img");
 
@@ -371,7 +374,10 @@ $(document).ready(function(){
             width: $img.data("origImgWidth"),
             height: $img.data("origImgHeight")
         }, 400, function() {
-
+            var $attachmentContainer = $(this).closest(".oa-forum-attachments");
+            $attachmentContainer.find(".oa-forum-enlarge-photo").removeClass("oa-forum-hidden");
+            $attachmentContainer.find(".oa-forum-reduce-photo").addClass("oa-forum-hidden");
+            $attachmentContainer.find(".oa-forum-download-original").addClass("oa-forum-hidden");
         });
     });
 
