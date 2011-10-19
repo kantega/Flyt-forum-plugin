@@ -112,7 +112,7 @@
 
                     </c:when>
                     <c:when test="${status.index > 0 && status.last}">
-                        and
+                        <kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>
                     </c:when>
                     <c:when test="${status.index > 0 && !status.last}">
                         ,
