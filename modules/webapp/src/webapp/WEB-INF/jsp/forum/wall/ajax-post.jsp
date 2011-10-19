@@ -76,14 +76,16 @@
             &nbsp;|&nbsp;
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
+
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
-                <aksess:getuser userid="${rating.userid}" name="user"/>
-                <c:if test="${rating.userid == user.id}">
+                <c:set var="currentUser"><aksess:getusername/></c:set>
+                <c:if test="${rating.userid == currentUser}">
                     <c:set var="hasLikedPost" value="true"/>
                 </c:if>
             </c:forEach>
+
             <c:choose>
-                <c:when test="${hasLikedPost}">
+                <c:when test="${hasLikedPost == true}">
                     <span class="oa-forum-has-liked"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></span>
                 </c:when>
                 <c:otherwise>
@@ -97,6 +99,7 @@
                     </form>
                 </c:otherwise>
             </c:choose>
+            <c:set var="hasLikedPost" value="false"/>
         </div>
     </div>
     <div style="clear:both"></div>
@@ -109,7 +112,7 @@
 
                     </c:when>
                     <c:when test="${status.index > 0 && status.last}">
-                        og
+                        and
                     </c:when>
                     <c:when test="${status.index > 0 && !status.last}">
                         ,
