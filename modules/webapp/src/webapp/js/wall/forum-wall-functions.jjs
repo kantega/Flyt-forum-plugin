@@ -124,7 +124,14 @@ $(document).ready(function(){
 
 
 // Handles shifting between the "share tabs" (status, photo and link)
+    var $tablinks = $("#oa-forum-newPost .oa-forum-tablink");
+    if (!$("#oa-forum-newPost .oa-forum-tablink .oa-forum-selected-sharelink")) {
+        // None selected, select status tab
+        $tablinks.get(0).addClass("oa-forum-selected-sharelink");
+    }
     $("#oa-forum-newPost .oa-forum-tablink").click(function(e){
+        $tablinks.removeClass("oa-forum-selected-sharelink");
+        $(this).addClass("oa-forum-selected-sharelink");
         e.preventDefault();
         var index = $(this).parent().prevAll().length -1; // -1 because the first element is the <li> containing "Share:"
         var $tabs = $("#oa-forum-newPost .oa-forum-tab-container");

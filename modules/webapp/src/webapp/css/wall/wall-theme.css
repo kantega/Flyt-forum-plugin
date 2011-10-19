@@ -159,3 +159,6 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     border: 1px solid #CCCCCC;
     padding: 2px;
 }
+.oa-forum-selected-sharelink span{
+    text-decoration: underline;
+}
