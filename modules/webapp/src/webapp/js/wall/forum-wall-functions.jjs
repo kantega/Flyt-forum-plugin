@@ -82,12 +82,13 @@ $(document).ready(function(){
         },
         success: prependNewThreadForLink,
         beforeSerialize: function($form, options) {
-            var body = '<a target="_blank" href="' + $form.find("input[name='shareurl']").val() + '" class="">' + $("#oa-forum-link-shareTitle").val() + '</a>';
-            body += '<p class="oa-forum-fadedText oa-forum-link-url-description">' + $form.find("input[name='shareurl']").val() + '</p>';
+            var body = "";
             var comment = $("#oa-forum-link-shareComment").val();
             if (comment != "") {
                 body += '<p class="oa-forum-link-comment">' + comment + '</p>';
             }
+            body += '<p class="oa-forum-fadedText oa-forum-link-url-description">' + $form.find("input[name='shareurl']").val() + '</p>';
+            body += '<a target="_blank" href="' + $form.find("input[name='shareurl']").val() + '" class="">' + $("#oa-forum-link-shareTitle").val() + '</a>'
             $(".oa-forum-link-preview-container input[name=body]").val(body);
         },
         resetForm: true
