@@ -8,11 +8,11 @@ $(document).ready(function(){
     // Handles posting of status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
-            if ($form.find("textarea").val().trim().length < 1 ) {
+            if ($.trim($form.find("textarea").val()).length < 1 ) {
                 alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
-            if($form.find("label").text().trim() == $form.find("textarea").val().trim()) {
+            if($.trim($form.find("label").text()) == $.trim($form.find("textarea").val())) {
                 alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
@@ -32,10 +32,10 @@ $(document).ready(function(){
     $('#oa-forum-tab-container-photo .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
             // If a comment is not set, set it to empty
-            if ($form.find("label").text().trim() == $form.find("textarea").val().trim()){
+            if ($.trim($form.find("label").text()) == $.trim($form.find("textarea").val())){
                 $form.find("textarea").val("");
             }
-            if ($form.find('input[type="file"]').val().trim().length < 1) {
+            if ($.trim($form.find('input[type="file"]').val()).length < 1) {
                 alert('<kantega:label key="forum.wall.file.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
@@ -144,7 +144,7 @@ $(document).ready(function(){
 // Handles input field label, hiding and removing these on/out-of focus.
     $(".oa-forum-sharefield").live("focusin", function(){
         var $field = $(this);
-        var fieldVal = $field.val().trim();
+        var fieldVal = $.trim($field.val());
         var fieldLabel = $field.siblings("label").text();
         if (fieldVal == fieldLabel) {
             $field.val("");
@@ -153,7 +153,7 @@ $(document).ready(function(){
     });
     $(".oa-forum-sharefield").live("focusout", function(){
         var $field = $(this);
-        var fieldVal = $field.val().trim();
+        var fieldVal = $.trim($field.val());
         var fieldLabel = $field.siblings("label").text();
         if (fieldVal == "") {
             $field.val(fieldLabel);
@@ -166,11 +166,11 @@ $(document).ready(function(){
     $linkPreviewContainer.hide();
     $("#oa-forum-linkform-step1").submit(function(event){
         var $form = $(this);
-        if ($form.find(".oa-forum-sharefield").val().trim().length < 1 ) {
+        if ($.trim($form.find(".oa-forum-sharefield").val()).length < 1 ) {
             alert('<kantega:label key="forum.wall.linkpost.missing" bundle="forum" locale="${forumLocale}"/>');
             event.preventDefault();
         }
-        if($form.find("label").text().trim() == $form.find(".oa-forum-sharefield").val().trim()) {
+        if($.trim($form.find("label").text()) == $.trim($form.find(".oa-forum-sharefield").val())) {
             alert('<kantega:label key="forum.wall.linkpost.missing" bundle="forum" locale="${forumLocale}"/>');
             event.preventDefault();
         } else {
@@ -242,7 +242,7 @@ $(document).ready(function(){
             var $commentTextarea = $(this);
             var $commentForm = $commentTextarea.closest("form");
             var commentFormAction = $commentForm.attr("action");
-            var comment = $commentTextarea.val().trim();
+            var comment = $.trim($commentTextarea.val());
             $commentTextarea.val("");
             if (comment.length > 0){
                 var threadId = $("input[name=threadId]", $commentForm).val();

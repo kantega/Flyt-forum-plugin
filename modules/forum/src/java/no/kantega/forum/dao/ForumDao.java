@@ -287,6 +287,17 @@ public class ForumDao {
         });
     }
 
+    public List getAllPosts() {
+        return (List) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query query = session.createQuery("from Post p where p.approved = ? order by p.id desc");
+                query.setString(0, "Y");
+                return query.list();
+            }
+        });
+    }
+
+
     public List getLastPostsInThread(final long threadId, final int n) {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
