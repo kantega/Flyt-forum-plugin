@@ -3,7 +3,7 @@
 
 $(document).ready(function(){
 
-    $('#oa-forum-sharebox .oa-forum-sharefield').elastic();
+    $(".oa-forum-sharefield").elastic();
 
     // Handles posting of status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
@@ -55,30 +55,16 @@ $(document).ready(function(){
     // Handles posting of link
     $('#oa-forum-tab-container-link .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
-            // 1
+            // 1 Sett høyde på skjemacontainer
             var $container = $("#oa-forum-tab-container-link");
             $container.css("height", $container.height());
 
-            // 2
-            $form.closest(".oa-forum-link-preview-container").fadeOut(300, function(){
-                var containerHeightNewForm = $("#oa-forum-linkform-step1").height();
-
-                // 3
-                $container.animate({height: containerHeightNewForm + "px"}, 400, function(){
-                    // 4
-                    var $animation = $("#submit-animation span").clone(false).css("line-height", containerHeightNewForm  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
-                    $animation.css("line-height", containerHeightNewForm  + "px").css("text-align", "center").css("display", "block").hide().appendTo($container).fadeIn(300, function(){
-                        window.setTimeout(function(){
-                            // 5
-                            $animation.fadeOut(300, function(){
-                                // 6
-                                $("#oa-forum-linkform-step1").fadeIn(300);
-                            })
-                        }, 1200);
-                    });
+            // 2 Fade ut skjema
+            $container.find("form").fadeOut(250, function(){
+                var $animation = $("#submit-animation span").clone(false).css("line-height", $container.height()  + "px").css("text-align", "center").css("display", "block").hide().appendTo($container).fadeIn(200, function(){
+                    return true;
                 });
             });
-            return true;
         },
         success: prependNewThreadForLink,
         beforeSerialize: function($form, options) {
@@ -87,9 +73,8 @@ $(document).ready(function(){
             if (comment != "") {
                 body += '<p class="oa-forum-link-comment">' + comment + '</p>';
             }
-            body += '<p class="oa-forum-fadedText oa-forum-link-url-description">' + $form.find("input[name='shareurl']").val() + '</p>';
-            body += '<a target="_blank" href="' + $form.find("input[name='shareurl']").val() + '" class="">' + $("#oa-forum-link-shareTitle").val() + '</a>'
-            $(".oa-forum-link-preview-container input[name=body]").val(body);
+            body += '<a target="_blank" href="' + $('#oa-forum-link-shareUrl').val() + '" class="">' + $('#oa-forum-link-shareUrl').val() + '</a>';
+            $("#oa-forum-link-body").val(body);
         },
         resetForm: true
     });
@@ -112,15 +97,17 @@ $(document).ready(function(){
 // Appends new "shares" to top of wall.
     function prependNewThreadForLink(responseText, statusText, xhr, $form)  {
         // Hide animation, show form
+        $("#oa-forum-link-shareUrl").addClass("oa-forum-fadedText");
+        $("#oa-forum-link-shareComment").addClass("oa-forum-fadedText");
         window.setTimeout(function(){     // Timeout to allow the animation to complete
-            $form.closest(".oa-forum-tab-container").find(".oa-forum-submit-animation").fadeOut(300, function(){
-                $("#oa-forum-linkform-step1").fadeIn(300);
+            $form.closest(".oa-forum-tab-container").find(".oa-forum-submit-animation").fadeOut(250, function(){
+                $("#oa-forum-linkform").fadeIn(250);
                 var $newThread = $(responseText);
                 $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
                 $newThread.hide().prependTo(".oa-forum-threads").slideDown();
                 $(this).remove();
             });
-        }, 1200);
+        }, 800);
     }
 
 
