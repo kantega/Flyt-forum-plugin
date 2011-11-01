@@ -64,54 +64,11 @@
                     <label class="oa-forum-hidden"><kantega:label key="forum.share.inputfield.link.step2.label" bundle="forum" locale="${forumLocale}"/></label>
                     <textarea rows="1" cols="40" name="comment" id="oa-forum-link-shareComment" class="oa-forum-sharefield oa-forum-fadedText"><kantega:label key="forum.share.inputfield.link.step2.label" bundle="forum" locale="${forumLocale}"/></textarea>
                 </div>
-                <div class="oa-forum-formElement">
-                    <label class="oa-forum-hidden"><kantega:label key="forum.share.inputfield.photo.label" bundle="forum" locale="${forumLocale}"/></label>
-                    <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-fadedText"><kantega:label key="forum.share.inputfield.photo.label" bundle="forum" locale="${forumLocale}"/></textarea>
-                </div>
                 <div class="oa-forum-formElement oa-forum-txtR">
                     <input type="submit" name="send" value="<kantega:label key="forum.share.link.submit.step2.label" bundle="forum" locale="${forumLocale}"/>">
                 </div>
             </form>
         </div>
-
-
-
-        <%--
-        <div class="oa-forum-tab-container oa-forum-hidden" id="oa-forum-tab-container-link">
-
-            <form action="<aksess:geturl/>/forum/getPageInfo?url=" id="oa-forum-linkform-step1">
-                <div class="oa-forum-formElement">
-                    <label class="oa-forum-hidden"><kantega:label key="forum.share.inputfield.link.label" bundle="forum" locale="${forumLocale}"/></label>
-                    <input type="text" id="oa-forum-link-shareUrl" class="oa-forum-sharefield oa-forum-fadedText" value="<kantega:label key="forum.share.inputfield.link.label" bundle="forum" locale="${forumLocale}"/>">
-                </div>
-                <div class="oa-forum-formElement oa-forum-txtR">
-                    <input type="submit" value="<kantega:label key="forum.share.link.submit.step1.label" bundle="forum" locale="${forumLocale}"/>">
-                </div>
-            </form>
-
-            <div class="oa-forum-link-preview-container">
-                <h3 class="oa-forum-title"><a href=""></a></h3>
-                <p class="oa-forum-shareurl oa-forum-fadedText"></p>
-
-                <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST" id="oa-forum-linkform">
-                    <div class="oa-forum-formElement">
-                        <input type="hidden" name="forumId" value="1">
-                        <input type="hidden" name="ajax" value="true">
-                        <input type="hidden" name="subject" value="Subject">
-                        <input type="hidden" name="body">
-                        <input type="hidden" id="oa-forum-link-shareTitle">
-                        <input type="hidden" name="shareurl">
-                        <label class="oa-forum-hidden"><kantega:label key="forum.share.inputfield.link.step2.label" bundle="forum" locale="${forumLocale}"/></label>
-                        <textarea rows="1" cols="40" name="sharecomment" id="oa-forum-link-shareComment" class="oa-forum-fadedText oa-forum-sharefield"><kantega:label key="forum.share.inputfield.link.step2.label" bundle="forum" locale="${forumLocale}"/></textarea>
-                    </div>
-                    <div class="oa-forum-formElement">
-                        <input type="submit" name="send" value="<kantega:label key="forum.share.link.submit.step2.label" bundle="forum" locale="${forumLocale}"/>">
-                    </div>
-                </form>
-            </div>
-        </div>
-        --%>
-
 
     </div>
 </div>

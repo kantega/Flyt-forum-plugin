@@ -4,6 +4,7 @@
 $(document).ready(function(){
 
     $(".oa-forum-sharefield").elastic();
+    $("#oa-forum-link-shareComment").elastic();
 
     // Handles posting of status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
