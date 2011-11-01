@@ -115,7 +115,6 @@
 
                             <forum:haspermisson permission="DELETE_POST" object="${post}">
                                 | <a href="javascript:deletePost(<c:out value="${post.id}"/>)">Slett</a>
-
                             </forum:haspermisson>
                         </td>
                     </tr>

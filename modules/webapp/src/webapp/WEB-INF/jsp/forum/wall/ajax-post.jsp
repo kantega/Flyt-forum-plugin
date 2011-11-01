@@ -5,7 +5,6 @@
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
-
 <c:set var="userProfileUrl"><aksess:geturl/><aksess:getconfig key="forum.userprofileurl"/>?userId=${post.owner}</c:set>
 <c:set var="userImageUrl"><aksess:geturl/><aksess:getconfig key="forum.userimageurl"/>?userId=${post.owner}&amp;width=40</c:set>
 
@@ -23,17 +22,21 @@
         <div class="oa-forum-username">
             <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
         </div>
-        <forum:haspermisson permission="DELETE_POST" object="${post}">
-            <c:choose>
-                <c:when test="${postsStatus.index == 0}">
-                    <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
+
+        <c:choose>
+            <c:when test="${postsStatus.index == 0}">
+                <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
+                <forum:haspermisson permission="DELETE_THREAD" object="${post.thread}">
                     <a class="oa-forum-deleteThread" href="<aksess:geturl/>/forum/deletethread?threadId=<c:out value="${post.thread.id}"/>"></a>
-                </c:when>
-                <c:otherwise>
+                </forum:haspermisson>
+            </c:when>
+            <c:otherwise>
+                <forum:haspermisson permission="DELETE_POST" object="${post}">
                     <a class="oa-forum-deletePost" href="<aksess:geturl/>/forum/deletepost?postId=<c:out value="${post.id}"/>"></a>
-                </c:otherwise>
-            </c:choose>
-        </forum:haspermisson>
+                </forum:haspermisson>
+            </c:otherwise>
+        </c:choose>
+
 
         <div class="oa-forum-body">
             <p><c:out value="${post.body}" escapeXml="false"/></p>
