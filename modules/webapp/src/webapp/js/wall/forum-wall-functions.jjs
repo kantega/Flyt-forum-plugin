@@ -3,7 +3,7 @@
 
 $(document).ready(function(){
 
-    $(".oa-forum-sharefield").elastic();
+    $("#oa-forum-newPost .oa-forum-sharefield").elastic();
     $("#oa-forum-link-shareComment").elastic();
 
     // Handles posting of status
@@ -114,18 +114,30 @@ $(document).ready(function(){
 
 // Handles shifting between the "share tabs" (status, photo and link)
     var $tablinks = $("#oa-forum-newPost .oa-forum-tablink");
-    if (!$("#oa-forum-newPost .oa-forum-tablink .oa-forum-selected-sharelink")) {
-        // None selected, select status tab
-        $tablinks.get(0).addClass("oa-forum-selected-sharelink");
-    }
+    var visibleTabIndex = -1;
+    var $tabs = $("#oa-forum-newPost .oa-forum-tab-container");
     $("#oa-forum-newPost .oa-forum-tablink").click(function(e){
-        $tablinks.removeClass("oa-forum-selected-sharelink");
-        $(this).addClass("oa-forum-selected-sharelink");
         e.preventDefault();
         var index = $(this).parent().prevAll().length -1; // -1 because the first element is the <li> containing "Share:"
-        var $tabs = $("#oa-forum-newPost .oa-forum-tab-container");
-        $tabs.addClass("oa-forum-hidden");
-        $tabs.eq(index).removeClass("oa-forum-hidden");
+        if (visibleTabIndex == index){
+            // Do nothing, its already displaying
+        } else if (visibleTabIndex == -1) {
+            // Ingen synlige, vis den vi klikket på
+            $tabs.eq(index).hide().removeClass("oa-forum-hidden").slideDown("normal", function(){
+                visibleTabIndex = index;
+                $(this).addClass("oa-forum-visible-tablink");
+            });
+        } else {
+            $("#oa-forum-newPost .oa-forum-visible-tablink").slideUp("normal", function(){
+                $(this).removeClass("oa-forum-visible-tablink");
+                $tabs.eq(index).hide().removeClass("oa-forum-hidden").slideDown("normal", function(){
+                    visibleTabIndex = index;
+                    $(this).addClass("oa-forum-visible-tablink");
+                });
+            });
+        }
+        $tablinks.removeClass("oa-forum-selected-sharelink");
+        $(this).addClass("oa-forum-selected-sharelink");
         return false;
     });
 
@@ -138,6 +150,7 @@ $(document).ready(function(){
             $field.val("");
             $field.removeClass("oa-forum-fadedText");
         }
+        $field.elastic();
     });
     $(".oa-forum-sharefield").live("focusout", function(){
         var $field = $(this);
@@ -204,7 +217,9 @@ $(document).ready(function(){
         });
         window.setTimeout(function() { // Pausing for 200 ms for better user experience
             $("#oa-forum-loading-animation").fadeOut(200, function(){
-                $forumContent.fadeIn(250);
+                $forumContent.fadeIn(250, function(){
+
+                });
             });
         },200);
     });
@@ -219,8 +234,19 @@ $(document).ready(function(){
 // Handles showing comment form on a thread
     $(".oa-forum-showReplyForm").live("click", function(event){
         event.preventDefault();
-        $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea").focus();
-    })
+        var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea");
+        window.setTimeout(function(){
+            $commentarea.focus();
+            var $field = $commentarea;
+            var fieldVal = $.trim($field.val());
+            var fieldLabel = $field.siblings("label").text();
+            if (fieldVal == fieldLabel) {
+                $field.val("");
+                $field.removeClass("oa-forum-fadedText");
+            }
+            $field.elastic();
+        },10);
+    });
 
 // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
@@ -376,7 +402,4 @@ $(document).ready(function(){
             $attachmentContainer.find(".oa-forum-download-original").addClass("oa-forum-hidden");
         });
     });
-
-
-
 });

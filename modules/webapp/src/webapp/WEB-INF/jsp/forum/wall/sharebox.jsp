@@ -19,7 +19,7 @@
                 <a href="#" class="oa-forum-tablink oa-forum-iconLink"><img src="<aksess:geturl/>/bitmaps/forum/forum-share-link.png" alt="<kantega:label key="forum.share.link.label.alttext" bundle="forum" locale="${forumLocale}"/>"><span><kantega:label key="forum.share.link.label" bundle="forum" locale="${forumLocale}"/></span></a>
             </li>
         </ul>
-        <div class="oa-forum-tab-container" id="oa-forum-tab-container-status">
+        <div class="oa-forum-tab-container oa-forum-hidden" id="oa-forum-tab-container-status">
             <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST">
                 <div class="oa-forum-formElement">
                     <input type="hidden" name="forumId" value="1">
@@ -34,7 +34,7 @@
             </form>
         </div>
         <div class="oa-forum-tab-container oa-forum-hidden" id="oa-forum-tab-container-photo">
-            <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST">
+            <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST" enctype="multipart/form-data">
                 <div class="oa-forum-formElement">
                     <input type="hidden" name="forumId" value="1">
                     <input type="file" name="attachment1">

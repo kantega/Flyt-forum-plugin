@@ -23,7 +23,7 @@
 .oa-forum-mediablock .oa-forum-deletePost, .oa-forum-mediablock .oa-forum-deleteThread{
     position: absolute;
     right: 10px;
-    top: 5px;
+    top: 0;
     display:block;
 }
 .oa-forum-shareListLinks li{

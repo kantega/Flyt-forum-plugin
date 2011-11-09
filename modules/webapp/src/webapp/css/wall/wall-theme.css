@@ -91,8 +91,8 @@
  .oa-forum-shareListLinks
  */
 .oa-forum-shareListLinks{
-    margin:0 10px 10px;
-    padding:0;
+    margin:0 10px 0;
+    padding: 0 0 10px;
 }
 .oa-forum-shareListLinks li{
     padding: 10px 10px 0 0;

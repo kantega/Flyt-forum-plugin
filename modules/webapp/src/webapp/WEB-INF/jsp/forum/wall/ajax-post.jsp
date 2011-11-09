@@ -80,15 +80,16 @@
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
 
+
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
-                <c:set var="currentUser"><aksess:getusername/></c:set>
-                <c:if test="${rating.userid == currentUser}">
+                <aksess:getuser userid="${rating.userid}" name="user"/>
+                <c:if test="${rating.userid == user.id}">
                     <c:set var="hasLikedPost" value="true"/>
                 </c:if>
             </c:forEach>
 
             <c:choose>
-                <c:when test="${hasLikedPost == true}">
+                <c:when test="${hasLikedPost}">
                     <span class="oa-forum-has-liked"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></span>
                 </c:when>
                 <c:otherwise>
