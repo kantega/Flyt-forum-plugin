@@ -37,11 +37,13 @@ public class ForumSearchController  implements AksessController {
 
     protected SearchServiceQuery createSearchServiceQuery(HttpServletRequest request) {
         SearchServiceQuery query = new SearchServiceQuery(request, null);
-        query.putSearchParam(SearchServiceQuery.PARAM_DOCTYPE, "forumContent");
+        query.putSearchParam(SearchServiceQuery.PARAM_DOCTYPE, "forumPost");
         return query;
     }
 
     public void setSearchService(SearchService searchService) {
         this.searchService = searchService;
     }
+
+
 }

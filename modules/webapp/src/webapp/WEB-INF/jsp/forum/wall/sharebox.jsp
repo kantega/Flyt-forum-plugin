@@ -29,7 +29,9 @@
                     <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-fadedText"><kantega:label key="forum.share.inputfield.status.label" bundle="forum" locale="${forumLocale}"/></textarea>
                 </div>
                 <div class="oa-forum-formElement oa-forum-txtR">
-                    <input type="submit" name="send" value="<kantega:label key="forum.share.status.submit.label" bundle="forum" locale="${forumLocale}"/>">
+                    <span class="oa-forum-share-button">
+                        <input type="submit" name="send" value="<kantega:label key="forum.share.status.submit.label" bundle="forum" locale="${forumLocale}"/>">
+                    </span>
                 </div>
             </form>
         </div>
@@ -46,7 +48,9 @@
                     <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-fadedText"><kantega:label key="forum.share.inputfield.photo.label" bundle="forum" locale="${forumLocale}"/></textarea>
                 </div>
                 <div class="oa-forum-formElement oa-forum-txtR">
+                    <span class="oa-forum-share-button">
                     <input type="submit" name="send" value="<kantega:label key="forum.share.photo.submit.label" bundle="forum" locale="${forumLocale}"/>">
+                        </span>
                 </div>
             </form>
         </div>
@@ -65,7 +69,9 @@
                     <textarea rows="1" cols="40" name="comment" id="oa-forum-link-shareComment" class="oa-forum-sharefield oa-forum-fadedText"><kantega:label key="forum.share.inputfield.link.step2.label" bundle="forum" locale="${forumLocale}"/></textarea>
                 </div>
                 <div class="oa-forum-formElement oa-forum-txtR">
+                    <span class="oa-forum-share-button">
                     <input type="submit" name="send" value="<kantega:label key="forum.share.link.submit.step2.label" bundle="forum" locale="${forumLocale}"/>">
+                        </span>
                 </div>
             </form>
         </div>
