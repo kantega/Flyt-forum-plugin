@@ -78,6 +78,15 @@ public class ForumSearchProvider implements DocumentProvider {
             Field fAuthor = new Field(ForumFields.POST_AUTHOR, post.getAuthor(), Field.Store.YES, Field.Index.ANALYZED);
             d.add(fAuthor);
 
+            Field fOwner = new Field(ForumFields.POST_OWNER, post.getOwner(), Field.Store.YES, Field.Index.ANALYZED);
+            d.add(fOwner);
+
+            Field fPostId = new Field(ForumFields.POST_ID, ""+post.getId(), Field.Store.YES, Field.Index.ANALYZED);
+            d.add(fPostId);
+
+            Field fThreadId = new Field(ForumFields.THREAD_ID, ""+post.getThread().getId(), Field.Store.YES, Field.Index.ANALYZED);
+            d.add(fThreadId);
+
             d.add(new Field(Fields.TITLE_UNANALYZED, post.getSubject(), Field.Store.NO, Field.Index.NOT_ANALYZED));
 
             d.add(new Field(Fields.CONTENT, allText, Field.Store.NO, Field.Index.ANALYZED));
@@ -110,6 +119,9 @@ public class ForumSearchProvider implements DocumentProvider {
         hit.setBody(document.get(ForumFields.POST_BODY));
         hit.setAuthor(document.get(ForumFields.POST_AUTHOR));
         hit.setTitle(document.get(Fields.TITLE));
+        hit.setOwner(document.get(ForumFields.POST_OWNER));
+        hit.setPostId(document.get(ForumFields.POST_ID));
+        hit.setPostThreadId(document.get(ForumFields.THREAD_ID));
     }
 
     public void setForumDao(ForumDao forumDao) {

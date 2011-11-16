@@ -33,6 +33,7 @@ public class ListThreadsController implements Controller {
         int forumId = param.getInt("forumId");
         int offset = param.getInt("offset");
         int numberOfPostsToShow = param.getInt("numberOfPostsToShow");
+        int threadId = param.getInt("threadId");
 
         if (numberOfPostsToShow == -1) {
             numberOfPostsToShow = defaultNumberOfPostsToShow;
@@ -46,8 +47,14 @@ public class ListThreadsController implements Controller {
          */
         List<String> objectIds = new ArrayList<String>();
         Map<Long, List<Rating>> ratingsForPosts = new HashMap<Long, List<Rating>>();
+        List<ForumThread> threads = new ArrayList<ForumThread>();
 
-        List<ForumThread> threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow);
+        if (threadId != -1) {
+            threads.add(forumDao.getPopulatedThread(threadId));
+        } else {
+            threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow);
+        }
+
         for (ForumThread thread : threads) {
             Iterator posts = thread.getPosts().iterator();
             while (posts.hasNext()) {

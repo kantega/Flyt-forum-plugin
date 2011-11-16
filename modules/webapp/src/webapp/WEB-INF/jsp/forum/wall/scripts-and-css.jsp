@@ -24,10 +24,9 @@
     // Globale variabler som servertid osv
     var serverTime = "<aksess:getdate format="yyyy-MM-dd'T'HH:mm:ss"/>";
     var contextPath = "<aksess:geturl/>";
-    var forumId = <c:out value="${forumid}" default="-1"/>;
-    var maxthreads = <c:out value="${maxthreads}" default="20"/>;
     var locale = "<c:out value="${fn:substring(aksess_locale, 0, 2)}"/>";
 </script>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>
+
 
 
