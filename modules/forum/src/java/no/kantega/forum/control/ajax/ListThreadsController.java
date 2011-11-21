@@ -34,6 +34,7 @@ public class ListThreadsController implements Controller {
         int offset = param.getInt("offset");
         int numberOfPostsToShow = param.getInt("numberOfPostsToShow");
         int threadId = param.getInt("threadId");
+        String userId = param.getString("username");
 
         if (numberOfPostsToShow == -1) {
             numberOfPostsToShow = defaultNumberOfPostsToShow;
@@ -51,6 +52,12 @@ public class ListThreadsController implements Controller {
 
         if (threadId != -1) {
             threads.add(forumDao.getPopulatedThread(threadId));
+        } else if (userId != null && userId.trim().length() > 0) {
+            List<Post> userPosts = forumDao.getUserPostings(userId, numberOfPostsToShow);
+            for (Post userPost : userPosts) {
+                //if (threads)
+                //userPost.getThread();
+            }
         } else {
             threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow);
         }

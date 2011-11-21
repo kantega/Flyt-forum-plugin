@@ -50,8 +50,8 @@ public class RenderWallTag extends SimpleTagSupport{
         this.forumid = forumid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserid(String userid) {
+        this.userId = userid;
     }
 
     public void setMaxthreads(int maxthreads) {

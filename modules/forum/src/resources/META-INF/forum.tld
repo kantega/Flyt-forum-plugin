@@ -250,7 +250,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>userID</name>
+            <name>userid</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
