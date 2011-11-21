@@ -145,6 +145,32 @@ public class ForumDao {
         });
     }
 
+    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int max) {
+        return (List<ForumThread>) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                StringBuilder where = new StringBuilder();
+                String[] users = userId.split(",");
+                for (int i = 0, usersLength = users.length; i < usersLength; i++) {
+                    if (i > 0) {
+                        where.append(",");
+                    }
+                    where.append("?");
+                }
+
+                Query query = session.createQuery("select * from forumthread left outer join post on post.threadid = forumthread.id where post.owner IN (" + where.toString() + ") order by forumthread.id desc ");
+                if (max != -1) {
+                    query.setMaxResults(max);
+                }
+                for (int i = 0, usersLength = users.length; i < usersLength; i++) {
+                    String user = users[i];
+                    query.setString(i, user.trim());
+                }
+
+                return query.list();
+            }
+        });
+    }
+
     public List getLastPosts(final int n) {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {

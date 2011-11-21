@@ -69,9 +69,12 @@ $(document).ready(function(){
         },
         success: prependNewThreadForLink,
         beforeSerialize: function($form, options) {
+            // If a comment is not set, set it to empty
             var body = "";
             var comment = $("#oa-forum-link-shareComment").val();
-            if (comment != "") {
+            var labelVal = $("#oa-forum-link-shareComment").siblings("label").text();
+            if (comment != "" && comment != labelVal) {
+                alert("ulik faktisk! " + labelVal);
                 body += '<p class="oa-forum-link-comment">' + comment + '</p>';
             }
             body += '<a target="_blank" href="' + $('#oa-forum-link-shareUrl').val() + '" class="">' + $('#oa-forum-link-shareUrl').val() + '</a>';
