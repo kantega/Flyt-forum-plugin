@@ -104,7 +104,7 @@
         "hoursago" : "%h timer siden",
         "yesterday" : "i g&aring;r kl %h:%m",
         "weekdays" : ["s&oslash;ndag kl %h:%m", "mandag kl %h:%m", "tirsdag kl %h:%m", "onsdag kl %h:%m", "torsdag kl %h:%m", "fredag kl %h:%m", "l&oslash;rdag kl %h:%m"],
-        "months" : ["%d. januar kl %h %m", "%d. februar kl %h %m", "%d. mars kl %h %m", "%d. april kl %h %m", "%d. mai kl %h %m", "%d. juni kl %h %m", "%d. juli kl %h %m", "%d. august kl %h %m", "%d. september kl %h %m", "%d. oktober kl %h %m", "%d. november kl %h %m", "%d. desember kl %h %m"]
+        "months" : ["%d. januar kl %h:%m", "%d. februar kl %h:%m", "%d. mars kl %h:%m", "%d. april kl %h:%m", "%d. mai kl %h:%m", "%d. juni kl %h:%m", "%d. juli kl %h:%m", "%d. august kl %h:%m", "%d. september kl %h:%m", "%d. oktober kl %h:%m", "%d. november kl %h:%m", "%d. desember kl %h:%m"]
     };
     $.fn.prettyDate.regional.en = {
         "lessthanoneminutesince" : "Less than a minute ago",
@@ -114,6 +114,6 @@
         "hoursago" : "%h hours ago",
         "yesterday" : "Yesterday at %h:%m",
         "weekdays" : ["Sunday at %h:%m", "Monday at %h:%m", "Tuesday at %h:%m", "Wednesday at %h:%m", "Thursday at %h:%m", "Friday at %h:%m", "Saturday at %h:%m"],
-        "months" : ["%d. January at %h %m", "%d. February at %h %m", "%d. March at %h %m", "%d. April at %h %m", "%d. May at %h %m", "%d. June at %h %m", "%d. July at %h %m", "%d. August at %h %m", "%d. September at %h %m", "%d. October at %h %m", "%d. November at %h %m", "%d. December at %h %m"]
+        "months" : ["%d. January at %h:%m", "%d. February at %h:%m", "%d. March at %h:%m", "%d. April at %h:%m", "%d. May at %h:%m", "%d. June at %h:%m", "%d. July at %h:%m", "%d. August at %h:%m", "%d. September at %h:%m", "%d. October at %h:%m", "%d. November at %h:%m", "%d. December at %h:%m"]
     };
 })(jQuery);
