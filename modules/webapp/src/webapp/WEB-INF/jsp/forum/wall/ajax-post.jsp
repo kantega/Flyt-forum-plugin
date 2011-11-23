@@ -74,7 +74,7 @@
                 &nbsp;|&nbsp; <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
             <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
-                &nbsp;|&nbsp; <a href="" class="oa-forum-showFullThread"><kantega:label key="forum.wall.morecomments.part1" bundle="forum" locale="${forumLocale}"/> ${fn:length(thread.posts) - 2} <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
+                &nbsp;|&nbsp; <a href="" class="oa-forum-showFullThread"><kantega:label key="forum.wall.morecomments.part1" bundle="forum" locale="${forumLocale}"/> <span class="oa-forum-numberOfComments">${fn:length(thread.posts) - 2}</span> <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
             &nbsp;|&nbsp;
             <c:set var="postRatings" value="${ratings[post.id]}"/>
