@@ -133,7 +133,7 @@ public class ForumDao {
                 }
                 Query query = session.createQuery("from Post p where p.owner IN (" + where.toString() + ") order by p.postDate desc");
                 if (max != -1) {
-                    query.setMaxResults(max);    
+                    query.setMaxResults(max);
                 }
                 for (int i = 0, usersLength = users.length; i < usersLength; i++) {
                     String user = users[i];
@@ -148,25 +148,28 @@ public class ForumDao {
     public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int max) {
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
+                List<Post> userPosts = getUserPostings(userId, max);
                 StringBuilder where = new StringBuilder();
-                String[] users = userId.split(",");
-                for (int i = 0, usersLength = users.length; i < usersLength; i++) {
-                    if (i > 0) {
+                for (int k = 0, userPostsSize = userPosts.size(); k < userPostsSize; k++) {
+                    if (k > 0) {
                         where.append(",");
                     }
                     where.append("?");
                 }
-
-                Query query = session.createQuery("select * from forumthread left outer join post on post.threadid = forumthread.id where post.owner IN (" + where.toString() + ") order by forumthread.id desc ");
+                Query query = session.createQuery("from ForumThread ft where ft.id IN (" + where.toString() + ") order by ft.createdDate desc");
                 if (max != -1) {
                     query.setMaxResults(max);
                 }
-                for (int i = 0, usersLength = users.length; i < usersLength; i++) {
-                    String user = users[i];
-                    query.setString(i, user.trim());
-                }
 
-                return query.list();
+                for (int i = 0, userPostsSize = userPosts.size(); i < userPostsSize; i++) {
+                    Hibernate.initialize(userPosts.get(i).getThread());
+                    query.setString(i, "" + userPosts.get(i).getThread().getId());
+                }
+                List<ForumThread> threads = query.list();
+                for (ForumThread thread : threads) {
+                    Hibernate.initialize(thread.getPosts());
+                }
+                return threads;
             }
         });
     }
@@ -454,7 +457,7 @@ public class ForumDao {
             public Object doInHibernate(Session session) throws HibernateException {
                 Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ? order by t.createdDate desc");
                 q.setLong(0, forumId);
-                q.setString(1, "Y");        
+                q.setString(1, "Y");
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
 
