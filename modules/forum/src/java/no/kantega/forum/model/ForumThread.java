@@ -24,6 +24,7 @@ public class ForumThread {
     private boolean isApproved;
     private int numNewPosts = 0;
     private Set topics;
+    private Date lastPostDate;
 
     public long getId() {
         return id;
@@ -131,6 +132,14 @@ public class ForumThread {
 
     public void setTopics(Set topics) {
         this.topics = topics;
+    }
+
+    public Date getLastPostDate() {
+        return lastPostDate;
+    }
+
+    public void setLastPostDate(Date lastPostDate) {
+        this.lastPostDate = lastPostDate;
     }
 
     public boolean isContentComment() {

@@ -67,6 +67,7 @@
             <key column="threadId"/>
             <element column="topicId" type="string"/>
         </set>
+        <property name="lastPostDate" type="timestamp"/>
     </class>
 
     <class name="Post" table="forum_post">

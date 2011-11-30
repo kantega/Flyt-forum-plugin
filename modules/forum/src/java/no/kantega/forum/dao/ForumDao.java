@@ -5,6 +5,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.sql.SQLException;
 
@@ -38,6 +39,7 @@ public class ForumDao {
     }
 
     public void saveOrUpdate(ForumThread thread) {
+        thread.setLastPostDate(new Date());
         template.saveOrUpdate(thread);
         updateThreadCount(thread.getForum().getId());
     }
@@ -50,6 +52,10 @@ public class ForumDao {
     public void saveOrUpdate(Post post) {
         template.saveOrUpdate(post);
         updatePostCount(post.getThread().getId());
+
+        ForumThread t = getThread(post.getThread().getId());
+        t.setLastPostDate(new Date());
+        saveOrUpdate(t);
     }
 
     public void approve(Post post) {
@@ -145,26 +151,42 @@ public class ForumDao {
         });
     }
 
-    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int max) {
+    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int forumId) {
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                List<Post> userPosts = getUserPostings(userId, max);
-                StringBuilder where = new StringBuilder();
-                for (int k = 0, userPostsSize = userPosts.size(); k < userPostsSize; k++) {
-                    if (k > 0) {
-                        where.append(",");
-                    }
-                    where.append("?");
-                }
-                Query query = session.createQuery("from ForumThread ft where ft.id IN (" + where.toString() + ") order by ft.createdDate desc");
-                if (max != -1) {
-                    query.setMaxResults(max);
+
+                Query queryThreadIds = session.createSQLQuery("select distinct(threadId) from forum_post where owner=?");
+
+                queryThreadIds.setString(0, userId);
+
+                List<BigDecimal> threadIds = queryThreadIds.list();
+                if (threadIds.size() == 0) {
+                    return new ArrayList<ForumThread>();
                 }
 
-                for (int i = 0, userPostsSize = userPosts.size(); i < userPostsSize; i++) {
-                    Hibernate.initialize(userPosts.get(i).getThread());
-                    query.setString(i, "" + userPosts.get(i).getThread().getId());
+                StringBuffer q = new StringBuffer();
+                q.append("from ForumThread t where t.id IN (");
+                for (int i = 0; i < threadIds.size(); i++) {
+                    if (i > 0) {
+                        q.append(",");
+                    }
+                    q.append("?");
                 }
+                q.append(")");
+                if (forumId != -1) {
+                    q.append(" and t.forum.id = " + forumId);
+                }
+                q.append(" order by t.lastPostDate desc");
+                Query query = session.createQuery(q.toString());
+                if (maxResults != -1) {
+                    query.setMaxResults(maxResults);
+                }
+
+                for (int i = 0; i < threadIds.size(); i++) {
+                    BigDecimal tId = threadIds.get(i);
+                    query.setBigDecimal(i, tId);
+                }
+
                 List<ForumThread> threads = query.list();
                 for (ForumThread thread : threads) {
                     Hibernate.initialize(thread.getPosts());
@@ -455,7 +477,7 @@ public class ForumDao {
 
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ? order by t.createdDate desc");
+                Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ? order by t.lastPostDate desc");
                 q.setLong(0, forumId);
                 q.setString(1, "Y");
                 q.setFirstResult(firstResult);

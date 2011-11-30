@@ -5,7 +5,6 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
-import no.kantega.forum.util.ForumWallThreadListingComparator;
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,7 +53,7 @@ public class ListThreadsController implements Controller {
         if (threadId != -1) {
             threads.add(forumDao.getPopulatedThread(threadId));
         } else if (userId != null && userId.trim().length() > 0) {
-            threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow);
+            threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow, threadId);
         } else {
             threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow);
         }
@@ -66,9 +65,6 @@ public class ListThreadsController implements Controller {
                 objectIds.add(""+post.getId());
             }
         }
-
-
-        Collections.sort(threads, new ForumWallThreadListingComparator());
 
         List<Rating> ratings = ratingService.getRatingsForObjects(objectIds, "forum");
         for (Rating rating : ratings) {
