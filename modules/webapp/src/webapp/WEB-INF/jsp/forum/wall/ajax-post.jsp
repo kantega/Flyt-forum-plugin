@@ -84,7 +84,6 @@
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
                 <aksess:getuser userid="${rating.userid}" name="user"/>
                 <aksess:getuser name="innloggetBruker"/>
-                ${user.id} liker dette
                 <c:if test="${rating.userid == innloggetBruker.id}">
                     <c:set var="hasLikedPost" value="true"/>
                 </c:if>
