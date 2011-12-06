@@ -75,6 +75,7 @@
             </c:if>
             <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
                 &nbsp;|&nbsp; <a href="" class="oa-forum-showFullThread"><span class="oa-forum-numberOfComments">${fn:length(thread.posts)-1}</span> <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
+                <a href="" class="oa-forum-minimizeThread oa-forum-hidden"><kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
             &nbsp;|&nbsp;
             <c:set var="postRatings" value="${ratings[post.id]}"/>
