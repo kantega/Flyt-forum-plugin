@@ -78,3 +78,8 @@
 
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#oa-forum-newPost .oa-forum-sharefield").ata();
+    });
+</script>

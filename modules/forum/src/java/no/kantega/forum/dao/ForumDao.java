@@ -151,7 +151,7 @@ public class ForumDao {
         });
     }
 
-    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int forumId) {
+    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int firstResult, final int forumId) {
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
 
@@ -180,6 +180,10 @@ public class ForumDao {
                 Query query = session.createQuery(q.toString());
                 if (maxResults != -1) {
                     query.setMaxResults(maxResults);
+                }
+
+                if (firstResult > -1) {
+                    query.setFirstResult(firstResult);
                 }
 
                 for (int i = 0; i < threadIds.size(); i++) {

@@ -53,3 +53,6 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 .oa-forum-hidden{
     display:none;
 }
+#oa-forum-wall-load-more-threads{
+    display: none;
+}

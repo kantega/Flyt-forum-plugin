@@ -4,11 +4,9 @@
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 
-<div class="oa-forum-threads">
-    <c:forEach items="${threads}" var="thread" varStatus="status">
-        <%@ include file="ajax-thread.jsp" %>
-    </c:forEach>
-</div>
-<div id="submit-animation" style="display: none;">
-    <span class="oa-forum-submit-animation"><img class="oa-forum-posting-loading-animation" src="<aksess:geturl/>/bitmaps/forum/ajax-loader.gif"><kantega:label key="forum.wall.submitting" bundle="forum" locale="${forumLocale}"/></span>
-</div>
+<c:forEach items="${threads}" var="thread" varStatus="status">
+    <c:if test="${status.last && hasMorePosts}">
+        <c:set var="wallHasMorePosts" value="true" scope="request"/>
+    </c:if>
+    <%@ include file="ajax-thread.jsp" %>
+</c:forEach>

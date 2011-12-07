@@ -3,9 +3,6 @@
 
 $(document).ready(function(){
 
-    $("#oa-forum-newPost .oa-forum-sharefield").elastic();
-    $("#oa-forum-link-shareComment").elastic();
-
     // Handles posting of status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
         beforeSubmit: function(arr, $form, options) {
@@ -74,7 +71,6 @@ $(document).ready(function(){
             var comment = $("#oa-forum-link-shareComment").val();
             var labelVal = $("#oa-forum-link-shareComment").siblings("label").text();
             if (comment != "" && comment != labelVal) {
-                alert("ulik faktisk! " + labelVal);
                 body += '<p class="oa-forum-link-comment">' + comment + '</p>';
             }
             body += '<a target="_blank" href="' + $('#oa-forum-link-shareUrl').val() + '" class="">' + $('#oa-forum-link-shareUrl').val() + '</a>';
@@ -86,6 +82,7 @@ $(document).ready(function(){
     // Appends new "shares" to top of wall.
     function prependNewThread(responseText, statusText, xhr, $form)  {
         // Hide animation, show form
+        $form
         window.setTimeout(function(){     // Timeout to allow the animation to complete
             $form.parent().find(".oa-forum-submit-animation").fadeOut(300, function(){
                 $form.fadeIn(300);
@@ -153,7 +150,6 @@ $(document).ready(function(){
             $field.val("");
             $field.removeClass("oa-forum-fadedText");
         }
-        $field.elastic();
     });
     $(".oa-forum-sharefield").live("focusout", function(){
         var $field = $(this);
@@ -240,13 +236,12 @@ $(document).ready(function(){
                 $field.val("");
                 $field.removeClass("oa-forum-fadedText");
             }
-            $field.elastic();
         },10);
     });
 
 // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
-    $(".oa-forum-threads .oa-forum-comment-reply").live("keydown", function(event){
+    $(".oa-forum-threads .oa-forum-comment-reply").live("keyup", function(event){
         if (event.keyCode == enterKeyCode) {
             event.preventDefault();
             var $commentTextarea = $(this);
@@ -260,9 +255,8 @@ $(document).ready(function(){
 
                 // Animating posting process
                 var containerHeight = $commentForm.parent().height();
-                $commentForm.parent().css("height", containerHeight);
-                $commentForm.fadeOut(300, function(){
-                    $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(300);
+                $commentForm.fadeOut(150, function(){
+                    $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
                 });
 
                 $.post(commentFormAction, formParams, function(data) {
@@ -272,12 +266,12 @@ $(document).ready(function(){
                         $newPost.hide();
                         $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
                         var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
-                        $animation.fadeOut(300, function(){
-                            $commentForm.fadeIn(300);
+                        $animation.fadeOut(150, function(){
+                            $commentForm.fadeIn(150);
                             $newPost.slideDown();
                             $animation.remove();
                         })
-                    }, 1200);
+                    }, 800);
                 });
             }
         }

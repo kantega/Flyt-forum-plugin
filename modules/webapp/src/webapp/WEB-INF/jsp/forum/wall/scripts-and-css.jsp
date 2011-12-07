@@ -19,7 +19,7 @@
 </script>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/jquery-form-2.84.js"/>"></script>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/prettyDate.js"/>"></script>
-<script type="text/javascript" src="<kantega:expireurl url="/js/wall/jquery.elastic-1.6.10.js"/>"></script>
+<script type="text/javascript" src="<kantega:expireurl url="/js/wall/jquery.elastic-1.6.11.js"/>"></script>
 <script type="text/javascript">
     // Globale variabler som servertid osv
     var serverTime = "<aksess:getdate format="yyyy-MM-dd'T'HH:mm:ss"/>";

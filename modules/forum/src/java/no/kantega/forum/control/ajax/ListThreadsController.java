@@ -53,9 +53,14 @@ public class ListThreadsController implements Controller {
         if (threadId != -1) {
             threads.add(forumDao.getPopulatedThread(threadId));
         } else if (userId != null && userId.trim().length() > 0) {
-            threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow, threadId);
+            threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumId);
         } else {
-            threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow);
+            threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow + 1);
+        }
+
+        if (numberOfPostsToShow > 0 && threads.size() > numberOfPostsToShow) {
+            model.put("hasMorePosts", Boolean.TRUE);
+            threads = threads.subList(0, threads.size() - 1);
         }
 
         for (ForumThread thread : threads) {
