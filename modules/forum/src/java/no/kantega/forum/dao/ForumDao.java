@@ -50,12 +50,18 @@ public class ForumDao {
     }
 
     public void saveOrUpdate(Post post) {
+        saveOrUpdate(post, true);
+    }
+
+    public void saveOrUpdate(Post post, boolean updateLastPostDateOnThread) {
         template.saveOrUpdate(post);
         updatePostCount(post.getThread().getId());
 
-        ForumThread t = getThread(post.getThread().getId());
-        t.setLastPostDate(new Date());
-        saveOrUpdate(t);
+        if (updateLastPostDateOnThread) {
+            ForumThread t = getThread(post.getThread().getId());
+            t.setLastPostDate(new Date());
+            saveOrUpdate(t);
+        }
     }
 
     public void approve(Post post) {
