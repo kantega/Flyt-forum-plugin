@@ -3,7 +3,7 @@
 
 $(document).ready(function(){
 
-    // Handles posting of status
+    // Handles posting of  status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
         beforeSerialize: function($form, options){
             $form.find("textarea").val(replaceURLWithHTMLLinks($form.find("textarea").val()));
@@ -31,7 +31,7 @@ $(document).ready(function(){
 
     function replaceURLWithHTMLLinks(text) {
         var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return text.replace(exp,"<a href='$1'>$1</a>");
+        return text.replace(exp,"<a onclick='window.open(this.href); return false;' href='$1'>$1</a>");
     }
 
     // Handles posting of photo
