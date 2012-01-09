@@ -5,6 +5,9 @@ $(document).ready(function(){
 
     // Handles posting of status
     $('#oa-forum-tab-container-status .oa-forum-ajaxForm').ajaxForm({
+        beforeSerialize: function($form, options){
+            $form.find("textarea").val(replaceURLWithHTMLLinks($form.find("textarea").val()));
+        },
         beforeSubmit: function(arr, $form, options) {
             if ($.trim($form.find("textarea").val()).length < 1 ) {
                 alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
@@ -25,6 +28,11 @@ $(document).ready(function(){
         resetForm: true,
         success: prependNewThread
     });
+
+    function replaceURLWithHTMLLinks(text) {
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(exp,"<a href='$1'>$1</a>");
+    }
 
     // Handles posting of photo
     $('#oa-forum-tab-container-photo .oa-forum-ajaxForm').ajaxForm({
