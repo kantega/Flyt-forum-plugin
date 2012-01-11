@@ -32,9 +32,14 @@ public class ForumSearchProvider implements DocumentProvider {
         List posts = forumDao.getAllPosts();
 
         for (int i = 0; i < posts.size(); i++) {
-            Document d = getForumDocument((Post)posts.get(i));
-            handler.handleDocument(d);
-            reporter.reportProgress(i, "forum-post", posts.size());
+            try{
+                Document d = getForumDocument((Post)posts.get(i));
+                handler.handleDocument(d);
+                reporter.reportProgress(i, "forum-post", posts.size());
+            } catch (Throwable e) {
+                Log.error(this.getClass().getName(), "Caught throwable during indexing of document id: " +((Post)posts.get(i)).getId() +"", null, null);
+                Log.error(this.getClass().getName(), e, null, null);
+            }
         }
     }
 
