@@ -256,6 +256,7 @@ $(document).ready(function(){
             var $commentForm = $commentTextarea.closest("form");
             var commentFormAction = $commentForm.attr("action");
             var comment = $.trim($commentTextarea.val());
+            comment = replaceURLWithHTMLLinks(comment);
             $commentTextarea.val("");
             if (comment.length > 0){
                 var threadId = $("input[name=threadId]", $commentForm).val();

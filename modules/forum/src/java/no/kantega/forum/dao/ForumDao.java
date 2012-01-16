@@ -6,6 +6,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import java.sql.SQLException;
 
@@ -165,7 +166,7 @@ public class ForumDao {
 
                 queryThreadIds.setString(0, userId);
 
-                List<BigDecimal> threadIds = queryThreadIds.list();
+                List<BigInteger> threadIds = queryThreadIds.list();
                 if (threadIds.size() == 0) {
                     return new ArrayList<ForumThread>();
                 }
@@ -193,8 +194,8 @@ public class ForumDao {
                 }
 
                 for (int i = 0; i < threadIds.size(); i++) {
-                    BigDecimal tId = threadIds.get(i);
-                    query.setBigDecimal(i, tId);
+                    BigInteger tId = threadIds.get(i);
+                    query.setBigInteger(i, tId);
                 }
 
                 List<ForumThread> threads = query.list();

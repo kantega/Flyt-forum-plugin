@@ -17,7 +17,7 @@
     <div class="oa-forum-threads"></div>
     <div id="oa-forum-wall-load-more-threads">
         <a href="#" class="button">
-            <span>Last flere</span>
+            <span><kantega:label key="forum.wall.loadmoreposts" bundle="forum" locale="${forumLocale}"/></span>
         </a>
     </div>
 </div>
@@ -28,7 +28,7 @@
         $("#oa-forum-wall-load-more-threads a").live("click", function(event){
             event.preventDefault();
             loadWallThreads();
-            $(this).hide();
+            $(this).parent().hide();
         });
     });
 
