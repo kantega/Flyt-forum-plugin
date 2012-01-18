@@ -166,7 +166,7 @@ public class ForumDao {
 
                 queryThreadIds.setString(0, userId);
 
-                List<BigInteger> threadIds = queryThreadIds.list();
+                List<Number> threadIds = queryThreadIds.list();
                 if (threadIds.size() == 0) {
                     return new ArrayList<ForumThread>();
                 }
@@ -194,8 +194,8 @@ public class ForumDao {
                 }
 
                 for (int i = 0; i < threadIds.size(); i++) {
-                    BigInteger tId = threadIds.get(i);
-                    query.setBigInteger(i, tId);
+                    Number tId = threadIds.get(i);
+                    query.setLong(i, tId.longValue());
                 }
 
                 List<ForumThread> threads = query.list();
