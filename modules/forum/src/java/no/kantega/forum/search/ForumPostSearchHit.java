@@ -2,6 +2,8 @@ package no.kantega.forum.search;
 
 import no.kantega.search.result.SearchHit;
 
+import java.util.Date;
+
 public class ForumPostSearchHit implements SearchHit {
     private String title;
     private String body;
@@ -9,6 +11,7 @@ public class ForumPostSearchHit implements SearchHit {
     private String owner;
     private String postId;
     private String postThreadId;
+    private Date postDate;
 
     public String getTitle() {
         if (title == null || title.length() == 0) {
@@ -59,5 +62,13 @@ public class ForumPostSearchHit implements SearchHit {
 
     public void setPostThreadId(String postThreadId) {
         this.postThreadId = postThreadId;
+    }
+
+    public Date getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(Date postDate) {
+        this.postDate = postDate;
     }
 }

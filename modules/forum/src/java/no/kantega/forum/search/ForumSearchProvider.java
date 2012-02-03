@@ -10,10 +10,12 @@ import no.kantega.search.index.provider.DocumentProviderHandler;
 import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
 
+import java.text.ParseException;
 import java.util.List;
 
 public class ForumSearchProvider implements DocumentProvider {
@@ -97,11 +99,12 @@ public class ForumSearchProvider implements DocumentProvider {
             d.add(new Field(Fields.CONTENT, allText, Field.Store.NO, Field.Index.ANALYZED));
             d.add(new Field(Fields.CONTENT_UNSTEMMED, allText, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
 
+            d.add(new Field(Fields.LAST_MODIFIED, DateTools.dateToString(post.getPostDate(), DateTools.Resolution.MINUTE), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
             return d;
         } catch(Throwable e) {
             Log.error(getClass().getName(), "Exception creating index document for post id " + post.getId() + ": " + e.getMessage(), null, null);
             Log.error(getClass().getName(), e, null, null);
-            e.printStackTrace();
             return null;
         }
     }
@@ -127,6 +130,11 @@ public class ForumSearchProvider implements DocumentProvider {
         hit.setOwner(document.get(ForumFields.POST_OWNER));
         hit.setPostId(document.get(ForumFields.POST_ID));
         hit.setPostThreadId(document.get(ForumFields.THREAD_ID));
+        try {
+            hit.setPostDate(DateTools.stringToDate(document.get(Fields.LAST_MODIFIED)));
+        } catch (ParseException e) {
+            Log.error(getClass().getName(), e, null, null);
+        }
     }
 
     public void setForumDao(ForumDao forumDao) {
