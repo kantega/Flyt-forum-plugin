@@ -1,12 +1,14 @@
 package no.kantega.forum.dao;
 
 import org.hibernate.*;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.*;
 import java.sql.SQLException;
 
@@ -347,6 +349,19 @@ public class ForumDao {
                 return query.list();
             }
         });
+    }
+
+    public int getNumberOfThreadsAfterDateInForum(final long forumId, final Timestamp lastRefresh){
+        Number n = (Number) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q = session.createQuery("select count(*) from ForumThread t where t.forum.id = ? and t.createdDate > ?");
+                q.setLong(0, forumId);
+                q.setTimestamp(1, lastRefresh);
+                return q.uniqueResult();
+            }
+        });
+
+        return n.intValue();
     }
 
     public List getAllPosts() {

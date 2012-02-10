@@ -14,6 +14,7 @@
 </div>
 
 <div id="oa-forum-forumContent">
+    <div class="oa-forum-new-posts"></div>
     <div class="oa-forum-threads"></div>
     <div id="oa-forum-wall-load-more-threads">
         <a href="#" class="button">
@@ -21,8 +22,12 @@
         </a>
     </div>
 </div>
+<script type="text/javascript" src="<kantega:expireurl url="/js/wall/jquery.timers.js"/>"></script>
 <script type="text/javascript">
+
     $(document).ready(function(){
+        var loadTime = new Date().getTime();
+        var newThreadsTemplate = "<kantega:label key="forum.wall.newThreads" bundle="forum" locale="${forumLocale}"/>";
         // Handles loading and animation of the wall.
         loadWallThreads();
         $("#oa-forum-wall-load-more-threads a").live("click", function(event){
@@ -30,6 +35,14 @@
             loadWallThreads();
             $(this).parent().hide();
         });
+        $("#oa-forum-forumContent .oa-forum-new-posts").everyTime(10000, function() {
+            $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:1, timeStamp:loadTime}, function(data){
+                           if(data.numberOfNewThreads > 0){
+                               var loadNewThreads = $('<a class="numberOfNewThreads" href="" onclick="javascript:loadWallThreads()">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
+                                $(".oa-forum-new-posts").html(loadNewThreads);
+                           }
+                    }
+            )})
     });
 
     function loadWallThreads() {
@@ -39,7 +52,7 @@
         if (noThreads > 0) {
             forumWallUrl += "&offset=" + noThreads;
         }
-        $.post(forumWallUrl, function(data){
+        $.get(forumWallUrl, function(data){
             $("#oa-forum-loading-animation").fadeOut(150, function(){
                 $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
                 var $processedData = $('<div></div>').html(data);

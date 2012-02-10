@@ -70,8 +70,8 @@
                 </div>
                 <div class="oa-forum-formElement oa-forum-txtR">
                     <span class="oa-forum-share-button">
-                    <input type="submit" name="send" value="<kantega:label key="forum.share.link.submit.step2.label" bundle="forum" locale="${forumLocale}"/>">
-                        </span>
+                        <input type="submit" name="send" value="<kantega:label key="forum.share.link.submit.step2.label" bundle="forum" locale="${forumLocale}"/>">
+                    </span>
                 </div>
             </form>
         </div>
