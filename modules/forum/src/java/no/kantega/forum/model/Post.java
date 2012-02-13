@@ -1,8 +1,8 @@
 package no.kantega.forum.model;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,7 +11,7 @@ import java.util.List;
  * Time: 14:45:36
  * To change this template use File | Settings | File Templates.
  */
-public class Post {
+public class Post implements Comparable<Post>{
     private long id;
     private ForumThread thread;
     private long replyToId;
@@ -138,5 +138,9 @@ public class Post {
         }
 
         return this.getThread().isContentComment();
+    }
+
+    public int compareTo(Post o) {
+        return getPostDate().compareTo(o.postDate);
     }
 }

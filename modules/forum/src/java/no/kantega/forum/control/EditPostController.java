@@ -340,12 +340,12 @@ public class EditPostController extends AbstractForumFormController {
             }
         } else if (p.isApproved()) {
             // Vis tr�den hvis innlegget er godkjent
-            map.put("threadId", new Long(p.getThread().getId()));
-            map.put("postId", new Long(p.getId()));
+            map.put("threadId", p.getThread().getId());
+            map.put("postId", p.getId());
             return new ModelAndView(new RedirectView("viewthread"), map);
         } else {
             // Vis innlegget hvis det ikke er godkjent
-            map.put("postId", new Long(p.getId()));
+            map.put("postId", p.getId());
             return new ModelAndView(new RedirectView("viewpost"), map);
         }
     }
@@ -393,7 +393,7 @@ public class EditPostController extends AbstractForumFormController {
                                 ByteArrayOutputStream bout = ImageHelper.resizeImage(bos, maxImageWidth, maxImageHeight, imageFormat, 85);
                                 bytes = bout.toByteArray();
                                 size = bytes.length;
-                                if (filename.indexOf(".") != -1) {
+                                if (filename.contains(".")) {
                                     filename = filename.substring(0, filename.lastIndexOf(".")) + "." + imageFormat;
                                 }
                             }
