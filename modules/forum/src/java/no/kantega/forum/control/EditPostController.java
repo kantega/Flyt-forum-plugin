@@ -51,13 +51,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 21.des.2005
- * Time: 12:11:54
- * To change this template use File | Settings | File Templates.
- */
 public class EditPostController extends AbstractForumFormController {
     private static final String SOURCE = "EditPostController";
 
@@ -299,7 +292,7 @@ public class EditPostController extends AbstractForumFormController {
         String moderator = p.getThread().getForum().getModerator();
         if (!p.isApproved() && moderator != null && moderator.length() > 0) {
             UserProfile profile = userProfileManager.getUserProfile(moderator);
-            if (profile != null && profile.getEmail() != null && profile.getEmail().indexOf("@") != -1) {
+            if (profile != null && profile.getEmail() != null && profile.getEmail().contains("@")) {
                 Configuration config = Aksess.getConfiguration();
                 String from = config.getString("mail.from");
                 if (from == null) {

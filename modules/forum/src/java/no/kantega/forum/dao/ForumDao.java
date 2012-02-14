@@ -1,28 +1,18 @@
 package no.kantega.forum.dao;
 
-import org.hibernate.*;
-import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import no.kantega.forum.model.*;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.sql.SQLException;
 
-import no.kantega.forum.model.*;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.topicmaps.data.Topic;
-
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 02.des.2005
- * Time: 13:10:00
- * To change this template use File | Settings | File Templates.
- */
 public class ForumDao {
     private HibernateTemplate template;
 
@@ -351,12 +341,13 @@ public class ForumDao {
         });
     }
 
-    public int getNumberOfThreadsAfterDateInForum(final long forumId, final Timestamp lastRefresh){
+    public int getNumberOfThreadsAfterDateInForumNotByUser(final long forumId, final Timestamp lastRefresh, final String username){
         Number n = (Number) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q = session.createQuery("select count(*) from ForumThread t where t.forum.id = ? and t.createdDate > ?");
+                Query q = session.createQuery("select count(*) from ForumThread t where t.forum.id = ? and t.createdDate > ? and t.owner <> ?");
                 q.setLong(0, forumId);
                 q.setTimestamp(1, lastRefresh);
+                q.setString(2, username);
                 return q.uniqueResult();
             }
         });

@@ -4,13 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 02.des.2005
- * Time: 14:45:36
- * To change this template use File | Settings | File Templates.
- */
 public class Post implements Comparable<Post>{
     private long id;
     private ForumThread thread;

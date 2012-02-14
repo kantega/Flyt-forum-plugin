@@ -10,7 +10,8 @@ import org.springframework.web.servlet.mvc.Controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NumberOfNewThreadsInForumController implements Controller {
 
@@ -20,9 +21,10 @@ public class NumberOfNewThreadsInForumController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         long forumId = ServletRequestUtils.getRequiredLongParameter(httpServletRequest, "forumId");
         long timeStamp = ServletRequestUtils.getRequiredLongParameter(httpServletRequest, "timeStamp");
+        String username = ServletRequestUtils.getRequiredStringParameter(httpServletRequest, "username");
 
         Timestamp lastRefresh = new Timestamp(timeStamp);
-        int numberOfNewThreads = forumDao.getNumberOfThreadsAfterDateInForum(forumId, lastRefresh);
+        int numberOfNewThreads = forumDao.getNumberOfThreadsAfterDateInForumNotByUser(forumId, lastRefresh, username);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("numberOfNewThreads", numberOfNewThreads);

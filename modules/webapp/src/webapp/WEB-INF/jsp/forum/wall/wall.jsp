@@ -37,7 +37,8 @@
         });
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
         newpostsContainer.everyTime(10000, function() {
-            $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:1, timeStamp:loadTime}, function(data){
+            <aksess:getuser name="user" />
+            $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:1, timeStamp:loadTime, username:'${user.id}'}, function(data){
                            if(data.numberOfNewThreads > 0){
                                var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
                                loadNewThreads.click(function(event){
