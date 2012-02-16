@@ -7,12 +7,8 @@ import java.util.Date;
 import java.util.concurrent.*;
 
 /**
- * User: tarkil
- * Date: Jul 21, 2008
- * Time: 8:00:58 AM
- *
- * Dette er en wrapper-klasse for com.intrinsyc.cdo.Session. Alle operasjoner på
- * objekter fra den klassen bør gå gjennom denne.
+ * Dette er en wrapper-klasse for com.intrinsyc.cdo.Session. Alle operasjoner pÃ¥
+ * objekter fra den klassen bÃ¸r gÃ¥ gjennom denne.
  */
 public class CdoSessionWrapper {
 

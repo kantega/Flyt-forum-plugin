@@ -24,7 +24,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -76,7 +79,7 @@ public class EditDocumentController extends FormControllerSupport {
             MultipartFile file  = request.getFile("contentFile");
 
             String newDocument = httpServletRequest.getParameter("newdocument");
-            //slik at dersom man ikke laster opp noe så forkastes ikke det som er
+            //slik at dersom man ikke laster opp noe sÃ¥ forkastes ikke det som er
             if (file.getSize()>0){
                 document.setFileName(file.getOriginalFilename());
                 document.setContentType(file.getContentType());
@@ -95,7 +98,7 @@ public class EditDocumentController extends FormControllerSupport {
             }
             if( file.getSize()<1 && "true".equals(newDocument)){
                 // Nytt dokument og blank innhold ikke lov
-                // Dette kan sikkert gjøres mer elegant med en eller annen Spring validator.
+                // Dette kan sikkert gjÃ¸res mer elegant med en eller annen Spring validator.
                 Map map = new HashMap();
                 map.put("document",document);
                 map.put("errormessage","Kan ikke laste opp tomt dokument");

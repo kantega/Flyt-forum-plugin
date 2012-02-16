@@ -1,25 +1,23 @@
 package no.kantega.projectweb.control.project;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.modules.user.UserResolver;
+import no.kantega.projectweb.dao.ProjectWebDao;
+import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.model.ActivityStatus;
+import no.kantega.projectweb.permission.GlobalPermissions;
+import no.kantega.projectweb.permission.PermissionManager;
+import no.kantega.publishing.common.Aksess;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.permission.PermissionManager;
-import no.kantega.projectweb.permission.GlobalPermissions;
-import no.kantega.projectweb.model.Activity;
-import no.kantega.projectweb.model.ActivityStatus;
-import no.kantega.modules.user.UserResolver;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.configuration.Configuration;
-
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +44,7 @@ public class ProjectListController implements Controller {
         }
 
         if (user != null && user.length() > 0) {
-            // Hent aktiviteter som bruker er ansvarlig for, skal vises på forsida
+            // Hent aktiviteter som bruker er ansvarlig for, skal vises pÃ¥ forsida
             DetachedCriteria criteria = DetachedCriteria.forClass(Activity.class);
             criteria.add(Property.forName("assignee").eq(user));
 

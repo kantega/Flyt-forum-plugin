@@ -1,18 +1,17 @@
 package no.kantega.projectweb.dao;
 
-import org.hibernate.*;
-import org.hibernate.criterion.*;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.apache.log4j.Logger;
-
-import java.util.*;
-import java.sql.SQLException;
-
 import no.kantega.projectweb.model.*;
-import no.kantega.projectweb.permission.scheme.PermissionScheme;
-import no.kantega.projectweb.permission.scheme.PermissionEntry;
 import no.kantega.projectweb.permission.PermissionInvalidator;
+import no.kantega.projectweb.permission.scheme.PermissionEntry;
+import no.kantega.projectweb.permission.scheme.PermissionScheme;
+import org.apache.log4j.Logger;
+import org.hibernate.*;
+import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+
+import java.sql.SQLException;
+import java.util.*;
 
 public class ProjectWebDao {
 
@@ -91,7 +90,7 @@ public class ProjectWebDao {
                 q.setLong("activityId", activityId);
                 Object o = q.uniqueResult();
                 log.info("O is: " +o);
-                //unngå lazy
+                //unngÃ¥ lazy
                 (((Activity)o).getDocuments()).size();
                 return o;
             }
@@ -112,7 +111,7 @@ public class ProjectWebDao {
                 if(withContent) {
                     doc.getDocumentContent().getContent();
                 }
-                //unngå lazy
+                //unngÃ¥ lazy
                 (((Document)doc).getActivities()).size();
                 return doc;
             }
@@ -502,7 +501,7 @@ public class ProjectWebDao {
                     session.delete(doc);
                     session.flush();
                 }
-                // Fjerner aktiviteter på prosjektet
+                // Fjerner aktiviteter pÃ¥ prosjektet
                 Set activities = project.getActivities();
                 iter = activities.iterator();
                 while( iter.hasNext() ) {

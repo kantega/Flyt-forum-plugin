@@ -1,23 +1,21 @@
 package no.kantega.projectweb.control.activity;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.hibernate.criterion.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.projectweb.dao.ProjectWebDao;
-import no.kantega.projectweb.model.Project;
-import no.kantega.projectweb.model.Activity;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.projectweb.activity.ActivityStatusManager;
-import no.kantega.projectweb.util.ProjectWebUtil;
-import no.kantega.projectweb.permission.PermissionManager;
+import no.kantega.projectweb.dao.ProjectWebDao;
+import no.kantega.projectweb.model.Activity;
+import no.kantega.projectweb.model.Project;
 import no.kantega.projectweb.permission.GlobalPermissions;
+import no.kantega.projectweb.permission.PermissionManager;
 import no.kantega.projectweb.permission.Permissions;
+import no.kantega.projectweb.util.ProjectWebUtil;
+import org.hibernate.criterion.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -100,7 +98,7 @@ public class ActivityListController implements Controller {
         // Faser
         List allPhases = dao.getProjectPhases();
 
-        // Dersom alle faser er valgt søker vi ikke på fase, i tilfelle fase ikke er angitt
+        // Dersom alle faser er valgt sÃ¸ker vi ikke pÃ¥ fase, i tilfelle fase ikke er angitt
         if(phases != null && phases.length > 0 && phases.length != allPhases.size()) {
             boolean any = false;
             Long[] lphases = new Long[phases.length];

@@ -22,7 +22,6 @@ public class ForumDao {
         this.template = template;
     }
 
-    // saveOrUpdate
     public void saveOrUpdate(ForumCategory forumCategory) {
         template.saveOrUpdate(forumCategory);
     }

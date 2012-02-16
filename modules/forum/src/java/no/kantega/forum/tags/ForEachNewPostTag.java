@@ -1,25 +1,20 @@
 package no.kantega.forum.tags;
 
-import org.apache.log4j.Logger;
-import org.springframework.web.util.ExpressionEvaluationUtils;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.context.ApplicationContext;
-
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
-import no.kantega.forum.model.Post;
-import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.spring.RootContext;
+import org.apache.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.LoopTagSupport;
+import java.util.*;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -76,8 +71,8 @@ public class ForEachNewPostTag extends LoopTagSupport {
             }
 
             /*
-                Vi gjør et lite triks: Fordi brukeren kanskje ikke har tilgang til alle forum henter vi flere enn
-                det vi trenger og viser bare de første.  Er ikke perfekt... men bør fungere i de fleste tilfeller
+                Vi gjÃ¸r et lite triks: Fordi brukeren kanskje ikke har tilgang til alle forum henter vi flere enn
+                det vi trenger og viser bare de fÃ¸rste.  Er ikke perfekt... men bÃ¸r fungere i de fleste tilfeller
              */
             List posts;
             if (fId == null || fId.length == 0) {

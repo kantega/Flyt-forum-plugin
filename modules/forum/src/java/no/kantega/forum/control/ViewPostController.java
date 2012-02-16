@@ -1,18 +1,17 @@
 package no.kantega.forum.control;
 
+import no.kantega.commons.util.StringHelper;
+import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.Post;
+import no.kantega.forum.util.ForumPostReadStatus;
+import no.kantega.forum.util.ForumUtil;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
-
-import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.Post;
-import no.kantega.forum.util.ForumUtil;
-import no.kantega.forum.util.ForumPostReadStatus;
-import no.kantega.commons.util.StringHelper;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,10 +41,10 @@ public class ViewPostController extends AbstractForumViewController {
             map.put("post", p);
             map.put("gotchildren", String.valueOf(dao.postGotChildren(p)));
 
-            // Legg inn tidspunkt for siste besøk
+            // Legg inn tidspunkt for siste besÃ¸k
             Date lastVisit = ForumUtil.getLastVisit(request, response, true);
 
-            // Legg til at denne posten er lest siden siste besøk
+            // Legg til at denne posten er lest siden siste besÃ¸k
             if (lastVisit != null && p != null && p.getPostDate().getTime() > lastVisit.getTime()) {
                 new ForumPostReadStatus(request).addPost(p);
             }

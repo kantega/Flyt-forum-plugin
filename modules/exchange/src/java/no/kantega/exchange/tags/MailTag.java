@@ -3,17 +3,18 @@ package no.kantega.exchange.tags;
 import com.intrinsyc.cdo.*;
 import no.kantega.commons.log.Log;
 import no.kantega.exchange.model.MailItem;
-import no.kantega.exchange.model.MailTagModel;
 import no.kantega.exchange.util.CdoSessionWrapper;
 import no.kantega.exchange.util.ExchangeManager;
 import org.springframework.web.util.ExpressionEvaluationUtils;
 
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * User: Espen A. Fossen @ Kantega
@@ -62,8 +63,8 @@ public class MailTag extends LoopTagSupport {
             // get the message collection from the inbox
             Messages msgs = new MessagesProxy(box.getMessages());
 
-            // Har ved prøving og feiling funnet ut at denne gjør at
-            // meldinger blir sortert slik at de nyeste får lavest indeks.
+            // Har ved prÃ¸ving og feiling funnet ut at denne gjÃ¸r at
+            // meldinger blir sortert slik at de nyeste fÃ¸r lavest indeks.
             msgs.sort(new Integer(CdoSortOrder.CdoDescending), null);
 
             int nofMsgs = ((Integer)msgs.getCount()).intValue();
@@ -170,7 +171,7 @@ public class MailTag extends LoopTagSupport {
 
     /**
      * Henter verdien til feltet med ID: FIELD_ID_RELATIVE_URL fra meldingen gitt som parameter.
-     * Denne verdien ser ut til å være "/folder/subject.EML" og kan brukes som en relativ
+     * Denne verdien ser ut til ï¿½ vï¿½re "/folder/subject.EML" og kan brukes som en relativ
      * URL for OWA.
      * @param msg meldingen verdien skal hentes fra.
      * @return verdien til feltet med ID: FIELD_ID_RELATIVE_URL.

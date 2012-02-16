@@ -44,11 +44,11 @@ public class ForumUtil {
     }
 
     /***
-     * Henter tidspunkt for siste besøk fra cookie.  Lagrer nåværende tidspunkt i cookie.
+     * Henter tidspunkt for siste besÃ¸k fra cookie.  Lagrer nÃ¥vÃ¦rende tidspunkt i cookie.
      * @param request
      * @param response
      * @param update - oppdater ja / nei
-     * @return siste besøk
+     * @return siste besÃ¸k
      */
     public static Date getLastVisit(HttpServletRequest request, HttpServletResponse response, boolean update) {
         HttpSession session = request.getSession(true);
@@ -81,7 +81,7 @@ public class ForumUtil {
         if (update) {
             // Lagre nytt tidspunkt i cookie
             Cookie cookie = new Cookie(lastVisitCookieName, cookieDateFormat.format(new Date()));
-            cookie.setMaxAge(3*30*24*60*60);//Ca 3 måneder
+            cookie.setMaxAge(3*30*24*60*60);//Ca 3 mï¿½neder
             String path = Aksess.getContextPath();
             if (path == null || path.equals("")) {
                 path = "/";

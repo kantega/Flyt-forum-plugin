@@ -1,22 +1,19 @@
 package no.kantega.forum.util;
 
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.Aksess;
-
-import javax.imageio.stream.ImageOutputStream;
-import javax.imageio.ImageWriter;
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
-import javax.imageio.IIOImage;
+import javax.imageio.ImageWriter;
 import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import java.awt.image.BufferedImage;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Iterator;
 import java.util.Locale;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
+import java.util.Map;
 
 /**
  *
@@ -27,8 +24,8 @@ public class ImageHelper {
      * med krympet bilde
      *
      * @param bos         - Stream med orginalt bilde
-     * @param width       - Ny bredde på bilde
-     * @param height      - Ny høyde på bilde
+     * @param width       - Ny bredde pÃ¥ bilde
+     * @param height      - Ny hÃ¸yde pÃ¥ bilde
      * @param imageFormat - Bildeformat jpg / png
      * @param quality     - Kvalitet for jpg bilder
      * @return - Resultatbilde

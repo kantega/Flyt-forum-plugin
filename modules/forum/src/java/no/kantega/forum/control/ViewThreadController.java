@@ -1,18 +1,17 @@
 package no.kantega.forum.control;
 
+import no.kantega.commons.util.StringHelper;
+import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
+import no.kantega.forum.util.ForumPostReadStatus;
+import no.kantega.forum.util.ForumUtil;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-
-import no.kantega.forum.model.ForumThread;
-import no.kantega.forum.model.Post;
-import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.util.ForumUtil;
-import no.kantega.forum.util.ForumPostReadStatus;
-import no.kantega.commons.util.StringHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +60,7 @@ public class ViewThreadController extends AbstractForumViewController {
             map.put("startindexes", startIndexes);
             map.put("pages", new Integer(startIndexes.size()));
 
-            // Legg inn tidspunkt for siste besøk
+            // Legg inn tidspunkt for siste besÃ¸k
             Date lastVisit = ForumUtil.getLastVisit(request, response, true);
 
             List posts = dao.getPostsInThread(t.getId(), startIndex, maxPosts);
@@ -73,7 +72,7 @@ public class ViewThreadController extends AbstractForumViewController {
                     body = StringHelper.replace(body, "\n", "<br>");
                     p.setBody(body);
 
-                    // Legg til at denne posten er lest siden siste besøk
+                    // Legg til at denne posten er lest siden siste besÃ¸k
                     if (lastVisit != null && p.getPostDate().getTime() > lastVisit.getTime()) {
                         new ForumPostReadStatus(request).addPost(p);
                     }

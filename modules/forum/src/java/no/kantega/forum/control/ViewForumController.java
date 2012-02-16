@@ -1,17 +1,16 @@
 package no.kantega.forum.control;
 
+import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
+import no.kantega.forum.util.ForumPostReadStatus;
+import no.kantega.forum.util.ForumUtil;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-
-import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.Forum;
-import no.kantega.forum.model.ForumThread;
-import no.kantega.forum.model.Post;
-import no.kantega.forum.util.ForumUtil;
-import no.kantega.forum.util.ForumPostReadStatus;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,7 +51,7 @@ public class ViewForumController extends AbstractForumViewController {
 
             map.put("forum", f);
 
-            // Hent nye poster siden siste besøk
+            // Hent nye poster siden siste besÃ¸k
             ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
             List unreadPosts = null;
 

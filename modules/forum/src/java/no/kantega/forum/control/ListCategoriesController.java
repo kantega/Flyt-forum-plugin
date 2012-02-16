@@ -43,7 +43,7 @@ public class ListCategoriesController implements Controller {
             username = user.getUsername();
         }
 
-        // Hent nye poster siden siste besøk
+        // Hent nye poster siden siste besÃ¸k
         ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
         List unreadPosts = null;
 
