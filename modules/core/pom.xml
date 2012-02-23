@@ -48,14 +48,6 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <!--
-        <dependency>
-            <groupId>lucene</groupId>
-            <artifactId>lucene</artifactId>
-            <version>1.4.3</version>
-        </dependency>
-            -->
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
@@ -73,14 +65,8 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
+            <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.9</version>
-        </dependency>
-
 
         <dependency>
             <groupId>opensymphony</groupId>
