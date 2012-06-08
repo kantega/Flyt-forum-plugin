@@ -37,7 +37,7 @@
         </set>
         <property name="attachmentsAllowed" not-null="false" type="yes_no"/>
         <property name="approvalRequired" not-null="false" type="yes_no"/>
-        <property name="anonymousPostAllowed" not-null="false" type="yes_no"/>        
+        <property name="anonymousPostAllowed" not-null="false" type="yes_no"/>
         <property name="moderator"/>
         <set name="groups" table="forum_forum_groups" lazy="false">
             <key column="forumId"/>
@@ -58,12 +58,12 @@
         <property name="numPosts"/>
         <property name="owner"/>
         <property name="contentId"/>
-        <set name="posts" order-by="postId" cascade="all-delete-orphan">
+        <set name="posts" order-by="postId" cascade="all-delete-orphan" batch-size="40">
             <key column="threadId"/>
             <one-to-many class="Post"/>
         </set>
         <property name="approved" not-null="false" type="yes_no"/>
-        <set name="topics" table="forum_thread_topics" lazy="false">
+        <set name="topics" table="forum_thread_topics" lazy="false" batch-size="40">
             <key column="threadId"/>
             <element column="topicId" type="string"/>
         </set>
@@ -82,7 +82,7 @@
         <property name="body" type="text" />
         <property name="postDate" type="timestamp"/>
         <property name="owner"/>
-        <set name="attachments" order-by="attachmentId" cascade="all-delete-orphan" lazy="false">
+        <set name="attachments" order-by="attachmentId" cascade="all-delete-orphan" lazy="false" batch-size="40">
             <key column="postId"/>
             <one-to-many class="Attachment"/>
         </set>

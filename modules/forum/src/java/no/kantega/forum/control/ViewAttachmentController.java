@@ -48,7 +48,6 @@ public class ViewAttachmentController extends AbstractController {
                 } else {
                     out.write(attachment.getData());
                 }
-                System.out.println("Length:" + attachment.getData().length);
             }
         }
 
