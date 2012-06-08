@@ -31,6 +31,8 @@ public class ListThreadsController implements Controller {
 
         RequestParameters param = new RequestParameters(request);
         int forumId = param.getInt("forumId");
+        int hiddenForumId = param.getInt("hiddenForumId");
+        int forumCategoryId = param.getInt("forumCategoryId");
         int offset = param.getInt("offset");
         int numberOfPostsToShow = param.getInt("numberOfPostsToShow");
         int threadId = param.getInt("threadId");
@@ -43,6 +45,8 @@ public class ListThreadsController implements Controller {
             offset = 0;
         }
 
+        model.put("hiddenForumId", hiddenForumId);
+
         /*
         Bygg en list med String id of poster
          */
@@ -53,7 +57,9 @@ public class ListThreadsController implements Controller {
         if (threadId != -1) {
             threads.add(forumDao.getPopulatedThread(threadId));
         } else if (userId != null && userId.trim().length() > 0) {
-            threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumId);
+            threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumId, forumCategoryId);
+        } else if (forumCategoryId != -1) {
+            threads = forumDao.getThreadsInForumCategory(forumCategoryId, offset, numberOfPostsToShow + 1);
         } else {
             threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow + 1);
         }

@@ -149,7 +149,7 @@ public class ForumDao {
         });
     }
 
-    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int firstResult, final int forumId) {
+    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int firstResult, final int forumId, final int forumCategoryId) {
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
 
@@ -174,6 +174,10 @@ public class ForumDao {
                 if (forumId != -1) {
                     q.append(" and t.forum.id = " + forumId);
                 }
+                if (forumCategoryId != -1) {
+                    q.append(" and t.forum.forumCategory.id = " + forumCategoryId);
+                }
+
                 q.append(" order by t.lastPostDate desc");
                 Query query = session.createQuery(q.toString());
                 if (maxResults != -1) {
@@ -354,6 +358,21 @@ public class ForumDao {
         return n.intValue();
     }
 
+    public int getNumberOfThreadsAfterDateInForumCategoryNotByUser(final long forumCategoryId, final Timestamp lastRefresh, final String username){
+        Number n = (Number) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q = session.createQuery("select count(*) from ForumThread t where t.forum.forumCategory.id = ? and t.createdDate > ? and t.owner <> ?");
+                q.setLong(0, forumCategoryId);
+                q.setTimestamp(1, lastRefresh);
+                q.setString(2, username);
+                return q.uniqueResult();
+            }
+        });
+
+        return n.intValue();
+    }
+
+
     public List getAllPosts() {
         return (List) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
@@ -442,7 +461,18 @@ public class ForumDao {
     }
 
     public ForumCategory getForumCategory(final long forumCategoryId) {
-        return (ForumCategory) template.get(ForumCategory.class, new Long(forumCategoryId));
+        return (ForumCategory) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q  = session.createQuery("from ForumCategory c where c.id = ?");
+                q.setLong(0, forumCategoryId);
+
+                ForumCategory category = (ForumCategory)q.list().get(0);
+                for (Object forum : category.getForums()) {
+                    Hibernate.initialize(forum);
+                }
+                return category;
+            }
+        });
     }
 
     public Post getPost(final long postId) {
@@ -507,6 +537,26 @@ public class ForumDao {
             }
         });
     }
+
+    public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult) {
+
+        return (List<ForumThread>) template.execute(new HibernateCallback() {
+            public Object doInHibernate(Session session) throws HibernateException {
+                Query q  = session.createQuery("from ForumThread t where t.forum.forumCategory.id = ? and t.approved = ? order by t.lastPostDate desc");
+                q.setLong(0, forumCategoryId);
+                q.setString(1, "Y");
+                q.setFirstResult(firstResult);
+                q.setMaxResults(maxResult);
+
+                List <ForumThread> threads = (List<ForumThread>)q.list();
+                for (ForumThread thread : threads) {
+                    Hibernate.initialize(thread.getPosts());
+                }
+                return threads;
+            }
+        });
+    }
+
 
     public List getPostsInThread(final long id, final int firstResult, final int maxResult) {
         return getPostsInThread(id, firstResult, maxResult, false);

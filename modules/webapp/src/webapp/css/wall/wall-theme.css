@@ -87,29 +87,12 @@
     padding:0;
 }
 
-/*
- .oa-forum-shareListLinks
- */
-.oa-forum-shareListLinks{
-    margin:0 10px 0;
-    padding: 0 0 10px;
-}
-.oa-forum-shareListLinks li{
-    padding: 10px 10px 0 0;
-}
 
 a.oa-forum-iconLink{text-decoration:none;}
 a.oa-forum-iconLink img{vertical-align:middle; padding-right: 5px;}
 a.oa-forum-iconLink:hover span{text-decoration:underline;}
 a.oa-forum-iconLink:hover img{text-decoration:none;}
 
-.oa-forum-tab-container{}
-
-#oa-forum-newPost .oa-forum-tabs{
-    border:1px solid #ccc;
-    padding:10px;
-    background-color:#f1f1f1;
-}
 
 #oa-forum-loading-animation{
     padding:10px;

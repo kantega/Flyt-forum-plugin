@@ -2,10 +2,13 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-<c:if test="${showSharebox != null}">
+<c:if test="${showForumTabs}">
+    <%@include file="forumtabs.jsp"%>
+</c:if>
+<c:if test="${showSharebox}">
     <%@include file="sharebox.jsp"%>
 </c:if>
+
 <div id="oa-forum-loading-animation">
     <span class="oa-forum-submit-animation"><img class="oa-forum-posting-loading-animation" src="<aksess:geturl/>/bitmaps/forum/ajax-loader.gif"><kantega:label key="forum.share.wall.loading.label" bundle="forum" locale="${forumLocale}"/></span>
 </div>
@@ -38,7 +41,7 @@
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
         newpostsContainer.everyTime(10000, function() {
             <aksess:getuser name="user" />
-            $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:1, timeStamp:loadTime, username:'${user.id}'}, function(data){
+            $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:${forumId}, forumCategoryId: ${forumCategoryId}, timeStamp:loadTime, username:'${user.id}'}, function(data) {
                            if(data.numberOfNewThreads > 0){
                                var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
                                loadNewThreads.click(function(event){

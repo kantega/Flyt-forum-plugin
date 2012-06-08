@@ -19,12 +19,22 @@ public class NumberOfNewThreadsInForumController implements Controller {
     private View jsonView;
 
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
-        long forumId = ServletRequestUtils.getRequiredLongParameter(httpServletRequest, "forumId");
+
+
+        long forumId = ServletRequestUtils.getLongParameter(httpServletRequest, "forumId", -1);
+        long forumCategoryId = ServletRequestUtils.getLongParameter(httpServletRequest, "forumCategoryId", -1);
+
         long timeStamp = ServletRequestUtils.getRequiredLongParameter(httpServletRequest, "timeStamp");
         String username = ServletRequestUtils.getRequiredStringParameter(httpServletRequest, "username");
 
         Timestamp lastRefresh = new Timestamp(timeStamp);
-        int numberOfNewThreads = forumDao.getNumberOfThreadsAfterDateInForumNotByUser(forumId, lastRefresh, username);
+        int numberOfNewThreads;
+
+        if (forumId != -1) {
+            numberOfNewThreads = forumDao.getNumberOfThreadsAfterDateInForumNotByUser(forumId, lastRefresh, username);
+        } else {
+            numberOfNewThreads = forumDao.getNumberOfThreadsAfterDateInForumCategoryNotByUser(forumCategoryId, lastRefresh, username);
+        }
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("numberOfNewThreads", numberOfNewThreads);

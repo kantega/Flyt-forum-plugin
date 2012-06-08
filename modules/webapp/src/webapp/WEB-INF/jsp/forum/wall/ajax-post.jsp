@@ -37,7 +37,6 @@
             </c:otherwise>
         </c:choose>
 
-
         <div class="oa-forum-body">
             <p><c:out value="${post.body}" escapeXml="false"/></p>
         </div>
@@ -106,6 +105,10 @@
                 </c:otherwise>
             </c:choose>
             <c:remove var="hasLikedPost"/>
+
+            <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
+                <span class="oa-forum-forumname">${post.thread.forum.name}</span>
+            </c:if>
         </div>
     </div>
     <div style="clear:both"></div>
