@@ -31,7 +31,6 @@ $(document).ready(function(){
 
     $('#oa-forum-sharebox-textarea').live('focus', function() {
         $('#oa-forum-sharebox-buttons').show();
-        $('#oa-forum-sharebox-textarea').height(50);
     });
 
     $('#oa-forum-share-add-attachment a').live('click', function(event) {
