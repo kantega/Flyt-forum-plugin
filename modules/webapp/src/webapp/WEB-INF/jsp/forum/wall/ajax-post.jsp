@@ -38,7 +38,17 @@
         </c:choose>
 
         <div class="oa-forum-body">
-            <p><c:out value="${post.body}" escapeXml="false"/></p>
+            <p>
+                <c:choose>
+                    <c:when test="${postsStatus.index == 0}">
+                        <%-- Only the first post in a thread might need a preview. Comments in a thread is displayed as normal --%>
+                        <forum:formatwallpost postbody="${post.body}" charsinbodypreview="200"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:out value="${post.body}" escapeXml="false"/>
+                    </c:otherwise>
+                </c:choose>
+            </p>
         </div>
         <c:if test="${not empty post.attachments}">
             <div class="oa-forum-attachments">

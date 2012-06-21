@@ -282,6 +282,22 @@
     </tag>
 
     <tag>
+        <name>formatwallpost</name>
+        <tag-class>no.kantega.forum.tags.wall.FormatWallPostPreview</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>postbody</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>charsinbodypreview</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
         <description>Prints required javascript and css files for the forum wall</description>
         <name>wall-headerdependencies</name>
         <tag-class>no.kantega.forum.tags.wall.RenderWallScriptsAndCssTag</tag-class>

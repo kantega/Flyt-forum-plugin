@@ -38,6 +38,7 @@
             loadWallThreads(true);
             $(this).parent().hide();
         });
+
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
         newpostsContainer.everyTime(10000, function() {
             <aksess:getuser name="user" />
