@@ -1,5 +1,8 @@
 package no.kantega.forum.tags.wall;
 
+import no.kantega.commons.util.LocaleLabels;
+import no.kantega.publishing.common.Aksess;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -16,7 +19,7 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         JspWriter out = pageContext.getOut();
         StringBuffer formattedPostBody = new StringBuffer();
 
-        // Dont't want to split up html anchor in preview text. So must first check if a link is present in the preview text
+        // Dont want to split up html anchor in preview text. So must first check if a link is present in the preview text
         String linkStartTag = "<a";
         String linkEndTag = "</a>";
         int indexOfFirstLink = postbody.indexOf(linkStartTag);
@@ -26,12 +29,12 @@ public class FormatWallPostPreview extends SimpleTagSupport {
                 charsInBodyPreview = charsInBodyPreview + ( (indexOfFirstLinkEnd + linkEndTag.length()) - indexOfFirstLink);
             }
         }
-
         // Creating a preview if neccessary
         if (postbody.length() > charsInBodyPreview) {
+            String linkText = LocaleLabels.getLabel("forum.wall.post.previewlink","forum", Aksess.getDefaultAdminLocale());
             formattedPostBody.append(postbody.substring(0, charsInBodyPreview +1));
             formattedPostBody.append("<span class=\"oa-forum-post-preview-more-indicator\">...</span>");
-            formattedPostBody.append("<br><a href=\"#\" class=\"oa-forum-post-preview-show-full-body-link\">Vis hele teksten</a><br>");
+            formattedPostBody.append("<br><a href=\"#\" class=\"oa-forum-post-preview-show-full-body-link\">" + linkText + "</a><br>");
             formattedPostBody.append("<span class=\"oa-forum-post-preview-hidden-post-body\">" + postbody.substring(charsInBodyPreview + 1) + "</span>");
         } else {
             formattedPostBody.append(postbody);

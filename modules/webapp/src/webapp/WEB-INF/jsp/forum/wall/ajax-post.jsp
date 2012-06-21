@@ -42,7 +42,7 @@
                 <c:choose>
                     <c:when test="${postsStatus.index == 0}">
                         <%-- Only the first post in a thread might need a preview. Comments in a thread is displayed as normal --%>
-                        <forum:formatwallpost postbody="${post.body}" charsinbodypreview="200"/>
+                        <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
                     </c:when>
                     <c:otherwise>
                         <c:out value="${post.body}" escapeXml="false"/>
@@ -90,6 +90,16 @@
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
 
+            <c:choose>
+                <c:when test="${fn:length(postRatings) > 3}">
+                    <%-- Example: Brian Griffin, Stewie Griffin and <a href="" class="oa-forum-likes-popoup-link">4 more</a> likes this --%>
+
+                </c:when>
+                <c:otherwise>
+                    <%-- Example: Brian Griffin, Stewie Griffin, Joe Swanson and Quagmire likes this --%>
+
+                </c:otherwise>
+            </c:choose>
 
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
                 <aksess:getuser userid="${rating.userid}" name="user" usecache="true"/>
