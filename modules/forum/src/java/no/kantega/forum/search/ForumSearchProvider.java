@@ -17,6 +17,7 @@ import org.apache.lucene.index.Term;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public class ForumSearchProvider implements DocumentProvider {
     ForumDao forumDao;
@@ -43,6 +44,11 @@ public class ForumSearchProvider implements DocumentProvider {
                 Log.error(this.getClass().getName(), e, null, null);
             }
         }
+    }
+
+    @Override
+    public void provideDocuments(DocumentProviderHandler documentProviderHandler, ProgressReporter progressReporter, Map map) {
+        provideDocuments(documentProviderHandler, progressReporter);
     }
 
     public Document provideDocument(String s) {

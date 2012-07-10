@@ -129,9 +129,15 @@ public class Crawler implements DocumentProvider {
 
         }
     }
+
+    @Override
+    public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter, Map options) {
+        provideDocuments(handler, reporter);
+    }
+
     private String getSuffix(String filename) {
 
-        if(filename != null && filename.indexOf(".") >= 0) {
+        if(filename != null && filename.contains(".")) {
             return filename.substring(filename.lastIndexOf(".") +(filename.endsWith(".") ? 0 : 1));
         } else {
             return "";
