@@ -86,6 +86,11 @@
                     $("#oa-forum-wall-load-more-threads").show();
                 }
                 $("body").trigger('oa.forumwall.loaded');
+                $forumContent.find('img').each(function(){
+                    if(!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0){
+                        this.src = '<aksess:geturl/><aksess:getconfig key="forum.missinguserimage"/>';
+                    }
+                }) ;
             });
         });
     }
