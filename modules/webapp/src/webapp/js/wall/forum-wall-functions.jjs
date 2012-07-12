@@ -187,7 +187,7 @@ $(document).ready(function(){
 
     // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
-    $(".oa-forum-threads .oa-forum-comment-reply").live("keyup", function(event){
+    $(".oa-forum-thread .oa-forum-comment-reply").live("keyup", function(event){
         if (event.keyCode == enterKeyCode) {
             event.preventDefault();
             var $commentTextarea = $(this);

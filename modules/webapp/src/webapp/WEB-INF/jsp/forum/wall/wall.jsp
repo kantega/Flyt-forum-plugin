@@ -46,20 +46,20 @@
         newpostsContainer.everyTime(10000, function() {
             <aksess:getuser name="user" />
             $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:${forumId}, forumCategoryId: ${forumCategoryId}, timeStamp:loadTime, username:'${user.id}'}, function(data) {
-                           if(data.numberOfNewThreads > 0){
-                               var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
-                               loadNewThreads.click(function(event){
-                                   event.preventDefault();
-                                   newpostsContainer.html('');
-                                   loadTime = new Date().getTime();
-                                   loadWallThreads(false);
+                if(data.numberOfNewThreads > 0){
+                    var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
+                    loadNewThreads.click(function(event){
+                        event.preventDefault();
+                        newpostsContainer.html('');
+                        loadTime = new Date().getTime();
+                        loadWallThreads(false);
 
-                                   return false;
-                               });
-                               newpostsContainer.html(loadNewThreads);
-                           }
-                    }
-            )})
+                        return false;
+                    });
+                    newpostsContainer.html(loadNewThreads);
+                }
+            }
+        )})
     });
 
     function loadWallThreads(loadMore) {
@@ -86,7 +86,7 @@
                     $("#oa-forum-wall-load-more-threads").show();
                 }
                 $("body").trigger('oa.forumwall.loaded');
-                $forumContent.find('img').each(function(){
+                $forumContent.find('.oa-forum-avatar img').each(function(){
                     if(!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0){
                         this.src = '<aksess:geturl/><aksess:getconfig key="forum.missinguserimage"/>';
                     }
