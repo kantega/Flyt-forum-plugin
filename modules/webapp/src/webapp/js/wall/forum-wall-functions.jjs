@@ -91,6 +91,40 @@ $(document).ready(function(){
         }, 800);
     }
 
+    function postComment(element){
+        var $commentTextarea = $(element);
+        var $commentForm = $commentTextarea.closest("form");
+        var commentFormAction = $commentForm.attr("action");
+        var comment = $.trim($commentTextarea.val());
+        comment = replaceURLWithHTMLLinks(comment);
+        $commentTextarea.val("");
+        if (comment.length > 0){
+            var threadId = $("input[name=threadId]", $commentForm).val();
+            var formParams = { threadId:  threadId, body: comment, subject: "subject" };
+
+            // Animating posting process
+            var containerHeight = $commentForm.parent().height();
+            $commentForm.fadeOut(150, function(){
+                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
+            });
+
+            $.post(commentFormAction, formParams, function(data) {
+                window.setTimeout(function(){
+                    var $newPost = $(data);
+                    $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+                    $newPost.hide();
+                    $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
+                    var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
+                    $animation.fadeOut(150, function(){
+                        $commentForm.fadeIn(150);
+                        $newPost.slideDown();
+                        $animation.remove();
+                    })
+                }, 800);
+            });
+        }
+    }
+
 
     // Handles shifting between the "share tabs" (status, photo and link)
     var $tablinks = $("#oa-forum-newPost .oa-forum-tablink");
@@ -190,38 +224,13 @@ $(document).ready(function(){
     $(".oa-forum-thread .oa-forum-comment-reply").live("keyup", function(event){
         if (event.keyCode == enterKeyCode) {
             event.preventDefault();
-            var $commentTextarea = $(this);
-            var $commentForm = $commentTextarea.closest("form");
-            var commentFormAction = $commentForm.attr("action");
-            var comment = $.trim($commentTextarea.val());
-            comment = replaceURLWithHTMLLinks(comment);
-            $commentTextarea.val("");
-            if (comment.length > 0){
-                var threadId = $("input[name=threadId]", $commentForm).val();
-                var formParams = { threadId:  threadId, body: comment, subject: "subject" };
-
-                // Animating posting process
-                var containerHeight = $commentForm.parent().height();
-                $commentForm.fadeOut(150, function(){
-                    $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
-                });
-
-                $.post(commentFormAction, formParams, function(data) {
-                    window.setTimeout(function(){
-                        var $newPost = $(data);
-                        $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
-                        $newPost.hide();
-                        $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
-                        var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
-                        $animation.fadeOut(150, function(){
-                            $commentForm.fadeIn(150);
-                            $newPost.slideDown();
-                            $animation.remove();
-                        })
-                    }, 800);
-                });
-            }
+            postComment(this);
         }
+    });
+
+    $(".oa-forum-share-comment").live("click", function(event){
+        event.preventDefault();
+        postComment($(this).closest("span").siblings("textarea"));
     });
 
     // Handles deleting posts
