@@ -74,7 +74,9 @@
 
     <bean id="forumCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="indexSearchJob" />
-        <property name="cronExpression" value="${indexForumSearchCron}" />
+        <property name="cronExpression">
+            <value>${forum.indexsearchcron:* 1 * * * ?}</value>
+        </property>
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
