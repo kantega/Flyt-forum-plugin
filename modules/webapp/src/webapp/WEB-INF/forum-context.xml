@@ -65,4 +65,29 @@
     <bean id="commentNotificationForumListener" class="no.kantega.forum.listeners.CommentNotificationForumListener">
         <constructor-arg ref="forumDao"/>
     </bean>
+
+    <bean id="indexSearchJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="forumDocumentProvider" />
+        <property name="targetMethod" value="provideDocuments" />
+        <property name="concurrent" value="false" />
+    </bean>
+
+    <bean id="forumCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="indexSearchJob" />
+        <property name="cronExpression" value="${indexForumSearchCron}" />
+    </bean>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="forumCronTrigger" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="forumDocumentProvider" class="no.kantega.forum.search.ForumSearchProvider">
+        <property name="indexWriterManager" ref="indexWriterManager"/>
+        <property name="forumDao" ref="forumDao"/>
+    </bean>
+
 </beans>
