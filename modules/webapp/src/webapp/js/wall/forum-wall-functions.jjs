@@ -1,8 +1,13 @@
 //<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 //<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
-$(document).ready(function(){
+var oa_forum_enableEnterAsCommentPostAction = true;
 
+function setEnableEnterAsPostCommentAction(value){
+    oa_forum_enableEnterAsCommentPostAction = value;
+}
+
+$(document).ready(function(){
     // Handles posting of  status
     $('#oa-forum-sharebox .oa-forum-ajaxForm').ajaxForm({
         beforeSerialize: function($form, options){
@@ -222,7 +227,7 @@ $(document).ready(function(){
     // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
     $(".oa-forum-thread .oa-forum-comment-reply").live("keyup", function(event){
-        if (event.keyCode == enterKeyCode) {
+        if (event.keyCode == enterKeyCode && oa_forum_enableEnterAsCommentPostAction) {
             event.preventDefault();
             postComment(this);
         }
