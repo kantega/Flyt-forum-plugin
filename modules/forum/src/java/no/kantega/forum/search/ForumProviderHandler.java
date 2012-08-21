@@ -20,10 +20,6 @@ public class ForumProviderHandler implements DocumentProviderHandler {
     public void handleDocument(Document document) {
         try {
             writer.addDocument(document);
-            if(docs++ % 1000 == 0) {
-                writer.optimize();
-                writer.commit();
-            }
         } catch (IOException e) {
             Log.error("Error indexing forum", e);
         }

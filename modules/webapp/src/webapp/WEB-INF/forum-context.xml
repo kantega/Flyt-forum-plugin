@@ -8,12 +8,8 @@
 <beans>
 
   <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
-      <property name="dataSource">
-        <ref bean="forumDataSource"/>
-      </property>
-      <property name="mappingResources">
-        <value>forum.hbm.xml</value>
-      </property>
+      <property name="dataSource" ref="forumDataSource"/>
+      <property name="mappingResources" value="forum.hbm.xml"/>
       <property name="hibernateProperties">
         <props>
           <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
@@ -21,9 +17,7 @@
           <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
         </props>
       </property>
-      <property name="schemaUpdate">
-        <value>true</value>
-      </property>
+      <property name="schemaUpdate" value="true"/>
     </bean>
 
     <bean id="forumHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
@@ -40,12 +34,8 @@
     </bean>
 
     <bean id="forumPermissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
-        <property name="groupResolver">
-            <ref bean="groupResolver"/>
-        </property>
-        <property name="administratorGroups">
-            <value>${forum.administratorgroups}</value>
-        </property>
+        <property name="groupResolver" ref="groupResolver"/>
+        <property name="administratorGroups" value="${forum.administratorgroups}"/>
     </bean>
 
     <bean id="forumPostRatingNotificationListener" class="no.kantega.forum.listeners.PostRatingNotificationListener">
@@ -74,9 +64,7 @@
 
     <bean id="forumCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="indexSearchJob" />
-        <property name="cronExpression">
-            <value>${forum.indexsearchcron}</value>
-        </property>
+        <property name="cronExpression" value="${forum.indexsearchcron}"/>
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -89,6 +77,7 @@
 
     <bean id="forumDocumentProvider" class="no.kantega.forum.search.ForumSearchProvider">
         <property name="indexWriterManager" ref="indexWriterManager"/>
+        <property name="indexReaderManager" ref="indexReaderManager" />
         <property name="forumDao" ref="forumDao"/>
     </bean>
 
