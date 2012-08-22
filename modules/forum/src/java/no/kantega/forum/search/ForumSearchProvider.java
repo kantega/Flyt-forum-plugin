@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ForumSearchProvider implements DocumentProvider {
-    ForumDao forumDao;
+    private ForumDao forumDao;
     private IndexWriterManager indexWriterManager;
     private IndexReaderManager indexReaderManager;
 
@@ -59,7 +59,7 @@ public class ForumSearchProvider implements DocumentProvider {
         List posts = forumDao.getAllPosts();
         int index = 0;
         try{
-            IndexWriter aksess = indexWriterManager.getIndexWriter("aksess", true);
+            IndexWriter aksess = indexWriterManager.getIndexWriter("aksess", false);
             DocumentProviderHandler documentProviderHandler = new ForumProviderHandler(aksess);
             for (; index < posts.size(); index++) {
 
@@ -81,7 +81,7 @@ public class ForumSearchProvider implements DocumentProvider {
             Term deleteTerm = new Term(Fields.DOCTYPE, ForumFields.TYPE_FORUM_POST);
             ir = indexReaderManager.getReader("aksess");
             int del = ir.deleteDocuments(deleteTerm);
-            Log.error(this.getClass().getName(), String.format("%s forumposts deleted from index", del), null, null);
+            Log.info(this.getClass().getName(), String.format("%s forumposts deleted from index", del), null, null);
         } catch (IOException e) {
             Log.error(this.getClass().getName(), e, null, null);
         } finally {
