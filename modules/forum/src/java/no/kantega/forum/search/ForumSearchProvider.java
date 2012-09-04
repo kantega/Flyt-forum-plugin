@@ -5,8 +5,6 @@ import no.kantega.commons.log.Log;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
 import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexReaderManager;
-import no.kantega.search.index.IndexWriterManager;
 import no.kantega.search.index.provider.DocumentProvider;
 import no.kantega.search.index.provider.DocumentProviderHandler;
 import no.kantega.search.index.rebuild.ProgressReporter;
@@ -15,19 +13,14 @@ import no.kantega.search.result.SearchHitContext;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
 public class ForumSearchProvider implements DocumentProvider {
     private ForumDao forumDao;
-    private IndexWriterManager indexWriterManager;
-    private IndexReaderManager indexReaderManager;
 
     public String getSourceId() {
         return "forumContent";
@@ -38,7 +31,6 @@ public class ForumSearchProvider implements DocumentProvider {
     }
 
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter) {
-        deletePosts();
         List posts = forumDao.getAllPosts();
 
         for (int i = 0; i < posts.size(); i++) {
@@ -49,48 +41,6 @@ public class ForumSearchProvider implements DocumentProvider {
             } catch (Throwable e) {
                 Log.error(this.getClass().getName(), "Caught throwable during indexing of document id: " +((Post)posts.get(i)).getId() +"", null, null);
                 Log.error(this.getClass().getName(), e, null, null);
-            }
-        }
-    }
-
-    public void provideDocuments(){
-        deletePosts();
-
-        List posts = forumDao.getAllPosts();
-        int index = 0;
-        try{
-            IndexWriter aksess = indexWriterManager.getIndexWriter("aksess", false);
-            DocumentProviderHandler documentProviderHandler = new ForumProviderHandler(aksess);
-            for (; index < posts.size(); index++) {
-
-                Document d = getForumDocument((Post)posts.get(index));
-                documentProviderHandler.handleDocument(d);
-            }
-            aksess.commit();
-            aksess.optimize();
-            Log.error(this.getClass().getName(), "Finished forum reindex", null, null);
-        } catch (Throwable e) {
-            Log.error(this.getClass().getName(), "Caught throwable during indexing of document id: " +((Post)posts.get(index)).getId() +"", null, null);
-            Log.error(this.getClass().getName(), e, null, null);
-        }
-    }
-
-    private void deletePosts() {
-        IndexReader ir = null;
-        try {
-            Term deleteTerm = new Term(Fields.DOCTYPE, ForumFields.TYPE_FORUM_POST);
-            ir = indexReaderManager.getReader("aksess");
-            int del = ir.deleteDocuments(deleteTerm);
-            Log.info(this.getClass().getName(), String.format("%s forumposts deleted from index", del), null, null);
-        } catch (IOException e) {
-            Log.error(this.getClass().getName(), e, null, null);
-        } finally {
-            if(ir != null) {
-                try {
-                    ir.close();
-                } catch (IOException e) {
-                    Log.error(this.getClass().getName(), e, null, null);
-                }
             }
         }
     }
@@ -194,13 +144,5 @@ public class ForumSearchProvider implements DocumentProvider {
 
     public void setForumDao(ForumDao forumDao) {
         this.forumDao = forumDao;
-    }
-
-    public void setIndexWriterManager(IndexWriterManager indexWriterManager) {
-        this.indexWriterManager = indexWriterManager;
-    }
-
-    public void setIndexReaderManager(IndexReaderManager indexReaderManager) {
-        this.indexReaderManager = indexReaderManager;
     }
 }
