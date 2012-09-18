@@ -62,7 +62,6 @@
 
         <c:otherwise>
             <kantega:getsection id="forums"/>
-
         </c:otherwise>
 
     </c:choose>

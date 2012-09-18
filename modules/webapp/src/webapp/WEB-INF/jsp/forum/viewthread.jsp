@@ -90,9 +90,7 @@
         <c:when test="${empty posts}">
             <spring:message code="thread.empty"/>
         </c:when>
-
         <c:otherwise>
-
             <table width="100%" cellpadding="0" cellspacing="0">
                 <c:forEach items="${posts}" var="post" varStatus="status">
                     <tr class="forum-labelRow">
@@ -113,9 +111,11 @@
                                 <a href="editpost?replyId=<c:out value="${post.id}"/>&threadId=<c:out value="${post.thread.id}"/>">Svar</a>
                             </forum:haspermisson>
 
-                            <forum:haspermisson permission="DELETE_POST" object="${post}">
-                                | <a href="javascript:deletePost(<c:out value="${post.id}"/>)">Slett</a>
-                            </forum:haspermisson>
+                            <c:if test="${status.index > 0}">
+                                <forum:haspermisson permission="DELETE_POST" object="${post}">
+                                    | <a href="javascript:deletePost(<c:out value="${post.id}"/>)">Slett</a>
+                                </forum:haspermisson>
+                            </c:if>
                         </td>
                     </tr>
                     <tr class="forum-tableRow0">
