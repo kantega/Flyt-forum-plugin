@@ -1,9 +1,12 @@
 package no.kantega.forum.tags.wall;
 
 
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.publishing.spring.RootContext;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +14,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class RenderWallTag extends SimpleTagSupport{
@@ -68,7 +73,18 @@ public class RenderWallTag extends SimpleTagSupport{
             request.setAttribute("userid", userId);
             request.setAttribute("forumListPostsUrl", forumListPostsUrl);
 
-            pageContext.include("/WEB-INF/jsp/forum/wall/wall.jsp");
+			//Get placeholder text for the new forum entry. If not present, get the default placeholder.
+			final String prefix = "forum.share.inputfield.label";
+			final String key = prefix + "." + forumId;
+			final String forumBundleName = "forum";
+			final String forumExtBundleName = "forum_ext";
+			final Locale locale = request.getAttribute("aksess_locale") != null ? (Locale) request.getAttribute("aksess_locale") : new Locale("no", "NO");
+			final String loadedLabel = LocaleLabels.getLabel(key, forumExtBundleName, locale, new HashMap());
+			final String defaultLabel = LocaleLabels.getLabel(prefix, forumBundleName, locale, new HashMap());
+			final String label = StringUtils.isNotEmpty(loadedLabel) && !loadedLabel.startsWith(prefix) ? loadedLabel : defaultLabel;
+			request.setAttribute("helptextLabel", label);
+
+			pageContext.include("/WEB-INF/jsp/forum/wall/wall.jsp");
 
 
             request.removeAttribute("forumListPostsUrl");

@@ -18,8 +18,9 @@
                 </c:choose>
                 <input type="hidden" name="ajax" value="true">
                 <input type="hidden" name="subject" value="Subject">
-                <label class="oa-forum-hidden"><kantega:label key="forum.share.inputfield.label" bundle="forum" locale="${forumLocale}"/></label>
-                <textarea rows="1" cols="40" name="body" id="oa-forum-sharebox-textarea" class="oa-forum-sharefield oa-forum-fadedText"><kantega:label key="forum.share.inputfield.label" bundle="forum" locale="${forumLocale}"/></textarea>
+                <label class="oa-forum-hidden">${helptextLabel}</label>
+                <%-- helptextLabel is set in RenderWallTag--%>
+                <textarea rows="1" cols="40" name="body" id="oa-forum-sharebox-textarea" class="oa-forum-sharefield oa-forum-fadedText">${helptextLabel}</textarea>
 
             </div>
 

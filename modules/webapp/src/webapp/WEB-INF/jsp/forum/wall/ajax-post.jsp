@@ -21,6 +21,10 @@
         <a name="oa-forum-post_<c:out value="${post.id}"/>"></a>
         <div class="oa-forum-username">
             <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
+            <!-- FORUM NAME-->
+            <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
+                &raquo;<aksess:link queryparams="forumId=${post.thread.forum.id}"><span>${post.thread.forum.name}</span></aksess:link>
+            </c:if>
         </div>
 
         <c:choose>
@@ -126,9 +130,6 @@
             </c:choose>
             <c:remove var="hasLikedPost"/>
 
-            <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
-                <span class="oa-forum-forumname">${post.thread.forum.name}</span>
-            </c:if>
         </div>
     </div>
     <div style="clear:both"></div>
