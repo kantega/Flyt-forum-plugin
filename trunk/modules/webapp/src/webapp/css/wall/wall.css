@@ -1,0 +1,63 @@
+ul.oa-forum-tabs {
+    list-style: none;
+}
+
+ul.oa-forum-tabs li {
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.oa-forum-mediablock{
+    position:relative;
+}
+.oa-forum-mediablock .oa-forum-mediablockImage{
+    float:left;
+    display:block;
+}
+/* klasse som hører hjemme i theme? */
+.oa-forum-mediablockImage.oa-forum-avatar{
+    width:50px;
+}
+.oa-forum-mediablock .oa-forum-mediablockContent{
+    display:table-cell;
+    width:1000px;
+    zoom:1;
+}
+.oa-forum-body p:first-child{
+    margin-top:0;
+    margin-bottom: 0;
+}
+
+/*** Forum theme  **/
+.oa-forum-mediablock .oa-forum-deletePost, .oa-forum-mediablock .oa-forum-deleteThread{
+    position: absolute;
+    right: 10px;
+    top: 0;
+    display:block;
+}
+
+a.oa-forum-iconLink{text-decoration:none;}
+a.oa-forum-iconLink img{vertical-align:middle; padding-right: 5px;}
+a.oa-forum-iconLink:hover span{text-decoration:underline;}
+a.oa-forum-iconLink:hover img{text-decoration:none;}
+
+
+.oa-forum-mediablock:after{
+    clear:both;
+    display:block;
+    visibility:hidden;
+    overflow:hidden;
+    height:0 !important;
+    line-height:0;
+    font-size:xx-large;
+    content:" x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x ";
+}
+.oa-forum-hidden{
+    display:none;
+}
+#oa-forum-wall-load-more-threads{
+    display: none;
+}
+.oa-forum-post-preview-hidden-post-body{
+    display: none;
+}

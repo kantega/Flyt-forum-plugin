@@ -1,0 +1,356 @@
+//<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
+//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+
+var oa_forum_enableEnterAsCommentPostAction = true;
+
+function setEnableEnterAsPostCommentAction(value){
+    oa_forum_enableEnterAsCommentPostAction = value;
+}
+
+$(document).ready(function(){
+    // Handles posting of  status
+    $('#oa-forum-sharebox .oa-forum-ajaxForm').ajaxForm({
+        beforeSerialize: function($form, options){
+            $form.find("textarea").val(replaceURLWithHTMLLinks($form.find("textarea").val()));
+        },
+        beforeSubmit: function(arr, $form, options) {
+            if ($.trim($form.find("textarea").val()).length < 1 ) {
+                alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
+                return false;
+            }
+            if($.trim($form.find("label").text()) == $.trim($form.find("textarea").val())) {
+                alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
+                return false;
+            }
+
+            var containerHeight = $form.parent().height();
+            $form.parent().css("height", containerHeight);
+            $form.fadeOut(300, function(){
+                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
+            });
+            return true;
+        },
+        resetForm: true,
+        success: prependNewThread
+    });
+
+    $('#oa-forum-sharebox-textarea').live('focus', function() {
+        $('#oa-forum-sharebox-buttons').show();
+    });
+
+    $('#oa-forum-share-add-attachment a').live('click', function(event) {
+        event.preventDefault();
+        $("#oa-forum-share-add-attachment").hide();
+        $("#oa-forum-share-attachment").show();
+    });
+
+    function replaceURLWithHTMLLinks(text) {
+        var replacedText, replacePattern1, replacePattern2, replacePattern3;
+
+        //URLs starting with http://, https://, or ftp://
+        replacePattern1 = /(\b(https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gim;
+        replacedText = text.replace(replacePattern1, '<a href="$1" target="_blank">$1</a>');
+
+        //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+        replacePattern2 = /(^|[^\/])(www\.[\S]+(\b|$))/gim;
+        replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
+
+        //Change email addresses to mailto:: links.
+        replacePattern3 = /([_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+        replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
+
+        return replacedText;
+    }
+
+
+
+    // Appends new "shares" to top of wall.
+    function prependNewThread(responseText, statusText, xhr, $form)  {
+        // Hide animation, show form
+        $form
+        window.setTimeout(function(){     // Timeout to allow the animation to complete
+            $form.parent().find(".oa-forum-submit-animation").fadeOut(300, function(){
+                $form.fadeIn(300);
+                var $newThread = $(responseText);
+                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+                $newThread.hide().prependTo(".oa-forum-threads").slideDown();
+                $(this).remove();
+                $form.find("textarea").addClass("oa-forum-fadedText");
+            });
+        }, 1200);
+    }
+
+    // Appends new "shares" to top of wall.
+    function prependNewThreadForLink(responseText, statusText, xhr, $form)  {
+        // Hide animation, show form
+        $("#oa-forum-link-shareUrl").addClass("oa-forum-fadedText");
+        $("#oa-forum-link-shareComment").addClass("oa-forum-fadedText");
+        window.setTimeout(function(){     // Timeout to allow the animation to complete
+            $form.closest(".oa-forum-tab-container").find(".oa-forum-submit-animation").fadeOut(250, function(){
+                $("#oa-forum-linkform").fadeIn(250);
+                var $newThread = $(responseText);
+                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+                $newThread.hide().prependTo(".oa-forum-threads").slideDown();
+                $(this).remove();
+            });
+        }, 800);
+    }
+
+    function postComment(element){
+        var $commentTextarea = $(element);
+        var $commentForm = $commentTextarea.closest("form");
+        var commentFormAction = $commentForm.attr("action");
+        var comment = $.trim($commentTextarea.val());
+        comment = replaceURLWithHTMLLinks(comment);
+        $commentTextarea.val("");
+        if (comment.length > 0){
+            var threadId = $("input[name=threadId]", $commentForm).val();
+            var formParams = { threadId:  threadId, body: comment, subject: "subject" };
+
+            // Animating posting process
+            var containerHeight = $commentForm.parent().height();
+            $commentForm.fadeOut(150, function(){
+                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
+            });
+
+            $.post(commentFormAction, formParams, function(data) {
+                window.setTimeout(function(){
+                    var $newPost = $(data);
+                    $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+                    $newPost.hide();
+                    $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
+                    var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
+                    $animation.fadeOut(150, function(){
+                        $commentForm.fadeIn(150);
+                        $newPost.slideDown();
+                        $animation.remove();
+                    })
+                }, 800);
+            });
+        }
+    }
+
+
+    // Handles shifting between the "share tabs" (status, photo and link)
+    var $tablinks = $("#oa-forum-newPost .oa-forum-tablink");
+    var visibleTabIndex = -1;
+    var $tabs = $("#oa-forum-newPost .oa-forum-tab-container");
+    $("#oa-forum-newPost .oa-forum-tablink").click(function(e){
+        e.preventDefault();
+        var index = $(this).parent().prevAll().length -1; // -1 because the first element is the <li> containing "Share:"
+        if (visibleTabIndex == index){
+            // Do nothing, its already displaying
+        } else if (visibleTabIndex == -1) {
+            // Ingen synlige, vis den vi klikket på
+            $tabs.eq(index).hide().removeClass("oa-forum-hidden").slideDown("normal", function(){
+                visibleTabIndex = index;
+                $(this).addClass("oa-forum-visible-tablink");
+            });
+        } else {
+            $("#oa-forum-newPost .oa-forum-visible-tablink").slideUp("normal", function(){
+                $(this).removeClass("oa-forum-visible-tablink");
+                $tabs.eq(index).hide().removeClass("oa-forum-hidden").slideDown("normal", function(){
+                    visibleTabIndex = index;
+                    $(this).addClass("oa-forum-visible-tablink");
+                });
+            });
+        }
+        $tablinks.removeClass("oa-forum-selected-sharelink");
+        $(this).addClass("oa-forum-selected-sharelink");
+        return false;
+    });
+
+    // Handles input field label, hiding and removing these on/out-of focus.
+    $(".oa-forum-sharefield").live("focusin", function(){
+        var $field = $(this);
+        var fieldVal = $.trim($field.val());
+        var fieldLabel = $field.siblings("label").text();
+        if (fieldVal == fieldLabel) {
+            $field.val("");
+            $field.removeClass("oa-forum-fadedText");
+        }
+    });
+    $(".oa-forum-sharefield").live("focusout", function(){
+        var $field = $(this);
+        var fieldVal = $.trim($field.val());
+        var fieldLabel = $field.siblings("label").text();
+        if (fieldVal == "") {
+            $field.val(fieldLabel);
+            $field.addClass("oa-forum-fadedText");
+        }
+    });
+
+    // link listener to display hidden comments in a thread.
+    $(".oa-forum-showFullThread").live("click", function(event){
+        event.preventDefault();
+        $(this).addClass("oa-forum-hidden");
+        $(this).closest(".oa-forum-posts").find(".oa-forum-post").removeClass("oa-forum-hidden");
+        $(this).siblings(".oa-forum-minimizeThread").removeClass("oa-forum-hidden");
+    });
+
+    // link listener to hide previous shown comments in a thread.
+    $(".oa-forum-minimizeThread").live("click", function(event){
+        event.preventDefault();
+        $(this).addClass("oa-forum-hidden");
+        $(this).siblings(".oa-forum-showFullThread").removeClass("oa-forum-hidden");
+        $(this).closest(".oa-forum-posts").find(".oa-forum-post").addClass("oa-forum-hidden");
+        $(this).closest(".oa-forum-posts").find(".oa-forum-post:last-child, .oa-forum-post:first-child").removeClass("oa-forum-hidden");
+    });
+
+    // Handles showing comment form on a thread
+    $(".oa-forum-showReplyForm").live("click", function(event){
+        event.preventDefault();
+        var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea");
+        window.setTimeout(function(){
+            $commentarea.focus();
+            var $field = $commentarea;
+            var fieldVal = $.trim($field.val());
+            var fieldLabel = $field.siblings("label").text();
+            if (fieldVal == fieldLabel) {
+                $field.val("");
+                $field.removeClass("oa-forum-fadedText");
+            }
+        },10);
+    });
+
+    $(".oa-forum-post-preview-show-full-body-link").live("click", function(event){
+        event.preventDefault();
+        var $link = $(this);
+        var $postBody = $link.closest(".oa-forum-body");
+        $postBody.find(".oa-forum-post-preview-more-indicator").hide();
+        $link.prev("br").hide();
+        $link.next("br").hide();
+        $postBody.find(".oa-forum-post-preview-hidden-post-body").show();
+        $link.hide();
+    });
+
+    // Handles posting comments and updating gui on a thread
+    var enterKeyCode = 13;
+    $(".oa-forum-thread .oa-forum-comment-reply").live("keyup", function(event){
+        if (event.keyCode == enterKeyCode && oa_forum_enableEnterAsCommentPostAction) {
+            event.preventDefault();
+            postComment(this);
+        }
+    });
+
+    $(".oa-forum-share-comment").live("click", function(event){
+        event.preventDefault();
+        postComment($(this).closest("span").siblings("textarea"));
+    });
+
+    // Handles deleting posts
+    $(".oa-forum-deletePost").live("click", function(event){
+        event.preventDefault();
+        var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletepost" bundle="forum" locale="${forumLocale}"/>');
+        if (confirmDelete) {
+            var deleteUrl = $(this).attr("href");
+            var $post = $(this).closest(".oa-forum-post");
+            $.post(deleteUrl, function(data, textStatus, jqXHR){
+                if (data["deleted"]) {
+                    $post.slideUp("normal", function(){
+
+                    });
+                }
+            }, "json");
+        }
+    });
+
+    // Handles deleting threads
+    $(".oa-forum-deleteThread").live("click", function(event){
+        event.preventDefault();
+        var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletethread" bundle="forum" locale="${forumLocale}"/>');
+        if (confirmDelete) {
+            var deleteUrl = $(this).attr("href");
+            var $thread = $(this).closest(".oa-forum-thread");
+            $.post(deleteUrl, function(data, textStatus, jqXHR){
+                if (data["deleted"]) {
+                    $thread.slideUp("normal", function(){
+
+                    });
+                }
+            }, "json");
+        }
+    });
+
+    $(".oa-forum-like-link").live("click", function(event){
+        event.preventDefault();
+        $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
+        /*
+         Ferdig? Bør oppdatere teksten på lenka.
+         */
+        $(this).next().before('<span class="oa-forum-has-liked"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></span>');
+        $(this).remove();
+    });
+
+    // attach handler to form's submit event
+    $('.oa-forum-likeForm').live("submit", function() {
+        $(this).ajaxSubmit({success: updateLikeStatusOfPost});
+        return false;
+    });
+
+    function updateLikeStatusOfPost(responseText, statusText, xhr, $form) {
+        var url = $form.attr("action") + "?objectId=" + $form.find("input[name='objectId']").val() + "&context=" + $form.find("input[name=context]").val();
+        $.getJSON(url, function(data) {
+            if ($form.closest(".oa-forum-post").find(".oa-forum-likes").length) {
+                $form.closest(".oa-forum-post").find(".oa-forum-likes");
+            }
+        });
+    }
+
+
+    // Handles viewing larger versions of images
+    $(".oa-forum-attachment, .oa-forum-enlarge-photo").live("click", function(event){
+        var $attachmentContainer = $(this).closest(".oa-forum-attachments");
+        var $imgLink = $attachmentContainer.find(".oa-forum-attachment");
+        if ($imgLink.find("img").length){
+            event.preventDefault();
+            $imgLink.removeClass("oa-forum-attachment").addClass("oa-forum-attachment-image-fullsize");
+            var $img = $imgLink.find("img");
+
+            // Setting the img width before changing the img "src" attripute
+            var origImgWidth = $img.width();
+            var origImgHeight = $img.height();
+            $img.data("origImgWidth", origImgWidth);
+            $img.data("origImgHeight", origImgHeight);
+            $img.css("width", origImgWidth + "px");
+            $img.css("height", origImgHeight + "px");
+
+            // Finding and setting the max width and height for the large version of the image
+            var maxImgWidth = $attachmentContainer.width(); // Extra padding
+            var multiplyHeightBy = Math.round(maxImgWidth / origImgWidth );
+            var maxImgHeight = Math.round(origImgHeight * multiplyHeightBy);
+
+            // Replacing the img url with the new img width and height.
+            var newImgSrc = $img.attr("src").substring(0, $img.attr("src").indexOf("width="));
+            newImgSrc += "width=" + maxImgWidth + "&amp;height=" + maxImgHeight;
+
+            $img.attr("src", newImgSrc);
+            $img.animate({
+                width: maxImgWidth,
+                height: maxImgHeight
+            }, 400, function() {
+                $attachmentContainer.find(".oa-forum-enlarge-photo").addClass("oa-forum-hidden");
+                $attachmentContainer.find(".oa-forum-reduce-photo").removeClass("oa-forum-hidden");
+                $attachmentContainer.find(".oa-forum-download-original").removeClass("oa-forum-hidden");
+            });
+        }
+    });
+
+    $(".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo").live("click", function(event){
+        event.preventDefault();
+        var $attachmentContainer = $(this).closest(".oa-forum-attachments");
+        var $imgLink = $attachmentContainer.find(".oa-forum-attachment-image-fullsize");
+        $imgLink.removeClass("oa-forum-attachment-image-fullsize").addClass("oa-forum-attachment");
+        var $img = $imgLink.find("img");
+
+        $img.animate({
+            width: $img.data("origImgWidth"),
+            height: $img.data("origImgHeight")
+        }, 400, function() {
+            var $attachmentContainer = $(this).closest(".oa-forum-attachments");
+            $attachmentContainer.find(".oa-forum-enlarge-photo").removeClass("oa-forum-hidden");
+            $attachmentContainer.find(".oa-forum-reduce-photo").addClass("oa-forum-hidden");
+            $attachmentContainer.find(".oa-forum-download-original").addClass("oa-forum-hidden");
+        });
+    });
+});

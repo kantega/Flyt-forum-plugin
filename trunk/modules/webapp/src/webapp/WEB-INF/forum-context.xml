@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<!--
+  - Application context definition for "springapp" DispatcherServlet.
+  -->
+
+<beans>
+
+  <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
+      <property name="dataSource" ref="forumDataSource"/>
+      <property name="mappingResources" value="forum.hbm.xml"/>
+      <property name="hibernateProperties">
+        <props>
+          <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
+          <prop key="hibernate.show_sql">false</prop>
+          <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+        </props>
+      </property>
+      <property name="schemaUpdate" value="true"/>
+    </bean>
+
+    <bean id="forumHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+      <property name="sessionFactory">
+        <ref local="forumSessionFactory"/>
+      </property>
+    </bean>
+
+
+    <bean id="forumDao" class="no.kantega.forum.dao.ForumDao">
+      <property name="template">
+        <ref local="forumHibernateTemplate"/>
+      </property>
+    </bean>
+
+    <bean id="forumPermissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
+        <property name="groupResolver" ref="groupResolver"/>
+        <property name="administratorGroups" value="${forum.administratorgroups}"/>
+    </bean>
+
+    <bean id="forumPostRatingNotificationListener" class="no.kantega.forum.listeners.PostRatingNotificationListener">
+        <property name="dao" ref="forumDao"/>
+    </bean>
+
+    <bean id="forumDeletePostOrThreadNotificationListener" class="no.kantega.forum.listeners.ForumDeletePostOrThreadNotificationListener">
+        <property name="ratingService" ref="ratingService"/>
+    </bean>
+
+    <bean id="forumCommentNotificationListener" class="no.kantega.publishing.comments.ContentCommentNotificationListener"/>
+
+      <bean id="forumPostService" class="no.kantega.forum.service.ForumPostService">
+        <constructor-arg ref="forumDao"/>
+    </bean>
+
+    <bean id="commentNotificationForumListener" class="no.kantega.forum.listeners.CommentNotificationForumListener">
+        <constructor-arg ref="forumDao"/>
+    </bean>
+</beans>

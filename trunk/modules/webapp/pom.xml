@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>no.kantega.aksess.modules</groupId>
+        <artifactId>aksess-modules</artifactId>
+        <version>1.20.10</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>aksess-modules-webapp</artifactId>
+    <packaging>war</packaging>
+    <name>Aksess modules webapp</name>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-core</artifactId>
+            <version>${aksess.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>no.kantega.aksess.modules</groupId>
+            <artifactId>aksess-modules-projectweb</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>no.kantega.aksess.modules</groupId>
+            <artifactId>aksess-modules-forum</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

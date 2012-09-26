@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE workflow PUBLIC
+                 "-//OpenSymphony Group//DTD OSWorkflow 2.8//EN"
+                 "http://www.opensymphony.com/osworkflow/workflow_2_8.dtd">
+<workflow>
+  <initial-actions>
+    <action id="1" name="Create activity">
+      <results>
+        <unconditional-result old-status="Created" status="Registered" step="1">
+          <post-functions>
+            <function type="spring">
+              <arg name="bean.name">createActivityFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+  </initial-actions>
+  <common-actions>
+    <action id="002" name="Start progress">
+      <results>
+        <unconditional-result old-status="Finished" status="Progress started"
+          step="5">
+          <post-functions>
+            <function type="spring">
+              <arg name="bean.name">updateActivityStatusFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+    <action id="003" name="Close">
+      <results>
+        <unconditional-result old-status="Finished" status="Closed"
+          step="6">
+          <post-functions>
+            <function type="spring">
+              <arg name="bean.name">updateActivityStatusFunction</arg>
+            </function>
+          </post-functions>
+        </unconditional-result>
+      </results>
+    </action>
+  </common-actions>
+  <steps>
+    <step id="1" name="Open">
+      <meta name="activity.status">open</meta>
+      <actions>
+        <common-action id="002"/>
+        <common-action id="003"/>
+        <action id="102" name="Request estimate">
+          <restrict-to>
+            <conditions>
+              <condition type="class">
+                <arg name="class.name">com.opensymphony.workflow.util.StatusCondition</arg>
+                <arg name="status">Registered</arg>
+              </condition>
+              <!--<condition type="class">
+                <arg name="class.name">
+                  com.opensymphony.workflow.util.AllowOwnerOnlyCondition
+                </arg>
+              </condition>-->
+            </conditions>
+          </restrict-to>
+          <results>
+            <unconditional-result old-status="Finished" status="Estimate requested" step="2">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="2" name="To be estimated">
+      <meta name="activity.status">to-be-estimated</meta>
+      <actions>
+        <common-action id="002"/>
+        <action id="201" name="Make estimate">
+          <results>
+            <unconditional-result old-status="Finished" status="Estimated"
+              step="3">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="3" name="Estimated">
+      <meta name="activity.status">estimated</meta>
+      <actions>
+        <common-action id="002"/>
+        <action id="301" name="Approve estimate">
+          <results>
+            <unconditional-result old-status="Finished" status="Estimate approved"
+              step="4">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="4" name="Estimate approved">
+      <meta name="activity.status">estimate-approved</meta>
+      <actions>
+        <common-action id="002"/>
+      </actions>
+    </step>
+
+    <step id="5" name="In progress">
+      <meta name="activity.status">in-progress</meta>
+      <actions>
+        <common-action id="003"/>
+        <action id="502" name="Request feedback">
+          <results>
+            <unconditional-result old-status="Finished" status="Finished"
+              step="7">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+        <action id="503" name="Request testing">
+          <results>
+            <unconditional-result old-status="Finished" status="Request testing"
+              step="9">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+        <action id="504" name="Start testing">
+          <results>
+            <unconditional-result old-status="Finished" status="Testing started"
+              step="8">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+    <step id="6" name="Closed">
+      <meta name="activity.status">closed</meta>
+      <actions>
+        <action id="601" name="Reopen">
+          <results>
+            <unconditional-result old-status="Finished" status="Registered"
+              step="1">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+
+    <step id="7" name="Waiting for feedback">
+      <meta name="activity.status">waiting-for-feedback</meta>
+      <actions>
+        <action id="701" name="Give feedback">
+          <results>
+            <unconditional-result old-status="Finished" status="Work started"
+              step="5">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+      </actions>
+    </step>
+
+    <step id="8" name="Testing in progress">
+      <meta name="activity.status">testing-in-progress</meta>
+      <actions>
+        <common-action id="003"/>
+        <action id="801" name="Report failed test">
+          <results>
+            <unconditional-result old-status="Finished" status="Test failed"
+              step="5">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+
+      </actions>
+    </step>
+    <step id="9" name="Waiting for testing">
+      <meta name="activity.status">waiting-for-testing</meta>
+      <actions>
+        <action id="901" name="Start testing">
+          <results>
+            <unconditional-result old-status="Finished" status="Test failed"
+              step="8">
+              <post-functions>
+                <function type="spring">
+                  <arg name="bean.name">updateActivityStatusFunction</arg>
+                </function>
+              </post-functions>
+            </unconditional-result>
+          </results>
+        </action>
+
+      </actions>
+    </step>
+
+  </steps>
+</workflow>     

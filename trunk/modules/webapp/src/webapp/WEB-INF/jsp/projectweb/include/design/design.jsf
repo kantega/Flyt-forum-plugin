@@ -1,0 +1,7 @@
+<%@ page import="no.kantega.publishing.common.Aksess"%>
+<%
+    String design = Aksess.getConfiguration().getString("projectweb.designview");
+    RequestDispatcher rd = request.getRequestDispatcher(design);
+    rd.include(request, response);
+%>
+

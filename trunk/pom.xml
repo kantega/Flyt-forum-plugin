@@ -1,0 +1,142 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>no.kantega.aksess.modules</groupId>
+    <artifactId>aksess-modules</artifactId>
+    <packaging>pom</packaging>
+    <version>1.20.10</version>
+    <name>Aksess Modules</name>
+
+    <scm>
+        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/tags/aksess-modules-1.20.10</connection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>kantega-releases</id>
+            <name>Aksess internal repository</name>
+            <url>http://nexus.kantega.lan/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>kantega-releases</id>
+            <name>Aksess snapshots repository</name>
+            <url>http://nexus.kantega.lan/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>maven</id>
+            <name>Aksess website</name>
+            <url>scpexe://subversion.kantega.no/var/www/html/aksess/</url>
+        </site>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://nexus.kantega.lan/content/groups/public/</url>
+        </repository>
+
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>opensource.kantega.no</id>
+            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <modules>
+        <module>modules/core</module>
+        <module>modules/exchange</module>
+        <module>modules/filesearch</module>
+        <module>modules/forum</module>
+        <module>modules/projectweb</module>
+        <module>modules/webapp</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate</artifactId>
+                <version>${hibernate.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.0</version>
+                <configuration>
+                    <remoteTagging>true</remoteTagging>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <username>hudson</username>
+                    <password>${hudson.password}</password>
+                </configuration>
+            </plugin>
+        </plugins>
+        <sourceDirectory>src/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <configuration>
+                        <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <properties>
+        <aksess.version>7.3.27</aksess.version>
+        <securityapi.version>1.10</securityapi.version>
+        <springframework.version>3.0.5.RELEASE</springframework.version>
+        <hibernate.version>3.2.6.ga</hibernate.version>
+    </properties>
+
+</project>
+

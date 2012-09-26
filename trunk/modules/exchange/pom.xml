@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>no.kantega.aksess.modules</groupId>
+        <artifactId>aksess-modules</artifactId>
+        <version>1.20.10</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>aksess-modules-exchange</artifactId>
+    <packaging>jar</packaging>
+    <name>Aksess modules exchange</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-commons</artifactId>
+            <version>${aksess.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-core</artifactId>
+            <version>${aksess.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.1.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>j-integra</groupId>
+            <artifactId>cdo</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>j-integra</groupId>
+            <artifactId>jintegra</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
