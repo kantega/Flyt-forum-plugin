@@ -11,7 +11,7 @@
 <c:set var="userProfileBaseUrl"><aksess:geturl/><aksess:getconfig key="forum.userprofileurl"/>?userId=</c:set>
 <c:set var="userImageBaseUrl"><aksess:geturl/><aksess:getconfig key="forum.userimageurl"/>?width=40&amp;userId=</c:set>
 
-<div class="oa-forum-post oa-forum-mediablock <c:if test="${hiddenPost}">oa-forum-hidden</c:if>">
+<div class="oa-forum-post oa-forum-mediablock <c:if test="${hiddenPost && !expandThreads }">oa-forum-hidden</c:if>">
     <div class="oa-forum-mediablockImage oa-forum-avatar">
         <a href="${userProfileUrl}">
             <img src="${userImageUrl}">
@@ -23,7 +23,7 @@
             <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
             <!-- FORUM NAME-->
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
-                &raquo;<aksess:link queryparams="forumId=${post.thread.forum.id}"><span>${post.thread.forum.name}</span></aksess:link>
+                &raquo;&nbsp;<aksess:link queryparams="forumId=${post.thread.forum.id}"><span>${post.thread.forum.name}</span></aksess:link>
             </c:if>
         </div>
 
@@ -87,8 +87,8 @@
                 &nbsp;|&nbsp; <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
             <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
-                &nbsp;|&nbsp; <a href="" class="oa-forum-showFullThread"><span class="oa-forum-numberOfComments">${fn:length(thread.posts)-1}</span> <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
-                <a href="" class="oa-forum-minimizeThread oa-forum-hidden"><kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/></a>
+                &nbsp;|&nbsp; <a href="" class='oa-forum-showFullThread <c:if test="${expandThreads}">oa-forum-hidden</c:if>'><span class="oa-forum-numberOfComments">${fn:length(thread.posts)-1}</span> <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
+                <a href="" class='oa-forum-minimizeThread <c:if test="${!expandThreads}">oa-forum-hidden</c:if>'><kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
             &nbsp;|&nbsp;
             <c:set var="postRatings" value="${ratings[post.id]}"/>

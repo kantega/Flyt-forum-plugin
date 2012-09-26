@@ -183,16 +183,16 @@ $(document).ready(function(){
     // link listener to display hidden comments in a thread.
     $(".oa-forum-showFullThread").live("click", function(event){
         event.preventDefault();
-        $(this).hide();
+        $(this).addClass("oa-forum-hidden");
         $(this).closest(".oa-forum-posts").find(".oa-forum-post").removeClass("oa-forum-hidden");
-        $(this).siblings(".oa-forum-minimizeThread").show();
+        $(this).siblings(".oa-forum-minimizeThread").removeClass("oa-forum-hidden");
     });
 
     // link listener to hide previous shown comments in a thread.
     $(".oa-forum-minimizeThread").live("click", function(event){
         event.preventDefault();
-        $(this).hide();
-        $(this).siblings(".oa-forum-showFullThread").show();
+        $(this).addClass("oa-forum-hidden");
+        $(this).siblings(".oa-forum-showFullThread").removeClass("oa-forum-hidden");
         $(this).closest(".oa-forum-posts").find(".oa-forum-post").addClass("oa-forum-hidden");
         $(this).closest(".oa-forum-posts").find(".oa-forum-post:last-child, .oa-forum-post:first-child").removeClass("oa-forum-hidden");
     });

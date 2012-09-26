@@ -42,7 +42,9 @@ public class ListThreadsController implements Controller {
 		int numberOfPostsToShow = param.getInt("numberOfPostsToShow");
 		int threadId = param.getInt("threadId");
 		String userId = param.getString("username");
+		boolean expandThreads = param.getBoolean("expandThreads");
 
+		model.put("expandThreads",expandThreads);
 
 		if (numberOfPostsToShow == -1) {
 			numberOfPostsToShow = defaultNumberOfPostsToShow;
