@@ -19,6 +19,7 @@
     </div>
     <div class="oa-forum-mediablockContent">
         <a name="oa-forum-post_<c:out value="${post.id}"/>"></a>
+
         <div class="oa-forum-username">
             <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
             <!-- FORUM NAME-->
@@ -62,12 +63,15 @@
                             <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank">
                                 <img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0">
                             </a>
+
                             <p class="oa-forum-fadedText oa-forum-enlarge-photo">
                                 <kantega:label key="forum.wall.image.sizeup" bundle="forum" locale="${forumLocale}"/>
                             </p>
+
                             <p class="oa-forum-fadedText oa-forum-reduce-photo oa-forum-hidden oa-forum-txtr">
                                 <kantega:label key="forum.wall.image.sizedown" bundle="forum" locale="${forumLocale}"/>
                             </p>
+
                             <p class="oa-forum-download-original oa-forum-hidden oa-forum-txtr">
                                 <a href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><kantega:label key="forum.wall.image.download.original" bundle="forum" locale="${forumLocale}"/></a>
                             </p>
@@ -84,12 +88,10 @@
         <div class="oa-forum-metadata">
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
             <c:if test="${fn:length(thread.posts) == 1}">
-                &nbsp;|&nbsp; <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
+                &nbsp;|&nbsp;
+                <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
-            <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
-                &nbsp;|&nbsp; <a href="" class='oa-forum-showFullThread <c:if test="${expandThreads}">oa-forum-hidden</c:if>'><span class="oa-forum-numberOfComments">${fn:length(thread.posts)-1}</span> <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/></a>
-                <a href="" class='oa-forum-minimizeThread <c:if test="${!expandThreads}">oa-forum-hidden</c:if>'><kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/></a>
-            </c:if>
+
             &nbsp;|&nbsp;
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
@@ -119,6 +121,7 @@
                 </c:when>
                 <c:otherwise>
                     <a href="#" class="oa-forum-like-link"><kantega:label key="forum.wall.like" bundle="forum" locale="${forumLocale}"/></a>
+
                     <form action="<aksess:geturl url="/forum/like"/>" method="post" class="oa-forum-likeForm oa-forum-hidden">
                         <input type="hidden" name="rating" value="1">
                         <input type="hidden" name="objectId" value="${post.id}">
@@ -133,6 +136,7 @@
         </div>
     </div>
     <div style="clear:both"></div>
+
     <c:if test="${not empty postRatings}">
         <div class="oa-forum-mediablock oa-forum-likes oa-forum-fadedText">
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
@@ -154,6 +158,19 @@
                 <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
             </c:forEach>
             <kantega:label key="forum.wall.likes.this" bundle="forum" locale="${forumLocale}"/>
+        </div>
+    </c:if>
+
+    <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
+        <div class="oa-forum-mediablock oa-forum-likes oa-forum-fadedText">
+            <a href="" class='oa-forum-showFullThread <c:if test="${expandThreads}">oa-forum-hidden</c:if>'>
+                <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/>
+                ${fn:length(thread.posts)-1}
+                <kantega:label key="forum.wall.morecomments.part3" bundle="forum" locale="${forumLocale}"/>
+            </a>
+            <a href="" class='oa-forum-minimizeThread <c:if test="${!expandThreads}">oa-forum-hidden</c:if>'>
+                <kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/>
+            </a>
         </div>
     </c:if>
 </div>
