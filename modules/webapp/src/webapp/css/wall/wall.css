@@ -61,3 +61,8 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 .oa-forum-post-preview-hidden-post-body{
     display: none;
 }
+
+.oa-forum-category{
+    font-weight: bold;
+    color:#00008b;
+}

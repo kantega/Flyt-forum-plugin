@@ -24,7 +24,7 @@
             <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
             <!-- FORUM NAME-->
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
-                &raquo;&nbsp;<aksess:link queryparams="forumId=${post.thread.forum.id}"><span>${post.thread.forum.name}</span></aksess:link>
+                &raquo;&nbsp;<aksess:link queryparams="forumId=${post.thread.forum.id}"><span class="oa-forum-category">${post.thread.forum.name}</span></aksess:link>
             </c:if>
         </div>
 
