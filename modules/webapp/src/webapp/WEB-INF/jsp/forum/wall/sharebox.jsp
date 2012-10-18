@@ -17,6 +17,7 @@
                     </c:otherwise>
                 </c:choose>
                 <input type="hidden" name="ajax" value="true">
+                <input type="hidden" name="hiddenForumId" value="${hiddenForumId}"/>
                 <input type="hidden" name="subject" value="Subject">
                 <label class="oa-forum-hidden">${helptextLabel}</label>
                 <%-- helptextLabel is set in RenderWallTag--%>
@@ -28,7 +29,6 @@
                 <div id="oa-forum-share-add-attachment" class="oa-forum-formElement">
                     <a href="#"><kantega:label key="forum.share.inputfield.addfile" bundle="forum" locale="${forumLocale}"/></a>
                 </div>
-
                 <div id="oa-forum-share-attachment" class="oa-forum-formElement oa-forum-hidden">
                     <input type="file" name="attachment1">
                 </div>

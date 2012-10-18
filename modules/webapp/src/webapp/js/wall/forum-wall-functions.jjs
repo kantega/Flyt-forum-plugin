@@ -36,7 +36,6 @@ $(document).ready(function(){
 
     $('#oa-forum-sharebox-textarea').live('focus', function() {
         $('#oa-forum-sharebox-buttons').show();
-        $('#oa-forum-sharebox-buttons').removeClass('oa-forum-hidden');
     });
 
     $('#oa-forum-share-add-attachment a').live('click', function(event) {
@@ -71,6 +70,7 @@ $(document).ready(function(){
         $form
         window.setTimeout(function(){     // Timeout to allow the animation to complete
             $form.parent().find(".oa-forum-submit-animation").fadeOut(300, function(){
+                $form.find("#oa-forum-sharebox-buttons").hide();
                 $form.fadeIn(300);
                 var $newThread = $(responseText);
                 $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});

@@ -317,10 +317,13 @@ public class EditPostController extends AbstractForumFormController {
 
         Map map = new HashMap();
 
-        String redirect = request.getParameter("redirect");
+        RequestParameters param = new RequestParameters(request);
+        String redirect = param.getString("redirect");
         if (redirect != null && redirect.startsWith("/")) {
             return new ModelAndView(new RedirectView(redirect));
         } else if (isAjaxRequest(request)) {
+            int hiddenForumId = param.getInt("hiddenForumId");
+            map.put("hiddenForumId", hiddenForumId);
             if (isNewThread) {
                 ForumThread t = p.getThread();
                 t.setPosts(new TreeSet());

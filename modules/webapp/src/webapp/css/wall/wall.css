@@ -53,8 +53,9 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     content:" x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x x ";
 }
 .oa-forum-hidden{
-    display:none !important;
+    display:none;
 }
+
 #oa-forum-wall-load-more-threads{
     display: none;
 }
