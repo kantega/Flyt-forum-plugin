@@ -23,12 +23,16 @@
         <div class="oa-forum-mediablockContent oa-forum-reply">
             <form action="${pageContext.request.contextPath}/forum/editpost" id="ForumReply${thread.id}">
                 <div>
-                    <input type="hidden" name="threadId" value="${thread.id}">
-                    <label class="oa-forum-hidden"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></label>
-                    <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-comment-reply oa-forum-fadedText"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></textarea>
-                    <span class="oa-forum-share-button oa-forum-txtR">
-                        <input type="submit" value="<kantega:label key="forum.wall.comment.submit" bundle="forum" locale="${forumLocale}"/>" name="send" class="oa-forum-share-comment">
-                    </span>
+                    <div class="oa-forum-formElement">
+                        <input type="hidden" name="threadId" value="${thread.id}">
+                        <label class="oa-forum-hidden"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></label>
+                        <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-comment-reply oa-forum-fadedText"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></textarea>
+                    </div>
+                    <div class="oa-forum-formElement oa-forum-txtR">
+                        <span class="oa-forum-share-button">
+                            <input type="submit" value="<kantega:label key="forum.wall.comment.submit" bundle="forum" locale="${forumLocale}"/>" name="send" class="oa-forum-share-comment">
+                        </span>
+                    </div>
                 </div>
             </form>
         </div>

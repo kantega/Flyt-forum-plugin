@@ -3,7 +3,7 @@
     padding-top:10px;
 }
 .oa-forum-mediablock.oa-forum-reply{
-    padding:5px;
+    padding:0px 10px;
     border-top:1px solid #ebebeb;
     background-color:#fff;
     margin-top:5px;
@@ -113,6 +113,10 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 }
 .oa-forum-fadedText{
     color:#999;
+}
+
+.oa-forum-formElement{
+    margin:5px 0;
 }
 #oa-forum-newPost .oa-forum-formElement{
     margin:5px;

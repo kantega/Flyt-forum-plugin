@@ -38,7 +38,7 @@
                     <input type="submit" name="send" value="<kantega:label key="forum.share.submit.label" bundle="forum" locale="${forumLocale}"/>">
                 </span>
                 </div>
-
+                <div style="clear:both;"></div>
             </div>
         </form>
     </div>
