@@ -164,9 +164,17 @@
     <c:if test="${postsStatus.index == 0 && !postsStatus.last && fn:length(thread.posts) > 2}">
         <div class="oa-forum-mediablock oa-forum-likes oa-forum-fadedText">
             <a href="" class='oa-forum-showFullThread <c:if test="${expandThreads}">oa-forum-hidden</c:if>'>
-                <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/>
-                ${fn:length(thread.posts)-1}
-                <kantega:label key="forum.wall.morecomments.part3" bundle="forum" locale="${forumLocale}"/>
+                <c:choose>
+                    <c:when test="${fn:length(thread.posts) > 3}">
+                        <kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/>
+                        ${fn:length(thread.posts)-1}
+                        <kantega:label key="forum.wall.morecomments.part3" bundle="forum" locale="${forumLocale}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <kantega:label key="forum.wall.morecomments.twocomments" bundle="forum" locale="${forumLocale}"/>
+                    </c:otherwise>
+                </c:choose>
+
             </a>
             <a href="" class='oa-forum-minimizeThread <c:if test="${!expandThreads}">oa-forum-hidden</c:if>'>
                 <kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/>
