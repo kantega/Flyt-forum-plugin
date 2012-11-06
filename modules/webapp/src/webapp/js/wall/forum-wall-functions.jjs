@@ -188,6 +188,7 @@ $(document).ready(function(){
         $(this).hide();
         $(this).closest(".oa-forum-posts").find(".oa-forum-post").removeClass("oa-forum-hidden");
         $(this).siblings(".oa-forum-minimizeThread").show();
+        $(this).siblings(".oa-forum-minimizeThread").removeClass("oa-forum-hidden");
     });
 
     // link listener to hide previous shown comments in a thread.
