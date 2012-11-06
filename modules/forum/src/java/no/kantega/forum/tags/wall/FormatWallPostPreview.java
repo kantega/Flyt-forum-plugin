@@ -12,7 +12,6 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
 public class FormatWallPostPreview extends SimpleTagSupport {
-    private static final String SOURCE = "FormatWallPostPreview";
 
     private String postbody;
     private int charsInBodyPreview = 200;
@@ -29,7 +28,7 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         try {
             charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", 1);
         } catch (ConfigurationException e) {
-            Log.debug(SOURCE, "Fetching configuration");
+            Log.debug(FormatWallPostPreview.class.toString(), "Fetching configuration");
         }
         int indexOfFirstLink = postbody.indexOf(linkStartTag);
         if( indexOfFirstLink < (charsInBodyPreview - charsPerLine) ) {

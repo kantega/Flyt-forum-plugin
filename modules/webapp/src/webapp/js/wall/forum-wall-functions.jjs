@@ -57,7 +57,7 @@ $(document).ready(function(){
         replacedText = replacedText.replace(replacePattern2, '$1<a href="http://$2" target="_blank">$2</a>');
 
         //Change email addresses to mailto:: links.
-        replacePattern3 = /([_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[a-zA-Z_]+?\.[a-zA-Z]{2,6})/gim;
+        replacePattern3 = /([_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@([a-zA-Z_]+?\.)+[a-zA-Z]{2,6})/gim;
         replacedText = replacedText.replace(replacePattern3, '<a href="mailto:$1">$1</a>');
 
         return replacedText;
