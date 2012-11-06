@@ -8,7 +8,7 @@ function setEnableEnterAsPostCommentAction(value){
 }
 
 $(document).ready(function(){
-    // Handles posting of  status
+    // Handles posting of status
     $('#oa-forum-sharebox .oa-forum-ajaxForm').ajaxForm({
         beforeSerialize: function($form, options){
             $form.find("textarea").val(replaceURLWithHTMLLinks($form.find("textarea").val()));
@@ -36,6 +36,7 @@ $(document).ready(function(){
 
     $('#oa-forum-sharebox-textarea').live('focus', function() {
         $('#oa-forum-sharebox-buttons').show();
+        $('#oa-forum-sharebox-buttons').removeClass('oa-forum-hidden');
     });
 
     $('#oa-forum-share-add-attachment a').live('click', function(event) {
@@ -236,7 +237,7 @@ $(document).ready(function(){
 
     $(".oa-forum-share-comment").live("click", function(event){
         event.preventDefault();
-        postComment($(this).closest("div").siblings("div").children("textarea"));
+        postComment($(this).closest("div").children("textarea")[0]);
     });
 
     // Handles deleting posts
