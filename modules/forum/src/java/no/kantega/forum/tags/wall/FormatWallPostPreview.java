@@ -15,7 +15,7 @@ public class FormatWallPostPreview extends SimpleTagSupport {
 
     private String postbody;
     private int charsInBodyPreview = 200;
-    private int charsPerLine = 1;
+    private int charsPerLine = -1;
 
     public void doTag() throws JspException, IOException {
         PageContext pageContext = ((PageContext)getJspContext());
@@ -26,19 +26,25 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         String linkStartTag = "<a";
         String linkEndTag = "</a>";
         try {
-            charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", 1);
+            charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", -1);
         } catch (ConfigurationException e) {
             Log.debug(FormatWallPostPreview.class.toString(), "Fetching configuration");
         }
         int indexOfFirstLink = postbody.indexOf(linkStartTag);
-        if( indexOfFirstLink < (charsInBodyPreview - charsPerLine) ) {
+        // Link is in the preview part and the post is large enough for a preview to be made
+        if( indexOfFirstLink < (charsInBodyPreview - charsPerLine) && postbody.length() > charsInBodyPreview) {
             int indexOfFirstLinkEnd = postbody.indexOf(linkEndTag);
-            if (indexOfFirstLinkEnd > 0) {
+            // End of link is on "the other side" of the preview meaning it will split the link
+            if (indexOfFirstLinkEnd > (charsInBodyPreview - charsPerLine)) {
+                // Therefore the preview is increased by the length of the link
                 charsInBodyPreview = charsInBodyPreview + ( (indexOfFirstLinkEnd + linkEndTag.length()) - indexOfFirstLink);
             }
+            // No matter where the link is in the preview, its length in chars will be about double of what is shown
+            // Preview is therefore increased
+            charsInBodyPreview += (indexOfFirstLinkEnd - indexOfFirstLink)/2;
         }
-        // Creating a preview if neccessary, if the post does not fit within the limit, one line is removed in order to
-        // show "show more" tag so it will not use more space
+        // Creating a preview if necessary, if the post does not fit within the limit, one line is removed in order to
+        // show "show more" tag so it does not use more space
         if (postbody.length() > charsInBodyPreview) {
             String linkText = LocaleLabels.getLabel("forum.wall.post.previewlink","forum", Aksess.getDefaultAdminLocale());
             formattedPostBody.append(postbody.substring(0, charsInBodyPreview - charsPerLine));
@@ -60,5 +66,8 @@ public class FormatWallPostPreview extends SimpleTagSupport {
 
     public void setCharsinbodypreview(int charsInBodyPreview) {
         this.charsInBodyPreview = charsInBodyPreview;
+    }
+    public void setCharsperline(int charsPerLine) {
+        this.charsPerLine = charsPerLine;
     }
 }
