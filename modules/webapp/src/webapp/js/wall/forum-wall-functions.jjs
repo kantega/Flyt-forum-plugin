@@ -238,7 +238,7 @@ $(document).ready(function(){
 
     $(".oa-forum-share-comment").live("click", function(event){
         event.preventDefault();
-        postComment($(this).closest("div").children("textarea")[0]);
+        postComment($(this).closest("div").siblings("div").children("textarea"));
     });
 
     // Handles deleting posts
