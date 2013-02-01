@@ -232,7 +232,7 @@ $(document).ready(function(){
     $(".oa-forum-thread .oa-forum-comment-reply").live("keyup", function(event){
         if (event.keyCode == enterKeyCode && oa_forum_enableEnterAsCommentPostAction) {
             event.preventDefault();
-            if(!this.value == this.defaultValue){
+            if(this.value != this.defaultValue){
                 postComment(this);
             }
         }
@@ -240,7 +240,8 @@ $(document).ready(function(){
 
     $(".oa-forum-share-comment").live("click", function(event){
         event.preventDefault();
-        if(!this.value == this.defaultValue){
+        var commentText = $(this).closest("div").siblings("div").children("textarea")[0];
+        if(commentText.value != commentText.defaultValue){
             postComment($(this).closest("div").siblings("div").children("textarea"));
         }
     });
