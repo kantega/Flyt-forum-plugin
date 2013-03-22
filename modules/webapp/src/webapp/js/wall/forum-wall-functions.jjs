@@ -182,6 +182,13 @@ $(document).ready(function(){
         }
     });
 
+    // link listener to display hidden ratings in a thread.
+    $(".oa-forum-showAllRatings").live("click", function(event){
+        event.preventDefault();
+        $(this).hide();
+        $(this).siblings(".oa-forum-minimizedRatings").show();
+    });
+
     // link listener to display hidden comments in a thread.
     $(".oa-forum-showFullThread").live("click", function(event){
         event.preventDefault();

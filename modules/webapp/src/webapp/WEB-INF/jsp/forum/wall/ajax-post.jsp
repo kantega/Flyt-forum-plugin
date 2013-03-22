@@ -139,24 +139,70 @@
 
     <c:if test="${not empty postRatings}">
         <div class="oa-forum-mediablock oa-forum-likes oa-forum-fadedText">
-            <c:forEach items="${postRatings}" var="rating" varStatus="status">
-                <aksess:getuser userid="${rating.userid}" name="user"/>
-                <c:choose>
-                    <c:when test="${status.index == 0}">
+            <c:set var="manyRatings" value="${fn:length(postRatings) > 3}"/>
+            <c:choose>
+                <c:when test="${!manyRatings}">
+                    <c:forEach items="${postRatings}" var="rating" varStatus="status">
+                        <aksess:getuser userid="${rating.userid}" name="user"/>
+                        <c:choose>
+                            <c:when test="${status.index == 0}">
 
-                    </c:when>
-                    <c:when test="${status.index > 0 && status.last}">
-                        <kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>
-                    </c:when>
-                    <c:when test="${status.index > 0 && !status.last}">
-                        ,
-                    </c:when>
-                    <c:otherwise>
+                            </c:when>
+                            <c:when test="${status.index > 0 && status.last}">
+                                <kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>
+                            </c:when>
+                            <c:when test="${status.index > 0 && !status.last}">
+                                ,
+                            </c:when>
+                            <c:otherwise>
 
-                    </c:otherwise>
-                </c:choose>
-                <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
-            </c:forEach>
+                            </c:otherwise>
+                        </c:choose>
+                        <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach items="${postRatings}" var="rating" varStatus="status" begin="0" end="2">
+                        <aksess:getuser userid="${rating.userid}" name="user"/>
+                        <c:choose>
+                            <c:when test="${status.index == 0}">
+                                <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                            </c:when>
+                            <c:when test="${status.index > 0 && status.last}">
+                                <c:if test="${status.index == 2}">
+                                    <kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>
+                                    <a href="" class='oa-forum-showAllRatings'>
+                                        ${fn:length(postRatings) - 2} <kantega:label key="forum.wall.likes.others" bundle="forum" locale="${forumLocale}"/>
+                                    </a>
+                                </c:if>
+                            </c:when>
+                            <c:when test="${status.index > 0 && !status.last}">
+                                , <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                            </c:when>
+                            <c:otherwise>
+
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                    <span class="oa-forum-minimizedRatings oa-forum-hidden">
+                        <c:forEach items="${postRatings}" var="rating" varStatus="status" begin="2">
+                            <aksess:getuser userid="${rating.userid}" name="user"/>
+                            <c:choose>
+                                <c:when test="${status.index > 0 && status.last}">
+                                    <kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>
+                                </c:when>
+                                <c:when test="${status.index > 0 && !status.last}">
+                                    ,
+                                </c:when>
+                                <c:otherwise>
+
+                                </c:otherwise>
+                            </c:choose>
+                            <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                        </c:forEach>
+                    </span>
+                </c:otherwise>
+            </c:choose>
             <kantega:label key="forum.wall.likes.this" bundle="forum" locale="${forumLocale}"/>
         </div>
     </c:if>
@@ -174,7 +220,6 @@
                         <kantega:label key="forum.wall.morecomments.twocomments" bundle="forum" locale="${forumLocale}"/>
                     </c:otherwise>
                 </c:choose>
-
             </a>
             <a href="" class='oa-forum-minimizeThread <c:if test="${!expandThreads}">oa-forum-hidden</c:if>'>
                 <kantega:label key="forum.wall.morecomments.collaps" bundle="forum" locale="${forumLocale}"/>
