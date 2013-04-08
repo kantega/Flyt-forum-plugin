@@ -34,12 +34,12 @@ $(document).ready(function(){
         success: prependNewThread
     });
 
-    $('#oa-forum-sharebox-textarea').live('focus', function() {
+    $('#oa-forum-sharebox-textarea').on('focus', function() {
         $('#oa-forum-sharebox-buttons').show();
         $('#oa-forum-sharebox-buttons').removeClass('oa-forum-hidden');
     });
 
-    $('#oa-forum-share-add-attachment a').live('click', function(event) {
+    $('#oa-forum-share-add-attachment a').on('click', function(event) {
         event.preventDefault();
         $("#oa-forum-share-add-attachment").hide();
         $("#oa-forum-share-attachment").show();
@@ -163,7 +163,7 @@ $(document).ready(function(){
     });
 
     // Handles input field label, hiding and removing these on/out-of focus.
-    $(".oa-forum-sharefield").live("focusin", function(){
+    $(".oa-forum-sharefield").on("focusin", function(){
         var $field = $(this);
         var fieldVal = $.trim($field.val());
         var fieldLabel = $field.siblings("label").text();
@@ -172,7 +172,7 @@ $(document).ready(function(){
             $field.removeClass("oa-forum-fadedText");
         }
     });
-    $(".oa-forum-sharefield").live("focusout", function(){
+    $(".oa-forum-sharefield").on("focusout", function(){
         var $field = $(this);
         var fieldVal = $.trim($field.val());
         var fieldLabel = $field.siblings("label").text();
@@ -183,14 +183,14 @@ $(document).ready(function(){
     });
 
     // link listener to display hidden ratings in a thread.
-    $(".oa-forum-showAllRatings").live("click", function(event){
+    $(".oa-forum-showAllRatings").on("click", function(event){
         event.preventDefault();
         $(this).hide();
         $(this).siblings(".oa-forum-minimizedRatings").show();
     });
 
     // link listener to display hidden comments in a thread.
-    $(".oa-forum-showFullThread").live("click", function(event){
+    $(".oa-forum-showFullThread").on("click", function(event){
         event.preventDefault();
         $(this).hide();
         $(this).closest(".oa-forum-posts").find(".oa-forum-post").removeClass("oa-forum-hidden");
@@ -199,7 +199,7 @@ $(document).ready(function(){
     });
 
     // link listener to hide previous shown comments in a thread.
-    $(".oa-forum-minimizeThread").live("click", function(event){
+    $(".oa-forum-minimizeThread").on("click", function(event){
         event.preventDefault();
         $(this).hide();
         $(this).siblings(".oa-forum-showFullThread").show();
@@ -208,7 +208,7 @@ $(document).ready(function(){
     });
 
     // Handles showing comment form on a thread
-    $(".oa-forum-showReplyForm").live("click", function(event){
+    $(".oa-forum-showReplyForm").on("click", function(event){
         event.preventDefault();
         var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea");
         window.setTimeout(function(){
@@ -223,7 +223,7 @@ $(document).ready(function(){
         },10);
     });
 
-    $(".oa-forum-post-preview-show-full-body-link").live("click", function(event){
+    $(".oa-forum-post-preview-show-full-body-link").on("click", function(event){
         event.preventDefault();
         var $link = $(this);
         var $postBody = $link.closest(".oa-forum-body");
@@ -236,7 +236,7 @@ $(document).ready(function(){
 
     // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
-    $(".oa-forum-thread .oa-forum-comment-reply").live("keyup", function(event){
+    $(".oa-forum-thread .oa-forum-comment-reply").on("keyup", function(event){
         if (event.keyCode == enterKeyCode && oa_forum_enableEnterAsCommentPostAction) {
             event.preventDefault();
             if(this.value != this.defaultValue){
@@ -245,7 +245,7 @@ $(document).ready(function(){
         }
     });
 
-    $(".oa-forum-share-comment").live("click", function(event){
+    $(".oa-forum-share-comment").on("click", function(event){
         event.preventDefault();
         var commentText = $(this).closest("div").siblings("div").children("textarea")[0];
         if(commentText.value != commentText.defaultValue){
@@ -254,7 +254,7 @@ $(document).ready(function(){
     });
 
     // Handles deleting posts
-    $(".oa-forum-deletePost").live("click", function(event){
+    $(".oa-forum-deletePost").on("click", function(event){
         event.preventDefault();
         var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletepost" bundle="forum" locale="${forumLocale}"/>');
         if (confirmDelete) {
@@ -271,7 +271,7 @@ $(document).ready(function(){
     });
 
     // Handles deleting threads
-    $(".oa-forum-deleteThread").live("click", function(event){
+    $(".oa-forum-deleteThread").on("click", function(event){
         event.preventDefault();
         var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletethread" bundle="forum" locale="${forumLocale}"/>');
         if (confirmDelete) {
@@ -287,7 +287,7 @@ $(document).ready(function(){
         }
     });
 
-    $(".oa-forum-like-link").live("click", function(event){
+    $(".oa-forum-like-link").on("click", function(event){
         event.preventDefault();
         $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
         /*
@@ -298,7 +298,7 @@ $(document).ready(function(){
     });
 
     // attach handler to form's submit event
-    $('.oa-forum-likeForm').live("submit", function() {
+    $('.oa-forum-likeForm').on("submit", function() {
         $(this).ajaxSubmit({success: updateLikeStatusOfPost});
         return false;
     });
@@ -314,7 +314,7 @@ $(document).ready(function(){
 
 
     // Handles viewing larger versions of images
-    $(".oa-forum-attachment, .oa-forum-enlarge-photo").live("click", function(event){
+    $(".oa-forum-attachment, .oa-forum-enlarge-photo").on("click", function(event){
         var $attachmentContainer = $(this).closest(".oa-forum-attachments");
         var $imgLink = $attachmentContainer.find(".oa-forum-attachment");
         if ($imgLink.find("img").length){
@@ -351,7 +351,7 @@ $(document).ready(function(){
         }
     });
 
-    $(".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo").live("click", function(event){
+    $(".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo").on("click", function(event){
         event.preventDefault();
         var $attachmentContainer = $(this).closest(".oa-forum-attachments");
         var $imgLink = $attachmentContainer.find(".oa-forum-attachment-image-fullsize");

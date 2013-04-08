@@ -28,7 +28,6 @@
         </a>
     </div>
 </div>
-<script type="text/javascript" src="<kantega:expireurl url="/js/wall/jquery.timers.js"/>"></script>
 <script type="text/javascript">
 
     $(document).ready(function(){
@@ -42,25 +41,29 @@
             $(this).parent().hide();
         });
 
-        var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
-        newpostsContainer.everyTime(10000, function() {
-            <aksess:getuser name="user" />
-            $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:${forumId}, forumCategoryId: ${forumCategoryId}, timeStamp:loadTime, username:'${user.id}'}, function(data) {
-                if(data.numberOfNewThreads > 0){
-                    var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
-                    loadNewThreads.click(function(event){
-                        event.preventDefault();
-                        newpostsContainer.html('');
-                        loadTime = new Date().getTime();
-                        loadWallThreads(false);
-
-                        return false;
-                    });
-                    newpostsContainer.html(loadNewThreads);
-                }
-            }
-        )})
+        setTimeout(updateWithNumberOfNewPost, 10000);
     });
+
+    function updateWithNumberOfNewPosts() {
+        var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
+        <aksess:getuser name="user" />
+        $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:${forumId}, forumCategoryId: ${forumCategoryId}, timeStamp:loadTime, username:'${user.id}'}, function(data) {
+                    if(data.numberOfNewThreads > 0){
+                        var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
+                        loadNewThreads.click(function(event){
+                            event.preventDefault();
+                            newpostsContainer.html('');
+                            loadTime = new Date().getTime();
+                            loadWallThreads(false);
+
+                            return false;
+                        });
+                        newpostsContainer.html(loadNewThreads);
+                    }
+                }
+        );
+        setTimeout(updateWithNumberOfNewPost, 10000);
+    }
 
     function loadWallThreads(loadMore) {
         var $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
