@@ -35,7 +35,7 @@
         var newThreadsTemplate = "<kantega:label key="forum.wall.newThreads" bundle="forum" locale="${forumLocale}"/>";
         // Handles loading and animation of the wall.
         loadWallThreads(true);
-        $("#oa-forum-wall-load-more-threads a").live("click", function(event){
+        $("#oa-forum-wall-load-more-threads a").on("click", function(event){
             event.preventDefault();
             loadWallThreads(true);
             $(this).parent().hide();
