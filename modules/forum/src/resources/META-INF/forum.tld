@@ -309,4 +309,11 @@
         <body-content>empty</body-content>
     </tag>
 
+    <tag>
+        <description>Prints required javascript file</description>
+        <name>wall-javascript</name>
+        <tag-class>no.kantega.forum.tags.wall.RenderWallScript</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+
 </taglib>
