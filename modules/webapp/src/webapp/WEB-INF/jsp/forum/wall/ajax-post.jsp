@@ -21,11 +21,7 @@
         <a name="oa-forum-post_<c:out value="${post.id}"/>"></a>
 
         <div class="oa-forum-username">
-            <a href="${userProfileUrl}"><c:out value="${post.author}"/></a>
-            <!-- FORUM NAME-->
-            <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
-                &raquo;&nbsp;<aksess:link queryparams="forumId=${post.thread.forum.id}"><span class="oa-forum-category">${post.thread.forum.name}</span></aksess:link>
-            </c:if>
+            <a href="${userProfileUrl}"><c:out value="${post.author}"/>:</a>
         </div>
 
         <c:choose>
@@ -87,12 +83,18 @@
         </c:if>
         <div class="oa-forum-metadata">
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
+            
+            <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
+                &nbsp;-&nbsp;
+                <aksess:link queryparams="forumId=${post.thread.forum.id}"><span class="oa-forum-category">${post.thread.forum.name}</span></aksess:link>
+            </c:if>
+
             <c:if test="${fn:length(thread.posts) == 1}">
-                &nbsp;|&nbsp;
+                &nbsp;-&nbsp;
                 <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
             </c:if>
 
-            &nbsp;|&nbsp;
+            &nbsp;-&nbsp;
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
 

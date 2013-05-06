@@ -28,3 +28,15 @@
         </a>
     </div>
 </div>
+
+<script type="text/javascript">
+    
+    // Globale variabler som servertid osv
+    var serverTime = "<aksess:getdate format="yyyy-MM-dd'T'HH:mm:ss"/>";
+    var contextPath = "<aksess:geturl/>";
+    var locale = "<c:out value="${fn:substring(aksess_locale, 0, 2)}"/>";
+    var forumId = "<c:out value="${forumId}"/>";
+    var forumCategoryId = "<c:out value="${forumCategoryId}"/>";
+    var forumWallUrl = "${forumListPostsUrl}";
+
+</script>

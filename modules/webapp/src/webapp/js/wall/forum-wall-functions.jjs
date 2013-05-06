@@ -1,7 +1,5 @@
-//<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
-//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-
-// jQuery plugins
+<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
 /*!
  * jQuery Form Plugin
@@ -13,46 +11,1034 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  */
+;(function($) {
 
-(function(e){function t(){var e="[jquery.form] "+Array.prototype.join.call(arguments,"");if(window.console&&window.console.log){window.console.log(e)}else if(window.opera&&window.opera.postError){window.opera.postError(e)}}e.fn.ajaxSubmit=function(n){function b(i){function S(e){var t=e.contentWindow?e.contentWindow.document:e.contentDocument?e.contentDocument:e.document;return t}function x(){function u(){try{var e=S(p).readyState;t("state = "+e);if(e.toLowerCase()=="uninitialized")setTimeout(u,50)}catch(n){t("Server abort: ",n," (",n.name,")");L(E);y&&clearTimeout(y);y=undefined}}var n=o.attr("target"),i=o.attr("action");s.setAttribute("target",c);if(!r){s.setAttribute("method","POST")}if(i!=f.url){s.setAttribute("action",f.url)}if(!f.skipEncodingOverride&&(!r||/post/i.test(r))){o.attr({encoding:"multipart/form-data",enctype:"multipart/form-data"})}if(f.timeout){y=setTimeout(function(){g=true;L(w)},f.timeout)}var a=[];try{if(f.extraData){for(var l in f.extraData){a.push(e('<input type="hidden" name="'+l+'" />').attr("value",f.extraData[l]).appendTo(s)[0])}}if(!f.iframeTarget){h.appendTo("body");p.attachEvent?p.attachEvent("onload",L):p.addEventListener("load",L,false)}setTimeout(u,15);s.submit()}finally{s.setAttribute("action",i);if(n){s.setAttribute("target",n)}else{o.removeAttr("target")}e(a).remove()}}function L(n){if(d.aborted||k){return}try{N=S(p)}catch(r){t("cannot access response document: ",r);n=E}if(n===w&&d){d.abort("timeout");return}else if(n==E&&d){d.abort("server abort");return}if(!N||N.location.href==f.iframeSrc){if(!g)return}p.detachEvent?p.detachEvent("onload",L):p.removeEventListener("load",L,false);var i="success",s;try{if(g){throw"timeout"}var o=f.dataType=="xml"||N.XMLDocument||e.isXMLDoc(N);t("isXml="+o);if(!o&&window.opera&&(N.body==null||N.body.innerHTML=="")){if(--C){t("requeing onLoad callback, DOM not available");setTimeout(L,250);return}}var u=N.body?N.body:N.documentElement;d.responseText=u?u.innerHTML:null;d.responseXML=N.XMLDocument?N.XMLDocument:N;if(o)f.dataType="xml";d.getResponseHeader=function(e){var t={"content-type":f.dataType};return t[e]};if(u){d.status=Number(u.getAttribute("status"))||d.status;d.statusText=u.getAttribute("statusText")||d.statusText}var a=f.dataType||"";var c=/(json|script|text)/.test(a.toLowerCase());if(c||f.textarea){var v=N.getElementsByTagName("textarea")[0];if(v){d.responseText=v.value;d.status=Number(v.getAttribute("status"))||d.status;d.statusText=v.getAttribute("statusText")||d.statusText}else if(c){var m=N.getElementsByTagName("pre")[0];var b=N.getElementsByTagName("body")[0];if(m){d.responseText=m.textContent?m.textContent:m.innerHTML}else if(b){d.responseText=b.innerHTML}}}else if(f.dataType=="xml"&&!d.responseXML&&d.responseText!=null){d.responseXML=A(d.responseText)}try{T=M(d,f.dataType,f)}catch(n){i="parsererror";d.error=s=n||i}}catch(n){t("error caught: ",n);i="error";d.error=s=n||i}if(d.aborted){t("upload aborted");i=null}if(d.status){i=d.status>=200&&d.status<300||d.status===304?"success":"error"}if(i==="success"){f.success&&f.success.call(f.context,T,"success",d);l&&e.event.trigger("ajaxSuccess",[d,f])}else if(i){if(s==undefined)s=d.statusText;f.error&&f.error.call(f.context,d,i,s);l&&e.event.trigger("ajaxError",[d,f,s])}l&&e.event.trigger("ajaxComplete",[d,f]);if(l&&!--e.active){e.event.trigger("ajaxStop")}f.complete&&f.complete.call(f.context,d,i);k=true;if(f.timeout)clearTimeout(y);setTimeout(function(){if(!f.iframeTarget)h.remove();d.responseXML=null},100)}var s=o[0],u,a,f,l,c,h,p,d,v,m,g,y;var b=!!e.fn.prop;if(i){for(a=0;a<i.length;a++){u=e(s[i[a].name]);u[b?"prop":"attr"]("disabled",false)}}if(e(":input[name=submit],:input[id=submit]",s).length){alert('Error: Form elements must not have name or id of "submit".');return}f=e.extend(true,{},e.ajaxSettings,n);f.context=f.context||f;c="jqFormIO"+(new Date).getTime();if(f.iframeTarget){h=e(f.iframeTarget);m=h.attr("name");if(m==null)h.attr("name",c);else c=m}else{h=e('<iframe name="'+c+'" src="'+f.iframeSrc+'" />');h.css({position:"absolute",top:"-1000px",left:"-1000px"})}p=h[0];d={aborted:0,responseText:null,responseXML:null,status:0,statusText:"n/a",getAllResponseHeaders:function(){},getResponseHeader:function(){},setRequestHeader:function(){},abort:function(n){var r=n==="timeout"?"timeout":"aborted";t("aborting upload... "+r);this.aborted=1;h.attr("src",f.iframeSrc);d.error=r;f.error&&f.error.call(f.context,d,r,n);l&&e.event.trigger("ajaxError",[d,f,r]);f.complete&&f.complete.call(f.context,d,r)}};l=f.global;if(l&&!(e.active++)){e.event.trigger("ajaxStart")}if(l){e.event.trigger("ajaxSend",[d,f])}if(f.beforeSend&&f.beforeSend.call(f.context,d,f)===false){if(f.global){e.active--}return}if(d.aborted){return}v=s.clk;if(v){m=v.name;if(m&&!v.disabled){f.extraData=f.extraData||{};f.extraData[m]=v.value;if(v.type=="image"){f.extraData[m+".x"]=s.clk_x;f.extraData[m+".y"]=s.clk_y}}}var w=1;var E=2;if(f.forceSync){x()}else{setTimeout(x,10)}var T,N,C=50,k;var A=e.parseXML||function(e,t){if(window.ActiveXObject){t=new ActiveXObject("Microsoft.XMLDOM");t.async="false";t.loadXML(e)}else{t=(new DOMParser).parseFromString(e,"text/xml")}return t&&t.documentElement&&t.documentElement.nodeName!="parsererror"?t:null};var O=e.parseJSON||function(e){return window["eval"]("("+e+")")};var M=function(t,n,r){var i=t.getResponseHeader("content-type")||"",s=n==="xml"||!n&&i.indexOf("xml")>=0,o=s?t.responseXML:t.responseText;if(s&&o.documentElement.nodeName==="parsererror"){e.error&&e.error("parsererror")}if(r&&r.dataFilter){o=r.dataFilter(o,n)}if(typeof o==="string"){if(n==="json"||!n&&i.indexOf("json")>=0){o=O(o)}else if(n==="script"||!n&&i.indexOf("javascript")>=0){e.globalEval(o)}}return o}}if(!this.length){t("ajaxSubmit: skipping submit process - no element selected");return this}var r,i,s,o=this;if(typeof n=="function"){n={success:n}}r=this.attr("method");i=this.attr("action");s=typeof i==="string"?e.trim(i):"";s=s||window.location.href||"";if(s){s=(s.match(/^([^#]+)/)||[])[1]}n=e.extend(true,{url:s,success:e.ajaxSettings.success,type:r||"GET",iframeSrc:/^https/i.test(window.location.href||"")?"javascript:false":"about:blank"},n);var u={};this.trigger("form-pre-serialize",[this,n,u]);if(u.veto){t("ajaxSubmit: submit vetoed via form-pre-serialize trigger");return this}if(n.beforeSerialize&&n.beforeSerialize(this,n)===false){t("ajaxSubmit: submit aborted via beforeSerialize callback");return this}var a,f,l=this.formToArray(n.semantic);if(n.data){n.extraData=n.data;for(a in n.data){if(e.isArray(n.data[a])){for(var c in n.data[a]){l.push({name:a,value:n.data[a][c]})}}else{f=n.data[a];f=e.isFunction(f)?f():f;l.push({name:a,value:f})}}}if(n.beforeSubmit&&n.beforeSubmit(l,this,n)===false){t("ajaxSubmit: submit aborted via beforeSubmit callback");return this}this.trigger("form-submit-validate",[l,this,n,u]);if(u.veto){t("ajaxSubmit: submit vetoed via form-submit-validate trigger");return this}var h=e.param(l);if(n.type.toUpperCase()=="GET"){n.url+=(n.url.indexOf("?")>=0?"&":"?")+h;n.data=null}else{n.data=h}var p=[];if(n.resetForm){p.push(function(){o.resetForm()})}if(n.clearForm){p.push(function(){o.clearForm()})}if(!n.dataType&&n.target){var d=n.success||function(){};p.push(function(t){var r=n.replaceTarget?"replaceWith":"html";e(n.target)[r](t).each(d,arguments)})}else if(n.success){p.push(n.success)}n.success=function(e,t,r){var i=n.context||n;for(var s=0,u=p.length;s<u;s++){p[s].apply(i,[e,t,r||o,o])}};var v=e("input:file",this).length>0;var m="multipart/form-data";var g=o.attr("enctype")==m||o.attr("encoding")==m;if(n.iframe!==false&&(v||n.iframe||g)){if(n.closeKeepAlive){e.get(n.closeKeepAlive,function(){b(l)})}else{b(l)}}else{if(e.browser.msie&&r=="get"){var y=o[0].getAttribute("method");if(typeof y==="string")n.type=y}e.ajax(n)}this.trigger("form-submit-notify",[this,n]);return this};e.fn.ajaxForm=function(n){if(this.length===0){var r={s:this.selector,c:this.context};if(!e.isReady&&r.s){t("DOM not ready, queuing ajaxForm");e(function(){e(r.s,r.c).ajaxForm(n)});return this}t("terminating; zero elements found by selector"+(e.isReady?"":" (DOM not ready)"));return this}return this.ajaxFormUnbind().bind("submit.form-plugin",function(t){if(!t.isDefaultPrevented()){t.preventDefault();e(this).ajaxSubmit(n)}}).bind("click.form-plugin",function(t){var n=t.target;var r=e(n);if(!r.is(":submit,input:image")){var i=r.closest(":submit");if(i.length==0){return}n=i[0]}var s=this;s.clk=n;if(n.type=="image"){if(t.offsetX!=undefined){s.clk_x=t.offsetX;s.clk_y=t.offsetY}else if(typeof e.fn.offset=="function"){var o=r.offset();s.clk_x=t.pageX-o.left;s.clk_y=t.pageY-o.top}else{s.clk_x=t.pageX-n.offsetLeft;s.clk_y=t.pageY-n.offsetTop}}setTimeout(function(){s.clk=s.clk_x=s.clk_y=null},100)})};e.fn.ajaxFormUnbind=function(){return this.unbind("submit.form-plugin click.form-plugin")};e.fn.formToArray=function(t){var n=[];if(this.length===0){return n}var r=this[0];var i=t?r.getElementsByTagName("*"):r.elements;if(!i){return n}var s,o,u,a,f,l,c;for(s=0,l=i.length;s<l;s++){f=i[s];u=f.name;if(!u){continue}if(t&&r.clk&&f.type=="image"){if(!f.disabled&&r.clk==f){n.push({name:u,value:e(f).val()});n.push({name:u+".x",value:r.clk_x},{name:u+".y",value:r.clk_y})}continue}a=e.fieldValue(f,true);if(a&&a.constructor==Array){for(o=0,c=a.length;o<c;o++){n.push({name:u,value:a[o]})}}else if(a!==null&&typeof a!="undefined"){n.push({name:u,value:a})}}if(!t&&r.clk){var h=e(r.clk),p=h[0];u=p.name;if(u&&!p.disabled&&p.type=="image"){n.push({name:u,value:h.val()});n.push({name:u+".x",value:r.clk_x},{name:u+".y",value:r.clk_y})}}return n};e.fn.formSerialize=function(t){return e.param(this.formToArray(t))};e.fn.fieldSerialize=function(t){var n=[];this.each(function(){var r=this.name;if(!r){return}var i=e.fieldValue(this,t);if(i&&i.constructor==Array){for(var s=0,o=i.length;s<o;s++){n.push({name:r,value:i[s]})}}else if(i!==null&&typeof i!="undefined"){n.push({name:this.name,value:i})}});return e.param(n)};e.fn.fieldValue=function(t){for(var n=[],r=0,i=this.length;r<i;r++){var s=this[r];var o=e.fieldValue(s,t);if(o===null||typeof o=="undefined"||o.constructor==Array&&!o.length){continue}o.constructor==Array?e.merge(n,o):n.push(o)}return n};e.fieldValue=function(t,n){var r=t.name,i=t.type,s=t.tagName.toLowerCase();if(n===undefined){n=true}if(n&&(!r||t.disabled||i=="reset"||i=="button"||(i=="checkbox"||i=="radio")&&!t.checked||(i=="submit"||i=="image")&&t.form&&t.form.clk!=t||s=="select"&&t.selectedIndex==-1)){return null}if(s=="select"){var o=t.selectedIndex;if(o<0){return null}var u=[],a=t.options;var f=i=="select-one";var l=f?o+1:a.length;for(var c=f?o:0;c<l;c++){var h=a[c];if(h.selected){var p=h.value;if(!p){p=h.attributes&&h.attributes["value"]&&!h.attributes["value"].specified?h.text:h.value}if(f){return p}u.push(p)}}return u}return e(t).val()};e.fn.clearForm=function(){return this.each(function(){e("input,select,textarea",this).clearFields()})};e.fn.clearFields=e.fn.clearInputs=function(){var e=/^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i;return this.each(function(){var t=this.type,n=this.tagName.toLowerCase();if(e.test(t)||n=="textarea"){this.value=""}else if(t=="checkbox"||t=="radio"){this.checked=false}else if(n=="select"){this.selectedIndex=-1}})};e.fn.resetForm=function(){return this.each(function(){if(typeof this.reset=="function"||typeof this.reset=="object"&&!this.reset.nodeType){this.reset()}})};e.fn.enable=function(e){if(e===undefined){e=true}return this.each(function(){this.disabled=!e})};e.fn.selected=function(t){if(t===undefined){t=true}return this.each(function(){var n=this.type;if(n=="checkbox"||n=="radio"){this.checked=t}else if(this.tagName.toLowerCase()=="option"){var r=e(this).parent("select");if(t&&r[0]&&r[0].type=="select-one"){r.find("option").selected(false)}this.selected=t}})};})(jQuery)
+/*
+    Usage Note:
+    -----------
+    Do not use both ajaxSubmit and ajaxForm on the same form.  These
+    functions are intended to be exclusive.  Use ajaxSubmit if you want
+    to bind your own submit handler to the form.  For example,
 
-/** 
- *  Another TextArea Autogrow plugin (0.2) alpha's alpha
- *  by Nikolay Borisov aka KOSIASIK
- *  mne@figovo.com
- *
- *  http://figovo.com/
- *
- *  Example: 
- *  $('textarea').ata();
- *
- *  jQuery required. Download it at http://jquery.com/
- *
+    $(document).ready(function() {
+        $('#myForm').bind('submit', function(e) {
+            e.preventDefault(); // <-- important
+            $(this).ajaxSubmit({
+                target: '#output'
+            });
+        });
+    });
+
+    Use ajaxForm when you want the plugin to manage all the event binding
+    for you.  For example,
+
+    $(document).ready(function() {
+        $('#myForm').ajaxForm({
+            target: '#output'
+        });
+    });
+
+    When using ajaxForm, the ajaxSubmit function will be invoked for you
+    at the appropriate time.
+*/
+
+/**
+ * ajaxSubmit() provides a mechanism for immediately submitting
+ * an HTML form using AJAX.
  */
+$.fn.ajaxSubmit = function(options) {
+    // fast fail if nothing selected (http://dev.jquery.com/ticket/2752)
+    if (!this.length) {
+        log('ajaxSubmit: skipping submit process - no element selected');
+        return this;
+    }
 
-(function(e){e.fn.ata=function(t){t=e.extend({timer:100},t);return this.each(function(n){var r=e(this),i=this;i.style.resize="none";i.style.overflow="hidden";var s=i.value;i.style.height="0px";i.value="W\nW\nW";var o=i.scrollHeight;i.value="W\nW\nW";var u=i.scrollHeight;var a=u-o;i.value=s;s=null;var f=$("<div></div>");r.after(f);var l=f.get(0);l.style.padding="0px";l.style.margin="0px";r.bind("focus",function(){i.startUpdating()}).bind("blur",function(){i.stopUpdating()});this.heightUpdate=function(){if(s!=i.value){s=i.value;i.style.height="0px";var e=i.scrollHeight+a;if(e<=25){e=14}i.style.height=e+"px";l.style.height="auto";l.style.height=l.offsetHeight+"px"}};this.startUpdating=function(){i.interval=window.setInterval(function(){i.heightUpdate()},t.timer)};this.stopUpdating=function(){clearInterval(i.interval)};e(function(){i.heightUpdate()})})}})(jQuery)
+    var method, action, url, $form = this;
+
+    if (typeof options == 'function') {
+        options = { success: options };
+    }
+
+    method = this.attr('method');
+    action = this.attr('action');
+    url = (typeof action === 'string') ? $.trim(action) : '';
+    url = url || window.location.href || '';
+    if (url) {
+        // clean url (don't include hash vaue)
+        url = (url.match(/^([^#]+)/)||[])[1];
+    }
+
+    options = $.extend(true, {
+        url:  url,
+        success: $.ajaxSettings.success,
+        type: method || 'GET',
+        iframeSrc: /^https/i.test(window.location.href || '') ? 'javascript:false' : 'about:blank'
+    }, options);
+
+    // hook for manipulating the form data before it is extracted;
+    // convenient for use with rich editors like tinyMCE or FCKEditor
+    var veto = {};
+    this.trigger('form-pre-serialize', [this, options, veto]);
+    if (veto.veto) {
+        log('ajaxSubmit: submit vetoed via form-pre-serialize trigger');
+        return this;
+    }
+
+    // provide opportunity to alter form data before it is serialized
+    if (options.beforeSerialize && options.beforeSerialize(this, options) === false) {
+        log('ajaxSubmit: submit aborted via beforeSerialize callback');
+        return this;
+    }
+
+    var n,v,a = this.formToArray(options.semantic);
+    if (options.data) {
+        options.extraData = options.data;
+        for (n in options.data) {
+            if( $.isArray(options.data[n]) ) {
+                for (var k in options.data[n]) {
+                    a.push( { name: n, value: options.data[n][k] } );
+                }
+            }
+            else {
+                v = options.data[n];
+                v = $.isFunction(v) ? v() : v; // if value is fn, invoke it
+                a.push( { name: n, value: v } );
+            }
+        }
+    }
+
+    // give pre-submit callback an opportunity to abort the submit
+    if (options.beforeSubmit && options.beforeSubmit(a, this, options) === false) {
+        log('ajaxSubmit: submit aborted via beforeSubmit callback');
+        return this;
+    }
+
+    // fire vetoable 'validate' event
+    this.trigger('form-submit-validate', [a, this, options, veto]);
+    if (veto.veto) {
+        log('ajaxSubmit: submit vetoed via form-submit-validate trigger');
+        return this;
+    }
+
+    var q = $.param(a);
+
+    if (options.type.toUpperCase() == 'GET') {
+        options.url += (options.url.indexOf('?') >= 0 ? '&' : '?') + q;
+        options.data = null;  // data is null for 'get'
+    }
+    else {
+        options.data = q; // data is the query string for 'post'
+    }
+
+    var callbacks = [];
+    if (options.resetForm) {
+        callbacks.push(function() { $form.resetForm(); });
+    }
+    if (options.clearForm) {
+        callbacks.push(function() { $form.clearForm(); });
+    }
+
+    // perform a load on the target only if dataType is not provided
+    if (!options.dataType && options.target) {
+        var oldSuccess = options.success || function(){};
+        callbacks.push(function(data) {
+            var fn = options.replaceTarget ? 'replaceWith' : 'html';
+            $(options.target)[fn](data).each(oldSuccess, arguments);
+        });
+    }
+    else if (options.success) {
+        callbacks.push(options.success);
+    }
+
+    options.success = function(data, status, xhr) { // jQuery 1.4+ passes xhr as 3rd arg
+        var context = options.context || options;   // jQuery 1.4+ supports scope context
+        for (var i=0, max=callbacks.length; i < max; i++) {
+            callbacks[i].apply(context, [data, status, xhr || $form, $form]);
+        }
+    };
+
+    // are there files to upload?
+    var fileInputs = $('input:file', this).length > 0;
+    var mp = 'multipart/form-data';
+    var multipart = ($form.attr('enctype') == mp || $form.attr('encoding') == mp);
+
+    // options.iframe allows user to force iframe mode
+    // 06-NOV-09: now defaulting to iframe mode if file input is detected
+   if (options.iframe !== false && (fileInputs || options.iframe || multipart)) {
+       // hack to fix Safari hang (thanks to Tim Molendijk for this)
+       // see:  http://groups.google.com/group/jquery-dev/browse_thread/thread/36395b7ab510dd5d
+       if (options.closeKeepAlive) {
+           $.get(options.closeKeepAlive, function() { fileUpload(a); });
+        }
+       else {
+           fileUpload(a);
+        }
+   }
+   else {
+        // IE7 massage (see issue 57)
+        if (navigator.userAgent.match(/msie/i) && method == 'get') {
+            var ieMeth = $form[0].getAttribute('method');
+            if (typeof ieMeth === 'string')
+                options.type = ieMeth;
+        }
+        $.ajax(options);
+   }
+
+    // fire 'notify' event
+    this.trigger('form-submit-notify', [this, options]);
+    return this;
+
+
+    // private function for handling file uploads (hat tip to YAHOO!)
+    function fileUpload(a) {
+        var form = $form[0], el, i, s, g, id, $io, io, xhr, sub, n, timedOut, timeoutHandle;
+        var useProp = !!$.fn.prop;
+
+        if (a) {
+            // ensure that every serialized input is still enabled
+            for (i=0; i < a.length; i++) {
+                el = $(form[a[i].name]);
+                el[ useProp ? 'prop' : 'attr' ]('disabled', false);
+            }
+        }
+
+        if ($(':input[name=submit],:input[id=submit]', form).length) {
+            // if there is an input with a name or id of 'submit' then we won't be
+            // able to invoke the submit fn on the form (at least not x-browser)
+            alert('Error: Form elements must not have name or id of "submit".');
+            return;
+        }
+
+        s = $.extend(true, {}, $.ajaxSettings, options);
+        s.context = s.context || s;
+        id = 'jqFormIO' + (new Date().getTime());
+        if (s.iframeTarget) {
+            $io = $(s.iframeTarget);
+            n = $io.attr('name');
+            if (n == null)
+                $io.attr('name', id);
+            else
+                id = n;
+        }
+        else {
+            $io = $('<iframe name="' + id + '" src="'+ s.iframeSrc +'" />');
+            $io.css({ position: 'absolute', top: '-1000px', left: '-1000px' });
+        }
+        io = $io[0];
+
+
+        xhr = { // mock object
+            aborted: 0,
+            responseText: null,
+            responseXML: null,
+            status: 0,
+            statusText: 'n/a',
+            getAllResponseHeaders: function() {},
+            getResponseHeader: function() {},
+            setRequestHeader: function() {},
+            abort: function(status) {
+                var e = (status === 'timeout' ? 'timeout' : 'aborted');
+                log('aborting upload... ' + e);
+                this.aborted = 1;
+                $io.attr('src', s.iframeSrc); // abort op in progress
+                xhr.error = e;
+                s.error && s.error.call(s.context, xhr, e, status);
+                g && $.event.trigger("ajaxError", [xhr, s, e]);
+                s.complete && s.complete.call(s.context, xhr, e);
+            }
+        };
+
+        g = s.global;
+        // trigger ajax global events so that activity/block indicators work like normal
+        if (g && ! $.active++) {
+            $.event.trigger("ajaxStart");
+        }
+        if (g) {
+            $.event.trigger("ajaxSend", [xhr, s]);
+        }
+
+        if (s.beforeSend && s.beforeSend.call(s.context, xhr, s) === false) {
+            if (s.global) {
+                $.active--;
+            }
+            return;
+        }
+        if (xhr.aborted) {
+            return;
+        }
+
+        // add submitting element to data if we know it
+        sub = form.clk;
+        if (sub) {
+            n = sub.name;
+            if (n && !sub.disabled) {
+                s.extraData = s.extraData || {};
+                s.extraData[n] = sub.value;
+                if (sub.type == "image") {
+                    s.extraData[n+'.x'] = form.clk_x;
+                    s.extraData[n+'.y'] = form.clk_y;
+                }
+            }
+        }
+
+        var CLIENT_TIMEOUT_ABORT = 1;
+        var SERVER_ABORT = 2;
+
+        function getDoc(frame) {
+            var doc = frame.contentWindow ? frame.contentWindow.document : frame.contentDocument ? frame.contentDocument : frame.document;
+            return doc;
+        }
+
+        // take a breath so that pending repaints get some cpu time before the upload starts
+        function doSubmit() {
+            // make sure form attrs are set
+            var t = $form.attr('target'), a = $form.attr('action');
+
+            // update form attrs in IE friendly way
+            form.setAttribute('target',id);
+            if (!method) {
+                form.setAttribute('method', 'POST');
+            }
+            if (a != s.url) {
+                form.setAttribute('action', s.url);
+            }
+
+            // ie borks in some cases when setting encoding
+            if (! s.skipEncodingOverride && (!method || /post/i.test(method))) {
+                $form.attr({
+                    encoding: 'multipart/form-data',
+                    enctype:  'multipart/form-data'
+                });
+            }
+
+            // support timout
+            if (s.timeout) {
+                timeoutHandle = setTimeout(function() { timedOut = true; cb(CLIENT_TIMEOUT_ABORT); }, s.timeout);
+            }
+
+            // look for server aborts
+            function checkState() {
+                try {
+                    var state = getDoc(io).readyState;
+                    log('state = ' + state);
+                    if (state.toLowerCase() == 'uninitialized')
+                        setTimeout(checkState,50);
+                }
+                catch(e) {
+                    log('Server abort: ' , e, ' (', e.name, ')');
+                    cb(SERVER_ABORT);
+                    timeoutHandle && clearTimeout(timeoutHandle);
+                    timeoutHandle = undefined;
+                }
+            }
+
+            // add "extra" data to form if provided in options
+            var extraInputs = [];
+            try {
+                if (s.extraData) {
+                    for (var n in s.extraData) {
+                        extraInputs.push(
+                            $('<input type="hidden" name="'+n+'" />').attr('value',s.extraData[n])
+                                .appendTo(form)[0]);
+                    }
+                }
+
+                if (!s.iframeTarget) {
+                    // add iframe to doc and submit the form
+                    $io.appendTo('body');
+                    io.attachEvent ? io.attachEvent('onload', cb) : io.addEventListener('load', cb, false);
+                }
+                setTimeout(checkState,15);
+                form.submit();
+            }
+            finally {
+                // reset attrs and remove "extra" input elements
+                form.setAttribute('action',a);
+                if(t) {
+                    form.setAttribute('target', t);
+                } else {
+                    $form.removeAttr('target');
+                }
+                $(extraInputs).remove();
+            }
+        }
+
+        if (s.forceSync) {
+            doSubmit();
+        }
+        else {
+            setTimeout(doSubmit, 10); // this lets dom updates render
+        }
+
+        var data, doc, domCheckCount = 50, callbackProcessed;
+
+        function cb(e) {
+            if (xhr.aborted || callbackProcessed) {
+                return;
+            }
+            try {
+                doc = getDoc(io);
+            }
+            catch(ex) {
+                log('cannot access response document: ', ex);
+                e = SERVER_ABORT;
+            }
+            if (e === CLIENT_TIMEOUT_ABORT && xhr) {
+                xhr.abort('timeout');
+                return;
+            }
+            else if (e == SERVER_ABORT && xhr) {
+                xhr.abort('server abort');
+                return;
+            }
+
+            if (!doc || doc.location.href == s.iframeSrc) {
+                // response not received yet
+                if (!timedOut)
+                    return;
+            }
+            io.detachEvent ? io.detachEvent('onload', cb) : io.removeEventListener('load', cb, false);
+
+            var status = 'success', errMsg;
+            try {
+                if (timedOut) {
+                    throw 'timeout';
+                }
+
+                var isXml = s.dataType == 'xml' || doc.XMLDocument || $.isXMLDoc(doc);
+                log('isXml='+isXml);
+                if (!isXml && window.opera && (doc.body == null || doc.body.innerHTML == '')) {
+                    if (--domCheckCount) {
+                        // in some browsers (Opera) the iframe DOM is not always traversable when
+                        // the onload callback fires, so we loop a bit to accommodate
+                        log('requeing onLoad callback, DOM not available');
+                        setTimeout(cb, 250);
+                        return;
+                    }
+                    // let this fall through because server response could be an empty document
+                    //log('Could not access iframe DOM after mutiple tries.');
+                    //throw 'DOMException: not available';
+                }
+
+                //log('response detected');
+                var docRoot = doc.body ? doc.body : doc.documentElement;
+                xhr.responseText = docRoot ? docRoot.innerHTML : null;
+                xhr.responseXML = doc.XMLDocument ? doc.XMLDocument : doc;
+                if (isXml)
+                    s.dataType = 'xml';
+                xhr.getResponseHeader = function(header){
+                    var headers = {'content-type': s.dataType};
+                    return headers[header];
+                };
+                // support for XHR 'status' & 'statusText' emulation :
+                if (docRoot) {
+                    xhr.status = Number( docRoot.getAttribute('status') ) || xhr.status;
+                    xhr.statusText = docRoot.getAttribute('statusText') || xhr.statusText;
+                }
+
+                var dt = s.dataType || '';
+                var scr = /(json|script|text)/.test(dt.toLowerCase());
+                if (scr || s.textarea) {
+                    // see if user embedded response in textarea
+                    var ta = doc.getElementsByTagName('textarea')[0];
+                    if (ta) {
+                        xhr.responseText = ta.value;
+                        // support for XHR 'status' & 'statusText' emulation :
+                        xhr.status = Number( ta.getAttribute('status') ) || xhr.status;
+                        xhr.statusText = ta.getAttribute('statusText') || xhr.statusText;
+                    }
+                    else if (scr) {
+                        // account for browsers injecting pre around json response
+                        var pre = doc.getElementsByTagName('pre')[0];
+                        var b = doc.getElementsByTagName('body')[0];
+                        if (pre) {
+                            xhr.responseText = pre.textContent ? pre.textContent : pre.innerHTML;
+                        }
+                        else if (b) {
+                            xhr.responseText = b.innerHTML;
+                        }
+                    }
+                }
+                else if (s.dataType == 'xml' && !xhr.responseXML && xhr.responseText != null) {
+                    xhr.responseXML = toXml(xhr.responseText);
+                }
+
+                try {
+                    data = httpData(xhr, s.dataType, s);
+                }
+                catch (e) {
+                    status = 'parsererror';
+                    xhr.error = errMsg = (e || status);
+                }
+            }
+            catch (e) {
+                log('error caught: ',e);
+                status = 'error';
+                xhr.error = errMsg = (e || status);
+            }
+
+            if (xhr.aborted) {
+                log('upload aborted');
+                status = null;
+            }
+
+            if (xhr.status) { // we've set xhr.status
+                status = (xhr.status >= 200 && xhr.status < 300 || xhr.status === 304) ? 'success' : 'error';
+            }
+
+            // ordering of these callbacks/triggers is odd, but that's how $.ajax does it
+            if (status === 'success') {
+                s.success && s.success.call(s.context, data, 'success', xhr);
+                g && $.event.trigger("ajaxSuccess", [xhr, s]);
+            }
+            else if (status) {
+                if (errMsg == undefined)
+                    errMsg = xhr.statusText;
+                s.error && s.error.call(s.context, xhr, status, errMsg);
+                g && $.event.trigger("ajaxError", [xhr, s, errMsg]);
+            }
+
+            g && $.event.trigger("ajaxComplete", [xhr, s]);
+
+            if (g && ! --$.active) {
+                $.event.trigger("ajaxStop");
+            }
+
+            s.complete && s.complete.call(s.context, xhr, status);
+
+            callbackProcessed = true;
+            if (s.timeout)
+                clearTimeout(timeoutHandle);
+
+            // clean up
+            setTimeout(function() {
+                if (!s.iframeTarget)
+                    $io.remove();
+                xhr.responseXML = null;
+            }, 100);
+        }
+
+        var toXml = $.parseXML || function(s, doc) { // use parseXML if available (jQuery 1.5+)
+            if (window.ActiveXObject) {
+                doc = new ActiveXObject('Microsoft.XMLDOM');
+                doc.async = 'false';
+                doc.loadXML(s);
+            }
+            else {
+                doc = (new DOMParser()).parseFromString(s, 'text/xml');
+            }
+            return (doc && doc.documentElement && doc.documentElement.nodeName != 'parsererror') ? doc : null;
+        };
+        var parseJSON = $.parseJSON || function(s) {
+            return window['eval']('(' + s + ')');
+        };
+
+        var httpData = function( xhr, type, s ) { // mostly lifted from jq1.4.4
+
+            var ct = xhr.getResponseHeader('content-type') || '',
+                xml = type === 'xml' || !type && ct.indexOf('xml') >= 0,
+                data = xml ? xhr.responseXML : xhr.responseText;
+
+            if (xml && data.documentElement.nodeName === 'parsererror') {
+                $.error && $.error('parsererror');
+            }
+            if (s && s.dataFilter) {
+                data = s.dataFilter(data, type);
+            }
+            if (typeof data === 'string') {
+                if (type === 'json' || !type && ct.indexOf('json') >= 0) {
+                    data = parseJSON(data);
+                } else if (type === "script" || !type && ct.indexOf("javascript") >= 0) {
+                    $.globalEval(data);
+                }
+            }
+            return data;
+        };
+    }
+};
+
+/**
+ * ajaxForm() provides a mechanism for fully automating form submission.
+ *
+ * The advantages of using this method instead of ajaxSubmit() are:
+ *
+ * 1: This method will include coordinates for <input type="image" /> elements (if the element
+ *  is used to submit the form).
+ * 2. This method will include the submit element's name/value data (for the element that was
+ *  used to submit the form).
+ * 3. This method binds the submit() method to the form for you.
+ *
+ * The options argument for ajaxForm works exactly as it does for ajaxSubmit.  ajaxForm merely
+ * passes the options argument along after properly binding events for submit elements and
+ * the form itself.
+ */
+$.fn.ajaxForm = function(options) {
+    // in jQuery 1.3+ we can fix mistakes with the ready state
+    if (this.length === 0) {
+        var o = { s: this.selector, c: this.context };
+        if (!$.isReady && o.s) {
+            log('DOM not ready, queuing ajaxForm');
+            $(function() {
+                $(o.s,o.c).ajaxForm(options);
+            });
+            return this;
+        }
+        // is your DOM ready?  http://docs.jquery.com/Tutorials:Introducing_$(document).ready()
+        log('terminating; zero elements found by selector' + ($.isReady ? '' : ' (DOM not ready)'));
+        return this;
+    }
+
+    return this.ajaxFormUnbind().bind('submit.form-plugin', function(e) {
+        if (!e.isDefaultPrevented()) { // if event has been canceled, don't proceed
+            e.preventDefault();
+            $(this).ajaxSubmit(options);
+        }
+    }).bind('click.form-plugin', function(e) {
+        var target = e.target;
+        var $el = $(target);
+        if (!($el.is(":submit,input:image"))) {
+            // is this a child element of the submit el?  (ex: a span within a button)
+            var t = $el.closest(':submit');
+            if (t.length == 0) {
+                return;
+            }
+            target = t[0];
+        }
+        var form = this;
+        form.clk = target;
+        if (target.type == 'image') {
+            if (e.offsetX != undefined) {
+                form.clk_x = e.offsetX;
+                form.clk_y = e.offsetY;
+            } else if (typeof $.fn.offset == 'function') { // try to use dimensions plugin
+                var offset = $el.offset();
+                form.clk_x = e.pageX - offset.left;
+                form.clk_y = e.pageY - offset.top;
+            } else {
+                form.clk_x = e.pageX - target.offsetLeft;
+                form.clk_y = e.pageY - target.offsetTop;
+            }
+        }
+        // clear form vars
+        setTimeout(function() { form.clk = form.clk_x = form.clk_y = null; }, 100);
+    });
+};
+
+// ajaxFormUnbind unbinds the event handlers that were bound by ajaxForm
+$.fn.ajaxFormUnbind = function() {
+    return this.unbind('submit.form-plugin click.form-plugin');
+};
+
+/**
+ * formToArray() gathers form element data into an array of objects that can
+ * be passed to any of the following ajax functions: $.get, $.post, or load.
+ * Each object in the array has both a 'name' and 'value' property.  An example of
+ * an array for a simple login form might be:
+ *
+ * [ { name: 'username', value: 'jresig' }, { name: 'password', value: 'secret' } ]
+ *
+ * It is this array that is passed to pre-submit callback functions provided to the
+ * ajaxSubmit() and ajaxForm() methods.
+ */
+$.fn.formToArray = function(semantic) {
+    var a = [];
+    if (this.length === 0) {
+        return a;
+    }
+
+    var form = this[0];
+    var els = semantic ? form.getElementsByTagName('*') : form.elements;
+    if (!els) {
+        return a;
+    }
+
+    var i,j,n,v,el,max,jmax;
+    for(i=0, max=els.length; i < max; i++) {
+        el = els[i];
+        n = el.name;
+        if (!n) {
+            continue;
+        }
+
+        if (semantic && form.clk && el.type == "image") {
+            // handle image inputs on the fly when semantic == true
+            if(!el.disabled && form.clk == el) {
+                a.push({name: n, value: $(el).val()});
+                a.push({name: n+'.x', value: form.clk_x}, {name: n+'.y', value: form.clk_y});
+            }
+            continue;
+        }
+
+        v = $.fieldValue(el, true);
+        if (v && v.constructor == Array) {
+            for(j=0, jmax=v.length; j < jmax; j++) {
+                a.push({name: n, value: v[j]});
+            }
+        }
+        else if (v !== null && typeof v != 'undefined') {
+            a.push({name: n, value: v});
+        }
+    }
+
+    if (!semantic && form.clk) {
+        // input type=='image' are not found in elements array! handle it here
+        var $input = $(form.clk), input = $input[0];
+        n = input.name;
+        if (n && !input.disabled && input.type == 'image') {
+            a.push({name: n, value: $input.val()});
+            a.push({name: n+'.x', value: form.clk_x}, {name: n+'.y', value: form.clk_y});
+        }
+    }
+    return a;
+};
+
+/**
+ * Serializes form data into a 'submittable' string. This method will return a string
+ * in the format: name1=value1&amp;name2=value2
+ */
+$.fn.formSerialize = function(semantic) {
+    //hand off to jQuery.param for proper encoding
+    return $.param(this.formToArray(semantic));
+};
+
+/**
+ * Serializes all field elements in the jQuery object into a query string.
+ * This method will return a string in the format: name1=value1&amp;name2=value2
+ */
+$.fn.fieldSerialize = function(successful) {
+    var a = [];
+    this.each(function() {
+        var n = this.name;
+        if (!n) {
+            return;
+        }
+        var v = $.fieldValue(this, successful);
+        if (v && v.constructor == Array) {
+            for (var i=0,max=v.length; i < max; i++) {
+                a.push({name: n, value: v[i]});
+            }
+        }
+        else if (v !== null && typeof v != 'undefined') {
+            a.push({name: this.name, value: v});
+        }
+    });
+    //hand off to jQuery.param for proper encoding
+    return $.param(a);
+};
+
+/**
+ * Returns the value(s) of the element in the matched set.  For example, consider the following form:
+ *
+ *  <form><fieldset>
+ *    <input name="A" type="text" />
+ *    <input name="A" type="text" />
+ *    <input name="B" type="checkbox" value="B1" />
+ *    <input name="B" type="checkbox" value="B2"/>
+ *    <input name="C" type="radio" value="C1" />
+ *    <input name="C" type="radio" value="C2" />
+ *  </fieldset></form>
+ *
+ *  var v = $(':text').fieldValue();
+ *  // if no values are entered into the text inputs
+ *  v == ['','']
+ *  // if values entered into the text inputs are 'foo' and 'bar'
+ *  v == ['foo','bar']
+ *
+ *  var v = $(':checkbox').fieldValue();
+ *  // if neither checkbox is checked
+ *  v === undefined
+ *  // if both checkboxes are checked
+ *  v == ['B1', 'B2']
+ *
+ *  var v = $(':radio').fieldValue();
+ *  // if neither radio is checked
+ *  v === undefined
+ *  // if first radio is checked
+ *  v == ['C1']
+ *
+ * The successful argument controls whether or not the field element must be 'successful'
+ * (per http://www.w3.org/TR/html4/interact/forms.html#successful-controls).
+ * The default value of the successful argument is true.  If this value is false the value(s)
+ * for each element is returned.
+ *
+ * Note: This method *always* returns an array.  If no valid value can be determined the
+ *     array will be empty, otherwise it will contain one or more values.
+ */
+$.fn.fieldValue = function(successful) {
+    for (var val=[], i=0, max=this.length; i < max; i++) {
+        var el = this[i];
+        var v = $.fieldValue(el, successful);
+        if (v === null || typeof v == 'undefined' || (v.constructor == Array && !v.length)) {
+            continue;
+        }
+        v.constructor == Array ? $.merge(val, v) : val.push(v);
+    }
+    return val;
+};
+
+/**
+ * Returns the value of the field element.
+ */
+$.fieldValue = function(el, successful) {
+    var n = el.name, t = el.type, tag = el.tagName.toLowerCase();
+    if (successful === undefined) {
+        successful = true;
+    }
+
+    if (successful && (!n || el.disabled || t == 'reset' || t == 'button' ||
+        (t == 'checkbox' || t == 'radio') && !el.checked ||
+        (t == 'submit' || t == 'image') && el.form && el.form.clk != el ||
+        tag == 'select' && el.selectedIndex == -1)) {
+            return null;
+    }
+
+    if (tag == 'select') {
+        var index = el.selectedIndex;
+        if (index < 0) {
+            return null;
+        }
+        var a = [], ops = el.options;
+        var one = (t == 'select-one');
+        var max = (one ? index+1 : ops.length);
+        for(var i=(one ? index : 0); i < max; i++) {
+            var op = ops[i];
+            if (op.selected) {
+                var v = op.value;
+                if (!v) { // extra pain for IE...
+                    v = (op.attributes && op.attributes['value'] && !(op.attributes['value'].specified)) ? op.text : op.value;
+                }
+                if (one) {
+                    return v;
+                }
+                a.push(v);
+            }
+        }
+        return a;
+    }
+    return $(el).val();
+};
+
+/**
+ * Clears the form data.  Takes the following actions on the form's input fields:
+ *  - input text fields will have their 'value' property set to the empty string
+ *  - select elements will have their 'selectedIndex' property set to -1
+ *  - checkbox and radio inputs will have their 'checked' property set to false
+ *  - inputs of type submit, button, reset, and hidden will *not* be effected
+ *  - button elements will *not* be effected
+ */
+$.fn.clearForm = function() {
+    return this.each(function() {
+        $('input,select,textarea', this).clearFields();
+    });
+};
+
+/**
+ * Clears the selected form elements.
+ */
+$.fn.clearFields = $.fn.clearInputs = function() {
+    var re = /^(?:color|date|datetime|email|month|number|password|range|search|tel|text|time|url|week)$/i; // 'hidden' is not in this list
+    return this.each(function() {
+        var t = this.type, tag = this.tagName.toLowerCase();
+        if (re.test(t) || tag == 'textarea') {
+            this.value = '';
+        }
+        else if (t == 'checkbox' || t == 'radio') {
+            this.checked = false;
+        }
+        else if (tag == 'select') {
+            this.selectedIndex = -1;
+        }
+    });
+};
+
+/**
+ * Resets the form data.  Causes all form elements to be reset to their original value.
+ */
+$.fn.resetForm = function() {
+    return this.each(function() {
+        // guard against an input with the name of 'reset'
+        // note that IE reports the reset function as an 'object'
+        if (typeof this.reset == 'function' || (typeof this.reset == 'object' && !this.reset.nodeType)) {
+            this.reset();
+        }
+    });
+};
+
+/**
+ * Enables or disables any matching elements.
+ */
+$.fn.enable = function(b) {
+    if (b === undefined) {
+        b = true;
+    }
+    return this.each(function() {
+        this.disabled = !b;
+    });
+};
+
+/**
+ * Checks/unchecks any matching checkboxes or radio buttons and
+ * selects/deselects and matching option elements.
+ */
+$.fn.selected = function(select) {
+    if (select === undefined) {
+        select = true;
+    }
+    return this.each(function() {
+        var t = this.type;
+        if (t == 'checkbox' || t == 'radio') {
+            this.checked = select;
+        }
+        else if (this.tagName.toLowerCase() == 'option') {
+            var $sel = $(this).parent('select');
+            if (select && $sel[0] && $sel[0].type == 'select-one') {
+                // deselect all other options
+                $sel.find('option').selected(false);
+            }
+            this.selected = select;
+        }
+    });
+};
+
+// helper fn for console logging
+function log() {
+    var msg = '[jquery.form] ' + Array.prototype.join.call(arguments,'');
+    if (window.console && window.console.log) {
+        window.console.log(msg);
+    }
+    else if (window.opera && window.opera.postError) {
+        window.opera.postError(msg);
+    }
+};
+
+})(jQuery);
 
 /**
  * jQuery PrettyDate
  */
 
-(function(e){e.fn.prettyDate=function(t){function o(e){var t=e.split("T");if(t.length==2){var n=t[0].split("-");var r=t[1].split(":");if(n.length==3&&r.length==3){return new Date(n[0],n[1]-1,n[2],r[0],r[1],r[2])}}return null}function u(n,r){var i=(n.getTime()-r.getTime())/1e3;var s=(new Date(r.getFullYear(),r.getMonth(),0)).getDate();var o=e.fn.prettyDate.regional[t.locale];var u=null;if(i<60){u=o.lessthanoneminutesince}else if(i<60*2){u=o.oneminutesince}else if(i<60*60){u=o.minutessince.replace("%m",Math.floor(i/60))}else if(i<60*60*2){u=o.onehourago}else if(i<60*60*24){u=o.hoursago.replace("%h",Math.floor(i/(60*60)))}else if(i<60*60*2*24&&(n.getDate()-1==r.getDate()||n.getDate()==1&&r.getDate()==s)){u=o.yesterday.replace("%h",a(r.getHours())).replace("%m",a(r.getMinutes()))}else if(i<60*60*4*24){u=o.weekdays[r.getDay()].replace("%h",a(r.getHours())).replace("%m",a(r.getMinutes()))}if(u==null){u=o.months[r.getMonth()].replace("%d",r.getDate()).replace("%h",a(r.getHours())).replace("%m",a(r.getMinutes()))}return u}function a(e){if(e<10){return"0"+e}else{return e}}function f(){var s=new Date;s.setTime(i+s.getTime()-r);e(n).each(function(t,r){var i=e(n[t]);var a=i.attr("date-data");i.html(u(s,o(a)))});setTimeout(f,t.refreshInterval*1e3)}var n=this;if(typeof t=="undefined"){t={}}if(typeof t.refreshInterval=="undefined"){t.refreshInterval=60}if(typeof t.locale=="undefined"){t.locale="no"}var r=(new Date).getTime();var i=r;var s=o(t.serverTime);if(s!=null){i=s.getTime()}f();return this};e.fn.prettyDate.regional={}})(jQuery);(function(e){e.fn.prettyDate.regional.no={lessthanoneminutesince:"Mindre enn et minutt siden",oneminutesince:"1 minutt siden",minutessince:"%m minutter siden",onehourago:"1 time siden",hoursago:"%h timer siden",yesterday:"i går kl %h:%m",weekdays:["søndag kl %h:%m","mandag kl %h:%m","tirsdag kl %h:%m","onsdag kl %h:%m","torsdag kl %h:%m","fredag kl %h:%m","lørdag kl %h:%m"],months:["%d. januar kl %h:%m","%d. februar kl %h:%m","%d. mars kl %h:%m","%d. april kl %h:%m","%d. mai kl %h:%m","%d. juni kl %h:%m","%d. juli kl %h:%m","%d. august kl %h:%m","%d. september kl %h:%m","%d. oktober kl %h:%m","%d. november kl %h:%m","%d. desember kl %h:%m"]};e.fn.prettyDate.regional.en={lessthanoneminutesince:"Less than a minute ago",oneminutesince:"1 minute ago",minutessince:"%m minutes ago",onehourago:"1 hour ago",hoursago:"%h hours ago",yesterday:"Yesterday at %h:%m",weekdays:["Sunday at %h:%m","Monday at %h:%m","Tuesday at %h:%m","Wednesday at %h:%m","Thursday at %h:%m","Friday at %h:%m","Saturday at %h:%m"],months:["%d. January at %h:%m","%d. February at %h:%m","%d. March at %h:%m","%d. April at %h:%m","%d. May at %h:%m","%d. June at %h:%m","%d. July at %h:%m","%d. August at %h:%m","%d. September at %h:%m","%d. October at %h:%m","%d. November at %h:%m","%d. December at %h:%m"]}})(jQuery)
+(function ($) {
+    $.fn.prettyDate = function (options) {
+        var all = this;
+
+        if (typeof options == "undefined") {
+            options = {};
+        }
+        if (typeof options.refreshInterval == "undefined") {
+            options.refreshInterval = 60;
+        }
+        if (typeof options.locale == "undefined") {
+            options.locale = "no";
+        }
+
+        var clientTime = new Date().getTime();
+        var serverTime = clientTime;
+        var serverDate = parseDate(options.serverTime);
+        if (serverDate != null) {
+            serverTime = serverDate.getTime();
+        }
+
+        function parseDate(dateValue) {
+            var dateComp = dateValue.split("T");
+            if (dateComp.length == 2) {
+                var ymd = dateComp[0].split("-");
+                var mhs = dateComp[1].split(":");
+                if (ymd.length == 3 && mhs.length == 3) {
+                    return new Date(ymd[0], ymd[1]-1, ymd[2], mhs[0], mhs[1], mhs[2]);
+                }
+            }
+            return null;
+        }
+
+        function createPrettyDate(now, date) {
+            var diffSeconds = (now.getTime() - date.getTime()) / 1000;
+            var lastDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+
+            var locStrings = $.fn.prettyDate.regional[options.locale];
+
+            var prettyDateTxt = null;
+            if (diffSeconds < 60) {
+                prettyDateTxt = locStrings.lessthanoneminutesince;
+            } else if (diffSeconds < 60*2) {
+                prettyDateTxt = locStrings.oneminutesince;
+            } else if (diffSeconds < 60*60) {
+                prettyDateTxt =  locStrings.minutessince.replace('%m', Math.floor(diffSeconds/60));
+            } else if (diffSeconds < 60*60*2) {
+                prettyDateTxt = locStrings.onehourago;
+            } else if (diffSeconds < 60*60 * 24) {
+                prettyDateTxt = locStrings.hoursago.replace('%h', Math.floor(diffSeconds/ (60 * 60)));
+            } else if (diffSeconds < 60*60 * 2*24 && (now.getDate() - 1 == date.getDate()  || (now.getDate() == 1 && date.getDate() == lastDayOfMonth))) {
+                prettyDateTxt = locStrings.yesterday.replace('%h', addLeadingZero(date.getHours())).replace('%m', addLeadingZero(date.getMinutes()));
+            } else if (diffSeconds < 60*60 * 4*24) {
+                prettyDateTxt = locStrings.weekdays[date.getDay()].replace('%h', addLeadingZero(date.getHours())).replace('%m', addLeadingZero(date.getMinutes()));
+            }
+
+            if (prettyDateTxt == null ) {
+                prettyDateTxt = locStrings.months[date.getMonth()].replace('%d', date.getDate()).replace('%h', addLeadingZero(date.getHours())).replace('%m', addLeadingZero(date.getMinutes()));
+            }
+            return prettyDateTxt;
+        }
+
+        function addLeadingZero(d) {
+            if (d < 10) {
+                return "0" + d;
+            } else {
+                return d;
+            }
+        }
+
+        function updatePrettyDate() {
+            var now = new Date();
+            now.setTime(serverTime + now.getTime() - clientTime);
+
+            $(all).each(function(i, elm) {
+                var $elm = $(all[i]);
+                var dateValue = $elm.attr('date-data');
+                $elm.html(createPrettyDate(now, parseDate(dateValue)));
+            });
+
+            setTimeout(updatePrettyDate, options.refreshInterval*1000);
+        }
+
+        updatePrettyDate();
+
+        return this;
+    };
+
+    $.fn.prettyDate.regional = {};
 
 
-// Globale variabler som servertid osv
-var serverTime = "<aksess:getdate format="yyyy-MM-dd'T'HH:mm:ss"/>";
-var contextPath = "<aksess:geturl/>";
-var locale = "<c:out value="${fn:substring(aksess_locale, 0, 2)}"/>";
-var oa_forum_enableEnterAsCommentPostAction = true;
+})(jQuery);
 
-
-function setEnableEnterAsPostCommentAction(value){
-    oa_forum_enableEnterAsCommentPostAction = value;
-}
+(function ($) {
+    $.fn.prettyDate.regional.no = {
+        "lessthanoneminutesince" : "Mindre enn et minutt siden",
+        "oneminutesince" : "1 minutt siden",
+        "minutessince" : "%m minutter siden",
+        "onehourago" : "1 time siden",
+        "hoursago" : "%h timer siden",
+        "yesterday" : "i g&aring;r kl %h:%m",
+        "weekdays" : ["S&oslash;ndag kl %h:%m", "Mandag kl %h:%m", "Tirsdag kl %h:%m", "Onsdag kl %h:%m", "Torsdag kl %h:%m", "Fredag kl %h:%m", "L&oslash;rdag kl %h:%m"],
+        "months" : ["%d. januar kl %h:%m", "%d. februar kl %h:%m", "%d. mars kl %h:%m", "%d. april kl %h:%m", "%d. mai kl %h:%m", "%d. juni kl %h:%m", "%d. juli kl %h:%m", "%d. august kl %h:%m", "%d. september kl %h:%m", "%d. oktober kl %h:%m", "%d. november kl %h:%m", "%d. desember kl %h:%m"]
+    };
+    $.fn.prettyDate.regional.en = {
+        "lessthanoneminutesince" : "Less than a minute ago",
+        "oneminutesince" : "1 minute ago",
+        "minutessince" : "%m minutes ago",
+        "onehourago" : "1 hour ago",
+        "hoursago" : "%h hours ago",
+        "yesterday" : "Yesterday at %h:%m",
+        "weekdays" : ["Sunday at %h:%m", "Monday at %h:%m", "Tuesday at %h:%m", "Wednesday at %h:%m", "Thursday at %h:%m", "Friday at %h:%m", "Saturday at %h:%m"],
+        "months" : ["%d. January at %h:%m", "%d. February at %h:%m", "%d. March at %h:%m", "%d. April at %h:%m", "%d. May at %h:%m", "%d. June at %h:%m", "%d. July at %h:%m", "%d. August at %h:%m", "%d. September at %h:%m", "%d. October at %h:%m", "%d. November at %h:%m", "%d. December at %h:%m"]
+    };
+})(jQuery);
 
 $(document).ready(function(){
 
-    $("#oa-forum-newPost .oa-forum-sharefield").ata();
+    var sharebox = document.getElementById("oa-forum-sharebox"),
+        shareboxButtons = document.getElementById("oa-forum-sharebox-buttons"),
+        shareboxTextarea = document.getElementById("oa-forum-sharebox-textarea"),
+        $forumThreads = $(".oa-forum-threads");
 
     var loadTime = new Date().getTime();
     var newThreadsTemplate = "<kantega:label key="forum.wall.newThreads" bundle="forum" locale="${forumLocale}"/>";
@@ -64,12 +1050,16 @@ $(document).ready(function(){
         $(this).parent().hide();
     });
 
+    if (!placeholderIsSupported()) {
+        document.getElementById("oa-forum-sharebox-label").style.display = "block";
+    }
+
     setTimeout(updateWithNumberOfNewPosts, 10000);
 
     function updateWithNumberOfNewPosts() {
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
         <aksess:getuser name="user" />
-        $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:${forumId}, forumCategoryId: ${forumCategoryId}, timeStamp:loadTime, username:'${user.id}'}, function(data) {
+        $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
                     if(data.numberOfNewThreads > 0){
                         var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
                         loadNewThreads.click(function(event){
@@ -90,15 +1080,15 @@ $(document).ready(function(){
     function loadWallThreads(loadMore) {
         var $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
         var noThreads = $(".oa-forum-thread", $forumContent).length;
-        var forumWallUrl = "${forumListPostsUrl}";
+
         if (noThreads > 0 && loadMore) {
             forumWallUrl += "&offset=" + noThreads;
         }
+        console.log(forumWallUrl);
         $.post(forumWallUrl, function(data){
             $("#oa-forum-loading-animation").fadeOut(150, function(){
                 $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
                 var $processedData = $('<div></div>').html(data);
-                $processedData.find(".oa-forum-sharefield").ata();
                 if (loadMore) {
                     $forumContent.append($processedData.children());
                 }else{
@@ -114,36 +1104,47 @@ $(document).ready(function(){
             });
         });
     }
-
+    
     // Handles posting of status
     $('#oa-forum-sharebox .oa-forum-ajaxForm').ajaxForm({
         beforeSerialize: function($form, options){
             $form.find("textarea").val(replaceURLWithHTMLLinks($form.find("textarea").val()));
         },
         beforeSubmit: function(arr, $form, options) {
-            if ($.trim($form.find("textarea").val()).length < 1 ) {
+            if ($.trim($form.find("textarea").val()).length < 1) {
                 alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
                 return false;
             }
-            if($.trim($form.find("label").text()) == $.trim($form.find("textarea").val())) {
-                alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
-                return false;
-            }
-
-            var containerHeight = $form.parent().height();
-            $form.parent().css("height", containerHeight);
-            $form.fadeOut(300, function(){
-                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($form.parent()).fadeIn(300);
-            });
             return true;
         },
         resetForm: true,
         success: prependNewThread
     });
 
-    $('#oa-forum-sharebox-textarea').on('focus', function() {
-        $('#oa-forum-sharebox-buttons').show();
-        $('#oa-forum-sharebox-buttons').removeClass('oa-forum-hidden');
+    $(window).on("keyup", function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code === 27) {
+            shareboxButtons.style.display = "none";
+            shareboxTextarea.blur();
+            $(shareboxButtons).addClass("oa-forum-hidden");
+            $(shareboxTextarea).removeClass("open");
+        }
+    });
+
+    $(window).on("click", function (e) {
+        shareboxButtons.style.display = "none";
+        $(shareboxButtons).addClass("oa-forum-hidden");
+        $(shareboxTextarea).removeClass("open");
+    });
+
+    $(sharebox).on("click", function (e) {
+        e.stopPropagation();
+    });
+
+    $(shareboxTextarea).on('focus', function() {
+        shareboxButtons.style.display = "block";
+        $(shareboxButtons).removeClass('oa-forum-hidden');
+        $(this).addClass("open");
     });
 
     $('#oa-forum-share-add-attachment a').on('click', function(event) {
@@ -170,39 +1171,9 @@ $(document).ready(function(){
         return replacedText;
     }
 
-
-
     // Appends new "shares" to top of wall.
-    function prependNewThread(responseText, statusText, xhr, $form)  {
-        // Hide animation, show form
-        $form
-        window.setTimeout(function(){     // Timeout to allow the animation to complete
-            $form.parent().find(".oa-forum-submit-animation").fadeOut(300, function(){
-                $form.find("#oa-forum-sharebox-buttons").hide();
-                $form.fadeIn(300);
-                var $newThread = $(responseText);
-                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
-                $newThread.hide().prependTo(".oa-forum-threads").slideDown();
-                $(this).remove();
-                $form.find("textarea").addClass("oa-forum-fadedText");
-            });
-        }, 1200);
-    }
-
-    // Appends new "shares" to top of wall.
-    function prependNewThreadForLink(responseText, statusText, xhr, $form)  {
-        // Hide animation, show form
-        $("#oa-forum-link-shareUrl").addClass("oa-forum-fadedText");
-        $("#oa-forum-link-shareComment").addClass("oa-forum-fadedText");
-        window.setTimeout(function(){     // Timeout to allow the animation to complete
-            $form.closest(".oa-forum-tab-container").find(".oa-forum-submit-animation").fadeOut(250, function(){
-                $("#oa-forum-linkform").fadeIn(250);
-                var $newThread = $(responseText);
-                $newThread.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
-                $newThread.hide().prependTo(".oa-forum-threads").slideDown();
-                $(this).remove();
-            });
-        }, 800);
+    function prependNewThread(responseText)  {
+        $(".oa-forum-threads").prepend(responseText);
     }
 
     function postComment(element){
@@ -239,7 +1210,6 @@ $(document).ready(function(){
         }
     }
 
-
     // Handles shifting between the "share tabs" (status, photo and link)
     var $tablinks = $("#oa-forum-newPost .oa-forum-tablink");
     var visibleTabIndex = -1;
@@ -269,35 +1239,15 @@ $(document).ready(function(){
         return false;
     });
 
-    // Handles input field label, hiding and removing these on/out-of focus.
-    $(".oa-forum-sharefield").on("focusin", function(){
-        var $field = $(this);
-        var fieldVal = $.trim($field.val());
-        var fieldLabel = $field.siblings("label").text();
-        if (fieldVal == fieldLabel) {
-            $field.val("");
-            $field.removeClass("oa-forum-fadedText");
-        }
-    });
-    $(".oa-forum-sharefield").on("focusout", function(){
-        var $field = $(this);
-        var fieldVal = $.trim($field.val());
-        var fieldLabel = $field.siblings("label").text();
-        if (fieldVal == "") {
-            $field.val(fieldLabel);
-            $field.addClass("oa-forum-fadedText");
-        }
-    });
-
     // link listener to display hidden ratings in a thread.
-    $(".oa-forum-showAllRatings").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-showAllRatings", function(event) {
         event.preventDefault();
         $(this).hide();
         $(this).siblings(".oa-forum-minimizedRatings").show();
     });
 
     // link listener to display hidden comments in a thread.
-    $(".oa-forum-showFullThread").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-showFullThread", function(event) {
         event.preventDefault();
         $(this).hide();
         $(this).closest(".oa-forum-posts").find(".oa-forum-post").removeClass("oa-forum-hidden");
@@ -306,7 +1256,7 @@ $(document).ready(function(){
     });
 
     // link listener to hide previous shown comments in a thread.
-    $(".oa-forum-minimizeThread").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-minimizeThread", function(event) {
         event.preventDefault();
         $(this).hide();
         $(this).siblings(".oa-forum-showFullThread").show();
@@ -315,7 +1265,7 @@ $(document).ready(function(){
     });
 
     // Handles showing comment form on a thread
-    $(".oa-forum-showReplyForm").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-showReplyForm", function(event) {
         event.preventDefault();
         var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea");
         window.setTimeout(function(){
@@ -330,7 +1280,7 @@ $(document).ready(function(){
         },10);
     });
 
-    $(".oa-forum-post-preview-show-full-body-link").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-post-preview-show-full-body-link", function(event) {
         event.preventDefault();
         var $link = $(this);
         var $postBody = $link.closest(".oa-forum-body");
@@ -343,7 +1293,7 @@ $(document).ready(function(){
 
     // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
-    $(".oa-forum-thread .oa-forum-comment-reply").on("keyup", function(event){
+    $forumThreads.on("keyup", ".oa-forum-thread .oa-forum-comment-reply", function(event) {
         if (event.keyCode == enterKeyCode && oa_forum_enableEnterAsCommentPostAction) {
             event.preventDefault();
             if(this.value != this.defaultValue){
@@ -352,7 +1302,7 @@ $(document).ready(function(){
         }
     });
 
-    $(".oa-forum-share-comment").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-share-comment", function(event){
         event.preventDefault();
         var commentText = $(this).closest("div").siblings("div").children("textarea")[0];
         if(commentText.value != commentText.defaultValue){
@@ -361,7 +1311,7 @@ $(document).ready(function(){
     });
 
     // Handles deleting posts
-    $(".oa-forum-deletePost").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-deletePost", function(event){
         event.preventDefault();
         var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletepost" bundle="forum" locale="${forumLocale}"/>');
         if (confirmDelete) {
@@ -378,7 +1328,7 @@ $(document).ready(function(){
     });
 
     // Handles deleting threads
-    $(".oa-forum-deleteThread").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-deleteThread", function(event) {
         event.preventDefault();
         var confirmDelete = confirm('<kantega:label key="forum.wall.confirmdeletethread" bundle="forum" locale="${forumLocale}"/>');
         if (confirmDelete) {
@@ -394,7 +1344,7 @@ $(document).ready(function(){
         }
     });
 
-    $(".oa-forum-like-link").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-like-link", function(event) {
         event.preventDefault();
         $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
         /*
@@ -405,7 +1355,7 @@ $(document).ready(function(){
     });
 
     // attach handler to form's submit event
-    $('.oa-forum-likeForm').on("submit", function() {
+    $forumThreads.on("submit", ".oa-forum-likeForm", function() {
         $(this).ajaxSubmit({success: updateLikeStatusOfPost});
         return false;
     });
@@ -421,7 +1371,7 @@ $(document).ready(function(){
 
 
     // Handles viewing larger versions of images
-    $(".oa-forum-attachment, .oa-forum-enlarge-photo").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-attachment, .oa-forum-enlarge-photo", function(event){
         var $attachmentContainer = $(this).closest(".oa-forum-attachments");
         var $imgLink = $attachmentContainer.find(".oa-forum-attachment");
         if ($imgLink.find("img").length){
@@ -458,7 +1408,7 @@ $(document).ready(function(){
         }
     });
 
-    $(".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo").on("click", function(event){
+    $forumThreads.on("click", ".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo", function(event) {
         event.preventDefault();
         var $attachmentContainer = $(this).closest(".oa-forum-attachments");
         var $imgLink = $attachmentContainer.find(".oa-forum-attachment-image-fullsize");
@@ -475,4 +1425,9 @@ $(document).ready(function(){
             $attachmentContainer.find(".oa-forum-download-original").addClass("oa-forum-hidden");
         });
     });
+
+    function placeholderIsSupported() {
+        var test = document.createElement('input');
+        return ('placeholder' in test);
+    }
 });
