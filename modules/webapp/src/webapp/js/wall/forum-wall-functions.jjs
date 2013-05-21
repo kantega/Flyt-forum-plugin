@@ -56,7 +56,6 @@ $(document).ready(function(){
         if (noThreads > 0 && loadMore) {
             forumWallUrl += "&offset=" + noThreads;
         }
-        console.log(forumWallUrl);
         $.post(forumWallUrl, function(data){
             $("#oa-forum-loading-animation").fadeOut(150, function(){
                 $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
