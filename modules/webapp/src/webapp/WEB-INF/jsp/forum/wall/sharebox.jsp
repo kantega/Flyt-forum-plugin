@@ -19,9 +19,9 @@
                 <input type="hidden" name="ajax" value="true">
                 <input type="hidden" name="hiddenForumId" value="${hiddenForumId}"/>
                 <input type="hidden" name="subject" value="Subject">
-                <label class="oa-forum-hidden">${helptextLabel}</label>
+                <label id="oa-forum-sharebox-label" class="oa-forum-hidden">${helptextLabel}</label>
                 <%-- helptextLabel is set in RenderWallTag--%>
-                <textarea rows="1" cols="40" name="body" id="oa-forum-sharebox-textarea" class="oa-forum-sharefield oa-forum-fadedText">${helptextLabel}</textarea>
+                <textarea rows="1" cols="40" name="body" id="oa-forum-sharebox-textarea" class="oa-forum-sharefield" placeholder="${helptextLabel}"></textarea>
 
             </div>
 
@@ -35,7 +35,7 @@
 
                 <div class="oa-forum-formElement oa-forum-txtR">
                 <span class="oa-forum-share-button">
-                    <input type="submit" name="send" value="<kantega:label key="forum.share.submit.label" bundle="forum" locale="${forumLocale}"/>">
+                    <input id="oa-forum-submit" type="submit" name="send" value="<kantega:label key="forum.share.submit.label" bundle="forum" locale="${forumLocale}"/>">
                 </span>
                 </div>
                 <div style="clear:both;"></div>
@@ -43,8 +43,3 @@
         </form>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#oa-forum-newPost .oa-forum-sharefield").ata();
-    });
-</script>

@@ -2,8 +2,6 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 
-<link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/css/wall/wall.css"/>" media="all">
-<link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/css/wall/wall-theme.css"/>" media="all">
 <script type="text/javascript">
     if (typeof jQuery == 'undefined') {
         alert("jQuery is not loaded! OpenAksess forum wall requires jQuery to function.");
@@ -15,7 +13,7 @@
         });
     })
 </script>
-<script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>
+<script type="text/javascript" src="<aksess:geturl />/js/wall/forum-wall-functions.jjs"></script>
 
 
 

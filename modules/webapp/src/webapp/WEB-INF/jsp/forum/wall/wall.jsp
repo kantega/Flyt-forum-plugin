@@ -28,70 +28,15 @@
         </a>
     </div>
 </div>
+
 <script type="text/javascript">
-
-    $(document).ready(function(){
-        var loadTime = new Date().getTime();
-        var newThreadsTemplate = "<kantega:label key="forum.wall.newThreads" bundle="forum" locale="${forumLocale}"/>";
-        // Handles loading and animation of the wall.
-        loadWallThreads(true);
-        $("#oa-forum-wall-load-more-threads a").on("click", function(event){
-            event.preventDefault();
-            loadWallThreads(true);
-            $(this).parent().hide();
-        });
-
-        setTimeout(updateWithNumberOfNewPost, 10000);
-    });
-
-    function updateWithNumberOfNewPosts() {
-        var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
-        <aksess:getuser name="user" />
-        $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId:${forumId}, forumCategoryId: ${forumCategoryId}, timeStamp:loadTime, username:'${user.id}'}, function(data) {
-                    if(data.numberOfNewThreads > 0){
-                        var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
-                        loadNewThreads.click(function(event){
-                            event.preventDefault();
-                            newpostsContainer.html('');
-                            loadTime = new Date().getTime();
-                            loadWallThreads(false);
-
-                            return false;
-                        });
-                        newpostsContainer.html(loadNewThreads);
-                    }
-                }
-        );
-        setTimeout(updateWithNumberOfNewPost, 10000);
-    }
-
-    function loadWallThreads(loadMore) {
-        var $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
-        var noThreads = $(".oa-forum-thread", $forumContent).length;
-        var forumWallUrl = "${forumListPostsUrl}";
-        if (noThreads > 0 && loadMore) {
-            forumWallUrl += "&offset=" + noThreads;
-        }
-        $.post(forumWallUrl, function(data){
-            $("#oa-forum-loading-animation").fadeOut(150, function(){
-                $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
-                var $processedData = $('<div></div>').html(data);
-                $processedData.find(".oa-forum-sharefield").ata();
-                if (loadMore) {
-                    $forumContent.append($processedData.children());
-                }else{
-                    $forumContent.html($processedData.children());
-                }
-                $(".oa-forum-date", $forumContent).each(function(){
-                    $(this).prettyDate({serverTime: serverTime, locale: locale});
-                });
-                if ($(".oa-forum-thread:last-child", $forumContent).hasClass("oa-forum-thread-has-more-posts")) {
-                    $("#oa-forum-wall-load-more-threads").show();
-                }
-                $("body").trigger('oa.forumwall.loaded');
-            });
-        });
-    }
-
+    
+    // Globale variabler som servertid osv
+    var serverTime = "<aksess:getdate format="yyyy-MM-dd'T'HH:mm:ss"/>";
+    var contextPath = "<aksess:geturl/>";
+    var locale = "<c:out value="${fn:substring(aksess_locale, 0, 2)}"/>";
+    var forumId = "<c:out value="${forumId}"/>";
+    var forumCategoryId = "<c:out value="${forumCategoryId}"/>";
+    var forumWallUrl = "${forumListPostsUrl}";
 
 </script>
