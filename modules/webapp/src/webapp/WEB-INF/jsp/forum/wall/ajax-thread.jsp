@@ -26,7 +26,7 @@
                     <div class="oa-forum-formElement">
                         <input type="hidden" name="threadId" value="${thread.id}">
                         <label class="oa-forum-hidden"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></label>
-                        <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-comment-reply oa-forum-fadedText"><kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/></textarea>
+                        <textarea rows="1" cols="40" name="body" class="oa-forum-sharefield oa-forum-comment-reply" placeholder="<kantega:label key="forum.comment.inputfield.label" bundle="forum" locale="${forumLocale}"/>"></textarea>
                     </div>
                     <div class="oa-forum-formElement oa-forum-txtR">
                         <span class="oa-forum-share-button">

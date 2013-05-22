@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
-<jsp:include page="jquery-form-2.84.js"/>
+<jsp:include page="jquery-form-3.34.0.js"/>
 <jsp:include page="prettyDate.js"/>
 <jsp:include page="jquery.elastic-1.6.11.js"/>
 
@@ -144,41 +144,80 @@ $(document).ready(function(){
 
     // Appends new "shares" to top of wall.
     function prependNewThread(responseText)  {
-        $(".oa-forum-threads").prepend(responseText);
+        var $processedData = $('<div/>').html(data).contents();
+        $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+        $(".oa-forum-threads").prepend($processedData);
     }
 
     function postComment(element){
-        var $commentTextarea = $(element);
-        var $commentForm = $commentTextarea.closest("form");
-        var commentFormAction = $commentForm.attr("action");
-        var comment = $.trim($commentTextarea.val());
-        comment = replaceURLWithHTMLLinks(comment);
-        $commentTextarea.val("");
-        if (comment.length > 0){
-            var threadId = $("input[name=threadId]", $commentForm).val();
-            var formParams = { threadId:  threadId, body: comment, subject: "subject" };
 
-            // Animating posting process
-            var containerHeight = $commentForm.parent().height();
-            $commentForm.fadeOut(150, function(){
-                $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
-            });
+        var $commentForm = element.closest("form"),
+            $commentContainer = $commentForm.parent(),
+            $commentLoader = $("#submit-animation span").clone(false);
+            commentFormAction = $commentForm.attr("action"),
+            commentText = replaceURLWithHTMLLinks($.trim(element.val())),
+            threadId = $("input[name=threadId]", $commentForm).val(),
+            formParams = { threadId:  threadId, body: commentText, subject: "subject" };
+
+        if (commentText.length > 0) {
+
+            $commentForm.addClass("hidden");
+            $commentContainer.append($commentLoader);
+            element.val("");
 
             $.post(commentFormAction, formParams, function(data) {
-                window.setTimeout(function(){
-                    var $newPost = $(data);
-                    $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
-                    $newPost.hide();
-                    $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
-                    var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
-                    $animation.fadeOut(150, function(){
-                        $commentForm.fadeIn(150);
-                        $newPost.slideDown();
-                        $animation.remove();
-                    })
-                }, 800);
+                
+                var $container = $commentForm.closest(".oa-forum-thread").find(".oa-forum-posts"),
+                    $processedData = $('<div/>').html(data).contents();
+
+                $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+                $container.append($processedData);
+                $commentForm.removeClass("hidden");
+                $commentLoader.remove();
             });
+
         }
+
+
+        
+        // var $commentTextarea = $(element),
+        //     $commentForm = $commentTextarea.closest("form"),
+        //     commentFormAction = $commentForm.attr("action"),
+        //     comment = replaceURLWithHTMLLinks($.trim($commentTextarea.val())),
+        //     threadId = $("input[name=threadId]", $commentForm).val();
+        //     formParams = { threadId:  threadId, body: comment, subject: "subject" };
+
+        // if (comment.length > 0) {
+
+        //     console.log("Commented");
+
+        //     // Animating posting process
+        //     var containerHeight = $commentForm.parent().height();
+        //     $commentForm.fadeOut(150, function(){
+        //         $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
+        //     });
+
+        //     $.post(commentFormAction, formParams, function(data) {
+                
+        //         console.log(data);
+
+        //         var container = $commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts")[0];
+        //         container.appendChild(data);
+                
+        //         // window.setTimeout(function(){
+        //         //     var $newPost = $(data);
+        //         //     $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+        //         //     $newPost.hide();
+        //         //     $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
+        //         //     var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
+        //         //     $animation.fadeOut(150, function(){
+        //         //         $commentForm.fadeIn(150);
+        //         //         $newPost.slideDown();
+        //         //         $animation.remove();
+        //         //     })
+        //         // }, 800);
+        //     });
+        // }
     }
 
     // Handles shifting between the "share tabs" (status, photo and link)
