@@ -67,3 +67,123 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     font-weight: bold;
     color:#00008b;
 }
+
+.oa-forum-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9998;
+    cursor: pointer;
+    -webkit-animation: fadeIn 150ms linear;
+    -moz-animation: fadeIn 150ms linear;
+    -o-animation: fadeIn 150ms linear;
+    animation: fadeIn 150ms linear;
+}
+
+.oa-forum-image-container {
+    z-index: 9999;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-animation: fadeInDown 150ms linear;
+    -moz-animation: fadeInDown 150ms linear;
+    -o-animation: fadeInDown 150ms linear;
+    animation: fadeInDown 150ms linear;
+}
+
+.oa-forum-image-button {
+    position: absolute;
+    top: 10px;
+    border: 2px solid rgba(255, 255, 255, 1);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0 13px;
+    height: 32px;
+    line-height: 29px;
+    .border-radius(5px);
+}
+
+.oa-forum-image-button:hover {
+    text-decoration: none;
+}
+
+.oa-forum-image-close {
+    right: 10px;
+}
+
+.oa-forum-image-download {
+    right: 74px;
+}
+
+@-webkit-keyframes fadeIn {
+    0% {opacity: 0;}    
+    100% {opacity: 1;}
+}
+
+@-moz-keyframes fadeIn {
+    0% {opacity: 0;}    
+    100% {opacity: 1;}
+}
+
+@-o-keyframes fadeIn {
+    0% {opacity: 0;}    
+    100% {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    0% {opacity: 0;}    
+    100% {opacity: 1;}
+}
+
+@-webkit-keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+    }
+}
+
+@-moz-keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -moz-transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        -moz-transform: translateY(0);
+    }
+}
+
+@-o-keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -o-transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        -o-transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

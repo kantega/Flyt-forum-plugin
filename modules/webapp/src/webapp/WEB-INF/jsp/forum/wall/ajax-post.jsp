@@ -56,21 +56,9 @@
                 <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
                     <c:choose>
                         <c:when test="${attachment.image}">
-                            <a class="oa-forum-attachment" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank">
+                            <a class="oa-forum-attachment" data-download="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank">
                                 <img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0">
                             </a>
-
-                            <p class="oa-forum-fadedText oa-forum-enlarge-photo">
-                                <kantega:label key="forum.wall.image.sizeup" bundle="forum" locale="${forumLocale}"/>
-                            </p>
-
-                            <p class="oa-forum-fadedText oa-forum-reduce-photo oa-forum-hidden oa-forum-txtr">
-                                <kantega:label key="forum.wall.image.sizedown" bundle="forum" locale="${forumLocale}"/>
-                            </p>
-
-                            <p class="oa-forum-download-original oa-forum-hidden oa-forum-txtr">
-                                <a href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank"><kantega:label key="forum.wall.image.download.original" bundle="forum" locale="${forumLocale}"/></a>
-                            </p>
                         </c:when>
                         <c:otherwise>
                             <a class="oa-forum-attachment-doc" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank">
