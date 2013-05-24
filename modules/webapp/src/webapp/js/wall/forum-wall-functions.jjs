@@ -4,18 +4,32 @@
 <jsp:include page="jquery-form-3.34.0.js"/>
 <jsp:include page="prettyDate.js"/>
 <jsp:include page="jquery.elastic-1.6.11.js"/>
+<jsp:include page="jquery-spin.min.js"/>
 
 $(document).ready(function(){
 
     var sharebox = document.getElementById("oa-forum-sharebox"),
         shareboxButtons = document.getElementById("oa-forum-sharebox-buttons"),
         shareboxTextarea = document.getElementById("oa-forum-sharebox-textarea"),
+        shareboxSpinner = null;
+        loadMoreLink = document.getElementById("oa-forum-wall-load-more-threads"),
         $forumThreads = $(".oa-forum-threads");
+
+    var spinnerOptions = {
+        lines: 9,
+        length: 0,
+        width: 3,
+        radius: 5,
+        color: '#3d99d9',
+        className: 'oa-forum-spinner'
+    };
 
     var loadTime = new Date().getTime();
     var newThreadsTemplate = "<kantega:label key="forum.wall.newThreads" bundle="forum" locale="${forumLocale}"/>";
     // Handles loading and animation of the wall.
     loadWallThreads(true);
+    loadMoreLink.style.display = "none";
+
     $("#oa-forum-wall-load-more-threads a").on("click", function(event){
         event.preventDefault();
         loadWallThreads(true);
@@ -52,27 +66,36 @@ $(document).ready(function(){
     function loadWallThreads(loadMore) {
         var $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
         var noThreads = $(".oa-forum-thread", $forumContent).length;
-
+        var spinner = new Spinner(spinnerOptions).spin($forumContent[0]);
+        var url = forumWallUrl;
+        
         if (noThreads > 0 && loadMore) {
-            forumWallUrl += "&offset=" + noThreads;
+            url = forumWallUrl + "&offset=" + noThreads;
         }
-        $.post(forumWallUrl, function(data){
-            $("#oa-forum-loading-animation").fadeOut(150, function(){
+
+        $.post(url, function(data) {
+
+            var $processedData = $('<div/>').html(data).contents(),
                 $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
-                var $processedData = $('<div></div>').html(data);
-                if (loadMore) {
-                    $forumContent.append($processedData.children());
-                }else{
-                    $forumContent.html($processedData.children());
-                }
-                $(".oa-forum-date", $forumContent).each(function(){
-                    $(this).prettyDate({serverTime: serverTime, locale: locale});
-                });
-                if ($(".oa-forum-thread:last-child", $forumContent).hasClass("oa-forum-thread-has-more-posts")) {
-                    $("#oa-forum-wall-load-more-threads").show();
-                }
-                $("body").trigger('oa.forumwall.loaded');
+
+            if (loadMore) {
+                $forumContent.append($processedData);
+            }
+            else {
+                $forumContent.html($processedData);
+            }
+            $(".oa-forum-date", $forumContent).each(function() {
+                $(this).prettyDate({serverTime: serverTime, locale: locale});
             });
+            
+            if ($(".oa-forum-thread:last-child", $forumContent).hasClass("oa-forum-thread-has-more-posts")) {
+                loadMoreLink.style.display = "block";
+            }
+
+            $("body").trigger('oa.forumwall.loaded');
+
+            spinner.stop();
+
         });
     }
     
@@ -83,13 +106,22 @@ $(document).ready(function(){
         },
         beforeSubmit: function(arr, $form, options) {
             if ($.trim($form.find("textarea").val()).length < 1) {
-                alert('<kantega:label key="forum.wall.status.missing" bundle="forum" locale="${forumLocale}"/>');
+                alert('Vennligst skriv noe du �nsker � dele');
                 return false;
             }
+            $form.addClass("hidden");
+            shareboxSpinner = new Spinner(spinnerOptions).spin($form.parent()[0]);
             return true;
         },
         resetForm: true,
-        success: prependNewThread
+        success: function(data) {
+            shareboxSpinner.stop();
+            shareboxTextarea.blur();
+            $(shareboxButtons).addClass("oa-forum-hidden");
+            $(shareboxTextarea).removeClass("open");
+            $('#oa-forum-sharebox .oa-forum-ajaxForm').removeClass("hidden");
+            prependNewThread(data);
+        }
     });
 
     $(window).on("keyup", function(e) {
@@ -143,9 +175,10 @@ $(document).ready(function(){
     }
 
     // Appends new "shares" to top of wall.
-    function prependNewThread(responseText)  {
-        var $processedData = $('<div/>').html(data).contents();
+    function prependNewThread(responseText) {
+        var $processedData = $('<div/>').html(responseText).contents();
         $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
+        $processedData.addClass("new");
         $(".oa-forum-threads").prepend($processedData);
     }
 
@@ -153,7 +186,6 @@ $(document).ready(function(){
 
         var $commentForm = element.closest("form"),
             $commentContainer = $commentForm.parent(),
-            $commentLoader = $("#submit-animation span").clone(false);
             commentFormAction = $commentForm.attr("action"),
             commentText = replaceURLWithHTMLLinks($.trim(element.val())),
             threadId = $("input[name=threadId]", $commentForm).val(),
@@ -161,8 +193,13 @@ $(document).ready(function(){
 
         if (commentText.length > 0) {
 
+            var commentLoader = document.createElement("div");
+            var spinner = new Spinner(spinnerOptions).spin($commentContainer[0]);
+            commentLoader.innerHTML = "Sender...";
+            commentLoader.className = "oa-forum-spinner-label";
+
             $commentForm.addClass("hidden");
-            $commentContainer.append($commentLoader);
+            $commentContainer.append(commentLoader);
             element.val("");
 
             $.post(commentFormAction, formParams, function(data) {
@@ -173,51 +210,11 @@ $(document).ready(function(){
                 $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
                 $container.append($processedData);
                 $commentForm.removeClass("hidden");
-                $commentLoader.remove();
+                $(commentLoader).remove();
+                spinner.stop();
             });
 
         }
-
-
-        
-        // var $commentTextarea = $(element),
-        //     $commentForm = $commentTextarea.closest("form"),
-        //     commentFormAction = $commentForm.attr("action"),
-        //     comment = replaceURLWithHTMLLinks($.trim($commentTextarea.val())),
-        //     threadId = $("input[name=threadId]", $commentForm).val();
-        //     formParams = { threadId:  threadId, body: comment, subject: "subject" };
-
-        // if (comment.length > 0) {
-
-        //     console.log("Commented");
-
-        //     // Animating posting process
-        //     var containerHeight = $commentForm.parent().height();
-        //     $commentForm.fadeOut(150, function(){
-        //         $("#submit-animation span").clone(false).css("line-height", containerHeight  + "px").css("text-align", "center").hide().appendTo($commentForm.parent()).fadeIn(150);
-        //     });
-
-        //     $.post(commentFormAction, formParams, function(data) {
-                
-        //         console.log(data);
-
-        //         var container = $commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts")[0];
-        //         container.appendChild(data);
-                
-        //         // window.setTimeout(function(){
-        //         //     var $newPost = $(data);
-        //         //     $newPost.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
-        //         //     $newPost.hide();
-        //         //     $newPost.appendTo($commentTextarea.closest(".oa-forum-thread").find(".oa-forum-posts"));
-        //         //     var $animation = $commentForm.parent().find(".oa-forum-submit-animation");
-        //         //     $animation.fadeOut(150, function(){
-        //         //         $commentForm.fadeIn(150);
-        //         //         $newPost.slideDown();
-        //         //         $animation.remove();
-        //         //     })
-        //         // }, 800);
-        //     });
-        // }
     }
 
     // Handles shifting between the "share tabs" (status, photo and link)
