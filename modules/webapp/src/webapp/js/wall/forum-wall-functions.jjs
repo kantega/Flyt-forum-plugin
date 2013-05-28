@@ -4,7 +4,7 @@
 <jsp:include page="jquery-form-3.34.0.js"/>
 <jsp:include page="prettyDate.js"/>
 <jsp:include page="jquery.elastic-1.6.11.js"/>
-<jsp:include page="jquery-spin.min.js"/>
+<jsp:include page="spin.min.js"/>
 
 $(document).ready(function(){
 
