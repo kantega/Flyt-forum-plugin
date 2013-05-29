@@ -28,6 +28,16 @@ ul.oa-forum-tabs li {
     margin-bottom: 0;
 }
 
+#oa-forum-sharebox .oa-forum-spinner {
+    margin-bottom: 15px;
+    top: 14px !important;
+}
+
+.oa-forum-overlay-spinner {
+    position: fixed !important;
+    top: 48% !important;
+}
+
 /*** Forum theme  **/
 .oa-forum-mediablock .oa-forum-deletePost, .oa-forum-mediablock .oa-forum-deleteThread{
     position: absolute;

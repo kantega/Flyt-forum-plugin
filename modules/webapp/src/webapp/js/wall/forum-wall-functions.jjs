@@ -11,7 +11,8 @@ $(document).ready(function(){
     var sharebox = document.getElementById("oa-forum-sharebox"),
         shareboxButtons = document.getElementById("oa-forum-sharebox-buttons"),
         shareboxTextarea = document.getElementById("oa-forum-sharebox-textarea"),
-        shareboxSpinner = null;
+        shareboxSpinner = null,
+        imageSpinner = null,
         loadMoreLink = document.getElementById("oa-forum-wall-load-more-threads"),
         $forumThreads = $(".oa-forum-threads");
 
@@ -131,6 +132,9 @@ $(document).ready(function(){
             shareboxTextarea.blur();
             $(shareboxButtons).addClass("oa-forum-hidden");
             $(shareboxTextarea).removeClass("open");
+            $(".oa-forum-overlay").remove();
+            $(".oa-forum-image-container").remove();
+            imageSpinner.stop();
         }
     });
 
@@ -184,7 +188,7 @@ $(document).ready(function(){
         $(".oa-forum-threads").prepend($processedData);
     }
 
-    function postComment(element){
+    function postComment(element) {
 
         var $commentForm = element.closest("form"),
             $commentContainer = $commentForm.parent(),
@@ -385,6 +389,15 @@ $(document).ready(function(){
             close = document.createElement("a"),
             download = document.createElement("a");
 
+        var spinnerOptions = {
+            lines: 11,
+            length: 1,
+            width: 3,
+            radius: 9,
+            color: '#ffffff',
+            className: 'oa-forum-overlay-spinner'
+        };
+
         container.className = "oa-forum-image-container";
         overlay.className = "oa-forum-overlay";
         
@@ -403,17 +416,21 @@ $(document).ready(function(){
         container.appendChild(download);
         container.appendChild(image);
 
+        imageSpinner = new Spinner(spinnerOptions).spin(document.body);
+
         document.body.appendChild(overlay);
-        document.body.appendChild(container);
 
         image.onload = function() {
             container.style.marginLeft = (this.width / 2) * -1 + "px";
             container.style.marginTop = (this.height / 2) * -1 + "px";
+            imageSpinner.stop();
+            document.body.appendChild(container);
         }
 
         $(close).on("click", function(e) {
             $(container).remove();
             $(overlay).remove();
+            imageSpinner.stop();
             return false;
         });
 
