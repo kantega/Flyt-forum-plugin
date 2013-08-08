@@ -344,13 +344,29 @@ public class ForumDao {
         });
     }
 
-    public int getNumberOfThreadsAfterDateInForumNotByUser(final long forumId, final Timestamp lastRefresh, final String username){
+    public int getNumberOfThreadsAfterDateInForumsNotByUser(final int[] forumIds, final Timestamp lastRefresh, final String username){
         Number n = (Number) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q = session.createQuery("select count(*) from ForumThread t where t.forum.id = ? and t.createdDate > ? and t.owner <> ?");
-                q.setLong(0, forumId);
-                q.setTimestamp(1, lastRefresh);
-                q.setString(2, username);
+                StringBuilder query = new StringBuilder();
+
+                query.append("select count(*) from ForumThread t where t.createdDate > ? and t.owner <> ? and t.forum.id in (");
+                for (int i = 0; i < forumIds.length; i++) {
+                    if (i > 0) query.append(",");
+                    query.append("?");
+                }
+                query.append(")");
+
+                Query q = session.createQuery(query.toString());
+
+                q.setTimestamp(0, lastRefresh);
+                q.setString(1, username);
+
+                for (int i = 0; i < forumIds.length; i++) {
+                    int forumId = forumIds[i];
+                    q.setLong(i+2, (long)forumId);
+                }
+
+
                 return q.uniqueResult();
             }
         });
@@ -519,13 +535,26 @@ public class ForumDao {
         return (children.size() > 0);
     }
 
-    public List<ForumThread> getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
+    public List<ForumThread> getThreadsInForums(final int forumIds[], final int firstResult, final int maxResult) {
 
         return (List<ForumThread>) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
-                Query q  = session.createQuery("from ForumThread t where t.forum.id = ? and t.approved = ? order by t.lastPostDate desc");
-                q.setLong(0, forumId);
-                q.setString(1, "Y");
+                StringBuilder query = new StringBuilder();
+                query.append("from ForumThread t where t.approved = ? and t.forum.id in (");
+                for (int i = 0; i < forumIds.length; i++) {
+                    if (i > 0) query.append(",");
+                    query.append("?");
+                }
+                query.append(") order by t.lastPostDate desc");
+
+                Query q  = session.createQuery(query.toString());
+                q.setString(0, "Y");
+
+                for (int i = 0; i < forumIds.length; i++) {
+                    int forumId = forumIds[i];
+                    q.setLong(i+1, (long)forumId);
+                }
+
                 q.setFirstResult(firstResult);
                 q.setMaxResults(maxResult);
 
@@ -536,6 +565,10 @@ public class ForumDao {
                 return threads;
             }
         });
+    }
+
+    public List<ForumThread> getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
+        return getThreadsInForums(new int[] {(int) forumId}, firstResult, maxResult);
     }
 
     public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult) {

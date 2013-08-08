@@ -250,6 +250,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>forumids</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.List</type>
+        </attribute>
+        <attribute>
             <name>defaultpostforumid</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

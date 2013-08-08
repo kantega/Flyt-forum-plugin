@@ -31,5 +31,4 @@
     var forumId = "<c:out value="${forumId}"/>";
     var forumCategoryId = "<c:out value="${forumCategoryId}"/>";
     var forumWallUrl = "${forumListPostsUrl}";
-    
 </script>

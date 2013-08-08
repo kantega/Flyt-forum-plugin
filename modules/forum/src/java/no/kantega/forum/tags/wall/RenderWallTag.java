@@ -1,14 +1,11 @@
 package no.kantega.forum.tags.wall;
 
 
-import com.google.common.collect.Maps;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.publishing.spring.RootContext;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +14,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -26,6 +24,7 @@ public class RenderWallTag extends SimpleTagSupport {
 	private boolean showforumtabs = false;
 	private boolean expandthreads = false;
 	private int forumId = -1;
+    private List<Integer> forumIds = null;
 	private int forumCategoryId = -1;
 	private int hiddenForumId = -1;
 	private int defaultPostForumId = -1;
@@ -39,13 +38,27 @@ public class RenderWallTag extends SimpleTagSupport {
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
 
+            String forumIdStr = "-1";
+
 			String forumListPostsUrl = request.getContextPath() + "/forum/listPosts";
-			if (forumId > 0) {
-				forumListPostsUrl = forumListPostsUrl + "?forumId=" + forumId;
-			} else {
+			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
+                if (forumId > 0) {
+                    forumIdStr = "" + forumId;
+                } else {
+                    forumIdStr = "";
+                    for (int i = 0; i < forumIds.size(); i++) {
+                        if (i > 0) {
+                            forumIdStr += ",";
+                        }
+                        forumIdStr += forumIds.get(i);
+                    }
+                }
+				forumListPostsUrl = forumListPostsUrl + "?forumId=" + forumIdStr;
+            } else {
 				forumListPostsUrl = forumListPostsUrl + "?forumCategoryId=" + forumCategoryId;
 			}
-			forumListPostsUrl += String.format("&numberOfPostsToShow=%s&expandThreads=%s",maxthreads,String.valueOf(expandthreads));
+
+			forumListPostsUrl += String.format("&numberOfPostsToShow=%s&expandThreads=%s", maxthreads, String.valueOf(expandthreads));
 
 			if (userId != null) {
 				forumListPostsUrl += "&username=" + userId;
@@ -53,7 +66,6 @@ public class RenderWallTag extends SimpleTagSupport {
 			if (threadId != -1) {
 				forumListPostsUrl += "&threadId=" + threadId;
 			}
-
 			if (hiddenForumId != -1) {
 				forumListPostsUrl += "&hiddenForumId=" + hiddenForumId;
 			}
@@ -69,7 +81,7 @@ public class RenderWallTag extends SimpleTagSupport {
 
 			request.setAttribute("showSharebox", sharebox);
 			request.setAttribute("showForumTabs", showforumtabs);
-			request.setAttribute("forumId", forumId);
+			request.setAttribute("forumId", forumIdStr);
 			request.setAttribute("hiddenForumId", hiddenForumId);
 			request.setAttribute("defaultPostForumId", defaultPostForumId);
 			request.setAttribute("forumCategoryId", forumCategoryId);
@@ -89,6 +101,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			throw new JspException(e);
 		} finally {
 			forumId = -1;
+            forumIds = null;
 			forumCategoryId = -1;
 			defaultPostForumId = -1;
 			maxthreads = 20;
@@ -142,7 +155,11 @@ public class RenderWallTag extends SimpleTagSupport {
 		this.forumId = forumId;
 	}
 
-	public void setDefaultpostforumid(int defaultPostForumId) {
+    public void setForumids(List<Integer> forumIds) {
+        this.forumIds = forumIds;
+    }
+
+    public void setDefaultpostforumid(int defaultPostForumId) {
 		this.defaultPostForumId = defaultPostForumId;
 	}
 
@@ -153,7 +170,6 @@ public class RenderWallTag extends SimpleTagSupport {
 	public void setForumcategoryid(int forumCategoryId) {
 		this.forumCategoryId = forumCategoryId;
 	}
-
 
 	public void setUserid(String userid) {
 		this.userId = userid;
@@ -171,4 +187,3 @@ public class RenderWallTag extends SimpleTagSupport {
 		this.expandthreads = expandthreads;
 	}
 }
-

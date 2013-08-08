@@ -4,6 +4,7 @@ package no.kantega.forum.control.ajax;
 import com.google.gdata.util.common.base.StringUtil;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.LocaleLabels;
+import no.kantega.commons.util.StringHelper;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
@@ -35,7 +36,15 @@ public class ListThreadsController implements Controller {
 		Map model = new HashMap();
 
 		RequestParameters param = new RequestParameters(request);
-		int forumId = param.getInt("forumId");
+
+        String forumId = param.getString("forumId");
+        int[] forumIds;
+        if (forumId == null || forumId.equals("-1")) {
+            forumIds = new int[] {-1};
+        } else {
+            forumIds =  StringHelper.getInts(forumId, ",");
+        }
+
 		int hiddenForumId = param.getInt("hiddenForumId");
 		int forumCategoryId = param.getInt("forumCategoryId");
 		int offset = param.getInt("offset");
@@ -55,9 +64,6 @@ public class ListThreadsController implements Controller {
 
 		model.put("hiddenForumId", hiddenForumId);
 
-		/*
-				Bygg en list med String id of poster
-				 */
 		List<String> objectIds = new ArrayList<String>();
 		Map<Long, List<Rating>> ratingsForPosts = new HashMap<Long, List<Rating>>();
 		List<ForumThread> threads = new ArrayList<ForumThread>();
@@ -65,11 +71,11 @@ public class ListThreadsController implements Controller {
 		if (threadId != -1) {
 			threads.add(forumDao.getPopulatedThread(threadId));
 		} else if (userId != null && userId.trim().length() > 0) {
-			threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumId, forumCategoryId);
+			threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumIds[0], forumCategoryId);
 		} else if (forumCategoryId != -1) {
 			threads = forumDao.getThreadsInForumCategory(forumCategoryId, offset, numberOfPostsToShow + 1);
 		} else {
-			threads = forumDao.getThreadsInForum(forumId, offset, numberOfPostsToShow + 1);
+			threads = forumDao.getThreadsInForums(forumIds, offset, numberOfPostsToShow + 1);
 		}
 
 		if (numberOfPostsToShow > 0 && threads.size() > numberOfPostsToShow) {
@@ -97,9 +103,10 @@ public class ListThreadsController implements Controller {
 		}
 		model.put("threads", threads);
 		model.put("ratings", ratingsForPosts);
-		/*
-				Kan da i jsp-en kjøre ${ratings[post.id]} for å få en liste over alle ratings for en gitt post
-				 */
+
+        /*
+            Kan da i jsp-en kjøre ${ratings[post.id]} for å få en liste over alle ratings for en gitt post
+        */
 
 		return new ModelAndView("wall/threads", model);
 	}
