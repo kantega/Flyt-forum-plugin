@@ -9,8 +9,8 @@
         <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST">
             <div class="oa-forum-formElement">
                 <c:choose>
-                    <c:when test="${forumId > 0}">
-                        <input type="hidden" name="forumId" value="${forumId}">
+                    <c:when test="${selectedForumId > 0}">
+                        <input type="hidden" name="forumId" value="${selectedForumId}">
                     </c:when>
                     <c:otherwise>
                         <input type="hidden" name="forumId" value="${defaultPostForumId}">

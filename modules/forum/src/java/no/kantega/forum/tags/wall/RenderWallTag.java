@@ -82,6 +82,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			request.setAttribute("showSharebox", sharebox);
 			request.setAttribute("showForumTabs", showforumtabs);
 			request.setAttribute("forumId", forumIdStr);
+            request.setAttribute("selectedForumId", forumId);
 			request.setAttribute("hiddenForumId", hiddenForumId);
 			request.setAttribute("defaultPostForumId", defaultPostForumId);
 			request.setAttribute("forumCategoryId", forumCategoryId);
