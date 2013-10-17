@@ -15,6 +15,8 @@
           <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
           <prop key="hibernate.show_sql">false</prop>
           <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+          <prop key="hibernate.cache.provider_configuration_file_resource_path">/forum-ehcache.xml</prop>
+          <prop key="net.sf.ehcache.configurationResourceName">/forum-ehcache.xml</prop>
         </props>
       </property>
       <property name="schemaUpdate" value="true"/>
