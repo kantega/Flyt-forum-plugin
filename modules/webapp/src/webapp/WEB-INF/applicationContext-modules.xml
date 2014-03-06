@@ -7,14 +7,6 @@
 
 <beans>
 
-    <bean id="springProjectWebConfigProvider" class="no.kantega.modules.commons.conf.DefaultConfigurationResourceProvider">
-        <property name="resources">
-            <list>
-                <value>/WEB-INF/projectweb.conf</value>
-            </list>
-        </property>
-    </bean>
-
     <bean id="springForumConfigProvider" class="no.kantega.modules.commons.conf.DefaultConfigurationResourceProvider">
         <property name="resources">
             <list>
