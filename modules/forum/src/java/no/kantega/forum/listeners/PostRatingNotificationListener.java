@@ -1,13 +1,14 @@
 package no.kantega.forum.listeners;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingNotification;
 import no.kantega.publishing.api.rating.RatingNotificationListener;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,11 +19,8 @@ public class PostRatingNotificationListener implements RatingNotificationListene
     public void newRatingNotification(RatingNotification notification) {
         Rating r = notification.getRating();
         boolean updateLastPostDateOnThread = true;
-        try {
-            updateLastPostDateOnThread = Aksess.getConfiguration().getBoolean("forum.rating.updatelastpostdateonthread", true);
-        } catch (ConfigurationException e) {
-            Log.debug(this.getClass().getName(), "Unable to lookup config key:  forum.rating.updatelastpostdateonthread \n" + e.getStackTrace());
-        }
+        updateLastPostDateOnThread = Aksess.getConfiguration().getBoolean("forum.rating.updatelastpostdateonthread", true);
+
         if (r.getContext().equalsIgnoreCase("forum")) {
             Post p = dao.getPost(Long.parseLong(r.getObjectId()));
             if (p != null) {

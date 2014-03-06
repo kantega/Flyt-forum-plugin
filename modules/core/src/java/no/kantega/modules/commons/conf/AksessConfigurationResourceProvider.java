@@ -19,9 +19,9 @@ public class AksessConfigurationResourceProvider implements ConfigurationResourc
 
     public Resource[] getConfigResources() {
         try {
-            System.out.println("Forum: using configuration from Aksess");
+            log.info("Forum: using configuration from Aksess");
             return new Resource[] {new FileSystemResource(Configuration.getConfigDirectory() +"/aksess.conf")};
-        } catch (ConfigurationException e) {
+        } catch (Exception e) {
             log.error(e);
             return new Resource[0];
         }

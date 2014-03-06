@@ -1,13 +1,13 @@
 package no.kantega.forum.permission;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.modules.user.GroupResolver;
 import no.kantega.publishing.common.Aksess;
 import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class  DefaultPermissionManager implements PermissionManager {
 
-    private Logger log = Logger.getLogger(getClass());
+    private final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
 
     private Field[] permissionFields = Permissions.class.getFields();
 
@@ -114,13 +114,9 @@ public class  DefaultPermissionManager implements PermissionManager {
                 }
 
                 // Folk kan slette egne innlegg hvis config tillater dette. Default vil dette ikke være tillatt.
-                try {
-                    boolean canDeleteOwnPost = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownpost", false);
-                    if(permission == Permissions.DELETE_POST && canDeleteOwnPost) {
-                        return user != null && user.equals(post.getOwner());
-                    }
-                } catch (ConfigurationException e) {
-                    Log.error(this.getClass().getName(), "Problem reading Aksess configuration\n" + e);
+                boolean canDeleteOwnPost = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownpost", false);
+                if(permission == Permissions.DELETE_POST && canDeleteOwnPost) {
+                    return user != null && user.equals(post.getOwner());
                 }
 
                 // Bare moderatorer kan moderere
@@ -139,13 +135,9 @@ public class  DefaultPermissionManager implements PermissionManager {
 
                 // Folk kan slette egne threads hvis config tillater dette. Default vil dette ikke være tillatt.
                 ForumThread thread = (ForumThread)object;
-                try {
-                    boolean canDeleteOwnThread = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownthread", false);
-                    if(permission == Permissions.DELETE_THREAD && canDeleteOwnThread) {
-                        return user != null && user.equals(thread.getOwner());
-                    }
-                } catch (ConfigurationException e) {
-                    Log.error(this.getClass().getName(), "Problem reading Aksess configuration\n" + e);
+                boolean canDeleteOwnThread = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownthread", false);
+                if(permission == Permissions.DELETE_THREAD && canDeleteOwnThread) {
+                    return user != null && user.equals(thread.getOwner());
                 }
 
             }

@@ -59,9 +59,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -89,7 +90,7 @@
     <properties>
         <aksess.version>[7.8.1,]</aksess.version>
         <securityapi.version>1.10</securityapi.version>
-        <springframework.version>3.0.5.RELEASE</springframework.version>
+        <springframework.version>3.2.6.RELEASE</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
         <servlet.version>3.0.1</servlet.version>
         <jsp.version>2.2</jsp.version>

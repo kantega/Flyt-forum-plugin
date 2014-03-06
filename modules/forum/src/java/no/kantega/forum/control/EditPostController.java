@@ -4,7 +4,6 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.media.ImageInfo;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
@@ -20,13 +19,15 @@ import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserProfile;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +53,7 @@ import java.net.URL;
 import java.util.*;
 
 public class EditPostController extends AbstractForumFormController {
-    private static final String SOURCE = "EditPostController";
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ForumDao dao;
     private UserProfileManager userProfileManager;
@@ -81,8 +82,7 @@ public class EditPostController extends AbstractForumFormController {
                 return permissions(Permissions.POST_IN_THREAD, thread);
             } else {
                 ContentManagementService cms = new ContentManagementService(request);
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(contentId);
+                ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
                 Content content = null;
                 try {
                     content = cms.getContent(cid);
@@ -92,7 +92,7 @@ public class EditPostController extends AbstractForumFormController {
                     }
 
                 } catch (NotAuthorizedException e) {
-                    Log.error(this.getClass().getName(), "Content has no forum defined" + contentId, null, null);
+                    log.error("Content has no forum defined" + contentId);
                 }
                 return null;
             }
@@ -212,7 +212,7 @@ public class EditPostController extends AbstractForumFormController {
 
                     t.setForum(f);
                 } else {
-                    Log.error(this.getClass().getName(), "Content does not exists or has no forum defined:" + contentId, null, null);
+                    log.error("Content does not exists or has no forum defined:" + contentId);
                 }
             }
         } else {
@@ -232,9 +232,7 @@ public class EditPostController extends AbstractForumFormController {
         Set<String> topics = new TreeSet<String>();
         String[] topicArray = request.getParameterValues("topic");
         if (topicArray != null ){
-            for (String t : topicArray) {
-                topics.add(t);
-            }
+            Collections.addAll(topics, topicArray);
         }
         return topics;
     }
@@ -296,7 +294,7 @@ public class EditPostController extends AbstractForumFormController {
                 Configuration config = Aksess.getConfiguration();
                 String from = config.getString("mail.from");
                 if (from == null) {
-                    throw new ConfigurationException("mail.from", SOURCE);
+                    throw new ConfigurationException("mail.from");
                 }
 
                 Map param = new HashMap();
@@ -304,13 +302,13 @@ public class EditPostController extends AbstractForumFormController {
                 param.put("post", p);
 
                 try {
-                    Log.debug(SOURCE, "Sender varsel om nytt innlegg til " + profile.getEmail(), null, null);
+                    log.debug("Sender varsel om nytt innlegg til " + profile.getEmail());
                     MailSender.send(from, profile.getEmail(), "Forum, nytt innlegg:" + p.getSubject(), "forum-newpost.vm", param);
                 } catch (Exception e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("Feil ved utsending av mail", e);
                 }
             } else {
-                Log.info(SOURCE, "Fant ikke brukerprofil/epost for " + moderator, null, null);
+                log.info("Fant ikke brukerprofil/epost for " + moderator);
             }
         }
 
@@ -424,17 +422,13 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     private boolean isAnAllowedFileExtension(String originalFilename) {
-        try {
-            String[] allowedFileExtensions = Aksess.getConfiguration().getString("forum.attachment.allowedfileextensions", "png,jpg,jpeg,gif,bmp").split(",");
-            for (String fileExtension : allowedFileExtensions) {
-                if (originalFilename.endsWith(fileExtension)) {
-                    return true;
-                }
+        String[] allowedFileExtensions = Aksess.getConfiguration().getString("forum.attachment.allowedfileextensions", "png,jpg,jpeg,gif,bmp").split(",");
+        for (String fileExtension : allowedFileExtensions) {
+            if (originalFilename.endsWith(fileExtension)) {
+                return true;
             }
-        } catch (ConfigurationException e) {
-            Log.error(this.getClass().getName(), "Error while reading Aksess config");
         }
-        Log.info(this.getClass().getName(), "File extension is not allowed. To override the allowed file extensions add the following config key to your project configuration: forum.attachment.allowedfileextensions. This must be a comma separated list of file extensions. Example: jpg,doc,xls,ppt");
+
         return false;
     }
 

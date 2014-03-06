@@ -1,11 +1,12 @@
 package no.kantega.forum.tags;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.spring.RootContext;
 
 import no.kantega.forum.dao.ForumDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.JspException;
@@ -21,7 +22,7 @@ import java.util.Map;
  * Copyright: Kantega
  */
 public class NewPostLinkTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.forum.NewPostLinkTag";
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private String cssStyle = null;
     private String cssClass = null;
@@ -111,9 +112,8 @@ public class NewPostLinkTag extends BodyTagSupport {
             }
 
         } catch (Exception e) {
-            System.err.println(e);
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            log.error("Error printing bew post", e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

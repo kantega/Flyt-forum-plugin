@@ -1,7 +1,6 @@
 package no.kantega.forum.tags.wall;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
 
@@ -17,6 +16,8 @@ public class FormatWallPostPreview extends SimpleTagSupport {
     private int charsInBodyPreview = 200;
     private int charsPerLine = -1;
 
+
+
     public void doTag() throws JspException, IOException {
         PageContext pageContext = ((PageContext)getJspContext());
         JspWriter out = pageContext.getOut();
@@ -25,11 +26,8 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         // Dont want to split up html anchor in preview text. So must first check if a link is present in the preview text
         String linkStartTag = "<a";
         String linkEndTag = "</a>";
-        try {
-            charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", -1);
-        } catch (ConfigurationException e) {
-            Log.debug(FormatWallPostPreview.class.toString(), "Fetching configuration");
-        }
+        charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", -1);
+
         int indexOfFirstLink = postbody.indexOf(linkStartTag);
         // Link is in the preview part and the post is large enough for a preview to be made
         if( indexOfFirstLink < (charsInBodyPreview - charsPerLine) && postbody.length() > charsInBodyPreview) {

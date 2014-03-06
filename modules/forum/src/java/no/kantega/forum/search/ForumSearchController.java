@@ -1,9 +1,13 @@
 package no.kantega.forum.search;
 
+import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.search.service.SearchService;
-import no.kantega.publishing.search.service.SearchServiceQuery;
-import no.kantega.publishing.search.service.SearchServiceResultImpl;
+import no.kantega.search.api.search.SearchContext;
+import no.kantega.search.api.search.SearchQuery;
+import no.kantega.search.api.search.SearchResponse;
+import no.kantega.search.api.search.Searcher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,21 +15,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ForumSearchController  implements AksessController {
+public class ForumSearchController implements AksessController {
 
-    private SearchService searchService;
+    @Autowired
+    private Searcher searchService;
+
+    @Autowired
+    private AksessSearchContextCreator aksessSearchContextCreator;
+
     static final String INVALIDQUERY = "invalidquery";
 
     public String getDescription() {
         return "forumSearchController";
     }
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> model = new HashMap<>();
 
-        SearchServiceQuery query = createSearchServiceQuery(request);
+        SearchQuery query = createSearchServiceQuery(request);
 
-        SearchServiceResultImpl result = (SearchServiceResultImpl)searchService.search(query);
+        SearchResponse result = searchService.search(query);
 
         if (result == null){
             model.put("error", INVALIDQUERY);
@@ -35,15 +44,17 @@ public class ForumSearchController  implements AksessController {
         return model;
     }
 
-    protected SearchServiceQuery createSearchServiceQuery(HttpServletRequest request) {
-        SearchServiceQuery query = new SearchServiceQuery(request, null);
-        query.putSearchParam(SearchServiceQuery.PARAM_DOCTYPE, "forumPost");
-        return query;
+    protected SearchQuery createSearchServiceQuery(HttpServletRequest request) {
+        String q = ServletRequestUtils.getStringParameter(request, "q", null);
+        if (q != null) {
+            return new SearchQuery(getContext(request), q, "indexedContentType:" + ForumpostTransformer.HANDLED_DOCUMENT_TYPE);
+        } else {
+            return null;
+        }
     }
 
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
+    private SearchContext getContext(HttpServletRequest request) {
+        return aksessSearchContextCreator.getSearchContext(request);
     }
-
 
 }

@@ -18,7 +18,7 @@ public class ForumThread {
     private Date createdDate;
     private int numPosts;
     private Post lastPost;
-    private Set posts;
+    private Set<Post> posts;
     private String owner;
     private int contentId;
     private boolean isApproved;
@@ -54,11 +54,11 @@ public class ForumThread {
         this.createdDate = createdDate;
     }
 
-    public Set getPosts() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(Set posts) {
+    public void setPosts(Set<Post> posts) {
         this.posts = posts;
     }
 

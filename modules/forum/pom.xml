@@ -22,15 +22,15 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
+            <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
+            <version>${jsp.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -41,22 +41,32 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-search-api</artifactId>
+            <version>${aksess.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-search</artifactId>
+            <version>${aksess.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
 
          <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
+             <version>2.6.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
-        </dependency>
 
 
     </dependencies>

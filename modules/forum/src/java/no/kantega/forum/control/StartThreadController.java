@@ -1,5 +1,6 @@
 package no.kantega.forum.control;
 
+import no.kantega.publishing.api.content.ContentIdentifier;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -9,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
@@ -28,7 +28,7 @@ public class StartThreadController extends AbstractController  {
 
         int contentId = Integer.parseInt(request.getParameter("contentId"));
 
-        Content c = new ContentManagementService(request).getContent(new ContentIdentifier(contentId));
+        Content c = new ContentManagementService(request).getContent(ContentIdentifier.fromContentId(contentId));
 
         if(c.getForumId() <= 0) {
             log.error("Content " + c.getId() +" does not have a forum attached to it");

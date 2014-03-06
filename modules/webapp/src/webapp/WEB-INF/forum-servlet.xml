@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
@@ -27,7 +27,6 @@
                 <entry key="/viewattachment" value-ref="viewAttachmentController"/>
                 <entry key="/searchusers" value-ref="ajaxUserSearchController"/>
                 <entry key="/listPosts" value-ref="ajaxListThreadsController"/>
-                <entry key="/getPageInfo" value-ref="pageInfoController"/>
                 <entry key="/like" value-ref="RatingController"/>
                 <entry key="/numberOfNewThreads" value-ref="numberOfNewThreadsInForumController"/>
             </map>
@@ -171,11 +170,6 @@
     <bean id="ajaxListThreadsController" class="no.kantega.forum.control.ajax.ListThreadsController">
         <constructor-arg ref="forumDao"/>
         <constructor-arg ref="ratingService"/>
-    </bean>
-
-    <bean class="no.kantega.forum.control.GetPageInfoController" id="pageInfoController">
-        <property name="jsonView" ref="aksessJsonView"/>
-        <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController">
