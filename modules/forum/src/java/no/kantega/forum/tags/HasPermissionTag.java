@@ -2,8 +2,6 @@ package no.kantega.forum.tags;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.util.ExpressionEvaluationUtils;
-import org.springframework.context.ApplicationContext;
 
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.jsp.JspException;
@@ -12,10 +10,8 @@ import java.lang.reflect.Field;
 
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.forum.permission.Permissions;
-import no.kantega.forum.model.Post;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
-import no.kantega.publishing.spring.RootContext;
 
 /**
  * Created by IntelliJ IDEA.

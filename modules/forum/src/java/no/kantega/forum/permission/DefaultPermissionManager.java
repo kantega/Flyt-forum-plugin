@@ -1,12 +1,10 @@
 package no.kantega.forum.permission;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.modules.user.GroupResolver;
 import no.kantega.publishing.common.Aksess;
-import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;

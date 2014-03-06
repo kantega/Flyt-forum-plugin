@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
 
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.modules.user.UserSearcher;
 
 /**
