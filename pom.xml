@@ -54,7 +54,6 @@
         <module>modules/exchange</module>
         <module>modules/filesearch</module>
         <module>modules/forum</module>
-        <module>modules/projectweb</module>
         <module>modules/webapp</module>
     </modules>
 
@@ -136,6 +135,9 @@
         <securityapi.version>1.10</securityapi.version>
         <springframework.version>3.0.5.RELEASE</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
+        <servlet.version>3.0.1</servlet.version>
+        <jsp.version>2.2</jsp.version>
+        <jstl.version>1.2</jstl.version>
     </properties>
 
 </project>

@@ -1,4 +1,0 @@
-<workflows>
-  <workflow name="activity" type="resource" location="activity-workflow.xml"/>
-  <workflow name="document" type="resource" location="document-workflow.xml"/>
-</workflows>
