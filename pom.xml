@@ -3,7 +3,7 @@
     <groupId>no.kantega.aksess.modules</groupId>
     <artifactId>aksess-modules</artifactId>
     <packaging>pom</packaging>
-    <version>1.21.7</version>
+    <version>1.21.9-SNAPSHOT</version>
     <name>Aksess Modules</name>
 
     <scm>
