@@ -41,7 +41,7 @@ $(document).ready(function(){
         document.getElementById("oa-forum-sharebox-label").style.display = "block";
     }
 
-    setTimeout(updateWithNumberOfNewPosts, 10000);
+    setTimeout(updateWithNumberOfNewPosts, 120000);
 
     function updateWithNumberOfNewPosts() {
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
@@ -61,7 +61,7 @@ $(document).ready(function(){
                     }
                 }
         );
-        setTimeout(updateWithNumberOfNewPosts, 10000);
+        setTimeout(updateWithNumberOfNewPosts, 120000);
     }
 
     function loadWallThreads(loadMore) {
