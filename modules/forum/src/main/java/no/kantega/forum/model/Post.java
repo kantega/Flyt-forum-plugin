@@ -12,7 +12,7 @@ public class Post implements Comparable<Post>{
     private String body;
     private String owner;
     private Date postDate;
-    private Set attachments;
+    private Set<Attachment> attachments;
     private String author;
     private boolean isApproved;
 
@@ -61,7 +61,7 @@ public class Post implements Comparable<Post>{
         this.postDate = postDate;
     }
 
-    public Set getAttachments() {
+    public Set<Attachment> getAttachments() {
         return attachments;
     }
 

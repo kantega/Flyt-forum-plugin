@@ -21,11 +21,6 @@
             <name>Aksess snapshots repository</name>
             <url>http://nexus.kantega.lan/content/repositories/snapshots/</url>
         </snapshotRepository>
-        <site>
-            <id>maven</id>
-            <name>Aksess website</name>
-            <url>scpexe://subversion.kantega.no/var/www/html/aksess/</url>
-        </site>
     </distributionManagement>
 
     <repositories>

@@ -13,12 +13,12 @@ public class DefaultForumProvider implements ForumProvider {
     private ForumDao dao;
 
     public String getForumsAsOptionList(long selected) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
 
         List forumcategories = dao.getForumCategories();
 
-        for (int i = 0; i < forumcategories.size(); i++) {
-            ForumCategory c =  (ForumCategory) forumcategories.get(i);
+        for (Object forumcategory : forumcategories) {
+            ForumCategory c = (ForumCategory) forumcategory;
             buffer.append("<optgroup label=\"").append(c.getName()).append("\">");
 
             Iterator j = c.getForums().iterator();
@@ -27,7 +27,7 @@ public class DefaultForumProvider implements ForumProvider {
                 Forum forum = (Forum) j.next();
 
                 buffer.append("<option value=\"").append(forum.getId()).append("\"");
-                if(forum.getId() == selected) {
+                if (forum.getId() == selected) {
                     buffer.append(" selected");
                 }
                 buffer.append(">").append(forum.getName()).append("</option>");

@@ -99,11 +99,9 @@ public class ForumPostService implements ApplicationContextAware{
     }
 
     private void runOnAllAttachments(Post post, AttachmentCallback callback) {
-        Set attachments = post.getAttachments();
+        Set<Attachment> attachments = post.getAttachments();
         if (attachments != null) {
-            Iterator it = attachments.iterator();
-            while(it.hasNext()) {
-                Attachment attachment = (Attachment)it.next();
+            for (Attachment attachment : attachments) {
                 if (attachment.getId() > 0) {
                     callback.doWithAttachment(dao, attachment);
                 }
@@ -112,9 +110,9 @@ public class ForumPostService implements ApplicationContextAware{
     }
 
     private void runOnForumListeners(ForumListenerCallback callback, Post post) {
-        Map forumListeners = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ForumListener.class);
+        Map<String, ForumListener> forumListeners = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ForumListener.class);
         if (forumListeners != null && forumListeners.size() > 0)  {
-            for (ForumListener forumListener : (Iterable<? extends ForumListener>) forumListeners.values()) {
+            for (ForumListener forumListener : forumListeners.values()) {
                 callback.doWithForumListener(forumListener, post);
             }
         }
