@@ -4,6 +4,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
             http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <import resource="forum-context.xml"/>
+
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
             <map>
@@ -54,9 +56,7 @@
         <property name="defaultLocale" value="no"/>
     </bean>
 
-    <bean class="no.kantega.modules.commons.conf.SpringPropertyReplacer">
-        <property name="provider" ref="springForumConfigProvider"/>
-    </bean>
+    <bean class="no.kantega.publishing.spring.PropertyReplacer" />
 
     <bean id="abstractForumViewController" abstract="true">
         <property name="dao" ref="forumDao"/>
@@ -182,4 +182,12 @@
         <property name="forumDao" ref="forumDao"/>
     </bean>
 
+    <bean id="userResolver" class="no.kantega.modules.user.AksessUserResolver"/>
+
+    <bean name="userProfileManager" class="no.kantega.modules.user.CachedUserProfileManager">
+        <property name="realManager" ref="realUserManager"/>
+    </bean>
+
+    <bean id="realUserManager" class="no.kantega.modules.user.AksessUserProfileManager"/>
+    <bean name="userSearcher" class="no.kantega.modules.user.AksessUserSearcher"/>
 </beans>

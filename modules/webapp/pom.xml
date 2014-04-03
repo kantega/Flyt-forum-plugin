@@ -24,7 +24,7 @@
         <dependency>
             <groupId>no.kantega.aksess.modules</groupId>
             <artifactId>aksess-modules-forum</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

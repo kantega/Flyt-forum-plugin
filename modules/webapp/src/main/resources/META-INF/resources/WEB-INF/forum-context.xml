@@ -53,4 +53,9 @@
     <bean id="commentNotificationForumListener" class="no.kantega.forum.listeners.CommentNotificationForumListener">
         <constructor-arg ref="forumDao"/>
     </bean>
+
+    <bean id="groupResolver" class="no.kantega.modules.user.AksessGroupResolver"/>
+
+    <bean id="groupManager" class="no.kantega.modules.user.AksessGroupManager"/>
+
 </beans>
