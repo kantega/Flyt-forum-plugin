@@ -52,7 +52,6 @@
     <modules>
         <module>modules/core</module>
         <module>modules/forum</module>
-        <module>modules/webapp</module>
     </modules>
 
     <build>

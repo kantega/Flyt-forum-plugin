@@ -13,7 +13,7 @@
         });
     })
 </script>
-<script type="text/javascript" src="<aksess:geturl />/META-INF/resources/js/wall/forum-wall-functions.jjs"></script>
+<script type="text/javascript" src="<aksess:geturl />/META-INF/resources/wall/forum-wall-functions.jjs"></script>
 
 
 
