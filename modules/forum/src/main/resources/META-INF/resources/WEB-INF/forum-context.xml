@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" default-autowire="byName">
 
+    <context:annotation-config/>
 
-    <bean class="no.kantega.forum.search.ForumSearchController" />
+    <bean id="forumSearchController" class="no.kantega.forum.search.ForumSearchController" />
+
+    <bean class="no.kantega.forum.search.ForumpostTransformer"/>
+    <bean class="no.kantega.forum.search.ForumPostSearchHitDecorator"/>
+    <bean class="no.kantega.forum.search.ForumSearchProvider"/>
 
     <bean class="no.kantega.forum.listeners.ForumIndexListener"/>
+
     <bean class="no.kantega.forum.provider.DefaultForumProvider"/>
 
     <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">

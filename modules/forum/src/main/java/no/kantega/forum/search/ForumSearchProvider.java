@@ -47,14 +47,11 @@ public class ForumSearchProvider implements IndexableDocumentProvider {
     public void provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments) {
         try {
             progressReporter.setStarted();
-            while (!progressReporter.isFinished()){
+            List<Post> allPosts = forumDao.getAllPosts();
+            for (Post post : allPosts) {
                 try {
-                    List<Post> allPosts = forumDao.getAllPosts();
-                    for (Post post : allPosts) {
-                        IndexableDocument indexablePost = forumpostTransformer.transform(post);
-                        indexableDocuments.put(indexablePost);
-                    }
-
+                    IndexableDocument indexablePost = forumpostTransformer.transform(post);
+                    indexableDocuments.put(indexablePost);
                 } catch (InterruptedException e) {
                     log.error("Interruped", e);
                 } finally {

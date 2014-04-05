@@ -6,7 +6,6 @@ import no.kantega.search.api.search.SearchResult;
 import java.util.Date;
 
 public class ForumPostSearchHit extends SearchResult {
-    private String title;
     private String body;
     private String author;
     private String owner;
@@ -18,17 +17,12 @@ public class ForumPostSearchHit extends SearchResult {
     public ForumPostSearchHit(Post post, String url, String highlightedText) {
         super((int)post.getId(), (int)post.getId(), ForumpostTransformer.HANDLED_DOCUMENT_TYPE,
                 post.getSubject(), highlightedText, url, (int)post.getThread().getId());
-    }
-
-    public String getTitle() {
-        if (title == null || title.length() == 0) {
-            return body;
-        }
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+        postDate = post.getPostDate();
+        postThreadId = String.valueOf(post.getThread().getId());
+        author = post.getAuthor();
+        owner = post.getOwner();
+        body = post.getBody();
+        postId = String.valueOf(post.getId());
     }
 
     public String getBody() {

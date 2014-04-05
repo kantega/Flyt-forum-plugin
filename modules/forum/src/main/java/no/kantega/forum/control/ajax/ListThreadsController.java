@@ -28,7 +28,7 @@ public class ListThreadsController implements Controller {
 	}
 
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
-		Map model = new HashMap();
+		Map<String, Object> model = new HashMap<>();
 
 		RequestParameters param = new RequestParameters(request);
 
@@ -59,9 +59,9 @@ public class ListThreadsController implements Controller {
 
 		model.put("hiddenForumId", hiddenForumId);
 
-		List<String> objectIds = new ArrayList<String>();
-		Map<Long, List<Rating>> ratingsForPosts = new HashMap<Long, List<Rating>>();
-		List<ForumThread> threads = new ArrayList<ForumThread>();
+		List<String> objectIds = new ArrayList<>();
+		Map<Long, List<Rating>> ratingsForPosts = new HashMap<>();
+		List<ForumThread> threads = new ArrayList<>();
 
 		if (threadId != -1) {
 			threads.add(forumDao.getPopulatedThread(threadId));
@@ -79,11 +79,9 @@ public class ListThreadsController implements Controller {
 		}
 
 		for (ForumThread thread : threads) {
-			Iterator posts = thread.getPosts().iterator();
-			while (posts.hasNext()) {
-				Post post = (Post) posts.next();
-				objectIds.add("" + post.getId());
-			}
+            for (Post post : thread.getPosts()) {
+                objectIds.add(String.valueOf(post.getId()));
+            }
 		}
 
 		List<Rating> ratings = ratingService.getRatingsForObjects(objectIds, "forum");
@@ -91,7 +89,7 @@ public class ListThreadsController implements Controller {
 			List<Rating> ratingsForSinglePost = ratingsForPosts.get(Long.parseLong(rating.getObjectId()));
 			if (ratingsForSinglePost == null) {
 				// Finnes ingen ratings for denne post-iden, kan legge til ny nøkkel og opprette ny list
-				ratingsForSinglePost = new ArrayList<Rating>();
+				ratingsForSinglePost = new ArrayList<>();
 				ratingsForPosts.put(Long.parseLong(rating.getObjectId()), ratingsForSinglePost);
 			}
 			ratingsForSinglePost.add(rating);

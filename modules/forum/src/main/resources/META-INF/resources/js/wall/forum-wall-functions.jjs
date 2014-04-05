@@ -1,10 +1,11 @@
+<%@ page contentType="application/javascript;charset=utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
-<jsp:include page="jquery-form-3.34.0.js"/>
-<jsp:include page="prettyDate.js"/>
-<jsp:include page="jquery.elastic-1.6.11.js"/>
-<jsp:include page="spin.min.js"/>
+<%@include file="jquery-form-3.34.0.js" %>
+<%@include file="prettyDate.js" %>
+<%@include file="jquery.elastic-1.6.11.js" %>
+<%@include file="spin.min.js" %>
 
 $(document).ready(function(){
 

@@ -91,8 +91,8 @@
             </c:choose>
 
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
-                <aksess:getuser userid="${rating.userid}" name="user" usecache="true"/>
-                <aksess:getuser name="innloggetBruker" usecache="true"/>
+                <aksess:getuser userid="${rating.userid}" name="user" />
+                <aksess:getuser name="innloggetBruker" />
                 <c:if test="${rating.userid == innloggetBruker.id}">
                     <c:set var="hasLikedPost" value="true"/>
                 </c:if>

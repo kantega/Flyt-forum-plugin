@@ -2,9 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans.xsd">
+            http://www.springframework.org/schema/beans/spring-beans.xsd" default-autowire="byName">
 
-    <import resource="forum-context.xml"/>
+   <!-- <import resource="forum-context.xml"/>-->
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
@@ -43,13 +43,8 @@
     </bean>
 
 
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
-        <property name="cacheSeconds" value="5"/>
-        <property name="basenames">
-            <list>
-                <value>/WEB-INF/classes/forum</value>
-            </list>
-        </property>
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="forum"/>
     </bean>
 
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">

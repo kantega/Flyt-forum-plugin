@@ -34,7 +34,10 @@ public class ForumSearchController implements AksessController {
 
         SearchQuery query = createSearchServiceQuery(request);
 
-        SearchResponse result = searchService.search(query);
+        SearchResponse result = null;
+        if (query != null) {
+            result = searchService.search(query);
+        }
 
         if (result == null){
             model.put("error", INVALIDQUERY);

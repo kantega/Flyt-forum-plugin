@@ -92,11 +92,11 @@ public class ForumDao {
         template.delete(forumCategory);
     }
 
-    public List getForumCategories() {
-        List list = template.find("from ForumCategory c left join fetch c.forums f order by c.name");
+    public List<ForumCategory> getForumCategories() {
+        List<ForumCategory> list = template.find("from ForumCategory c left join fetch c.forums f order by c.name");
 
         // Remove duplicates since Hibernate duplicates forums
-        Set setItems = new LinkedHashSet(list);
+        Set<ForumCategory> setItems = new LinkedHashSet<>(list);
         list.clear();
         list.addAll(setItems);
 
@@ -107,9 +107,9 @@ public class ForumDao {
         return template.find("from Forum f inner join fetch f.forumCategory c");
     }
 
-    public List getForumsWithUserPostings(final String userId) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Forum> getForumsWithUserPostings(final String userId) {
+        return template.execute(new HibernateCallback<List<Forum>>() {
+            public List<Forum> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Forum f inner join fetch f.forumCategory c where f.id in (select t.forum.id from ForumThread t where t.id in (select p.thread.id from Post p where p.owner = ?))");
                 query.setString(0, userId);
                 return query.list();
@@ -125,8 +125,8 @@ public class ForumDao {
      */
     @SuppressWarnings("unchecked")
     public List<Post> getUserPostings(final String userId, final int max) {
-        return (List<Post>) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 StringBuilder where = new StringBuilder();
                 String[] users = userId.split(",");
                 for (int i = 0, usersLength = users.length; i < usersLength; i++) {
@@ -150,8 +150,8 @@ public class ForumDao {
     }
 
     public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int firstResult, final int forumId, final int forumCategoryId) {
-        return (List<ForumThread>) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+        return template.execute(new HibernateCallback<List<ForumThread>>() {
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException {
 
                 Query queryThreadIds = session.createSQLQuery("select distinct(threadId) from forum_post where owner=?");
 
@@ -162,7 +162,7 @@ public class ForumDao {
                     return new ArrayList<ForumThread>();
                 }
 
-                StringBuffer q = new StringBuffer();
+                StringBuilder q = new StringBuilder();
                 q.append("from ForumThread t where t.id IN (");
                 for (int i = 0; i < threadIds.size(); i++) {
                     if (i > 0) {
@@ -172,10 +172,10 @@ public class ForumDao {
                 }
                 q.append(")");
                 if (forumId != -1) {
-                    q.append(" and t.forum.id = " + forumId);
+                    q.append(" and t.forum.id = ").append(forumId);
                 }
                 if (forumCategoryId != -1) {
-                    q.append(" and t.forum.forumCategory.id = " + forumCategoryId);
+                    q.append(" and t.forum.forumCategory.id = ").append(forumCategoryId);
                 }
 
                 q.append(" order by t.lastPostDate desc");
@@ -202,9 +202,9 @@ public class ForumDao {
         });
     }
 
-    public List getLastPosts(final int n) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getLastPosts(final int n) {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Post p where p.approved = ? order by p.id desc");
                 query.setString(0, "Y");
                 query.setMaxResults(n);
@@ -213,40 +213,12 @@ public class ForumDao {
         });
     }
 
-    public List getThreadsWithTopicIds(final int topicMapId, final List<String> topicIds, final int maxResults) {
-        if (topicIds.size() == 0) {
-            return new ArrayList();
-        }
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                StringBuffer q = new StringBuffer();
-                q.append("from Thread t where t.forum.topicMapId = ? ");
-                for (int i = 0; i < topicIds.size(); i++) {
-                    q.append("and ? in elements(topics) ");
-                }
-                q.append(" order by t.id desc");
-                Query query = session.createQuery(q.toString());
-                query.setInteger(0, topicMapId);
-                if (maxResults != -1) {
-                    query.setMaxResults(maxResults);
-                }
-                for (int i = 0; i < topicIds.size(); i++) {
-                    String t = topicIds.get(i);
-                    query.setString(i+1, t);
-                }
-                return query.list();
-            }
-        });
-    }
-
-    public List getPostsWithTopicIds(final int topicMapId, final List<String> topicIds, final int maxResults) {
+    public List<Post> getPostsWithTopicIds(final int topicMapId, final List<String> topicIds, final int maxResults) {
 
         if (topicIds == null || topicIds.size() == 0) {
-            return (List) template.execute(new HibernateCallback() {
-                public Object doInHibernate(Session session) throws HibernateException {
-                    StringBuffer q = new StringBuffer();
-                    q.append("from Post p where p.approved = ? and p.thread.forum.topicMapId = ? order by p.id desc");
-                    Query query = session.createQuery(q.toString());
+            return template.execute(new HibernateCallback<List<Post>>() {
+                public List<Post> doInHibernate(Session session) throws HibernateException {
+                    Query query = session.createQuery("from Post p where p.approved = ? and p.thread.forum.topicMapId = ? order by p.id desc");
                     query.setString(0, "Y");
                     query.setInteger(1, topicMapId);
                     if (maxResults != -1) {
@@ -256,9 +228,9 @@ public class ForumDao {
                 }
             });
         }
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                StringBuffer q = new StringBuffer();
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
+                StringBuilder q = new StringBuilder();
                 q.append("from Post p where p.approved = ? and p.thread.forum.topicMapId = ? and p.thread.id in (select id from ForumThread where ");
                 for (int i = 0; i < topicIds.size(); i++) {
                     if (i > 0) {
@@ -299,9 +271,9 @@ public class ForumDao {
         return n.intValue();
     }
 
-    public List getLastPostsInForum(final long forumId, final int n) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getLastPostsInForum(final long forumId, final int n) {
+        return  template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Post p where p.thread.forum.id = ? and p.approved = ? order by p.id desc");
                 query.setLong(0, forumId);
                 query.setString(1, "Y");
@@ -311,9 +283,9 @@ public class ForumDao {
         });
     }
 
-    public List getLastPostsInForums(final long forumIds[], final int n) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getLastPostsInForums(final long forumIds[], final int n) {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 String whereClause = "";
                 for (int i = 0; i < forumIds.length; i++) {
                     if (i > 0) {
@@ -333,9 +305,9 @@ public class ForumDao {
         });
     }
 
-    public List getPostsAfterDate(final Date lastVisit) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getPostsAfterDate(final Date lastVisit) {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Post p where p.approved = ? and p.postDate > ? order by p.id desc");
                 query.setString(0, "Y");
                 query.setTimestamp(1, lastVisit);
@@ -389,9 +361,9 @@ public class ForumDao {
     }
 
 
-    public List getAllPosts() {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getAllPosts() {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Post p where p.approved = ? order by p.id desc");
                 query.setString(0, "Y");
                 return query.list();
@@ -400,9 +372,9 @@ public class ForumDao {
     }
 
 
-    public List getLastPostsInThread(final long threadId, final int n) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getLastPostsInThread(final long threadId, final int n) {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Post p where p.thread.id = ? and p.approved = ? order by p.id desc");
                 query.setLong(0, threadId);
                 query.setString(1, "Y");
@@ -413,9 +385,9 @@ public class ForumDao {
 
     }
 
-    public List getUnapprovedPosts() {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getUnapprovedPosts() {
+        return  template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query query = session.createQuery("from Post p where p.approved = ? order by p.id desc");
                 query.setString(0, "N");
                 return query.list();
@@ -473,12 +445,12 @@ public class ForumDao {
     }
 
     public Attachment getAttachment(final long attachmentId) {
-        return (Attachment) template.get(Attachment.class, new Long(attachmentId));
+        return template.get(Attachment.class, new Long(attachmentId));
     }
 
     public ForumCategory getForumCategory(final long forumCategoryId) {
-        return (ForumCategory) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+        return template.execute(new HibernateCallback<ForumCategory>() {
+            public ForumCategory doInHibernate(Session session) throws HibernateException {
                 Query q  = session.createQuery("from ForumCategory c where c.id = ?");
                 q.setLong(0, forumCategoryId);
 
@@ -537,8 +509,8 @@ public class ForumDao {
 
     public List<ForumThread> getThreadsInForums(final int forumIds[], final int firstResult, final int maxResult) {
 
-        return (List<ForumThread>) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+        return template.execute(new HibernateCallback<List<ForumThread>>() {
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException {
                 StringBuilder query = new StringBuilder();
                 query.append("from ForumThread t where t.approved = ? and t.forum.id in (");
                 for (int i = 0; i < forumIds.length; i++) {
@@ -573,8 +545,8 @@ public class ForumDao {
 
     public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult) {
 
-        return (List<ForumThread>) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+        return template.execute(new HibernateCallback<List<ForumThread>>() {
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException {
                 Query q  = session.createQuery("from ForumThread t where t.forum.forumCategory.id = ? and t.approved = ? order by t.lastPostDate desc");
                 q.setLong(0, forumCategoryId);
                 q.setString(1, "Y");
@@ -591,13 +563,13 @@ public class ForumDao {
     }
 
 
-    public List getPostsInThread(final long id, final int firstResult, final int maxResult) {
+    public List<Post> getPostsInThread(final long id, final int firstResult, final int maxResult) {
         return getPostsInThread(id, firstResult, maxResult, false);
     }
 
-    public List getPostsInThread(final long id, final int firstResult, final int maxResult, final boolean reverse) {
-        return (List) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
+    public List<Post> getPostsInThread(final long id, final int firstResult, final int maxResult, final boolean reverse) {
+        return template.execute(new HibernateCallback<List<Post>>() {
+            public List<Post> doInHibernate(Session session) throws HibernateException {
                 Query q  = session.createQuery("from Post p where p.thread.id = ? and approved = ? order by p.id " +(reverse ? "desc" : "asc"));
                 q.setLong(0, id);
                 q.setString(1, "Y");

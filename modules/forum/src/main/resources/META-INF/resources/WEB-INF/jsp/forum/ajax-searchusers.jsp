@@ -1,4 +1,4 @@
-<%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><?xml version="1.0" encoding="utf-8"?>
+<%@ page contentType="text/xml;charset=utf-8" %><?xml version="1.0" encoding="utf-8"?>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <values>
     <c:forEach var="user" items="${userlist}" varStatus="status">

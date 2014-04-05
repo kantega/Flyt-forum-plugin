@@ -50,6 +50,13 @@
 
         <dependency>
             <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-rating</artifactId>
+            <version>${aksess.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.kantega.openaksess</groupId>
             <artifactId>openaksess-search-api</artifactId>
             <version>${aksess.version}</version>
             <scope>provided</scope>
