@@ -1,9 +1,7 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
-<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <kantega:section id="tittel">
     <spring:message code="forum.title"/>
@@ -108,7 +106,7 @@
         <br><br>
         <a href="editcategory"><spring:message code="forumcategory.addcategory"/></a>
     </forum:haspermisson>
-    <br>Sist besøk: <c:out value="${lastVisit}"/>
+    <br>Sist besÃ¸k: <c:out value="${lastVisit}"/>
 </kantega:section>
 
 <%@ include file="include/design/design.jsf" %>

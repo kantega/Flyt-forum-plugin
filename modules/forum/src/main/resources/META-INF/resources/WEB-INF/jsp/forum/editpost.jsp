@@ -1,11 +1,10 @@
 <%@ page import="no.kantega.forum.util.ForumUtil" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="modules" uri="http://www.kantega.no/aksess/tags/modules" %>
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 
 <kantega:section id="tittel">
 </kantega:section>

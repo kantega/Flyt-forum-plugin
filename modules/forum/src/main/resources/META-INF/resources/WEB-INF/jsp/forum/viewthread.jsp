@@ -4,8 +4,7 @@
 
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
-<%@ taglib prefix="modules" uri="http://www.kantega.no/aksess/tags/modules" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 
 <kantega:section id="tittel">
 </kantega:section>
