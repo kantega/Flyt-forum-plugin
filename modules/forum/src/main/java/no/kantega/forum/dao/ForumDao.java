@@ -320,22 +320,28 @@ public class ForumDao {
         Number n = (Number) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 StringBuilder query = new StringBuilder();
-
-                query.append("select count(*) from ForumThread t where t.createdDate > ? and t.owner <> ? and t.forum.id in (");
-                for (int i = 0; i < forumIds.length; i++) {
-                    if (i > 0) query.append(",");
-                    query.append("?");
+                if(forumIds.length == 1 && forumIds[0] == -1){
+                    query.append("select count(*) from ForumThread t where t.createdDate > ? and t.owner <> ?");
+                } else {
+                    query.append("select count(*) from ForumThread t where t.createdDate > ? and t.owner <> ? and t.forum.id in (");
+                    for (int i = 0; i < forumIds.length; i++) {
+                        if (i > 0) query.append(",");
+                        query.append("?");
+                    }
+                    query.append(")");
                 }
-                query.append(")");
-
                 Query q = session.createQuery(query.toString());
 
                 q.setTimestamp(0, lastRefresh);
                 q.setString(1, username);
 
-                for (int i = 0; i < forumIds.length; i++) {
-                    int forumId = forumIds[i];
-                    q.setLong(i+2, (long)forumId);
+                if(forumIds.length == 1 && forumIds[0] == -1){
+
+                } else {
+                    for (int i = 0; i < forumIds.length; i++) {
+                        int forumId = forumIds[i];
+                        q.setLong(i+2, (long)forumId);
+                    }
                 }
 
 

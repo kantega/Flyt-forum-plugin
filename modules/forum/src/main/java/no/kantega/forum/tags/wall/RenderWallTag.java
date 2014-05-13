@@ -89,12 +89,10 @@ public class RenderWallTag extends SimpleTagSupport {
 			request.setAttribute("userid", userId);
 			request.setAttribute("forumListPostsUrl", forumListPostsUrl);
 
-
 			final String label = getShareHelpText(request, forumId);
 			request.setAttribute("helptextLabel", label);
 
 			pageContext.include("/WEB-INF/jsp/forum/wall/wall.jsp");
-
 
 			request.removeAttribute("forumListPostsUrl");
 			request.removeAttribute("userId");

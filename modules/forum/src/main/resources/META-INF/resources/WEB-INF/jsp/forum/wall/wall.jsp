@@ -22,7 +22,6 @@
 </div>
 
 <script type="text/javascript">
-    
     // Globale variabler som servertid osv
     var serverTime = "<aksess:getdate format="yyyy-MM-dd'T'HH:mm:ss"/>";
     var contextPath = "<aksess:geturl/>";
