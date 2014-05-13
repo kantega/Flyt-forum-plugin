@@ -320,7 +320,12 @@ public class ForumDao {
         Number n = (Number) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
                 StringBuilder query = new StringBuilder();
-                if(forumIds.length == 1 && forumIds[0] == -1){
+
+                //A single forumId of -1 means "show all threads from all forumIds"
+                //In that case, ignore t.forum.id in the match
+                boolean shouldShowAll = forumIds.length == 1 && forumIds[0] == -1;
+
+                if(shouldShowAll){
                     query.append("select count(*) from ForumThread t where t.createdDate > ? and t.owner <> ?");
                 } else {
                     query.append("select count(*) from ForumThread t where t.createdDate > ? and t.owner <> ? and t.forum.id in (");
@@ -335,15 +340,12 @@ public class ForumDao {
                 q.setTimestamp(0, lastRefresh);
                 q.setString(1, username);
 
-                if(forumIds.length == 1 && forumIds[0] == -1){
-
-                } else {
+                if(!shouldShowAll){
                     for (int i = 0; i < forumIds.length; i++) {
                         int forumId = forumIds[i];
                         q.setLong(i+2, (long)forumId);
                     }
                 }
-
 
                 return q.uniqueResult();
             }

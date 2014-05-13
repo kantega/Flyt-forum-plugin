@@ -45,7 +45,7 @@ $(document).ready(function(){
 
     <c:set var="jspRefreshInterval"><aksess:getconfig key="forum.refreshinterval"/></c:set>
     //needs a better check here
-    <c:if test="${jspRefreshInterval == null}">
+    <c:if test="${not empty jspRefreshInterval}">
         <c:set var="jspRefreshInterval">30000</c:set>
     </c:if>
     var refreshInterval = ${jspRefreshInterval};
@@ -55,7 +55,7 @@ $(document).ready(function(){
 
     function updateWithNumberOfNewPosts() {
         <c:set var="jspAutoRefresh"><aksess:getconfig key="forum.autorefresh"/></c:set>
-        <c:if test="${jspAutoRefresh == null || !(jspAutoRefresh == true || jspAutoRefresh == false)}">
+        <c:if test="${not empty jspAutoRefresh || !(jspAutoRefresh == true || jspAutoRefresh == false)}">
             <c:set var="jspAutoRefresh">false</c:set>
         </c:if>
         var autoRefresh = ${jspAutoRefresh};
