@@ -97,22 +97,12 @@ $(document).ready(function(){
         document.getElementById("oa-forum-sharebox-label").style.display = "block";
     }
 
-    <c:set var="jspRefreshInterval"><aksess:getconfig key="forum.refreshinterval"/></c:set>
-    //needs a better check here
-    <c:if test="${empty jspRefreshInterval}">
-        <c:set var="jspRefreshInterval">30000</c:set>
-    </c:if>
-    var refreshInterval = ${jspRefreshInterval};
-    if(typeof refreshInterval !== 'number') refreshInterval = 30000;
+    var refreshInterval = <aksess:getconfig key="forum.refreshinterval" default="30000"/>;
     if(refreshInterval < 10000) refreshInterval = 10000;
     setTimeout(updateWithNumberOfNewPosts, refreshInterval);
 
     function updateWithNumberOfNewPosts() {
-        <c:set var="jspAutoRefresh"><aksess:getconfig key="forum.autorefresh"/></c:set>
-        <c:if test="${empty jspAutoRefresh || !(jspAutoRefresh == true || jspAutoRefresh == false)}">
-            <c:set var="jspAutoRefresh">false</c:set>
-        </c:if>
-        var autoRefresh = ${jspAutoRefresh};
+        var autoRefresh = <aksess:getconfig key="forum.autorefresh" default="false"/>;
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
 
         <aksess:getuser name="user" />
@@ -182,7 +172,7 @@ $(document).ready(function(){
         },
         beforeSubmit: function(arr, $form, options) {
             if ($.trim($form.find("textarea").val()).length < 1) {
-                alert('Vennligst skriv noe du �nsker � dele');
+                alert('Vennligst skriv noe du ønsker å dele');
                 return false;
             }
             $form.addClass("hidden");
