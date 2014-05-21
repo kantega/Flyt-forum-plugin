@@ -1,4 +1,4 @@
-<%@ page contentType="application/javascript;charset=utf-8" %>
+<%@ page contentType="application/javascript;charset=utf-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="aksess"  uri="http://www.kantega.no/aksess/tags/aksess"  %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -7,9 +7,6 @@
 <%@include file="prettyDate.js" %>
 <%@include file="jquery.elastic-1.6.11.js" %>
 <%@include file="spin.min.js" %>
-
-var userCommentAccumulatedTextLength = 0;
-var shouldRefresh = true;
 
 $(document).ready(function(){
 
@@ -34,51 +31,12 @@ $(document).ready(function(){
     //Set global for toggling updates on whether reply textfields have focus.
     //We don't want to lose user content on refreshes, so suppress refreshes while users are writing posts
 
-    var calculateUserCommentTextLength = function() {
-        var i = 0;
+    var hasTextInput = function() {
         var len = 0;
         var txt = $( ".oa-forum-comment-reply" );
-        if(txt !== null){
-            for(i = 0; i < txt.length; i++){ len += txt[i].value.length; }
-        }
-        return len;
-    }
-
-    var setupRefreshFocusHandler = function() {
-        /*
-        //Enable refresh when comment textfield loses focus
-        $( ".oa-forum-comment-reply" ).on("blur", function() {
-            var shouldRefresh = userCommentAccumulatedTextLength === 0;
-            console.log( "Handler for oa-forum-comment-reply .blur() called." );
-            if(!shouldRefresh){
-                shouldRefresh = true;
-                console.log("shouldRefresh = true");
-            }
-        });
-
-        //Disable refresh when comment textfield gains focus
-        $( ".oa-forum-comment-reply" ).on("focus", function() {
-            var shouldRefresh = userCommentAccumulatedTextLength === 0;
-            console.log( "Handler for oa-forum-comment-reply .focus() called." );
-            if(shouldRefresh){
-                shouldRefresh = false;
-                console.log("shouldRefresh = false");
-            }
-        });
-        */
-
-        //Recalculate comment text length on change of text fields
-        //$( ".oa-forum-comment-reply" ).on("change", function() {
-        $( ".oa-forum-comment-reply" ).bind('input propertychange', function() {
-            var len = calculateUserCommentTextLength();
-            if(userCommentAccumulatedTextLength !== len)
-                console.log("New text comment length:" + len);
-            userCommentAccumulatedTextLength = len;
-            shouldRefresh = userCommentAccumulatedTextLength === 0;
-        });
-    }
-
-    setupRefreshFocusHandler();
+        for(var i = 0; i < txt.length; i++){ len += txt[i].value.length; }
+        return len > 0;
+    };
 
     //Handle updates of new posts
     var loadTime = new Date().getTime();
@@ -107,25 +65,24 @@ $(document).ready(function(){
 
         <aksess:getuser name="user" />
         $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
-                    if(data.numberOfNewThreads > 0 && shouldRefresh === true){
-                        if(autoRefresh === false){
-                            var loadNewThreads = $('<a class="numberOfNewThreads" href="">'+newThreadsTemplate.replace('$$', data.numberOfNewThreads)+'</a>');
-                            loadNewThreads.click(function(event){
-                                event.preventDefault();
-                                newpostsContainer.html('');
-                                loadTime = new Date().getTime();
-                                loadWallThreads(false);
-                                return false;
-                            });
-                            newpostsContainer.html(loadNewThreads);
-                        } else {
-                            newpostsContainer.html('');
-                            loadTime = new Date().getTime();
-                            loadWallThreads(false);
-                        }
-                    }
+            if (data.numberOfNewThreads > 0) {
+                if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert -->
+                    newpostsContainer.html('');
+                    loadTime = new Date().getTime();
+                    loadWallThreads(false);
+                } else { <%-- Manuell oppdatering eller det er skrevet noe i kommentarfelt -->
+                    var loadNewThreads = $('<a class="numberOfNewThreads" href="">' + newThreadsTemplate.replace('$$', data.numberOfNewThreads) + '</a>');
+                    loadNewThreads.click(function (event) {
+                        event.preventDefault();
+                        newpostsContainer.html('');
+                        loadTime = new Date().getTime();
+                        loadWallThreads(false);
+                        return false;
+                    });
+                    newpostsContainer.html(loadNewThreads);
                 }
-        );
+            }
+        });
         setTimeout(updateWithNumberOfNewPosts, refreshInterval);
     }
 
@@ -161,7 +118,6 @@ $(document).ready(function(){
             $("body").trigger('oa.forumwall.loaded');
 
             spinner.stop();
-            setupRefreshFocusHandler();
         });
     }
     
@@ -490,7 +446,7 @@ $(document).ready(function(){
             container.style.marginTop = (this.height / 2) * -1 + "px";
             imageSpinner.stop();
             document.body.appendChild(container);
-        }
+        };
 
         $(close).on("click", function(e) {
             $(container).remove();

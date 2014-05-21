@@ -42,7 +42,7 @@ public class NumberOfNewThreadsInForumController implements Controller {
             numberOfNewThreads = forumDao.getNumberOfThreadsAfterDateInForumCategoryNotByUser(forumCategoryId, lastRefresh, username);
         }
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("numberOfNewThreads", numberOfNewThreads);
 
         return new ModelAndView(jsonView, map);
