@@ -66,11 +66,11 @@ $(document).ready(function(){
         <aksess:getuser name="user" />
         $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
             if (data.numberOfNewThreads > 0) {
-                if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert -->
+                if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert --%>
                     newpostsContainer.html('');
                     loadTime = new Date().getTime();
                     loadWallThreads(false);
-                } else { <%-- Manuell oppdatering eller det er skrevet noe i kommentarfelt -->
+                } else { <%-- Manuell oppdatering eller det er skrevet noe i kommentarfelt --%>
                     var loadNewThreads = $('<a class="numberOfNewThreads" href="">' + newThreadsTemplate.replace('$$', data.numberOfNewThreads) + '</a>');
                     loadNewThreads.click(function (event) {
                         event.preventDefault();
