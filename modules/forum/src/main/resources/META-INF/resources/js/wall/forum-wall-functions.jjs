@@ -380,12 +380,27 @@ $(document).ready(function(){
 
     $forumThreads.on("click", ".oa-forum-like-link", function(event) {
         event.preventDefault();
-        $(this).closest(".oa-forum-post").find(".oa-forum-likeForm").submit();
-        /*
-         Ferdig? Bør oppdatere teksten på lenka.
-         */
-        $(this).next().before('<span class="oa-forum-has-liked"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></span>');
-        $(this).remove();
+        var link = $(this);
+        var likes = link.attr('data-likes');
+        $.ajax({
+            url: link.attr('href'),
+            type: 'POST',
+            data: {
+                rating: '1',
+                objectId: link.attr('data-objectid'),
+                context: 'forum',
+                delete: likes,
+            },
+            success: function(result) {
+                if(result.hasOwnProperty('rating')) {
+                    link.attr('data-likes', 'true');
+                    link.html('<kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/>');
+                } else {
+                    link.attr('data-likes', 'false');
+                    link.html('<kantega:label key="forum.wall.like" bundle="forum" locale="${forumLocale}"/>');
+                }
+            }
+        });
     });
 
     // attach handler to form's submit event

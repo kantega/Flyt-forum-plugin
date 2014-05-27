@@ -100,18 +100,10 @@
 
             <c:choose>
                 <c:when test="${hasLikedPost}">
-                    <span class="oa-forum-has-liked"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></span>
+                    <a href="<aksess:geturl url="/forum/like"/>" class="oa-forum-like-link" data-objectid="${post.id}" data-likes="true"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="#" class="oa-forum-like-link"><kantega:label key="forum.wall.like" bundle="forum" locale="${forumLocale}"/></a>
-
-                    <form action="<aksess:geturl url="/forum/like"/>" method="post" class="oa-forum-likeForm oa-forum-hidden">
-                        <input type="hidden" name="rating" value="1">
-                        <input type="hidden" name="objectId" value="${post.id}">
-                        <input type="hidden" name="context" value="forum">
-                        <input type="hidden" name="responsetype" value="json">
-                        <input type="submit" value="Like">
-                    </form>
+                    <a href="<aksess:geturl url="/forum/like"/>" class="oa-forum-like-link" data-objectid="${post.id}" data-likes="false"><kantega:label key="forum.wall.like" bundle="forum" locale="${forumLocale}"/></a>
                 </c:otherwise>
             </c:choose>
             <c:remove var="hasLikedPost"/>
