@@ -11,13 +11,6 @@ import no.kantega.forum.permission.PermissionObject;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.modules.user.ResolvedUser;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: May 22, 2006
- * Time: 9:47:19 AM
- * To change this template use File | Settings | File Templates.
- */
 public class AbstractForumFormController extends SimpleFormController {
 
 
@@ -47,10 +40,8 @@ public class AbstractForumFormController extends SimpleFormController {
         }
         PermissionObject[] permissions = getRequiredPermissions(request);
         if (permissions != null) {
-            for (int i = 0; i < permissions.length; i++) {
-                PermissionObject permissionObject = permissions[i];
-
-                if(!permissionManager.hasPermission(userName, permissionObject.getPermission(), permissionObject.getObject())) {
+            for (PermissionObject permissionObject : permissions) {
+                if (!permissionManager.hasPermission(userName, permissionObject.getPermission(), permissionObject.getObject())) {
                     return false;
                 }
             }

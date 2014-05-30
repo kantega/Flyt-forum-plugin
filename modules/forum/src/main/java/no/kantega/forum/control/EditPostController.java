@@ -52,6 +52,8 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 public class EditPostController extends AbstractForumFormController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -229,7 +231,7 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     private Set getTopicsFromRequest(HttpServletRequest request) {
-        Set<String> topics = new TreeSet<String>();
+        Set<String> topics = new TreeSet<>();
         String[] topicArray = request.getParameterValues("topic");
         if (topicArray != null ){
             Collections.addAll(topics, topicArray);
@@ -411,7 +413,7 @@ public class EditPostController extends AbstractForumFormController {
         // Cannot bind directly, save topics on thread
         String[] topicIds = request.getParameterValues("topics");
         if (topicIds != null && topicIds.length > 0) {
-            Set topics = new HashSet();
+            Set<String> topics = new HashSet<>();
             for (String t : topicIds) {
                 if (t != null && t.length() > 0) {
                     topics.add(t);
@@ -443,17 +445,7 @@ public class EditPostController extends AbstractForumFormController {
 
 
         XMLFilterImpl xmlFilter = new XMLFilterImpl() {
-            Set legalTags = new HashSet();
-
-            {
-                legalTags.add("blockquote");
-                legalTags.add("b");
-                legalTags.add("br");
-                legalTags.add("strong");
-                legalTags.add("p");
-                legalTags.add("a");
-
-            }
+            Set<String> legalTags = new HashSet<>(asList("blockquote", "b", "br", "strong", "p", "a"));
 
             public void startElement(String string, String string1, String string2, Attributes attributes) throws SAXException {
                 if (legalTags.contains(string1)) {
@@ -491,11 +483,7 @@ public class EditPostController extends AbstractForumFormController {
             xmlFilter.setContentHandler(handler);
             handler.setResult(new StreamResult(sw));
             parser.parse(new InputSource(new StringReader(body)));
-        } catch (TransformerConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (TransformerConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
 
