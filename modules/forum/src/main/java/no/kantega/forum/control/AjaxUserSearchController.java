@@ -23,6 +23,7 @@ public class AjaxUserSearchController implements Controller {
 
         String name = request.getParameter("value");
         if (name != null && name.length() >= 3) {
+            System.out.println("finn:" + name);
             model.put("userlist", userSearcher.findUsers(name));
         }
 
