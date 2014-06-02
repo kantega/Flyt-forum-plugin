@@ -7,7 +7,7 @@
     <name>Aksess Modules</name>
 
     <scm>
-        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/trunk</connection>
+        <connection>scm:svn:https://subversion.kantega.no/svn/aksess/projects/aksess-modules/branches/nounlike</connection>
     </scm>
 
     <distributionManagement>
