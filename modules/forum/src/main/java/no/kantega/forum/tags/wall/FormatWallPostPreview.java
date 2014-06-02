@@ -21,7 +21,7 @@ public class FormatWallPostPreview extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         PageContext pageContext = ((PageContext)getJspContext());
         JspWriter out = pageContext.getOut();
-        StringBuffer formattedPostBody = new StringBuffer();
+        StringBuilder formattedPostBody = new StringBuilder();
 
         // Dont want to split up html anchor in preview text. So must first check if a link is present in the preview text
         String linkStartTag = "<a";
@@ -47,8 +47,8 @@ public class FormatWallPostPreview extends SimpleTagSupport {
             String linkText = LocaleLabels.getLabel("forum.wall.post.previewlink","forum", Aksess.getDefaultAdminLocale());
             formattedPostBody.append(postbody.substring(0, charsInBodyPreview - charsPerLine));
             formattedPostBody.append("<span class=\"oa-forum-post-preview-more-indicator\">...</span>");
-            formattedPostBody.append("<br><a href=\"#\" class=\"oa-forum-post-preview-show-full-body-link\">" + linkText + "</a><br>");
-            formattedPostBody.append("<span class=\"oa-forum-post-preview-hidden-post-body\">" + postbody.substring(charsInBodyPreview - charsPerLine) + "</span>");
+            formattedPostBody.append("<br><a href=\"#\" class=\"oa-forum-post-preview-show-full-body-link\">").append(linkText).append("</a><br>");
+            formattedPostBody.append("<span class=\"oa-forum-post-preview-hidden-post-body\">").append(postbody.substring(charsInBodyPreview - charsPerLine)).append("</span>");
         } else {
             formattedPostBody.append(postbody);
         }

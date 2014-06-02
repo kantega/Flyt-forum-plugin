@@ -6,6 +6,7 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,10 +14,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class RenderWallTag extends SimpleTagSupport {
 
@@ -32,9 +30,14 @@ public class RenderWallTag extends SimpleTagSupport {
 	private String userId = null;
 	private int threadId = -1;
 
+    private static ForumDao forumDao;
+
 	public void doTag() throws JspException, IOException {
 		try {
 			PageContext pageContext = ((PageContext) getJspContext());
+            if(forumDao == null) {
+                forumDao = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ForumDao.class);
+            }
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
 
@@ -43,7 +46,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			String forumListPostsUrl = request.getContextPath() + "/forum/listPosts";
 			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
                 if (forumId > 0) {
-                    forumIdStr = "" + forumId;
+                    forumIdStr = String.valueOf(forumId);
                 } else {
                     forumIdStr = "";
                     for (int i = 0; i < forumIds.size(); i++) {
@@ -71,12 +74,8 @@ public class RenderWallTag extends SimpleTagSupport {
 			}
 
 			if (forumCategoryId != -1) {
-				Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
-				if (daos.size() > 0) {
-					ForumDao dao = (ForumDao) daos.values().iterator().next();
-					ForumCategory category = dao.getForumCategory(forumCategoryId);
-					pageContext.getRequest().setAttribute("forumCategory", category);
-				}
+                ForumCategory category = forumDao.getForumCategory(forumCategoryId);
+                request.setAttribute("forumCategory", category);
 			}
 
 			request.setAttribute("showSharebox", sharebox);
@@ -118,28 +117,20 @@ public class RenderWallTag extends SimpleTagSupport {
 
 		final String forumBundleName = "forum";
 		final Locale locale = req.getAttribute("aksess_locale") != null ? (Locale) req.getAttribute("aksess_locale") : new Locale("no", "NO");
-		final String defaultLabel = LocaleLabels.getLabel(defaultLabelKey, forumBundleName, locale, new HashMap());
+		final String defaultLabel = LocaleLabels.getLabel(defaultLabelKey, forumBundleName, locale, new HashMap<String, Object>());
 		//If the forum is undefined return the default label
 		if (fId <= 0)
 			return defaultLabel;
 
 		//We have a forumId, now lets get the name, and return the label based on that.
-		Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
-		if (daos.size() > 0) {
 			try {
-				ForumDao dao = (ForumDao) daos.values().iterator().next();
-				Forum forum = dao.getForum(fId);
-				final String template = LocaleLabels.getLabel(knownLabelKey, forumBundleName, locale, new HashMap());
+				Forum forum = forumDao.getForum(fId);
+				final String template = LocaleLabels.getLabel(knownLabelKey, forumBundleName, locale, new HashMap<String, Object>());
 				return String.format(template, forum.getName());
 			} catch (Exception e) {
 				//Could not load from dao or could not format based on the template
 				return defaultLabel;
 			}
-		} else {
-			//No dao present, we get the default label afterall
-			return defaultLabel;
-		}
-
 	}
 
 	public void setShowforumtabs(boolean showforumtabs) {
