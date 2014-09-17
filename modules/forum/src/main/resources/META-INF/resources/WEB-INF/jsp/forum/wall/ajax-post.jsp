@@ -4,6 +4,9 @@
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags" %>
+
 
 <c:set var="userProfileUrl"><aksess:geturl/><aksess:getconfig key="forum.userprofileurl"/>?userId=${post.owner}</c:set>
 <c:set var="userImageUrl"><aksess:geturl/><aksess:getconfig key="forum.userimageurl"/>?userId=${post.owner}&amp;width=40</c:set>
@@ -46,7 +49,7 @@
                         <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
                     </c:when>
                     <c:otherwise>
-                        <c:out value="${post.body}" escapeXml="false"/>
+                       <form:escapeBody javaScriptEscape="true" htmlEscape="true">${post.body}</form:escapeBody>
                     </c:otherwise>
                 </c:choose>
             </p>
