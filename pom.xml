@@ -1,5 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kantega.opensource-parent</groupId>
+        <artifactId>opensource-parent</artifactId>
+        <version>1.6</version>
+    </parent>
+    
     <groupId>no.kantega.aksess.modules</groupId>
     <artifactId>aksess-modules</artifactId>
     <packaging>pom</packaging>
@@ -11,39 +18,37 @@
       <tag>HEAD</tag>
   </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>kantega-releases</id>
-            <name>Aksess internal repository</name>
-            <url>http://nexus.kantega.lan/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>kantega-releases</id>
-            <name>Aksess snapshots repository</name>
-            <url>http://nexus.kantega.lan/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>nexus</id>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <url>http://nexus.kantega.lan/content/groups/public/</url>
-        </repository>
-
-    </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>opensource.kantega.no</id>
+            <name>Kantega Open Source Repository</name>
             <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>Kantega Maven Repository</name>
+            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots</id>
+            <name>Kantega Snapshots</name>
+            <url>http://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
     <modules>
         <module>modules/core</module>
