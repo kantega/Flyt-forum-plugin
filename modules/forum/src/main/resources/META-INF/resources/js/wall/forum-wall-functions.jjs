@@ -18,6 +18,7 @@ $(document).ready(function(){
         loadMoreLink = document.getElementById("oa-forum-wall-load-more-threads"),
         $forumThreads = $(".oa-forum-threads");
 
+
     var spinnerOptions = {
         lines: 9,
         length: 0,
@@ -63,11 +64,11 @@ $(document).ready(function(){
         var autoRefresh = <aksess:getconfig key="forum.autorefresh" default="false"/>;
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
 
-        <aksess:getuser name="user" />
+    <aksess:getuser name="user" />
         $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
             if (data.numberOfNewThreads > 0) {
                 if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert --%>
-                    newpostsContainer.html('');
+                newpostsContainer.html('');
                     loadTime = new Date().getTime();
                     loadWallThreads(false);
                 } else { <%-- Manuell oppdatering eller det er skrevet noe i kommentarfelt --%>
@@ -91,7 +92,7 @@ $(document).ready(function(){
         var noThreads = $(".oa-forum-thread", $forumContent).length;
         var spinner = new Spinner(spinnerOptions).spin($forumContent[0]);
         var url = forumWallUrl;
-        
+
         if (noThreads > 0 && loadMore) {
             url = forumWallUrl + "&offset=" + noThreads;
         }
@@ -110,7 +111,7 @@ $(document).ready(function(){
             $(".oa-forum-date", $forumContent).each(function() {
                 $(this).prettyDate({serverTime: serverTime, locale: locale});
             });
-            
+
             if ($(".oa-forum-thread:last-child", $forumContent).hasClass("oa-forum-thread-has-more-posts")) {
                 loadMoreLink.style.display = "block";
             }
@@ -120,7 +121,7 @@ $(document).ready(function(){
             spinner.stop();
         });
     }
-    
+
     // Handles posting of status
     $('#oa-forum-sharebox .oa-forum-ajaxForm').ajaxForm({
         beforeSerialize: function($form, options){
@@ -183,6 +184,14 @@ $(document).ready(function(){
         $("#oa-forum-share-attachment").show();
     });
 
+    $('#oa-forum-share-attachment input').on('change', function(event){
+        var valid = validateFileextension(event);
+        if (!valid){
+            alert("Filetypen du prøver å laste opp er ikke tillatt her.");
+            $('#oa-forum-share-attachment input').val("");
+        }
+    });
+
     function replaceURLWithHTMLLinks(text) {
         var replacedText, replacePattern1, replacePattern2, replacePattern3;
 
@@ -230,7 +239,7 @@ $(document).ready(function(){
             element.val("");
 
             $.post(commentFormAction, formParams, function(data) {
-                
+
                 var $container = $commentForm.closest(".oa-forum-thread").find(".oa-forum-posts"),
                     $processedData = $('<div/>').html(data).contents();
 
@@ -436,10 +445,10 @@ $(document).ready(function(){
 
         container.className = "oa-forum-image-container";
         overlay.className = "oa-forum-overlay";
-        
+
         image.className = "oa-forum-image-enlarged";
         image.src = this.getAttribute("data-download");
-        
+
         download.href = this.getAttribute("data-download");
         download.innerHTML = "Last ned bilde";
         download.className = "oa-forum-image-download oa-forum-image-button";
@@ -537,5 +546,21 @@ $(document).ready(function(){
     function placeholderIsSupported() {
         var test = document.createElement('input');
         return ('placeholder' in test);
+    }
+
+    function validateFileextension(event){
+        try {
+            var fileName = event.srcElement.value;
+            var re = /\..+$/;
+            var fileExt = fileName.match(re)[0].slice(1);  // extracter fil-etternavn uten .
+            var exts = elva.allowedFileExtensions.split(",");
+            for (var i = 0; i < exts.length; i++) {
+                if (exts[i] == fileExt) return true;
+            }
+        } catch(e){
+            return false;
+        }
+        return false;
+
     }
 });
