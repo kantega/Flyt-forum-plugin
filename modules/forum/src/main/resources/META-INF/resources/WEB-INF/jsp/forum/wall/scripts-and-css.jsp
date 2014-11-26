@@ -15,7 +15,6 @@
         });
     });
 
-
 </script>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>
 
