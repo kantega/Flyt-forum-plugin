@@ -49,7 +49,7 @@
                         <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
                     </c:when>
                     <c:otherwise>
-                       <form:escapeBody javaScriptEscape="true" htmlEscape="true">${post.body}</form:escapeBody>
+                       <form:escapeBody javaScriptEscape="false" htmlEscape="false">${post.body}</form:escapeBody>
                     </c:otherwise>
                 </c:choose>
             </p>
@@ -76,7 +76,7 @@
 
             <c:if test="${fn:length(thread.posts) == 1}">
                 <a href="#" class="oa-forum-showReplyForm"><kantega:label key="forum.wall.leave.comment" bundle="forum" locale="${forumLocale}"/></a>
-                &nbsp;&sdot;&nbsp;
+                <span class="oa-forum-divider">&nbsp;&sdot;&nbsp;</span>
             </c:if>
 
             <c:set var="postRatings" value="${ratings[post.id]}"/>
@@ -111,7 +111,7 @@
             </c:choose>
             <c:remove var="hasLikedPost"/>
 
-            &nbsp;&sdot;&nbsp;
+            <span class="oa-forum-divider">&nbsp;&sdot;&nbsp;</span>
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
             
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">

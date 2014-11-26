@@ -29,4 +29,6 @@
     var forumId = "<c:out value="${forumId}"/>";
     var forumCategoryId = "<c:out value="${forumCategoryId}"/>";
     var forumWallUrl = "${forumListPostsUrl}";
+    var elva = {};
+    elva.allowedFileExtensions = "${allowedFileextensions}";
 </script>

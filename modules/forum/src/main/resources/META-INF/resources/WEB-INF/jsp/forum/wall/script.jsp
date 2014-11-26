@@ -12,7 +12,8 @@
             // Disable caching of AJAX responses
             cache: false
         });
-    })
+    });
+
 </script>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>
 

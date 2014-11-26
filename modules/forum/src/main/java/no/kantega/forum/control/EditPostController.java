@@ -57,6 +57,9 @@ import static java.util.Arrays.asList;
 public class EditPostController extends AbstractForumFormController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    public static final String defaultAllowedFileextensionsString = "png,jpg,jpeg,gif,bmp";
+    public static final String allowedFileextensionKey = "forum.attachment.allowedfileextensions";
+
     private ForumDao dao;
     private UserProfileManager userProfileManager;
 
@@ -143,7 +146,7 @@ public class EditPostController extends AbstractForumFormController {
             p.setPostDate(new Date());
             p.setThread(t);
 
-            // Angi om det trengs � godkjenne innlegget eller ikke
+            // Angi om det trengs å godkjenne innlegget eller ikke
             String username = null;
             if (user != null) {
                 username = user.getUsername();
@@ -424,7 +427,7 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     private boolean isAnAllowedFileExtension(String originalFilename) {
-        String[] allowedFileExtensions = Aksess.getConfiguration().getString("forum.attachment.allowedfileextensions", "png,jpg,jpeg,gif,bmp").split(",");
+        String[] allowedFileExtensions = Aksess.getConfiguration().getString(allowedFileextensionKey, defaultAllowedFileextensionsString).split(",");
         for (String fileExtension : allowedFileExtensions) {
             if (originalFilename.endsWith(fileExtension)) {
                 return true;

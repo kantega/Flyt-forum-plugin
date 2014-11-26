@@ -2,9 +2,11 @@ package no.kantega.forum.tags.wall;
 
 
 import no.kantega.commons.util.LocaleLabels;
+import no.kantega.forum.control.EditPostController;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -29,6 +31,7 @@ public class RenderWallTag extends SimpleTagSupport {
 	private int maxthreads = 20;
 	private String userId = null;
 	private int threadId = -1;
+	private String shareBoxPlaceholder = null;
 
     private static ForumDao forumDao;
 
@@ -39,7 +42,6 @@ public class RenderWallTag extends SimpleTagSupport {
                 forumDao = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ForumDao.class);
             }
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
 
             String forumIdStr = "-1";
 
@@ -78,6 +80,7 @@ public class RenderWallTag extends SimpleTagSupport {
                 request.setAttribute("forumCategory", category);
 			}
 
+
 			request.setAttribute("showSharebox", sharebox);
 			request.setAttribute("showForumTabs", showforumtabs);
 			request.setAttribute("forumId", forumIdStr);
@@ -87,6 +90,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			request.setAttribute("forumCategoryId", forumCategoryId);
 			request.setAttribute("userid", userId);
 			request.setAttribute("forumListPostsUrl", forumListPostsUrl);
+			request.setAttribute("allowedFileextensions", Aksess.getConfiguration().getString(EditPostController.allowedFileextensionKey, EditPostController.defaultAllowedFileextensionsString));
 
 			final String label = getShareHelpText(request, forumId);
 			request.setAttribute("helptextLabel", label);
@@ -112,6 +116,7 @@ public class RenderWallTag extends SimpleTagSupport {
 
 	//Get placeholder text for the new forum entry. If not present, get the default placeholder.
 	private String getShareHelpText(final HttpServletRequest req, final int fId) {
+		if (shareBoxPlaceholder != null && !shareBoxPlaceholder.isEmpty()) return shareBoxPlaceholder;
 		final String defaultLabelKey = "forum.share.inputfield.label.default";
 		final String knownLabelKey = "forum.share.inputfield.label.named";
 
@@ -175,5 +180,9 @@ public class RenderWallTag extends SimpleTagSupport {
 
 	public void setExpandthreads(boolean expandthreads) {
 		this.expandthreads = expandthreads;
+	}
+
+	public void setShareboxPlaceholder(String shareBoxPlaceholder) {
+		this.shareBoxPlaceholder = shareBoxPlaceholder;
 	}
 }
