@@ -185,6 +185,7 @@ $(document).ready(function(){
     });
 
     $('#oa-forum-share-attachment input').on('change', function(event){
+        if ($('#oa-forum-share-attachment input').val() == "") return;
         var valid = validateFileextension(event);
         if (!valid){
             alert("Filetypen du prøver å laste opp er ikke tillatt her.");
