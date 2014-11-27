@@ -185,7 +185,8 @@ $(document).ready(function(){
     });
 
     $('#oa-forum-share-attachment input').on('change', function(event){
-        if ($('#oa-forum-share-attachment input').val() == "") return;
+
+        //if ($('#oa-forum-share-attachment input').val() == "" || $('#oa-forum-share-attachment input').val() == undefined ) return;
         var valid = validateFileextension(event);
         if (!valid){
             alert("Filetypen du prøver å laste opp er ikke tillatt her.");
@@ -550,8 +551,9 @@ $(document).ready(function(){
     }
 
     function validateFileextension(event){
+        var fileName = event.target.value;
+        if (fileName == "" || fileName == undefined) return true;
         try {
-            var fileName = event.srcElement.value;
             var re = /\..+$/;
             var fileExt = fileName.match(re)[0].slice(1);  // extracter fil-etternavn uten .
             var exts = elva.allowedFileExtensions.split(",");
