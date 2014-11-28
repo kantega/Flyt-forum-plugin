@@ -554,7 +554,7 @@ $(document).ready(function(){
         var fileName = event.target.value;
         if (fileName == "" || fileName == undefined) return true;
         try {
-            var re = /\..+$/;
+            var re = /\.[a-z]+$/;
             var fileExt = fileName.match(re)[0].slice(1);  // extracter fil-etternavn uten .
             var exts = elva.allowedFileExtensions.split(",");
             for (var i = 0; i < exts.length; i++) {
