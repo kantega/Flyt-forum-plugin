@@ -10,12 +10,12 @@
     <groupId>no.kantega.aksess.modules</groupId>
     <artifactId>aksess-modules</artifactId>
     <packaging>pom</packaging>
-    <version>1.24</version>
+    <version>1.25-SNAPSHOT</version>
     <name>Aksess Modules</name>
 
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-modules.git</connection>
-      <tag>aksess-modules-1.24</tag>
+      <tag>HEAD</tag>
   </scm>
 
 
