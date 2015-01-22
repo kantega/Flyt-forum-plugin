@@ -1,14 +1,13 @@
 package no.kantega.modules.user;
 
-import no.kantega.security.api.profile.ProfileManager;
 import no.kantega.security.api.profile.Profile;
+import no.kantega.security.api.profile.ProfileManager;
 import no.kantega.security.api.search.SearchResult;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
-
-import org.apache.log4j.Logger;
+import java.util.List;
 
 /**
  * User: Anders Skar, Kantega AS

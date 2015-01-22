@@ -1,7 +1,7 @@
 package no.kantega.modules.user;
 
-import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.role.DefaultRole;
 import no.kantega.security.api.role.Role;
 

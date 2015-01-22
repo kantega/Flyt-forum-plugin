@@ -1,8 +1,8 @@
 package no.kantega.modules.commons.conf;
 
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.context.ResourceLoaderAware;
 
 import java.util.List;
 

@@ -1,13 +1,12 @@
 package no.kantega.modules.user;
 
+import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.security.data.Role;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Anders Skar, Kantega AS

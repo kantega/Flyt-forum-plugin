@@ -1,18 +1,17 @@
 package no.kantega.modules.tags;
 
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserProfile;
+import no.kantega.modules.user.UserProfileManager;
+import no.kantega.modules.user.UserResolver;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.util.ExpressionEvaluationUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
-import javax.servlet.http.HttpServletRequest;
-
-import no.kantega.modules.user.UserResolver;
-import no.kantega.modules.user.UserProfileManager;
-import no.kantega.modules.user.UserProfile;
-import no.kantega.modules.user.ResolvedUser;
 
 /**
  * Created by IntelliJ IDEA.

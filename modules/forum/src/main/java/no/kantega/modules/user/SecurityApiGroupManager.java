@@ -1,12 +1,12 @@
 package no.kantega.modules.user;
 
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.role.Role;
 import no.kantega.security.api.common.SystemException;
+import no.kantega.security.api.role.Role;
+import no.kantega.security.api.role.RoleManager;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * User: Anders Skar, Kantega AS

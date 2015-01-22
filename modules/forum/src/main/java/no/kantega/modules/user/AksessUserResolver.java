@@ -1,13 +1,14 @@
 package no.kantega.modules.user;
 
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.exception.SystemException;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-
+import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
 import org.apache.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class AksessUserResolver implements UserResolver {
     private Logger log = Logger.getLogger(AksessUserResolver.class);

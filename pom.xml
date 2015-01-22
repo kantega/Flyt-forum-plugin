@@ -51,7 +51,6 @@
 
 
     <modules>
-        <module>modules/core</module>
         <module>modules/forum</module>
     </modules>
 

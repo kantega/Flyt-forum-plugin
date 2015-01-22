@@ -1,8 +1,8 @@
 package no.kantega.modules.user;
 
-import no.kantega.security.api.profile.ProfileManager;
-import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.identity.Identity;
+import no.kantega.security.api.profile.Profile;
+import no.kantega.security.api.profile.ProfileManager;
 import org.apache.log4j.Logger;
 
 /**

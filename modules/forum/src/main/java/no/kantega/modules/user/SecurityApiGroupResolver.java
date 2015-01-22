@@ -1,9 +1,9 @@
 package no.kantega.modules.user;
 
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.identity.Identity;
-import no.kantega.security.api.common.SystemException;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.security.api.common.SystemException;
+import no.kantega.security.api.identity.Identity;
+import no.kantega.security.api.role.RoleManager;
 
 /**
  * User: Anders Skar, Kantega AS

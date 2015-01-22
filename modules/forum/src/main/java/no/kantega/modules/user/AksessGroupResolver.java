@@ -3,13 +3,15 @@ package no.kantega.modules.user;
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.base.algorithm.LRUCache;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.common.Aksess;
 import org.apache.log4j.Logger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class AksessGroupResolver implements GroupResolver {

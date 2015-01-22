@@ -1,10 +1,9 @@
 package no.kantega.modules.user;
 
-import org.apache.log4j.Logger;
-
+import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.security.data.User;
+import org.apache.log4j.Logger;
 
 /**
  * User: ANDSKA

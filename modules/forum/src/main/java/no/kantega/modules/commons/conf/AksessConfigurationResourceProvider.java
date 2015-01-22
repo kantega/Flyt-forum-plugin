@@ -1,9 +1,9 @@
 package no.kantega.modules.commons.conf;
 
 import no.kantega.commons.configuration.Configuration;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.FileSystemResource;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 /**
  * Created by IntelliJ IDEA.
