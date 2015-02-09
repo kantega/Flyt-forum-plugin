@@ -51,6 +51,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
 
@@ -88,9 +89,8 @@ public class EditPostController extends AbstractForumFormController {
             } else {
                 ContentManagementService cms = new ContentManagementService(request);
                 ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
-                Content content = null;
                 try {
-                    content = cms.getContent(cid);
+                    Content content = cms.getContent(cid);
                     if (content != null && content.getForumId() > 0) {
                         Forum f = dao.getForum(content.getForumId());
                         return permissions(Permissions.ADD_THREAD, f);
@@ -108,6 +108,9 @@ public class EditPostController extends AbstractForumFormController {
         }
     }
 
+    private final Pattern startBlockquote = Pattern.compile("<blockquote>");
+    private final Pattern endBlockquote = Pattern.compile("</blockquote>");
+
     protected Object formBackingObject(HttpServletRequest request) throws Exception {
         RequestParameters param = new RequestParameters(request);
         long postId = param.getLong("postId");
@@ -119,8 +122,8 @@ public class EditPostController extends AbstractForumFormController {
                 String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
                 String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
 
-                body = body.replaceAll("<blockquote>", qStart);
-                body = body.replaceAll("</blockquote>", qEnd);
+                body = startBlockquote.matcher(body).replaceAll(qStart);
+                body = endBlockquote.matcher(body).replaceAll(qEnd);
                 post.setBody(body);
             }
             return post;
@@ -171,7 +174,8 @@ public class EditPostController extends AbstractForumFormController {
                 String qStr = "\n" + origPost.getAuthor() + " " + qWrote + ":\n\n";
 
                 String body = origPost.getBody();
-                body = body.replaceAll("<blockquote>", qStart).replaceAll("</blockquote>", qEnd);
+                body = startBlockquote.matcher(body).replaceAll(qStart);
+                body = endBlockquote.matcher(body).replaceAll(qEnd);
 
                 int qEndInx = body.lastIndexOf(qEnd);
                 if (qEndInx != -1) {
