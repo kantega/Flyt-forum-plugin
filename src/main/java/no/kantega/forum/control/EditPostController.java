@@ -14,7 +14,6 @@ import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.service.ForumPostService;
 import no.kantega.forum.util.ForumUtil;
-import no.kantega.forum.util.ImageHelper;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserProfile;
 import no.kantega.modules.user.UserProfileManager;
@@ -22,8 +21,10 @@ import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
+import no.kantega.publishing.multimedia.ImageEditor;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
@@ -48,7 +49,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -68,6 +72,7 @@ public class EditPostController extends AbstractForumFormController {
     private int maxImageHeight = 768;
     private String imageFormat = "jpg";
     private ForumPostService service;
+    private ImageEditor imageEditor;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         RequestParameters param = new RequestParameters(request);
@@ -247,7 +252,7 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{
-        Map referenceData = new HashMap();
+        Map<String, Object> referenceData = new HashMap<>();
 
         Post post = (Post)command;
         String forumId = request.getParameter("forumId");
@@ -306,7 +311,7 @@ public class EditPostController extends AbstractForumFormController {
                     throw new ConfigurationException("mail.from");
                 }
 
-                Map param = new HashMap();
+                Map<String, Object> param = new HashMap<>();
                 param.put("baseurl", Aksess.getApplicationUrl());
                 param.put("post", p);
 
@@ -322,7 +327,7 @@ public class EditPostController extends AbstractForumFormController {
         }
 
 
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request);
         String redirect = param.getString("redirect");
@@ -333,7 +338,7 @@ public class EditPostController extends AbstractForumFormController {
             map.put("hiddenForumId", hiddenForumId);
             if (isNewThread) {
                 ForumThread t = p.getThread();
-                t.setPosts(new TreeSet());
+                t.setPosts(new TreeSet<Post>());
                 t.getPosts().add(p);
                 map.put("thread", t);
                 return new ModelAndView("wall/ajax-thread", map);
@@ -362,9 +367,9 @@ public class EditPostController extends AbstractForumFormController {
     protected void onBind(HttpServletRequest request, Object object) throws Exception {
         Post post = (Post)object;
 
-        Set attachments = post.getAttachments();
+        Set<Attachment> attachments = post.getAttachments();
         if (attachments == null) {
-            attachments = new HashSet();
+            attachments = new HashSet<>();
         }
         if(request instanceof MultipartHttpServletRequest) {
             MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
@@ -390,11 +395,12 @@ public class EditPostController extends AbstractForumFormController {
                             int height = ii.getHeight();
 
                             if (width > maxImageWidth && height > maxImageHeight) {
-                                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                                bos.write(bytes);
+                                Multimedia source = new Multimedia();
+                                source.setData(bytes);
+                                source.setFilename(attachment.getFileName());
+                                Multimedia multimedia = imageEditor.resizeMultimedia(source, width, height);
 
-                                ByteArrayOutputStream bout = ImageHelper.resizeImage(bos, maxImageWidth, maxImageHeight, imageFormat, 85);
-                                bytes = bout.toByteArray();
+                                bytes = multimedia.getData();
                                 size = bytes.length;
                                 if (filename.contains(".")) {
                                     filename = filename.substring(0, filename.lastIndexOf(".")) + "." + imageFormat;
@@ -445,8 +451,8 @@ public class EditPostController extends AbstractForumFormController {
         String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
         String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
         body = body.replaceAll("\n", "<br>");
-        body = body.replaceAll(qStart, "<blockquote>");
-        body = body.replaceAll(qEnd, "</blockquote>");
+        body = startBlockquote.matcher(body).replaceAll(qStart);
+        body = endBlockquote.matcher(body).replaceAll(qEnd);
 
         SAXParser parser = new SAXParser();
 
@@ -517,5 +523,9 @@ public class EditPostController extends AbstractForumFormController {
 
     public void setForumPostService(ForumPostService forumPostService) {
         this.service = forumPostService;
+    }
+
+    public void setImageEditor(ImageEditor imageEditor) {
+        this.imageEditor = imageEditor;
     }
 }

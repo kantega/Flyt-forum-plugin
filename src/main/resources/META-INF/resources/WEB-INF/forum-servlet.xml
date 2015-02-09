@@ -131,6 +131,7 @@
         </property>
         <property name="userProfileManager" ref="userProfileManager"/>
         <property name="forumPostService" ref="forumPostService"/>
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
 
     <bean id="approvePostController" class="no.kantega.forum.control.ApprovePostController">
@@ -145,6 +146,7 @@
 
     <bean id="viewAttachmentController" class="no.kantega.forum.control.ViewAttachmentController">
         <property name="dao" ref="forumDao"/>
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
 
     <bean id="ajaxUserSearchController" class="no.kantega.forum.control.AjaxUserSearchController">

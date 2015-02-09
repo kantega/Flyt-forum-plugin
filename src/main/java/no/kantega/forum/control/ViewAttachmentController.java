@@ -3,22 +3,18 @@ package no.kantega.forum.control;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
-import no.kantega.forum.util.ImageHelper;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.multimedia.ImageEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 27, 2007
- * Time: 7:07:54 PM
- */
 public class ViewAttachmentController extends AbstractController {
     private ForumDao dao;
+    private ImageEditor imageEditor;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ServletOutputStream out = response.getOutputStream();
@@ -39,12 +35,12 @@ public class ViewAttachmentController extends AbstractController {
                 response.setContentType(mimeType);
                 response.addHeader("Content-Disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
 
-                if (mimeType.indexOf("image") != -1 && (width != -1 || height != -1)) {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bos.write(attachment.getData());
-                    ByteArrayOutputStream tmp = ImageHelper.resizeImage(bos, width, height, "jpg", 85);
-                    out.write(tmp.toByteArray());
-
+                if (mimeType.contains("image") && (width != -1 || height != -1)) {
+                    Multimedia source = new Multimedia();
+                    source.setData(attachment.getData());
+                    source.setFilename(attachment.getFileName());
+                    Multimedia multimedia = imageEditor.resizeMultimedia(source, width, height);
+                    out.write(multimedia.getData());
                 } else {
                     out.write(attachment.getData());
                 }
@@ -56,5 +52,9 @@ public class ViewAttachmentController extends AbstractController {
 
     public void setDao(ForumDao dao) {
         this.dao = dao;
+    }
+
+    public void setImageEditor(ImageEditor imageEditor) {
+        this.imageEditor = imageEditor;
     }
 }
