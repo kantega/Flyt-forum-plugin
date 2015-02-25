@@ -26,26 +26,29 @@ public class ForumDao {
         template.saveOrUpdate(forumCategory);
     }
 
-    public void saveOrUpdate(Attachment attachment) {
+    public Attachment saveOrUpdate(Attachment attachment) {
         template.saveOrUpdate(attachment);
+        return attachment;
     }
 
-    public void saveOrUpdate(ForumThread thread) {
+    public ForumThread saveOrUpdate(ForumThread thread) {
         thread.setLastPostDate(new Date());
         template.saveOrUpdate(thread);
         updateThreadCount(thread.getForum().getId());
+        return thread;
     }
 
-    public void saveOrUpdate(Forum forum) {
+    public Forum saveOrUpdate(Forum forum) {
         template.saveOrUpdate(forum);
         updateForumCount(forum.getForumCategory().getId());
+        return forum;
     }
 
-    public void saveOrUpdate(Post post) {
-        saveOrUpdate(post, true);
+    public Post saveOrUpdate(Post post) {
+        return saveOrUpdate(post, true);
     }
 
-    public void saveOrUpdate(Post post, boolean updateLastPostDateOnThread) {
+    public Post saveOrUpdate(Post post, boolean updateLastPostDateOnThread) {
         template.saveOrUpdate(post);
         updatePostCount(post.getThread().getId());
 
@@ -54,9 +57,10 @@ public class ForumDao {
             t.setLastPostDate(new Date());
             saveOrUpdate(t);
         }
+        return post;
     }
 
-    public void approve(Post post) {
+    public Post approve(Post post) {
         post.setApproved(true);
         saveOrUpdate(post);
 
@@ -66,6 +70,7 @@ public class ForumDao {
 
         updatePostCount(thread.getId());
         updateThreadCount(thread.getForum().getId());
+        return post;
     }
 
     // delete
@@ -103,7 +108,7 @@ public class ForumDao {
         return list;
     }
 
-    public List getForums() {
+    public List<Forum> getForums() {
         return template.find("from Forum f inner join fetch f.forumCategory c");
     }
 
@@ -159,7 +164,7 @@ public class ForumDao {
 
                 List<Number> threadIds = queryThreadIds.list();
                 if (threadIds.size() == 0) {
-                    return new ArrayList<ForumThread>();
+                    return new ArrayList<>();
                 }
 
                 StringBuilder q = new StringBuilder();
@@ -404,9 +409,9 @@ public class ForumDao {
     }
 
     public ForumCategory getPopulatedForumCategory(final long forumCategoryId) {
-        return (ForumCategory) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategoryId));
+        return template.execute(new HibernateCallback<ForumCategory>() {
+            public ForumCategory doInHibernate(Session session) throws HibernateException {
+                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, forumCategoryId);
                 fc.getForums().size();
                 return fc;
             }
@@ -414,9 +419,9 @@ public class ForumDao {
     }
 
     public Forum getPopulatedForum(final long forumId) {
-        return (Forum) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                Forum f = (Forum) session.get(Forum.class, new Long(forumId));
+        return  template.execute(new HibernateCallback<Forum>() {
+            public Forum doInHibernate(Session session) throws HibernateException {
+                Forum f = (Forum) session.get(Forum.class, forumId);
                 f.getThreads().size();
                 f.getGroups().size();
                 return f;
@@ -425,9 +430,9 @@ public class ForumDao {
     }
 
     public ForumThread getPopulatedThread(final long threadId) {
-        return (ForumThread) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                ForumThread t = (ForumThread) session.get(ForumThread.class, new Long(threadId));
+        return template.execute(new HibernateCallback<ForumThread>() {
+            public ForumThread doInHibernate(Session session) throws HibernateException {
+                ForumThread t = (ForumThread) session.get(ForumThread.class, threadId);
                 t.getPosts().size();
                 return t;
             }
@@ -435,9 +440,9 @@ public class ForumDao {
     }
 
     public Post getPopulatedPost(final long postId) {
-        return (Post) template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                Post p = (Post) session.get(Post.class, new Long(postId));
+        return template.execute(new HibernateCallback<Post>() {
+            public Post doInHibernate(Session session) throws HibernateException {
+                Post p = (Post) session.get(Post.class, postId);
                 p.getAttachments().size();
                 return p;
             }
@@ -453,7 +458,7 @@ public class ForumDao {
     }
 
     public Attachment getAttachment(final long attachmentId) {
-        return template.get(Attachment.class, new Long(attachmentId));
+        return template.get(Attachment.class, attachmentId);
     }
 
     public ForumCategory getForumCategory(final long forumCategoryId) {
@@ -472,42 +477,7 @@ public class ForumDao {
     }
 
     public Post getPost(final long postId) {
-        return (Post) template.get(Post.class, new Long(postId));
-    }
-
-    // add
-    public void addForumToCategory(final Forum forum, final ForumCategory forumCategory) {
-        template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                ForumCategory fc = (ForumCategory) session.get(ForumCategory.class, new Long(forumCategory.getId()));
-                forum.setForumCategory(fc);
-                if (fc.getForums() == null) {
-                    fc.setForums(new HashSet());
-                }
-                fc.getForums().add(forum);
-                fc.setNumForums(fc.getNumForums() + 1); // increase number of forums
-                session.saveOrUpdate(forum);
-                session.saveOrUpdate(fc);
-                return null;
-            }
-        });
-    }
-
-
-    public void addAttachmentToPost(final Attachment attachment, final Post post) {
-        template.execute(new HibernateCallback() {
-            public Object doInHibernate(Session session) throws HibernateException {
-                Post p = (Post) session.get(Post.class, new Long(post.getId()));
-                attachment.setPost(p);
-                if (p.getAttachments() == null) {
-                    p.setAttachments(new HashSet());
-                }
-                p.getAttachments().add(attachment);
-                session.saveOrUpdate(attachment);
-                session.saveOrUpdate(p);
-                return null;
-            }
-        });
+        return template.get(Post.class, postId);
     }
 
     public boolean postGotChildren(final Post p) {
@@ -675,7 +645,7 @@ public class ForumDao {
         Number n = (Number) template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
 
-                Post p = (Post) session.get(Post.class, new Long(postId));
+                Post p = (Post) session.get(Post.class, postId);
 
                 Query q = session.createQuery("select count(*) from Post p where p.thread.id=? and p.id < ? and approved = 'Y'");
 
