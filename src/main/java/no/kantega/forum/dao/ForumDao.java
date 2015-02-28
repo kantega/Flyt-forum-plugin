@@ -291,12 +291,12 @@ public class ForumDao {
     public List<Post> getLastPostsInForums(final long forumIds[], final int n) {
         return template.execute(new HibernateCallback<List<Post>>() {
             public List<Post> doInHibernate(Session session) throws HibernateException {
-                String whereClause = "";
+                StringBuilder whereClause = new StringBuilder();
                 for (int i = 0; i < forumIds.length; i++) {
                     if (i > 0) {
-                        whereClause += " or ";
+                        whereClause.append(" or ");
                     }
-                    whereClause += "p.thread.forum.id = ? ";
+                    whereClause.append("p.thread.forum.id = ? ");
                 }
                 Query query = session.createQuery("from Post p where (" + whereClause + ") and p.approved = ? order by p.id desc");
                 for (int i = 0; i < forumIds.length; i++) {
@@ -450,11 +450,11 @@ public class ForumDao {
     }
 
     public Forum getForum(final long forumId) {
-        return (Forum) template.find("from Forum f inner join fetch f.forumCategory c where f.id=?", new Long(forumId)).get(0);
+        return (Forum) template.find("from Forum f inner join fetch f.forumCategory c where f.id=?", forumId).get(0);
     }
 
     public ForumThread getThread(final long threadId) {
-        return (ForumThread) template.find("from ForumThread t inner join fetch t.forum f where t.id=?", new Long(threadId)).get(0);
+        return (ForumThread) template.find("from ForumThread t inner join fetch t.forum f where t.id=?", threadId).get(0);
     }
 
     public Attachment getAttachment(final long attachmentId) {
@@ -567,7 +567,7 @@ public class ForumDao {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
 
-                ForumCategory category = (ForumCategory) session.get(ForumCategory.class, new Long(categoryId));
+                ForumCategory category = (ForumCategory) session.get(ForumCategory.class, categoryId);
 
                 Query q = session.createQuery("select count(*) from Forum f where f.forumCategory.id=?");
                 q.setLong(0, categoryId);
@@ -586,7 +586,7 @@ public class ForumDao {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
 
-                Forum forum = (Forum) session.get(Forum.class, new Long(forumId));
+                Forum forum = (Forum) session.get(Forum.class, forumId);
 
                 Query q = session.createQuery("select count(*) from ForumThread t where t.forum.id = ? and approved = ?");
                 q.setLong(0, forumId);
@@ -605,7 +605,7 @@ public class ForumDao {
         template.execute(new HibernateCallback() {
             public Object doInHibernate(Session session) throws HibernateException {
 
-                ForumThread thread = (ForumThread) session.get(ForumThread.class, new Long(threadId));
+                ForumThread thread = (ForumThread) session.get(ForumThread.class, threadId);
 
                 Query q = session.createQuery("select count(*) from Post p where p.thread.id = ? and approved = ?");
                 q.setLong(0, threadId);
