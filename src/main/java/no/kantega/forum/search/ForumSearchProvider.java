@@ -46,9 +46,11 @@ public class ForumSearchProvider implements IndexableDocumentProvider {
     @Override
     public void provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments) {
         try {
-            progressReporter.setStarted();
             List<Post> allPosts = forumDao.getAllPosts();
             for (Post post : allPosts) {
+                if(progressReporter==null || progressReporter.isFinished()){
+                    break;
+                }
                 try {
                     IndexableDocument indexablePost = forumpostTransformer.transform(post);
                     indexableDocuments.put(indexablePost);
