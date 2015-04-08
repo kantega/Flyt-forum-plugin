@@ -17,7 +17,7 @@ public class ForumCategory {
     private int numForums;
     private Date createdDate;
     private String owner;
-    private Set forums;
+    private Set<Forum> forums;
 
     public long getId() {
         return id;
@@ -59,11 +59,11 @@ public class ForumCategory {
         this.createdDate = createdDate;
     }
 
-    public Set getForums() {
+    public Set<Forum> getForums() {
         return forums;
     }
 
-    public void setForums(Set forums) {
+    public void setForums(Set<Forum> forums) {
         this.forums = forums;
     }
 

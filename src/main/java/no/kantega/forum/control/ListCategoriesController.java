@@ -30,12 +30,12 @@ public class ListCategoriesController implements Controller {
     private PermissionManager permissionManager;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
 
         Date lastVisit = ForumUtil.getLastVisit(request, response, true);
         map.put("lastVisit", lastVisit);
-        
-        List cats = dao.getForumCategories();
+
+        List<ForumCategory> cats = dao.getForumCategories();
 
         String username = null;
         ResolvedUser user = userResolver.resolveUser(request);
@@ -54,10 +54,10 @@ public class ListCategoriesController implements Controller {
 	    boolean canCreateForum = permissionManager.hasPermission(username, Permissions.EDIT_FORUM, null);
 
 
-		Iterator catsIterator = cats.iterator();
+		Iterator<ForumCategory> catsIterator = cats.iterator();
 
 		while (catsIterator.hasNext()){
-			ForumCategory cat = (ForumCategory) catsIterator.next();
+			ForumCategory cat = catsIterator.next();
 			Iterator forumIterator = cat.getForums().iterator();
 			while (forumIterator.hasNext()){
 				Forum forum = (Forum) forumIterator.next();
@@ -80,16 +80,15 @@ public class ListCategoriesController implements Controller {
 
         if (username != null) {
             // Hent innlegg som brukeren kan godkjenne
-            List myUnapprovedPosts = new ArrayList();
-            List allUnapprovedPosts = dao.getUnapprovedPosts();
-            for (int i = 0; i < allUnapprovedPosts.size(); i++) {
-                Post p =  (Post)allUnapprovedPosts.get(i);
-                if (permissionManager.hasPermission(username, Permissions.APPROVE_POST, p)) {
-                    myUnapprovedPosts.add(p);
+            List<Post> myUnapprovedPosts = new ArrayList<>();
+            List<Post> allUnapprovedPosts = dao.getUnapprovedPosts();
+            for (Post post : allUnapprovedPosts) {
+                if (permissionManager.hasPermission(username, Permissions.APPROVE_POST, post)) {
+                    myUnapprovedPosts.add(post);
                 }
             }
             if (myUnapprovedPosts.size() > 0) {
-                map.put("unapprovedPostCount", new Integer(myUnapprovedPosts.size()));
+                map.put("unapprovedPostCount", myUnapprovedPosts.size());
             }
         }
 
