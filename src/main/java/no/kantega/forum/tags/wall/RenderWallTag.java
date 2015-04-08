@@ -7,7 +7,6 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
@@ -16,7 +15,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 public class RenderWallTag extends SimpleTagSupport {
 
@@ -45,34 +48,28 @@ public class RenderWallTag extends SimpleTagSupport {
 
             String forumIdStr = "-1";
 
-			String forumListPostsUrl = request.getContextPath() + "/forum/listPosts";
+			StringBuilder forumListPostsUrl = new StringBuilder(request.getContextPath() + "/forum/listPosts");
 			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
+				forumListPostsUrl.append("?forumId=");
                 if (forumId > 0) {
-                    forumIdStr = String.valueOf(forumId);
+					forumListPostsUrl.append(String.valueOf(forumId));
                 } else {
-                    forumIdStr = "";
-                    for (int i = 0; i < forumIds.size(); i++) {
-                        if (i > 0) {
-                            forumIdStr += ",";
-                        }
-                        forumIdStr += forumIds.get(i);
-                    }
+					forumListPostsUrl.append(join(forumIds, ','));
                 }
-				forumListPostsUrl = forumListPostsUrl + "?forumId=" + forumIdStr;
             } else {
-				forumListPostsUrl = forumListPostsUrl + "?forumCategoryId=" + forumCategoryId;
+				forumListPostsUrl.append("?forumCategoryId=").append(forumCategoryId);
 			}
 
-			forumListPostsUrl += String.format("&numberOfPostsToShow=%s&expandThreads=%s", maxthreads, String.valueOf(expandthreads));
+			forumListPostsUrl.append(String.format("&numberOfPostsToShow=%s&expandThreads=%s", maxthreads, String.valueOf(expandthreads)));
 
 			if (userId != null) {
-				forumListPostsUrl += "&username=" + userId;
+				forumListPostsUrl.append("&username=").append(userId);
 			}
 			if (threadId != -1) {
-				forumListPostsUrl += "&threadId=" + threadId;
+				forumListPostsUrl.append("&threadId=").append(threadId);
 			}
 			if (hiddenForumId != -1) {
-				forumListPostsUrl += "&hiddenForumId=" + hiddenForumId;
+				forumListPostsUrl.append("&hiddenForumId=").append(hiddenForumId);
 			}
 
 			if (forumCategoryId != -1) {
