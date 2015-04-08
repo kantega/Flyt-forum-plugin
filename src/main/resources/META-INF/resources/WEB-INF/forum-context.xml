@@ -46,7 +46,7 @@
 
     <bean id="forumPermissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
         <property name="groupResolver" ref="groupResolver"/>
-        <property name="administratorGroups" value="${forum.administratorgroups}"/>
+        <property name="administratorGroups" value="${forum.administratorgroups:admin}"/>
     </bean>
 
     <bean id="forumPostRatingNotificationListener" class="no.kantega.forum.listeners.PostRatingNotificationListener">

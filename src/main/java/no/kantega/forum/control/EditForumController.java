@@ -1,25 +1,23 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.forum.permission.Permissions;
-import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.GroupManager;
+import no.kantega.modules.user.UserProfileManager;
 import no.kantega.publishing.common.service.TopicMapService;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +47,7 @@ public class EditForumController extends AbstractForumFormController {
 
 
     protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{
-        Map referenceData = new HashMap();
+        Map<String, Object> referenceData = new HashMap<>();
 
         Forum forum = (Forum)command;
         String moderator = forum.getModerator();
@@ -59,7 +57,7 @@ public class EditForumController extends AbstractForumFormController {
 
         referenceData.put("groups", groupManager.getAllGroups());
 
-        TopicMapService topicService = new TopicMapService(request);        
+        TopicMapService topicService = new TopicMapService(request);
         referenceData.put("topicMaps", topicService.getTopicMaps());
 
         return referenceData;
@@ -88,7 +86,7 @@ public class EditForumController extends AbstractForumFormController {
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
         Forum f = (Forum) object;
         dao.saveOrUpdate(f);
-        return new ModelAndView(new RedirectView("viewforum"), "forumId", new Long(f.getId()));
+        return new ModelAndView(new RedirectView("viewforum"), "forumId", f.getId());
     }
 
     public void setDao(ForumDao dao) {
