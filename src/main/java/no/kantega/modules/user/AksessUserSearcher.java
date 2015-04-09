@@ -8,12 +8,6 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: ANDSKA
- * Date: 24.mai.2006
- * Time: 13:31:51
- * Copyright: Kantega
- */
 public class AksessUserSearcher  implements UserSearcher {
     private Logger log = Logger.getLogger(AksessUserSearcher.class);
 
@@ -23,11 +17,10 @@ public class AksessUserSearcher  implements UserSearcher {
         try {
             SecurityRealm realm = SecurityRealmFactory.getInstance();
 
-            List aksessUsers = realm.searchUsers(substring);
+            List<User> aksessUsers = realm.searchUsers(substring);
 
-            List users = new ArrayList();
-            for (int i = 0; i < aksessUsers.size(); i++) {
-                User aksessUser = (User)aksessUsers.get(i);
+            List<UserProfile> users = new ArrayList<>();
+            for (User aksessUser : aksessUsers) {
 
                 final String username = aksessUser.getId();
                 final String name = aksessUser.getName();
@@ -56,7 +49,7 @@ public class AksessUserSearcher  implements UserSearcher {
                 };
                 users.add(profile);
             }
-            return (UserProfile[]) users.toArray(new UserProfile[0]);
+            return users.toArray(new UserProfile[users.size()]);
         } catch (Exception e) {
             log.error(e);
             return new UserProfile[0];

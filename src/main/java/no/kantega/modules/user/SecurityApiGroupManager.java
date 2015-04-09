@@ -8,20 +8,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Mar 21, 2007
- * Time: 9:19:39 AM
- */
 public class SecurityApiGroupManager implements GroupManager {
     private RoleManager roleManager;
 
     public Group[] getAllGroups() {
         try {
-            List groups = new ArrayList();
-            Iterator roles = roleManager.getAllRoles();
+            List<Group> groups = new ArrayList<>();
+            Iterator<Role> roles = roleManager.getAllRoles();
             while (roles.hasNext()) {
-                Role role = (Role)roles.next();
+                Role role = roles.next();
                 final String groupId = role.getDomain() + ":" + role.getId();
                 final String groupName = role.getName();
 
@@ -36,8 +31,8 @@ public class SecurityApiGroupManager implements GroupManager {
                 };
                 groups.add(group);
             }
-            
-            return (Group[]) groups.toArray(new Group[0]);
+
+            return groups.toArray(new Group[groups.size()]);
 
         } catch (SystemException e) {
             return new Group[0];

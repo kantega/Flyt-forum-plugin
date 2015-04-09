@@ -3,11 +3,7 @@ package no.kantega.modules.user;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: 24.sep.2005
- * Time: 15:04:22
- * To change this template use File | Settings | File Templates.
+ * Resolving user from request.getUserPrincipal()
  */
 public class J2EEUserResolver implements UserResolver {
     public ResolvedUser resolveUser(HttpServletRequest request) {

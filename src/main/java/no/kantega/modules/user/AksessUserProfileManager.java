@@ -5,12 +5,6 @@ import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import org.apache.log4j.Logger;
 
-/**
- * User: ANDSKA
- * Date: 24.mai.2006
- * Time: 13:40:09
- * Copyright: Kantega
- */
 public class AksessUserProfileManager extends AbstractUserProfileManager {
     private Logger log = Logger.getLogger(AksessUserProfileManager.class);
 

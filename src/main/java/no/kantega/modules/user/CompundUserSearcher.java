@@ -5,28 +5,23 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: Nov 1, 2005
- * Time: 11:12:13 AM
- * To change this template use File | Settings | File Templates.
+ * Combining several UserSearchers
  */
 public class CompundUserSearcher implements UserSearcher {
-    private List userSearchers;
+    private List<UserSearcher> userSearchers;
 
     public UserProfile[] findUsers(String substring) {
-        List profiles = new ArrayList();
+        List<UserProfile> profiles = new ArrayList<>();
 
-        for (int i = 0; i < userSearchers.size(); i++) {
-            UserSearcher searcher = (UserSearcher) userSearchers.get(i);
+        for (UserSearcher searcher : userSearchers) {
             UserProfile[] p = searcher.findUsers(substring);
             profiles.addAll(Arrays.asList(p));
         }
 
-        return (UserProfile[]) profiles.toArray(new UserProfile[0]);
+        return profiles.toArray(new UserProfile[profiles.size()]);
     }
 
-    public void setUserSearchers(List userSearchers) {
+    public void setUserSearchers(List<UserSearcher> userSearchers) {
         this.userSearchers = userSearchers;
     }
 }

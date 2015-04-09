@@ -28,19 +28,18 @@ public class AksessGroupResolver implements GroupResolver {
             return false;
         }
 
-        Map roles;
+        Map<String, Role> roles;
 
         try {
             // Cache for one hour
-            roles = (Map) cache.getFromCache(user, 3600);
+            roles = (Map<String, Role>) cache.getFromCache(user, 3600);
         } catch (NeedsRefreshException e) {
             try {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
-                List userRoles = realm.lookupRolesForUser(user);
+                List<Role> userRoles = realm.lookupRolesForUser(user);
 
-                roles = new HashMap();
-                for (int i = 0; i < userRoles.size(); i++) {
-                    Role r =  (Role)userRoles.get(i);
+                roles = new HashMap<>();
+                for (Role r : userRoles) {
                     roles.put(r.getId(), r);
                 }
 
@@ -51,7 +50,7 @@ public class AksessGroupResolver implements GroupResolver {
                 return false;
             }
 
-        }        
+        }
         return roles.containsKey(group);
     }
 }

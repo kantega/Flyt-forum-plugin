@@ -58,9 +58,9 @@ public class ListCategoriesController implements Controller {
 
 		while (catsIterator.hasNext()){
 			ForumCategory cat = catsIterator.next();
-			Iterator forumIterator = cat.getForums().iterator();
+			Iterator<Forum> forumIterator = cat.getForums().iterator();
 			while (forumIterator.hasNext()){
-				Forum forum = (Forum) forumIterator.next();
+				Forum forum = forumIterator.next();
 				if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
 					// User does not have access to forum
 					forumIterator.remove();

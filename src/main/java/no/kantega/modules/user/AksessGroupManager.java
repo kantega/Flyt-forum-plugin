@@ -8,11 +8,6 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Mar 21, 2007
- * Time: 9:19:13 AM
- */
 public class AksessGroupManager implements GroupManager {
     private Logger log = Logger.getLogger(AksessGroupManager.class);
 
@@ -20,11 +15,10 @@ public class AksessGroupManager implements GroupManager {
         try {
             SecurityRealm realm = SecurityRealmFactory.getInstance();
 
-            List groups = new ArrayList();
-            List roles = realm.getAllRoles();
+            List<Group> groups = new ArrayList<>();
+            List<Role> roles = realm.getAllRoles();
 
-            for (int i = 0; i < roles.size(); i++) {
-                Role role = (Role)roles.get(i);
+            for (Role role : roles) {
 
                 final String groupId = role.getId();
                 final String groupName = role.getName();
@@ -41,7 +35,7 @@ public class AksessGroupManager implements GroupManager {
                 groups.add(group);
             }
 
-            return (Group[]) groups.toArray(new Group[0]);
+            return groups.toArray(new Group[groups.size()]);
 
         } catch (Exception e) {
             log.error(e);

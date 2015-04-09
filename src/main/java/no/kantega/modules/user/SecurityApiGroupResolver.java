@@ -4,13 +4,12 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.role.RoleManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 27, 2007
- * Time: 10:34:45 AM
- */
 public class SecurityApiGroupResolver implements GroupResolver {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private RoleManager roleManager;
 
     public boolean isInGroup(String user, String group) {
@@ -20,14 +19,13 @@ public class SecurityApiGroupResolver implements GroupResolver {
 
         if (user == null) {
             return false;
-        }       
+        }
 
         Identity identity = SecurityApiHelper.createApiIdentity(user);
         try {
-            // TODO: Caching
             return roleManager.userHasRole(identity, group);
         } catch (SystemException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            log.error("Error checking role");
         }
         return false;
     }
