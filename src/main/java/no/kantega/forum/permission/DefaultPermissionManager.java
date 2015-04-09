@@ -7,22 +7,20 @@ import no.kantega.modules.user.GroupResolver;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 public class  DefaultPermissionManager implements PermissionManager {
 
     private final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
 
-    private Field[] permissionFields = Permissions.class.getFields();
-
     private GroupResolver groupResolver;
 
-    private List administratorGroups;
+    private List<String> administratorGroups;
 
     public boolean hasPermission(String user, long permission, Object object) {
         return getPermission(user, permission, object);
@@ -33,10 +31,9 @@ public class  DefaultPermissionManager implements PermissionManager {
         boolean isAdmin = false;
 
         // Sjekk om bruker er forumadministrator
-        if(user != null && !user.trim().equals("")) {
-            for (int i = 0; i < administratorGroups.size(); i++) {
-                String group = (String) administratorGroups.get(i);
-                if(groupResolver.isInGroup(user, group)) {
+        if(isNotBlank(user)) {
+            for (String group : administratorGroups) {
+                if (groupResolver.isInGroup(user, group)) {
                     isAdmin = true;
                     return isAdmin;
                 }
@@ -70,13 +67,11 @@ public class  DefaultPermissionManager implements PermissionManager {
                 }
                 if (forum != null) {
                     boolean isAuthorized = false;
-                    Set groups = forum.getGroups();
+                    Set<String> groups = forum.getGroups();
                     if (groups == null || groups.isEmpty()) {
                         isAuthorized = true;
                     } else {
-                        Iterator it = groups.iterator();
-                        while (it.hasNext()) {
-                            String groupId = (String)it.next();
+                        for (String groupId : groups) {
                             if (groupResolver.isInGroup(user, groupId)) {
                                 isAuthorized = true;
                                 break;
@@ -92,7 +87,7 @@ public class  DefaultPermissionManager implements PermissionManager {
 
                     }
 
-                    return isAdmin | isAuthorized;
+                    return isAuthorized;
                 }
 
             }
@@ -142,20 +137,6 @@ public class  DefaultPermissionManager implements PermissionManager {
         }
 
         return isAdmin;
-    }
-
-    private String getPermission(long value) {
-        try {
-            for (int i = 0; i < permissionFields.length; i++) {
-                Field permissionField = permissionFields[i];
-                if(permissionField.getLong(null) == value) {
-                    return permissionField.getName();
-                }
-            }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        return "Unknown field " + value;
     }
 
     public void setGroupResolver(GroupResolver groupResolver) {

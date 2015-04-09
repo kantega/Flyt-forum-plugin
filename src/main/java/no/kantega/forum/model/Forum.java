@@ -19,20 +19,20 @@ public class Forum {
     private Date createdDate; // Forum Created Date
     private Post lastPost;
     private String owner;
-    private Set threads;
+    private Set<ForumThread> threads;
     private boolean anonymousPostAllowed = true;
     private boolean attachmentsAllowed = false;
     private boolean approvalRequired = false;
     private String moderator;
-    private Set groups;
+    private Set<String> groups;
     private int numNewPosts = 0;
     private Integer topicMapId = null;
 
-    public Set getGroups() {
+    public Set<String> getGroups() {
         return groups;
     }
 
-    public void setGroups(Set groups) {
+    public void setGroups(Set<String> groups) {
         this.groups = groups;
     }
 
@@ -68,11 +68,11 @@ public class Forum {
         this.createdDate = createdDate;
     }
 
-    public Set getThreads() {
+    public Set<ForumThread> getThreads() {
         return threads;
     }
 
-    public void setThreads(Set threads) {
+    public void setThreads(Set<ForumThread> threads) {
         this.threads = threads;
     }
 
@@ -157,10 +157,6 @@ public class Forum {
     }
 
     public boolean isClosed() {
-        if (groups == null || groups.isEmpty() || groups.contains("everyone")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(groups == null || groups.isEmpty() || groups.contains("everyone"));
     }
 }

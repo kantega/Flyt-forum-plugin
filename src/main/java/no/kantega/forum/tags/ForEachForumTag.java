@@ -8,16 +8,17 @@ import no.kantega.forum.util.ForumComparator;
 import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -42,15 +43,14 @@ public class ForEachForumTag extends LoopTagSupport {
     }
 
     protected void prepare() throws JspTagException {
-        WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-        PermissionManager permissionsManager = (PermissionManager) context.getBean("forumPermissionManager");
-        UserResolver userResolver = (UserResolver) context.getBean("userResolver");
+        WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+        PermissionManager permissionsManager = context.getBean("forumPermissionManager", PermissionManager.class);
+        UserResolver userResolver = context.getBean("userResolver", UserResolver.class);
 
-        long t1 = new Date().getTime();
         i = null;
-        Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
+        Map<String, ForumDao> daos = context.getBeansOfType(ForumDao.class);
         if(daos.size() > 0) {
-            ForumDao dao = (ForumDao) daos.values().iterator().next();
+            ForumDao dao = daos.values().iterator().next();
 
             String username = null;
             ResolvedUser user = userResolver.resolveUser((HttpServletRequest)pageContext.getRequest());
@@ -58,30 +58,28 @@ public class ForEachForumTag extends LoopTagSupport {
                 username = user.getUsername();
             }
 
-            Map result = new HashMap();
+            Map<String, Forum> result = new HashMap<>();
 
             // Hent alle forum
-            List allForums = dao.getForums();
-            for (int j = 0; j < allForums.size(); j++) {
-                Forum forum = (Forum) allForums.get(j);
+            List<Forum> allForums = dao.getForums();
+            for (Forum forum : allForums) {
                 // Legg til alle forum eller kun de som er relevante
                 if (permissionsManager.hasPermission(username, Permissions.VIEW, forum)) {
                     // Legg til forum dersom relevance ikke angitt eller forumet har en eller flere roller som gjør det relevant for brukeren
                     if (!relevance.contains("group") || (forum.getGroups() != null && !forum.getGroups().isEmpty())) {
-                        result.put("" + forum.getId(), forum);
+                        result.put(String.valueOf(forum.getId()), forum);
                     }
                 }
             }
 
-            if (relevance.contains("user") && username != null && username.length() > 0) {
+            if (relevance.contains("user") && isNotBlank(username)) {
                 // Legg til forum som brukeren har postet i
-                List userForums = dao.getForumsWithUserPostings(username);
-                for (int j = 0; j < userForums.size(); j++) {
-                    Forum forum = (Forum) userForums.get(j);
+                List<Forum> userForums = dao.getForumsWithUserPostings(username);
+                for (Forum forum : userForums) {
                     if (permissionsManager.hasPermission(username, Permissions.VIEW, forum)) {
                         // Legg til kun i resultat dersom det ikke ligger der
-                        if (result.get("" + forum.getId()) == null) {
-                            result.put("" + forum.getId(), forum);
+                        if (result.get(Long.toString(forum.getId())) == null) {
+                            result.put(Long.toString(forum.getId()), forum);
                         }
                     }
                 }
@@ -89,15 +87,14 @@ public class ForEachForumTag extends LoopTagSupport {
 
             ForumComparator comparator = new ForumComparator();
 
-            List forums = new ArrayList(result.values());
+            List<Forum> forums = new ArrayList<>(result.values());
             Collections.sort(forums, comparator);
 
             Date lastVisit = ForumUtil.getLastVisit((HttpServletRequest)pageContext.getRequest(), (HttpServletResponse)pageContext.getResponse(), false);
 
 
             // Finn antall nye innlegg
-            for (int j = 0; j < forums.size(); j++) {
-                Forum forum = (Forum) forums.get(j);
+            for (Forum forum : forums) {
                 int num = dao.getNewPostCountInForum(forum.getId(), lastVisit);
                 forum.setNumNewPosts(num);
             }
