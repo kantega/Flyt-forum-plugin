@@ -14,7 +14,7 @@ public class SecurityApiHelper {
     public static Identity createApiIdentity(String aksessUserId) {
         String userId = "";
         String domain = "";
-        if (aksessUserId.indexOf(":") == -1) {
+        if (!aksessUserId.contains(":")) {
             userId = aksessUserId;
             domain = null;
         } else {
@@ -22,17 +22,13 @@ public class SecurityApiHelper {
             domain = aksessUserId.substring(0, aksessUserId.indexOf(":"));
         }
 
-        DefaultIdentity identity = new DefaultIdentity();
-        identity.setUserId(userId);
-        identity.setDomain(domain);
-
-        return identity;
+        return DefaultIdentity.withDomainAndUserId(domain, userId);
     }
 
     public static no.kantega.security.api.role.Role createApiRole(String aksessRoleId) {
         String roleId = "";
         String domain = "";
-        if (aksessRoleId.indexOf(":") == -1) {
+        if (!aksessRoleId.contains(":")) {
             roleId = aksessRoleId;
             domain = null;
         } else {
