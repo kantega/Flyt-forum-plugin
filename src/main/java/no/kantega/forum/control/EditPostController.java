@@ -211,8 +211,7 @@ public class EditPostController extends AbstractForumFormController {
             } else {
                 // Create thread for content
                 ContentManagementService cms = new ContentManagementService(request);
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(contentId);
+                ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
                 Content content = cms.getContent(cid);
                 if (content != null && content.getForumId() > 0) {
                     Forum f = dao.getForum(content.getForumId());
