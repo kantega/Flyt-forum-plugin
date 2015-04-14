@@ -11,11 +11,11 @@
     <artifactId>forum-plugin</artifactId>
     <packaging>jar</packaging>
     <name>Flyt Forum Plugin</name>
-    <version>1.27-SNAPSHOT</version>
+    <version>1.27</version>
 
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-forum-plugin.git</connection>
-        <tag>HEAD</tag>
+        <tag>forum-plugin-1.27</tag>
     </scm>
 
 
