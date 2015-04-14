@@ -192,7 +192,7 @@
     </build>
 
     <properties>
-        <aksess.version>7.8.20-SNAPSHOT</aksess.version>
+        <aksess.version>7.8.20</aksess.version>
         <securityapi.version>2.9</securityapi.version>
         <springframework.version>3.2.6.RELEASE</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
