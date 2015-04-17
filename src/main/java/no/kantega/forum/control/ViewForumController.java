@@ -1,6 +1,7 @@
 package no.kantega.forum.control;
 
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
@@ -61,7 +62,7 @@ public class ViewForumController extends AbstractForumViewController {
             }
 
 
-            List threads = dao.getThreadsInForum(f.getId(), startIndex, maxThreads);
+            List threads = dao.getThreadsInForum(f.getId(), startIndex, maxThreads, ThreadSortOrder.SORT_BY_DEFAULT);
             for (int i = 0; i < threads.size(); i++) {
                 ForumThread thread = (ForumThread) threads.get(i);
                 List last = dao.getLastPostsInThread(thread.getId(), 1);

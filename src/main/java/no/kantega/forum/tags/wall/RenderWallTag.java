@@ -4,6 +4,7 @@ package no.kantega.forum.tags.wall;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.forum.control.EditPostController;
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.publishing.common.Aksess;
@@ -35,6 +36,7 @@ public class RenderWallTag extends SimpleTagSupport {
 	private String userId = null;
 	private int threadId = -1;
 	private String shareBoxPlaceholder = null;
+    private ThreadSortOrder sortBy = ThreadSortOrder.SORT_BY_DEFAULT;
 
     private static ForumDao forumDao;
 
@@ -76,6 +78,11 @@ public class RenderWallTag extends SimpleTagSupport {
                 ForumCategory category = forumDao.getForumCategory(forumCategoryId);
                 request.setAttribute("forumCategory", category);
 			}
+
+            if(sortBy == ThreadSortOrder.SORT_BY_DATE_CREATED){
+                forumListPostsUrl.append("&sortBy=").append(sortBy.getId());
+            }
+
 
 
 			request.setAttribute("showSharebox", sharebox);
@@ -182,4 +189,8 @@ public class RenderWallTag extends SimpleTagSupport {
 	public void setShareboxPlaceholder(String shareBoxPlaceholder) {
 		this.shareBoxPlaceholder = shareBoxPlaceholder;
 	}
+
+    public void setSortBy(ThreadSortOrder sortBy) {
+        this.sortBy = sortBy;
+    }
 }
