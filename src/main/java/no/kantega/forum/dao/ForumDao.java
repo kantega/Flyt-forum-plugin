@@ -1,7 +1,7 @@
 package no.kantega.forum.dao;
 
 import no.kantega.forum.model.*;
-import no.kantega.forum.util.ThreadByDateComparator;
+
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
