@@ -4,6 +4,7 @@ package no.kantega.forum.control.ajax;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.publishing.api.rating.Rating;
@@ -40,6 +41,7 @@ public class ListThreadsController implements Controller {
             forumIds =  StringHelper.getInts(forumId, ",");
         }
 
+
 		int hiddenForumId = param.getInt("hiddenForumId");
 		int forumCategoryId = param.getInt("forumCategoryId");
 		int offset = param.getInt("offset");
@@ -59,19 +61,24 @@ public class ListThreadsController implements Controller {
 
 		model.put("hiddenForumId", hiddenForumId);
 
-		List<String> objectIds = new ArrayList<>();
+        ThreadSortOrder order = ThreadSortOrder.fromIntOrDefault(param.getInt("sortBy"));
+
+        List<String> objectIds = new ArrayList<>();
 		Map<Long, List<Rating>> ratingsForPosts = new HashMap<>();
 		List<ForumThread> threads = new ArrayList<>();
 
 		if (threadId != -1) {
 			threads.add(forumDao.getPopulatedThread(threadId));
 		} else if (userId != null && userId.trim().length() > 0) {
-			threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumIds[0], forumCategoryId);
+			threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumIds[0], forumCategoryId, order);
 		} else if (forumCategoryId != -1) {
-			threads = forumDao.getThreadsInForumCategory(forumCategoryId, offset, numberOfPostsToShow + 1);
+			threads = forumDao.getThreadsInForumCategory(forumCategoryId, offset, numberOfPostsToShow + 1, order);
 		} else {
-			threads = forumDao.getThreadsInForums(forumIds, offset, numberOfPostsToShow + 1);
+			threads = forumDao.getThreadsInForums(forumIds, offset, numberOfPostsToShow + 1, order);
 		}
+
+
+
 
 		if (numberOfPostsToShow > 0 && threads.size() > numberOfPostsToShow) {
 			model.put("hasMorePosts", Boolean.TRUE);

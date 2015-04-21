@@ -295,6 +295,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>sortBy</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.forum.dao.ThreadSortOrder</type>
+        </attribute>
     </tag>
 
     <tag>

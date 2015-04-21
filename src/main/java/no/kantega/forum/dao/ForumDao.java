@@ -1,6 +1,7 @@
 package no.kantega.forum.dao;
 
 import no.kantega.forum.model.*;
+import no.kantega.forum.util.ThreadByDateComparator;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -154,8 +155,8 @@ public class ForumDao {
         });
     }
 
-    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int firstResult, final int forumId, final int forumCategoryId) {
-        return template.execute(new HibernateCallback<List<ForumThread>>() {
+    public List<ForumThread> getThreadsWhereUserHasPosted(final String userId, final int maxResults, final int firstResult, final int forumId, final int forumCategoryId, ThreadSortOrder order) {
+         List<ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
             public List<ForumThread> doInHibernate(Session session) throws HibernateException {
 
                 Query queryThreadIds = session.createSQLQuery("select distinct(threadId) from forum_post where owner=?");
@@ -205,6 +206,9 @@ public class ForumDao {
                 return threads;
             }
         });
+
+
+        return ret;
     }
 
     public List<Post> getLastPosts(final int n) {
@@ -485,9 +489,9 @@ public class ForumDao {
         return (children.size() > 0);
     }
 
-    public List<ForumThread> getThreadsInForums(final int forumIds[], final int firstResult, final int maxResult) {
+    public List<ForumThread> getThreadsInForums(final int forumIds[], final int firstResult, final int maxResult, final ThreadSortOrder order) {
 
-        return template.execute(new HibernateCallback<List<ForumThread>>() {
+         List <ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
             public List<ForumThread> doInHibernate(Session session) throws HibernateException {
                 StringBuilder query = new StringBuilder();
                 query.append("from ForumThread t where t.approved = ? and t.forum.id in (");
@@ -495,7 +499,13 @@ public class ForumDao {
                     if (i > 0) query.append(",");
                     query.append("?");
                 }
-                query.append(") order by t.lastPostDate desc");
+                if (order.equals(ThreadSortOrder.SORT_BY_DEFAULT)){
+                    query.append(") order by t.lastPostDate desc");
+                }
+                else if(order.equals(ThreadSortOrder.SORT_BY_DATE_CREATED)){
+                    query.append(") order by t.createdDate desc");
+                }
+
 
                 Query q  = session.createQuery(query.toString());
                 q.setString(0, "Y");
@@ -515,17 +525,30 @@ public class ForumDao {
                 return threads;
             }
         });
+
+        return ret;
+
     }
 
-    public List<ForumThread> getThreadsInForum(final long forumId, final int firstResult, final int maxResult) {
-        return getThreadsInForums(new int[] {(int) forumId}, firstResult, maxResult);
+    public List<ForumThread> getThreadsInForum(final long forumId, final int firstResult, final int maxResult, ThreadSortOrder order) {
+        return getThreadsInForums(new int[] {(int) forumId}, firstResult, maxResult, order);
     }
 
-    public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult) {
+    public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult, final ThreadSortOrder order) {
 
-        return template.execute(new HibernateCallback<List<ForumThread>>() {
+        List <ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
             public List<ForumThread> doInHibernate(Session session) throws HibernateException {
-                Query q  = session.createQuery("from ForumThread t where t.forum.forumCategory.id = ? and t.approved = ? order by t.lastPostDate desc");
+
+                StringBuilder query = new StringBuilder();
+                query.append("from ForumThread t where t.forum.forumCategory.id = ? and t.approved = ? ");
+                if(order.equals(ThreadSortOrder.SORT_BY_DEFAULT)){
+                    query.append("order by t.lastPostDate desc");
+                }
+                else if(order.equals(ThreadSortOrder.SORT_BY_DATE_CREATED)){
+                    query.append("order by t.createdDate desc");
+                }
+
+                Query q  = session.createQuery(query.toString());
                 q.setLong(0, forumCategoryId);
                 q.setString(1, "Y");
                 q.setFirstResult(firstResult);
@@ -538,6 +561,11 @@ public class ForumDao {
                 return threads;
             }
         });
+
+
+
+        return ret;
+
     }
 
 

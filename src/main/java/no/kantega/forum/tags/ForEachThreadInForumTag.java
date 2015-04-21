@@ -1,6 +1,7 @@
 package no.kantega.forum.tags;
 
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.util.ForumPostReadStatus;
@@ -52,7 +53,7 @@ public class ForEachThreadInForumTag extends LoopTagSupport {
                 unreadPosts = dao.getPostsAfterDate(lastVisit);
             }
 
-            List<ForumThread> threads = dao.getThreadsInForum(forumId, startIndex, maxThreads);
+            List<ForumThread> threads = dao.getThreadsInForum(forumId, startIndex, maxThreads, ThreadSortOrder.SORT_BY_DEFAULT);
             for (ForumThread thread : threads) {
                 List last = dao.getLastPostsInThread(thread.getId(), 1);
                 if (last.size() > 0) {
