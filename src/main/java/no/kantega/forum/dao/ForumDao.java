@@ -2,7 +2,6 @@ package no.kantega.forum.dao;
 
 import no.kantega.forum.model.*;
 import no.kantega.forum.util.ThreadByDateComparator;
-import no.kantega.publishing.common.data.SortOrder;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -490,7 +489,7 @@ public class ForumDao {
         return (children.size() > 0);
     }
 
-    public List<ForumThread> getThreadsInForums(final int forumIds[], final int firstResult, final int maxResult, ThreadSortOrder order) {
+    public List<ForumThread> getThreadsInForums(final int forumIds[], final int firstResult, final int maxResult, final ThreadSortOrder order) {
 
          List <ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
             public List<ForumThread> doInHibernate(Session session) throws HibernateException {
@@ -500,7 +499,13 @@ public class ForumDao {
                     if (i > 0) query.append(",");
                     query.append("?");
                 }
-                query.append(") order by t.lastPostDate desc");
+                if (order.equals(ThreadSortOrder.SORT_BY_DEFAULT)){
+                    query.append(") order by t.lastPostDate desc");
+                }
+                else if(order.equals(ThreadSortOrder.SORT_BY_DATE_CREATED)){
+                    query.append(") order by t.createdDate desc");
+                }
+
 
                 Query q  = session.createQuery(query.toString());
                 q.setString(0, "Y");
@@ -517,17 +522,9 @@ public class ForumDao {
                 for (ForumThread thread : threads) {
                     Hibernate.initialize(thread.getPosts());
                 }
-
-
-
                 return threads;
             }
         });
-
-        if(order == ThreadSortOrder.SORT_BY_DATE_CREATED){
-            ThreadByDateComparator threadComparator = new ThreadByDateComparator();
-            java.util.Collections.sort(ret, threadComparator);
-        }
 
         return ret;
 
@@ -537,11 +534,21 @@ public class ForumDao {
         return getThreadsInForums(new int[] {(int) forumId}, firstResult, maxResult, order);
     }
 
-    public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult, ThreadSortOrder order) {
+    public List<ForumThread> getThreadsInForumCategory(final long forumCategoryId, final int firstResult, final int maxResult, final ThreadSortOrder order) {
 
         List <ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
             public List<ForumThread> doInHibernate(Session session) throws HibernateException {
-                Query q  = session.createQuery("from ForumThread t where t.forum.forumCategory.id = ? and t.approved = ? order by t.lastPostDate desc");
+
+                StringBuilder query = new StringBuilder();
+                query.append("from ForumThread t where t.forum.forumCategory.id = ? and t.approved = ? ");
+                if(order.equals(ThreadSortOrder.SORT_BY_DEFAULT)){
+                    query.append("order by t.lastPostDate desc");
+                }
+                else if(order.equals(ThreadSortOrder.SORT_BY_DATE_CREATED)){
+                    query.append("order by t.createdDate desc");
+                }
+
+                Query q  = session.createQuery(query.toString());
                 q.setLong(0, forumCategoryId);
                 q.setString(1, "Y");
                 q.setFirstResult(firstResult);
@@ -555,10 +562,7 @@ public class ForumDao {
             }
         });
 
-        if(order == ThreadSortOrder.SORT_BY_DATE_CREATED){
-            ThreadByDateComparator threadComparator = new ThreadByDateComparator();
-            java.util.Collections.sort(ret, threadComparator);
-        }
+
 
         return ret;
 

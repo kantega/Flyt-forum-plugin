@@ -61,11 +61,8 @@ public class ListThreadsController implements Controller {
 
 		model.put("hiddenForumId", hiddenForumId);
 
-        ThreadSortOrder order = ThreadSortOrder.SORT_BY_DEFAULT;
-        int sort = param.getInt("sortBy");
-        if(sort == ThreadSortOrder.SORT_BY_DATE_CREATED.getId()){
-            order = ThreadSortOrder.SORT_BY_DATE_CREATED;
-        }
+        ThreadSortOrder order = ThreadSortOrder.fromIntOrDefault(param.getInt("sortBy"));
+
         List<String> objectIds = new ArrayList<>();
 		Map<Long, List<Rating>> ratingsForPosts = new HashMap<>();
 		List<ForumThread> threads = new ArrayList<>();

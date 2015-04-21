@@ -14,4 +14,11 @@ public enum ThreadSortOrder {
         this.id=id;
     }
 
+    public static ThreadSortOrder fromIntOrDefault(int id){
+        for (ThreadSortOrder o : ThreadSortOrder.values()) {
+            if(o.getId()==id) return o;
+        }
+        return SORT_BY_DEFAULT;
+    }
+
 }
