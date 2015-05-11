@@ -5,10 +5,12 @@ import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.forum.ForumProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class DefaultForumProvider implements ForumProvider {
+    @Autowired
     private ForumDao dao;
 
     public String getForumsAsOptionList(long selected) {
