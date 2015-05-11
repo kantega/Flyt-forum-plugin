@@ -115,7 +115,10 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     padding: 0 13px;
     height: 32px;
     line-height: 29px;
-    .border-radius(5px);
+    -o-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 
 .oa-forum-image-button:hover {
@@ -131,22 +134,22 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 }
 
 @-webkit-keyframes fadeIn {
-    0% {opacity: 0;}    
+    0% {opacity: 0;}
     100% {opacity: 1;}
 }
 
 @-moz-keyframes fadeIn {
-    0% {opacity: 0;}    
+    0% {opacity: 0;}
     100% {opacity: 1;}
 }
 
 @-o-keyframes fadeIn {
-    0% {opacity: 0;}    
+    0% {opacity: 0;}
     100% {opacity: 1;}
 }
 
 @keyframes fadeIn {
-    0% {opacity: 0;}    
+    0% {opacity: 0;}
     100% {opacity: 1;}
 }
 
