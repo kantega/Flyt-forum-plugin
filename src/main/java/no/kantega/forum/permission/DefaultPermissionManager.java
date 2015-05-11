@@ -4,8 +4,10 @@ import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.modules.user.GroupResolver;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.Set;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
-public class  DefaultPermissionManager implements PermissionManager {
+public class DefaultPermissionManager implements PermissionManager {
 
     private final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
 
@@ -22,12 +24,15 @@ public class  DefaultPermissionManager implements PermissionManager {
 
     private List<String> administratorGroups;
 
-    public boolean hasPermission(String user, long permission, Object object) {
+    @Autowired
+    private SystemConfiguration configuration;
+
+    public boolean hasPermission(String user, Permission permission, Object object) {
         return getPermission(user, permission, object);
     }
 
 
-    private boolean getPermission(String user, long permission, Object object) {
+    private boolean getPermission(String user, Permission permission, Object object) {
         boolean isAdmin = false;
 
         // Sjekk om bruker er forumadministrator
@@ -42,21 +47,21 @@ public class  DefaultPermissionManager implements PermissionManager {
 
         if (object != null) {
             // Tillatt posting kun for registrerte brukere og i �pne forum
-            if (permission == Permissions.POST_IN_THREAD && object instanceof ForumThread) {
+            if (permission == Permission.POST_IN_THREAD && object instanceof ForumThread) {
                 ForumThread thread = (ForumThread)object;
                 if (thread.getForum().isAnonymousPostAllowed() || user != null) {
                     return true;
                 }
             }
 
-            if((permission == Permissions.ADD_THREAD || permission == Permissions.EDIT_THREAD) && object instanceof Forum) {
+            if((permission == Permission.ADD_THREAD || permission == Permission.EDIT_THREAD) && object instanceof Forum) {
                 Forum forum = (Forum)object;
                 if (forum.isAnonymousPostAllowed() || user != null) {
                     return true;
                 }
             }
 
-            if (permission == Permissions.VIEW) {
+            if (permission == Permission.VIEW) {
                 Forum forum = null;
                 if (object instanceof Forum) {
                     forum = (Forum)object;
@@ -102,25 +107,25 @@ public class  DefaultPermissionManager implements PermissionManager {
                 }
 
                 // Folk kan redigere egne poster
-                if(permission == Permissions.EDIT_POST) {
+                if(permission == Permission.EDIT_POST) {
                     return user != null && user.equals(post.getOwner());
                 }
 
                 // Folk kan slette egne innlegg hvis config tillater dette. Default vil dette ikke være tillatt.
                 boolean canDeleteOwnPost = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownpost", false);
-                if(permission == Permissions.DELETE_POST && canDeleteOwnPost) {
+                if(permission == Permission.DELETE_POST && canDeleteOwnPost) {
                     return user != null && user.equals(post.getOwner());
                 }
 
                 // Bare moderatorer kan moderere
-                if(permission == Permissions.APPROVE_POST) {
+                if(permission == Permission.APPROVE_POST) {
                     if (!forum.isApprovalRequired()) {
                         return true;
                     }
                 }
 
                 // Legge inn vedlegg
-                if (user != null && permission == Permissions.ATTACH_FILE) {
+                if (user != null && permission == Permission.ATTACH_FILE) {
                     ForumThread thread = post.getThread();
                     return thread.getForum().isAttachmentsAllowed();
                 }
@@ -128,8 +133,8 @@ public class  DefaultPermissionManager implements PermissionManager {
 
                 // Folk kan slette egne threads hvis config tillater dette. Default vil dette ikke være tillatt.
                 ForumThread thread = (ForumThread)object;
-                boolean canDeleteOwnThread = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownthread", false);
-                if(permission == Permissions.DELETE_THREAD && canDeleteOwnThread) {
+                boolean canDeleteOwnThread = configuration.getBoolean("forum.permission.user.deleteownthread", false);
+                if(permission == Permission.DELETE_THREAD && canDeleteOwnThread) {
                     return user != null && user.equals(thread.getOwner());
                 }
 

@@ -3,8 +3,8 @@ package no.kantega.forum.control;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionObject;
-import no.kantega.forum.permission.Permissions;
 import no.kantega.modules.user.GroupManager;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.publishing.common.service.TopicMapService;
@@ -19,13 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 20.des.2005
- * Time: 09:38:56
- * To change this template use File | Settings | File Templates.
- */
 public class EditForumController extends AbstractForumFormController {
     private ForumDao dao;
     private UserProfileManager userProfileManager;
@@ -41,7 +34,7 @@ public class EditForumController extends AbstractForumFormController {
             category = dao.getForumCategory(Long.parseLong(categoryId));
         }
 
-        return new PermissionObject[] {new PermissionObject(Permissions.EDIT_FORUM, category)};
+        return new PermissionObject[] {new PermissionObject(Permission.EDIT_FORUM, category)};
 
     }
 

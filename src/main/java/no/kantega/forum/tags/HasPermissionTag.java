@@ -1,55 +1,44 @@
 package no.kantega.forum.tags;
 
+import no.kantega.forum.permission.Permission;
+import no.kantega.forum.permission.PermissionManager;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
-import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
-import no.kantega.forum.permission.PermissionManager;
-import no.kantega.forum.permission.Permissions;
-import no.kantega.modules.user.UserResolver;
-import no.kantega.modules.user.ResolvedUser;
-
-/**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: Sep 29, 2005
- * Time: 1:17:23 PM
- * To change this template use File | Settings | File Templates.
- */
 public class HasPermissionTag extends ConditionalTagSupport {
+    private final Logger log = LoggerFactory.getLogger(HasPermissionTag.class);
     private Object object;
     private String user;
-    private String permission;
+    private Permission permission;
 
     public boolean condition() {
 
         try {
             WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-            PermissionManager manager = (PermissionManager) context.getBean("forumPermissionManager");
-            Class c = Permissions.class;
-            Field field = c.getField(permission);
-            long permissionId = field.getLong(null);
+            PermissionManager manager = context.getBean("forumPermissionManager", PermissionManager.class);
 
             if (user == null) {
-                UserResolver userResolver = (UserResolver) context.getBean("userResolver");
+                UserResolver userResolver = context.getBean("userResolver", UserResolver.class);
                 ResolvedUser resolvedUser = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest());
                 if(resolvedUser != null) {
                     user = resolvedUser.getUsername();
                 }
             }
 
-            boolean hasP = manager.hasPermission(user, permissionId, object);
+            boolean hasP = manager.hasPermission(user, permission, object);
             user = null;
 
             return hasP;
-
-
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Woops", e);
             throw new RuntimeException(e);
         } finally {
             user = null;
@@ -63,7 +52,7 @@ public class HasPermissionTag extends ConditionalTagSupport {
         this.user = user;
     }
 
-    public void setPermission(String permission) {
+    public void setPermission(Permission permission) {
         this.permission = permission;
     }
 

@@ -1,30 +1,21 @@
 package no.kantega.forum.control;
 
+import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.permission.Permission;
+import no.kantega.forum.permission.PermissionObject;
+import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.validation.BindException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.forum.model.ForumCategory;
-import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.permission.PermissionObject;
-import no.kantega.forum.permission.Permissions;
-
 import java.util.Date;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 13.des.2005
- * Time: 13:51:46
- * To change this template use File | Settings | File Templates.
- */
 public class EditCategoryController extends AbstractForumFormController {
     private ForumDao dao;
 
-    private PermissionObject[] permissions = new PermissionObject[] {new PermissionObject(Permissions.EDIT_CATEGORY, null)};
+    private PermissionObject[] permissions = new PermissionObject[] {new PermissionObject(Permission.EDIT_CATEGORY, null)};
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         return permissions;

@@ -2,8 +2,8 @@ package no.kantega.forum.control;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionObject;
-import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.service.ForumPostService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -12,20 +12,13 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 21.des.2005
- * Time: 12:38:26
- * To change this template use File | Settings | File Templates.
- */
 public class DeletePostController extends AbstractForumFormController {
     private ForumDao dao;
     private ForumPostService service;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("postId"));
-        return permissions(Permissions.EDIT_POST, dao.getPost(id));
+        return permissions(Permission.EDIT_POST, dao.getPost(id));
     }
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

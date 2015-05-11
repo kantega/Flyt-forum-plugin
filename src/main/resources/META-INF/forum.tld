@@ -22,6 +22,7 @@
             <name>permission</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.forum.permission.Permission</type>
         </attribute>
         <attribute>
             <name>user</name>

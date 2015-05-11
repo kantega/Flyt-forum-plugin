@@ -10,8 +10,8 @@ import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionObject;
-import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.service.ForumPostService;
 import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.ResolvedUser;
@@ -82,15 +82,15 @@ public class EditPostController extends AbstractForumFormController {
 
         if(threadId != -1) {
             ForumThread thread = dao.getThread(threadId);
-            return permissions(Permissions.POST_IN_THREAD, thread);
+            return permissions(Permission.POST_IN_THREAD, thread);
         } else if (forumId != -1) {
             Forum forum = dao.getForum(forumId);
-            return permissions(Permissions.ADD_THREAD, forum);
+            return permissions(Permission.ADD_THREAD, forum);
         } else if (contentId != -1) {
             long tId = dao.getThreadAboutContent(contentId);
             if (tId > 0) {
                 ForumThread thread = dao.getThread(tId);
-                return permissions(Permissions.POST_IN_THREAD, thread);
+                return permissions(Permission.POST_IN_THREAD, thread);
             } else {
                 ContentManagementService cms = new ContentManagementService(request);
                 ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
@@ -98,7 +98,7 @@ public class EditPostController extends AbstractForumFormController {
                     Content content = cms.getContent(cid);
                     if (content != null && content.getForumId() > 0) {
                         Forum f = dao.getForum(content.getForumId());
-                        return permissions(Permissions.ADD_THREAD, f);
+                        return permissions(Permission.ADD_THREAD, f);
                     }
 
                 } catch (NotAuthorizedException e) {
@@ -109,7 +109,7 @@ public class EditPostController extends AbstractForumFormController {
         } else {
             long id = Long.parseLong(request.getParameter("postId"));
             Post p = dao.getPost(id);
-            return permissions(Permissions.EDIT_POST, p);
+            return permissions(Permission.EDIT_POST, p);
         }
     }
 
@@ -159,7 +159,7 @@ public class EditPostController extends AbstractForumFormController {
             if (user != null) {
                 username = user.getUsername();
             }
-            boolean approved = permissionManager.hasPermission(username, Permissions.APPROVE_POST, p);
+            boolean approved = permissionManager.hasPermission(username, Permission.APPROVE_POST, p);
             p.setApproved(approved);
 
 
@@ -283,7 +283,7 @@ public class EditPostController extends AbstractForumFormController {
             username = user.getUsername();
         }
 
-        boolean approved = permissionManager.hasPermission(username, Permissions.APPROVE_POST, p);
+        boolean approved = permissionManager.hasPermission(username, Permission.APPROVE_POST, p);
         // Lag ny tr�d f�rst hvis det er aktuelt
 
         boolean isNewThread = p.getThread().isNew();

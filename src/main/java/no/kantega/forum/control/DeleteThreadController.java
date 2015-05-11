@@ -3,8 +3,9 @@ package no.kantega.forum.control;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.listeners.ForumListener;
 import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionObject;
-import no.kantega.forum.permission.Permissions;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -15,19 +16,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 21.des.2005
- * Time: 12:38:26
- * To change this template use File | Settings | File Templates.
- */
 public class DeleteThreadController extends AbstractForumFormController {
     private ForumDao dao;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("threadId"));
-        return permissions(Permissions.EDIT_THREAD, dao.getThread(id));
+        return permissions(Permission.EDIT_THREAD, dao.getThread(id));
     }
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -38,12 +32,12 @@ public class DeleteThreadController extends AbstractForumFormController {
         long id = Long.parseLong(request.getParameter("threadId"));
         ForumThread t = dao.getThread(id);
         long forumId = t.getForum().getId();
-        Set posts = new HashSet(dao.getLastPostsInThread(t.getId(), 10000));
+        Set<Post> posts = new HashSet<>(dao.getLastPostsInThread(t.getId(), 10000));
         t.setPosts(posts);
 
-        Map ratingNotificationListenerBeans =  BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), ForumListener.class);
+        Map<String, ForumListener> ratingNotificationListenerBeans =  BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), ForumListener.class);
         if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
-            for (ForumListener notificationListener : (Iterable<? extends ForumListener>) ratingNotificationListenerBeans.values()) {
+            for (ForumListener notificationListener : ratingNotificationListenerBeans.values()) {
                 notificationListener.beforeThreadDelete(t);
             }
         }

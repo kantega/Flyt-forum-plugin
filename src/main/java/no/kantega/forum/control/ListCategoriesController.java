@@ -4,8 +4,8 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.util.ForumPostReadStatus;
 import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.ResolvedUser;
@@ -17,13 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 08.des.2005
- * Time: 15:06:25
- * To change this template use File | Settings | File Templates.
- */
 public class ListCategoriesController implements Controller {
     private ForumDao dao;
     private UserResolver userResolver;
@@ -51,7 +44,7 @@ public class ListCategoriesController implements Controller {
             unreadPosts = dao.getPostsAfterDate(lastVisit);
         }
 
-	    boolean canCreateForum = permissionManager.hasPermission(username, Permissions.EDIT_FORUM, null);
+	    boolean canCreateForum = permissionManager.hasPermission(username, Permission.EDIT_FORUM, null);
 
 
 		Iterator<ForumCategory> catsIterator = cats.iterator();
@@ -61,7 +54,7 @@ public class ListCategoriesController implements Controller {
 			Iterator<Forum> forumIterator = cat.getForums().iterator();
 			while (forumIterator.hasNext()){
 				Forum forum = forumIterator.next();
-				if (!permissionManager.hasPermission(username, Permissions.VIEW, forum)) {
+				if (!permissionManager.hasPermission(username, Permission.VIEW, forum)) {
 					// User does not have access to forum
 					forumIterator.remove();
 				} else {
@@ -83,7 +76,7 @@ public class ListCategoriesController implements Controller {
             List<Post> myUnapprovedPosts = new ArrayList<>();
             List<Post> allUnapprovedPosts = dao.getUnapprovedPosts();
             for (Post post : allUnapprovedPosts) {
-                if (permissionManager.hasPermission(username, Permissions.APPROVE_POST, post)) {
+                if (permissionManager.hasPermission(username, Permission.APPROVE_POST, post)) {
                     myUnapprovedPosts.add(post);
                 }
             }

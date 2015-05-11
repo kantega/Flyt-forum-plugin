@@ -1,18 +1,13 @@
 package no.kantega.forum.control;
 
-import no.kantega.modules.user.UserResolver;
-import no.kantega.modules.user.ResolvedUser;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.forum.permission.Permissions;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Mar 21, 2007
- * Time: 12:17:12 PM
- */
 public abstract class AbstractForumViewController implements Controller {
     protected UserResolver userResolver;
     protected PermissionManager permissionManager;
@@ -23,7 +18,7 @@ public abstract class AbstractForumViewController implements Controller {
         if (user != null) {
             username = user.getUsername();
         }
-        return permissionManager.hasPermission(username, Permissions.VIEW, object);
+        return permissionManager.hasPermission(username, Permission.VIEW, object);
     }
 
     public void setUserResolver(UserResolver userResolver) {

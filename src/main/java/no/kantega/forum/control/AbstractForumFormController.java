@@ -1,18 +1,17 @@
 package no.kantega.forum.control;
 
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import no.kantega.forum.permission.Permission;
+import no.kantega.forum.permission.PermissionManager;
+import no.kantega.forum.permission.PermissionObject;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import no.kantega.forum.permission.PermissionManager;
-import no.kantega.forum.permission.PermissionObject;
-import no.kantega.modules.user.UserResolver;
-import no.kantega.modules.user.ResolvedUser;
-
 public class AbstractForumFormController extends SimpleFormController {
-
 
     protected PermissionManager permissionManager;
     protected UserResolver userResolver;
@@ -49,11 +48,11 @@ public class AbstractForumFormController extends SimpleFormController {
         return true;
     }
 
-    public PermissionObject[] permissions(long permission) {
+    public PermissionObject[] permissions(Permission permission) {
         return permissions(permission, null);
     }
 
-    public PermissionObject[] permissions(long permission, Object object) {
+    public PermissionObject[] permissions(Permission permission, Object object) {
         return new PermissionObject[] {new PermissionObject(permission, object)};
     }
 

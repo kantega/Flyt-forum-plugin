@@ -2,8 +2,8 @@ package no.kantega.forum.tags;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Forum;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.forum.permission.Permissions;
 import no.kantega.forum.util.ForumComparator;
 import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.ResolvedUser;
@@ -64,7 +64,7 @@ public class ForEachForumTag extends LoopTagSupport {
             List<Forum> allForums = dao.getForums();
             for (Forum forum : allForums) {
                 // Legg til alle forum eller kun de som er relevante
-                if (permissionsManager.hasPermission(username, Permissions.VIEW, forum)) {
+                if (permissionsManager.hasPermission(username, Permission.VIEW, forum)) {
                     // Legg til forum dersom relevance ikke angitt eller forumet har en eller flere roller som gjør det relevant for brukeren
                     if (!relevance.contains("group") || (forum.getGroups() != null && !forum.getGroups().isEmpty())) {
                         result.put(String.valueOf(forum.getId()), forum);
@@ -76,7 +76,7 @@ public class ForEachForumTag extends LoopTagSupport {
                 // Legg til forum som brukeren har postet i
                 List<Forum> userForums = dao.getForumsWithUserPostings(username);
                 for (Forum forum : userForums) {
-                    if (permissionsManager.hasPermission(username, Permissions.VIEW, forum)) {
+                    if (permissionsManager.hasPermission(username, Permission.VIEW, forum)) {
                         // Legg til kun i resultat dersom det ikke ligger der
                         if (result.get(Long.toString(forum.getId())) == null) {
                             result.put(Long.toString(forum.getId()), forum);
