@@ -3,12 +3,9 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<kantega:section id="tittel">
-</kantega:section>
-
 <kantega:section id="innhold">
     <script type="text/javascript" src="../aksess/js/autocomplete.js"></script>
-    <div class="contentmain">
+    <div class="contentmain edit-forum">
         <form method="POST" name="myform">
             <spring:bind path="forum.id">
                 <input type="hidden" name="id" value="<c:out value="${status.value}"/>">

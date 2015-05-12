@@ -6,9 +6,6 @@
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<kantega:section id="tittel">
-</kantega:section>
-
 <kantega:section id="innhold">
     <form action="deletepost" name="deletepost" method="POST">
         <input type="hidden" name="postId">

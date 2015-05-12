@@ -9,7 +9,7 @@
 </kantega:section>
 
 <kantega:section id="innhold">
-<div class="contentmain">
+<div class="contentmain edit-category">
 <form method="POST">
                 <spring:bind path="category.id">
                     <input type="hidden" name="categoryId" value="<c:out value="${status.value}"/>">

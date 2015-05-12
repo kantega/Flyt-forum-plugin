@@ -6,11 +6,8 @@
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<kantega:section id="tittel">
-</kantega:section>
-
 <kantega:section id="innhold">
-    <div class="contentmain">
+    <div class="contentmain edit-post">
         <script type="text/javascript">
             function submitForm() {
                 var form = document.editpost;

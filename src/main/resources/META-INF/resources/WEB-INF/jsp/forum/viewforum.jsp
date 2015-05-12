@@ -4,13 +4,10 @@
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<kantega:section id="tittel">
-</kantega:section>
-
 <kantega:section id="innhold">
     <div class="forum-heading">
         <a href=""><spring:message code="forum.title"/></a> >
-        
+
         <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
     </div>
 
@@ -57,7 +54,7 @@
             </table>
 
         </c:if>
-        <table width="100%" cellpadding="0" cellspacing="0">
+        <table width="100%" cellpadding="0" cellspacing="0" class="forum-table">
             <tr class="forum-labelRow">
                 <td valign="top">&nbsp;</td>
                 <td>

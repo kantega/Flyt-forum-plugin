@@ -19,7 +19,7 @@
     </c:if>
 
     <kantega:section id="cats">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" class="forum-table">
 
             <c:forEach items="${categories}" var="category">
                 <c:set var="hascats" value="true"/>

@@ -29,7 +29,7 @@
 
     <c:set var="hasforums" value="false"/>
     <kantega:section id="forums">
-        <table border="0" cellspacing="0" cellpadding="0" width="100%">
+        <table border="0" cellspacing="0" cellpadding="0" width="100%" class="forum-table">
             <tr class="forum-labelRow">
                 <td>
                     <spring:message code="forum.name"/>

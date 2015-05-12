@@ -4,9 +4,6 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<kantega:section id="tittel">
-</kantega:section>
-
 <kantega:section id="innhold">
     <script type="text/javascript">
         function submitForm() {
@@ -20,7 +17,7 @@
         }
     </script>
     <noscript><h1><spring:message code="post.noscript"/></h1></noscript>
-    <div class="contentmain">
+    <div class="contentmain edit-thread">
         <form method="POST" name="editthread">
             <input type="hidden" name="nospam" value="">
             <spring:bind path="thread.id">

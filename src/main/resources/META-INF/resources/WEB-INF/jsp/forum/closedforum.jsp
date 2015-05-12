@@ -3,9 +3,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ page contentType="text/html;charset=utf-8" %>
 
-<kantega:section id="tittel">
-</kantega:section>
-
 <kantega:section id="innhold">
     <div class="forum-heading">
         <spring:message code="closedforum.title"/>
