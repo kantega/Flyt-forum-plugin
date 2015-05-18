@@ -8,11 +8,11 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags" %>
 
 
-<c:set var="userProfileUrl"><aksess:geturl/><aksess:getconfig key="forum.userprofileurl"/>?userId=${post.owner}</c:set>
-<c:set var="userImageUrl"><aksess:geturl/><aksess:getconfig key="forum.userimageurl"/>?userId=${post.owner}&amp;width=40</c:set>
+<c:set var="userProfileUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userprofileurl"/>?userId=${post.owner}</c:set>
+<c:set var="userImageUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userimageurl"/>?userId=${post.owner}&amp;width=40</c:set>
 
-<c:set var="userProfileBaseUrl"><aksess:geturl/><aksess:getconfig key="forum.userprofileurl"/>?userId=</c:set>
-<c:set var="userImageBaseUrl"><aksess:geturl/><aksess:getconfig key="forum.userimageurl"/>?width=40&amp;userId=</c:set>
+<c:set var="userProfileBaseUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userprofileurl"/>?userId=</c:set>
+<c:set var="userImageBaseUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userimageurl"/>?width=40&amp;userId=</c:set>
 
 <div class="oa-forum-post oa-forum-mediablock <c:if test="${hiddenPost && !expandThreads }">oa-forum-hidden</c:if>">
     <div class="oa-forum-mediablockImage oa-forum-avatar">
@@ -31,12 +31,12 @@
             <c:when test="${postsStatus.index == 0}">
                 <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
                 <forum:haspermisson permission="DELETE_THREAD" object="${post.thread}">
-                    <a class="oa-forum-deleteThread" href="<aksess:geturl/>/forum/deletethread?threadId=<c:out value="${post.thread.id}"/>"></a>
+                    <a class="oa-forum-deleteThread" href="${pageContext.request.contextPath}/forum/deletethread?threadId=<c:out value="${post.thread.id}"/>"></a>
                 </forum:haspermisson>
             </c:when>
             <c:otherwise>
                 <forum:haspermisson permission="DELETE_POST" object="${post}">
-                    <a class="oa-forum-deletePost" href="<aksess:geturl/>/forum/deletepost?postId=<c:out value="${post.id}"/>"></a>
+                    <a class="oa-forum-deletePost" href="${pageContext.request.contextPath}/forum/deletepost?postId=<c:out value="${post.id}"/>"></a>
                 </forum:haspermisson>
             </c:otherwise>
         </c:choose>
@@ -103,17 +103,17 @@
 
             <c:choose>
                 <c:when test="${hasLikedPost}">
-                    <a href="<aksess:geturl url="/forum/like"/>" class="oa-forum-like-link" data-objectid="${post.id}" data-likes="true"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></a>
+                    <a href="${pageContext.request.contextPath}/forum/like" class="oa-forum-like-link" data-objectid="${post.id}" data-likes="true"><kantega:label key="forum.wall.likes" bundle="forum" locale="${forumLocale}"/></a>
                 </c:when>
                 <c:otherwise>
-                    <a href="<aksess:geturl url="/forum/like"/>" class="oa-forum-like-link" data-objectid="${post.id}" data-likes="false"><kantega:label key="forum.wall.like" bundle="forum" locale="${forumLocale}"/></a>
+                    <a href="${pageContext.request.contextPath}/forum/like" class="oa-forum-like-link" data-objectid="${post.id}" data-likes="false"><kantega:label key="forum.wall.like" bundle="forum" locale="${forumLocale}"/></a>
                 </c:otherwise>
             </c:choose>
             <c:remove var="hasLikedPost"/>
 
             <span class="oa-forum-divider">&nbsp;&sdot;&nbsp;</span>
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
-            
+
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
                 <aksess:link queryparams="forumId=${post.thread.forum.id}"><span class="oa-forum-category">i ${post.thread.forum.name}</span></aksess:link>
             </c:if>

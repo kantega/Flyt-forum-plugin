@@ -65,7 +65,7 @@ $(document).ready(function(){
         var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
 
     <aksess:getuser name="user" />
-        $.get("<aksess:geturl url="/forum/numberOfNewThreads"/>" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
+        $.get("${pageContext.request.contextPath}/forum/numberOfNewThreads" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
             if (data.numberOfNewThreads > 0) {
                 if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert --%>
                 newpostsContainer.html('');
