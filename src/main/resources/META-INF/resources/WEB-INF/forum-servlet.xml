@@ -179,8 +179,6 @@
         <property name="forumDao" ref="forumDao"/>
     </bean>
 
-    <bean id="userResolver" class="no.kantega.modules.user.AksessUserResolver"/>
-
     <bean name="userProfileManager" class="no.kantega.modules.user.CachedUserProfileManager">
         <property name="realManager" ref="realUserManager"/>
     </bean>

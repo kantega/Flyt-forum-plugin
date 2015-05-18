@@ -70,5 +70,6 @@
     <bean id="groupResolver" class="no.kantega.modules.user.AksessGroupResolver"/>
 
     <bean id="groupManager" class="no.kantega.modules.user.AksessGroupManager"/>
+    <bean id="userResolver" class="no.kantega.modules.user.AksessUserResolver"/>
 
 </beans>
