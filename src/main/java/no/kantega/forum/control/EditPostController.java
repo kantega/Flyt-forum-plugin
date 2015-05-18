@@ -1,7 +1,6 @@
 package no.kantega.forum.control;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.media.ImageInfo;
@@ -18,6 +17,7 @@ import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserProfile;
 import no.kantega.modules.user.UserProfileManager;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
@@ -73,6 +73,7 @@ public class EditPostController extends AbstractForumFormController {
     private String imageFormat = "jpg";
     private ForumPostService service;
     private ImageEditor imageEditor;
+    private SystemConfiguration configuration;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         RequestParameters param = new RequestParameters(request);
@@ -120,12 +121,13 @@ public class EditPostController extends AbstractForumFormController {
         RequestParameters param = new RequestParameters(request);
         long postId = param.getLong("postId");
 
+        Locale locale = RequestContextUtils.getLocale(request);
         if (postId != -1) {
             Post post = dao.getPopulatedPost(postId);
             if (post != null) {
                 String body = post.getBody();
-                String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
-                String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
+                String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], locale);
+                String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], locale);
 
                 body = startBlockquote.matcher(body).replaceAll(qStart);
                 body = endBlockquote.matcher(body).replaceAll(qEnd);
@@ -164,9 +166,9 @@ public class EditPostController extends AbstractForumFormController {
 
 
             if (replyId != -1) {
-                String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
-                String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
-                String qWrote = getApplicationContext().getMessage("post.quote.wrote", new Object[0], RequestContextUtils.getLocale(request));
+                String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], locale);
+                String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], locale);
+                String qWrote = getApplicationContext().getMessage("post.quote.wrote", new Object[0], locale);
 
                 p.setReplyToId(replyId);
                 Post origPost = dao.getPost(replyId);
@@ -304,8 +306,7 @@ public class EditPostController extends AbstractForumFormController {
         if (!p.isApproved() && moderator != null && moderator.length() > 0) {
             UserProfile profile = userProfileManager.getUserProfile(moderator);
             if (profile != null && profile.getEmail() != null && profile.getEmail().contains("@")) {
-                Configuration config = Aksess.getConfiguration();
-                String from = config.getString("mail.from");
+                String from = configuration.getString("mail.from");
                 if (from == null) {
                     throw new ConfigurationException("mail.from");
                 }
@@ -436,7 +437,7 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     private boolean isAnAllowedFileExtension(String originalFilename) {
-        String[] allowedFileExtensions = Aksess.getConfiguration().getString(allowedFileextensionKey, defaultAllowedFileextensionsString).split(",");
+        String[] allowedFileExtensions = configuration.getString(allowedFileextensionKey, defaultAllowedFileextensionsString).split(",");
         for (String fileExtension : allowedFileExtensions) {
             if (originalFilename.endsWith(fileExtension)) {
                 return true;

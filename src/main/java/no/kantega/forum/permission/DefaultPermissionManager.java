@@ -5,7 +5,6 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.modules.user.GroupResolver;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
-import no.kantega.publishing.common.Aksess;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -112,7 +111,7 @@ public class DefaultPermissionManager implements PermissionManager {
                 }
 
                 // Folk kan slette egne innlegg hvis config tillater dette. Default vil dette ikke være tillatt.
-                boolean canDeleteOwnPost = Aksess.getConfiguration().getBoolean("forum.permission.user.deleteownpost", false);
+                boolean canDeleteOwnPost = configuration.getBoolean("forum.permission.user.deleteownpost", false);
                 if(permission == Permission.DELETE_POST && canDeleteOwnPost) {
                     return user != null && user.equals(post.getOwner());
                 }

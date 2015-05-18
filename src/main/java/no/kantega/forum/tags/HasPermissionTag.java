@@ -7,10 +7,11 @@ import no.kantega.modules.user.UserResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class HasPermissionTag extends ConditionalTagSupport {
@@ -19,14 +20,13 @@ public class HasPermissionTag extends ConditionalTagSupport {
     private String user;
     private Permission permission;
 
+    private PermissionManager manager;
+    private UserResolver userResolver;
+
     public boolean condition() {
 
         try {
-            WebApplicationContext context = (WebApplicationContext) pageContext.getRequest().getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE);
-            PermissionManager manager = context.getBean("forumPermissionManager", PermissionManager.class);
-
             if (user == null) {
-                UserResolver userResolver = context.getBean("userResolver", UserResolver.class);
                 ResolvedUser resolvedUser = userResolver.resolveUser((HttpServletRequest) pageContext.getRequest());
                 if(resolvedUser != null) {
                     user = resolvedUser.getUsername();
@@ -47,6 +47,13 @@ public class HasPermissionTag extends ConditionalTagSupport {
         }
     }
 
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        manager = context.getBean("forumPermissionManager", PermissionManager.class);
+        userResolver = context.getBean("userResolver", UserResolver.class);
+    }
 
     public void setUser(String user) {
         this.user = user;

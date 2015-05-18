@@ -6,17 +6,18 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.util.ForumPostReadStatus;
 import no.kantega.forum.util.ForumUtil;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 
 public class ForEachThreadInForumTag extends LoopTagSupport {
@@ -26,7 +27,14 @@ public class ForEachThreadInForumTag extends LoopTagSupport {
     private int maxThreads = Integer.MAX_VALUE;
     private Iterator i = null;
     private Logger log = Logger.getLogger(ForEachThreadInForumTag.class);
+    private ForumDao dao;
 
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        dao = context.getBean(ForumDao.class);
+    }
 
     protected Object next() throws JspTagException {
         return i == null ? null : i.next();
@@ -39,10 +47,6 @@ public class ForEachThreadInForumTag extends LoopTagSupport {
     protected void prepare() throws JspTagException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
         HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
-
-        Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
-        if(daos.size() > 0) {
-            ForumDao dao = (ForumDao) daos.values().iterator().next();
 
             // Hent nye poster siden siste besøk
             ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
@@ -65,7 +69,6 @@ public class ForEachThreadInForumTag extends LoopTagSupport {
 
             }
             i = threads.iterator();
-        }
 
     }
 

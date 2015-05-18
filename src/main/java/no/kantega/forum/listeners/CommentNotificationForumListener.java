@@ -5,19 +5,16 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.publishing.api.comments.CommentNotification;
 import no.kantega.publishing.api.comments.CommentNotificationListener;
-import no.kantega.publishing.spring.RootContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
+import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: sjukva
- * Date: 6/6/11
- * Time: 8:15 AM
- * To change this template use File | Settings | File Templates.
- */
+
 public class CommentNotificationForumListener implements ForumListener{
     private ForumDao dao;
+
+    @Autowired
+    private List<CommentNotificationListener> commentNotificationListeners;
 
     public CommentNotificationForumListener(ForumDao dao) {
         this.dao = dao;
@@ -63,9 +60,8 @@ public class CommentNotificationForumListener implements ForumListener{
 
     private void runOnListeners(NotificationCallback callback, Post post) {
         CommentNotification notification = getCommentNotification(post);
-        Map commentNotificationListenerBeans = RootContext.getInstance().getBeansOfType(no.kantega.publishing.api.comments.CommentNotificationListener.class);
-        if (commentNotificationListenerBeans != null && commentNotificationListenerBeans.size() > 0)  {
-            for (no.kantega.publishing.api.comments.CommentNotificationListener notificationListener : (Iterable<? extends no.kantega.publishing.api.comments.CommentNotificationListener>) commentNotificationListenerBeans.values()) {
+        if (commentNotificationListeners != null && commentNotificationListeners.size() > 0)  {
+            for (no.kantega.publishing.api.comments.CommentNotificationListener notificationListener : commentNotificationListeners) {
                 callback.doWithNotification(notificationListener, notification);
             }
         }
@@ -74,7 +70,7 @@ public class CommentNotificationForumListener implements ForumListener{
     private CommentNotification getCommentNotification(Post post) {
         CommentNotification notification = new CommentNotification();
         notification.setContext("content");
-        notification.setObjectId("" + post.getThread().getContentId());
+        notification.setObjectId(String.valueOf(post.getThread().getContentId()));
         ForumThread thread = dao.getThread(post.getThread().getId());
         notification.setNumberOfComments(thread.getNumPosts());
         notification.setCommentId(String.valueOf(post.getId()));
@@ -85,10 +81,10 @@ public class CommentNotificationForumListener implements ForumListener{
     }
 
     private interface NotificationCallback {
-        public void doWithNotification(CommentNotificationListener listener, CommentNotification notification);
+        void doWithNotification(CommentNotificationListener listener, CommentNotification notification);
     }
 
     private boolean isAksessContent(Post post) {
-          return post.getThread().getContentId() > 0;
-      }
+        return post.getThread().getContentId() > 0;
+    }
 }

@@ -1,18 +1,19 @@
 package no.kantega.forum.tags;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.spring.RootContext;
-
 import no.kantega.forum.dao.ForumDao;
+import no.kantega.forum.model.Post;
 import no.kantega.forum.util.ForumThreader;
+import no.kantega.publishing.common.data.Content;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.util.Map;
-import java.util.List;
-import java.util.Collections;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class GetPostsTag extends SimpleTagSupport {
 
@@ -25,12 +26,18 @@ public class GetPostsTag extends SimpleTagSupport {
 
     private String var = "post";
 
-    public void doTag() throws JspException, IOException {
-        Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
-        if(daos.size() > 0) {
-            ForumDao dao = (ForumDao) daos.values().iterator().next();
+    private ForumDao dao;
 
-            List l = Collections.EMPTY_LIST;
+    @Override
+    public void setJspContext(JspContext pc) {
+        super.setJspContext(pc);
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(((PageContext) pc).getServletContext());
+        dao = context.getBean(ForumDao.class);
+    }
+
+
+    public void doTag() throws JspException, IOException {
+            List<Post> l = Collections.EMPTY_LIST;
             if (contentPage != null) {
                 threadId = dao.getThreadAboutContent(contentPage.getId());
                 if (threadId != -1) {
@@ -45,7 +52,6 @@ public class GetPostsTag extends SimpleTagSupport {
             }
 
             ((PageContext)getJspContext()).getRequest().setAttribute(var, l);
-        }
 
         topicMapId = -1;
         topicIds = null;
@@ -58,9 +64,8 @@ public class GetPostsTag extends SimpleTagSupport {
 
     }
 
-    private List getPostsInThread(ForumDao dao) {
-        List l;
-        l = dao.getPostsInThread(threadId, 0, maxPosts, false);
+    private List<Post> getPostsInThread(ForumDao dao) {
+        List<Post> l = dao.getPostsInThread(threadId, 0, maxPosts, false);
         if (threaded) {
             ForumThreader ft = new ForumThreader();
             l = ft.organizePostsInThread(l);

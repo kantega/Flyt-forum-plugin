@@ -31,12 +31,12 @@
             <c:when test="${postsStatus.index == 0}">
                 <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
                 <forum:haspermisson permission="DELETE_THREAD" object="${post.thread}">
-                    <a class="oa-forum-deleteThread" href="${pageContext.request.contextPath}/forum/deletethread?threadId=<c:out value="${post.thread.id}"/>"></a>
+                    <a class="oa-forum-deleteThread" href="${pageContext.request.contextPath}/forum/deletethread?threadId=${post.thread.id}"></a>
                 </forum:haspermisson>
             </c:when>
             <c:otherwise>
                 <forum:haspermisson permission="DELETE_POST" object="${post}">
-                    <a class="oa-forum-deletePost" href="${pageContext.request.contextPath}/forum/deletepost?postId=<c:out value="${post.id}"/>"></a>
+                    <a class="oa-forum-deletePost" href="${pageContext.request.contextPath}/forum/deletepost?postId=${post.id}"></a>
                 </forum:haspermisson>
             </c:otherwise>
         </c:choose>
@@ -59,12 +59,12 @@
                 <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
                     <c:choose>
                         <c:when test="${attachment.image}">
-                            <a class="oa-forum-attachment" data-download="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" target="_blank">
+                            <a class="oa-forum-attachment" data-download="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}&width=100&height=100" target="_blank">
                                 <img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0">
                             </a>
                         </c:when>
                         <c:otherwise>
-                            <a class="oa-forum-attachment-doc" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>" target="_blank">
+                            <a class="oa-forum-attachment-doc" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}" target="_blank">
                                 <c:out value="${attachment.fileName}"/>
                             </a>
                         </c:otherwise>
@@ -81,17 +81,6 @@
 
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
-
-            <c:choose>
-                <c:when test="${fn:length(postRatings) > 3}">
-                    <%-- Example: Brian Griffin, Stewie Griffin and <a href="" class="oa-forum-likes-popoup-link">4 more</a> likes this --%>
-
-                </c:when>
-                <c:otherwise>
-                    <%-- Example: Brian Griffin, Stewie Griffin, Joe Swanson and Quagmire likes this --%>
-
-                </c:otherwise>
-            </c:choose>
 
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
                 <aksess:getuser userid="${rating.userid}" name="user" />

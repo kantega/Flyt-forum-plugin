@@ -1,26 +1,19 @@
 package no.kantega.forum.tags;
 
+import no.kantega.forum.dao.ForumDao;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.spring.RootContext;
-
-import no.kantega.forum.dao.ForumDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
-/**
- * User: ANDSKA
- * Date: 11.jul.2006
- * Time: 13:12:30
- * Copyright: Kantega
- */
 public class NewPostLinkTag extends BodyTagSupport {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -30,6 +23,8 @@ public class NewPostLinkTag extends BodyTagSupport {
     private String accessKey = null;
     private String tabIndex  = null;
     private String target = null;
+
+    private ForumDao dao;
 
     public void setStyle(String cssStyle) {
         this.cssStyle = cssStyle;
@@ -53,7 +48,7 @@ public class NewPostLinkTag extends BodyTagSupport {
     }
 
     public int doStartTag()  throws JspException {
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspException {
@@ -61,22 +56,16 @@ public class NewPostLinkTag extends BodyTagSupport {
             String body = bodyContent.getString();
             JspWriter out = bodyContent.getEnclosingWriter();
 
-            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-
             String url = null;
 
-            Map daos = RootContext.getInstance().getBeansOfType(ForumDao.class);
-            if(daos.size() > 0) {
-                ForumDao dao = (ForumDao) daos.values().iterator().next();
-                Content content = (Content)request.getAttribute("aksess_this");
-                if (content != null && content.getId() > 0) {
-                    long threadId = dao.getThreadAboutContent(content.getId());
-                    long forumId = content.getForumId();
-                    if (threadId > 0) {
-                        url = Aksess.getContextPath() + "/forum/editpost?threadId=" + threadId;
-                    } else if (forumId > 0) {
-                        url = Aksess.getContextPath() + "/forum/startthread?forumId=" + forumId + "&contentId=" + content.getId();
-                    }
+            Content content = (Content)pageContext.getRequest().getAttribute("aksess_this");
+            if (content != null && content.getId() > 0) {
+                long threadId = dao.getThreadAboutContent(content.getId());
+                long forumId = content.getForumId();
+                if (threadId > 0) {
+                    url = Aksess.getContextPath() + "/forum/editpost?threadId=" + threadId;
+                } else if (forumId > 0) {
+                    url = Aksess.getContextPath() + "/forum/startthread?forumId=" + forumId + "&contentId=" + content.getId();
                 }
             }
 
@@ -105,10 +94,10 @@ public class NewPostLinkTag extends BodyTagSupport {
                 out.print(">");
 
                 if(body != null) {
-                   out.print(body);
+                    out.print(body);
                 }
 
-                out.print("</a>\n");
+                out.print("</a>");
             }
 
         } catch (Exception e) {
@@ -119,7 +108,12 @@ public class NewPostLinkTag extends BodyTagSupport {
         }
 
         return SKIP_BODY;
-     }
+    }
 
-
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        dao = context.getBean(ForumDao.class);
+    }
 }
