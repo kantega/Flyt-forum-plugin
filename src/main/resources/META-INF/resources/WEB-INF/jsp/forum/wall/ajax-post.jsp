@@ -168,9 +168,6 @@
                                 <c:when test="${status.index > 0 && !status.last}">
                                     ,
                                 </c:when>
-                                <c:otherwise>
-
-                                </c:otherwise>
                             </c:choose>
                             <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
                         </c:forEach>

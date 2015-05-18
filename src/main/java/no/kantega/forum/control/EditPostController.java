@@ -259,11 +259,6 @@ public class EditPostController extends AbstractForumFormController {
         String forumId = request.getParameter("forumId");
         String contentId = request.getParameter("contentId");
 
-        if ((forumId != null || contentId != null) && post.getThread().getForum().getTopicMapId() != null) {
-            // This is a new thread, allow user to add topics
-            referenceData.put("addTopics", Boolean.TRUE);
-        }
-
         return referenceData;
     }
 

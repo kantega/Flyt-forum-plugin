@@ -110,27 +110,7 @@
                         </spring:bind>
                     </td>
                 </tr>
-                <c:if test="${not empty topicMaps}">
-                    <tr class="forum-labelRow">
-                        <td valign="top"><spring:message code="forum.topicmaps"/></td>
-                    </tr>
-                    <tr class="forum-tableRow0">
-                        <td>
-                            <spring:bind path="forum.topicMapId">
-                            <select name="${status.expression}">
-                                <c:forEach items="${topicMaps}" var="topicMap">
-                                    <option value="${topicMap.id}" <c:if test="${topicMap.id == forum.topicMapId}">selected</c:if>>
-                                        <c:out value="${topicMap.name}"/>
-                                    </option>
-                                </c:forEach>
-                            </select>
-                            </spring:bind>
-                            <p>
-                                <spring:message code="forum.topicmaps.text"/>
-                            </p>
-                        </td>
-                    </tr>
-                </c:if>
+
                 <tr class="forum-tableRow1">
                     <td align="left">
                         <input type="submit" class="submit" value="<spring:message code="forum.edit.save"/>">

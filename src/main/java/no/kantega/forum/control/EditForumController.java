@@ -7,7 +7,6 @@ import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionObject;
 import no.kantega.modules.user.GroupManager;
 import no.kantega.modules.user.UserProfileManager;
-import no.kantega.publishing.common.service.TopicMapService;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,9 +48,6 @@ public class EditForumController extends AbstractForumFormController {
         }
 
         referenceData.put("groups", groupManager.getAllGroups());
-
-        TopicMapService topicService = new TopicMapService(request);
-        referenceData.put("topicMaps", topicService.getTopicMaps());
 
         return referenceData;
     }

@@ -3,13 +3,7 @@ package no.kantega.forum.model;
 import java.util.Date;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 02.des.2005
- * Time: 11:09:00
- * To change this template use File | Settings | File Templates.
- */
+
 public class Forum {
     private long id;
     private ForumCategory forumCategory;
@@ -26,7 +20,6 @@ public class Forum {
     private String moderator;
     private Set<String> groups;
     private int numNewPosts = 0;
-    private Integer topicMapId = null;
 
     public Set<String> getGroups() {
         return groups;
@@ -146,14 +139,6 @@ public class Forum {
 
     public void setNumNewPosts(int newPosts) {
         this.numNewPosts = newPosts;
-    }
-
-    public Integer getTopicMapId() {
-        return topicMapId;
-    }
-
-    public void setTopicMapId(Integer topicMapId) {
-        this.topicMapId = topicMapId;
     }
 
     public boolean isClosed() {
