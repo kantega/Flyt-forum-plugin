@@ -17,8 +17,6 @@ import java.util.List;
 
 public class GetPostsTag extends SimpleTagSupport {
 
-    private int topicMapId = -1;
-    private List<String> topicIds = null;
     private Content contentPage;
     private int maxPosts = -1;
     private long threadId = -1;
@@ -37,7 +35,7 @@ public class GetPostsTag extends SimpleTagSupport {
 
 
     public void doTag() throws JspException, IOException {
-            List<Post> l = Collections.EMPTY_LIST;
+            List<Post> l = Collections.emptyList();
             if (contentPage != null) {
                 threadId = dao.getThreadAboutContent(contentPage.getId());
                 if (threadId != -1) {
@@ -45,16 +43,12 @@ public class GetPostsTag extends SimpleTagSupport {
                 }
             } else if (threadId != -1) {
                 l = getPostsInThread(dao);
-            } else if (topicMapId > 0) {
-                l = dao.getPostsWithTopicIds(topicMapId, topicIds, maxPosts);
             } else {
                 l = dao.getLastPosts(maxPosts);
             }
 
             ((PageContext)getJspContext()).getRequest().setAttribute(var, l);
 
-        topicMapId = -1;
-        topicIds = null;
         maxPosts = -1;
         contentPage = null;
         threadId = -1;
@@ -71,15 +65,6 @@ public class GetPostsTag extends SimpleTagSupport {
             l = ft.organizePostsInThread(l);
         }
         return l;
-    }
-
-
-    public void setTopicMapId(int topicMapId) {
-        this.topicMapId = topicMapId;
-    }
-
-    public void setTopicIds(List<String> topicIds) {
-        this.topicIds = topicIds;
     }
 
     public void setMaxPosts(int maxPosts) {

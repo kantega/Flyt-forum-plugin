@@ -143,11 +143,7 @@ public class ForumThread {
     }
 
     public boolean isContentComment() {
-        if (getContentId() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return getContentId() > 0;
     }
 
 }

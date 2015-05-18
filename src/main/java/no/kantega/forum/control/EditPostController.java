@@ -30,7 +30,6 @@ import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -222,7 +221,6 @@ public class EditPostController extends AbstractForumFormController {
                     if (user != null) {
                         t.setOwner(user.getUsername());
                     }
-                    t.setTopics(getTopicsFromRequest(request));
                     t.setContentId(contentId);
 
                     t.setForum(f);
@@ -237,31 +235,10 @@ public class EditPostController extends AbstractForumFormController {
             if (user != null) {
                 t.setOwner(user.getUsername());
             }
-            t.setTopics(getTopicsFromRequest(request));
             t.setForum(f);
         }
         return t;
     }
-
-    private Set getTopicsFromRequest(HttpServletRequest request) {
-        Set<String> topics = new TreeSet<>();
-        String[] topicArray = request.getParameterValues("topic");
-        if (topicArray != null ){
-            Collections.addAll(topics, topicArray);
-        }
-        return topics;
-    }
-
-    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception{
-        Map<String, Object> referenceData = new HashMap<>();
-
-        Post post = (Post)command;
-        String forumId = request.getParameter("forumId");
-        String contentId = request.getParameter("contentId");
-
-        return referenceData;
-    }
-
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
 
@@ -416,19 +393,6 @@ public class EditPostController extends AbstractForumFormController {
             }
         }
         post.setAttachments(attachments);
-
-
-        // Cannot bind directly, save topics on thread
-        String[] topicIds = request.getParameterValues("topics");
-        if (topicIds != null && topicIds.length > 0) {
-            Set<String> topics = new HashSet<>();
-            for (String t : topicIds) {
-                if (t != null && t.length() > 0) {
-                    topics.add(t);
-                }
-            }
-            post.getThread().setTopics(topics);
-        }
     }
 
     private boolean isAnAllowedFileExtension(String originalFilename) {

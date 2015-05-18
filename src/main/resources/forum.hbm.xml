@@ -43,7 +43,6 @@
             <key column="forumId"/>
             <element column="groupId" type="string"/>
         </set>
-        <property name="topicMapId"/>
     </class>
 
     <class name="ForumThread" table="forum_thread">
@@ -63,10 +62,7 @@
             <one-to-many class="Post"/>
         </set>
         <property name="approved" not-null="false" type="yes_no"/>
-        <set name="topics" table="forum_thread_topics" lazy="false" batch-size="40">
-            <key column="threadId"/>
-            <element column="topicId" type="string"/>
-        </set>
+
         <property name="lastPostDate" type="timestamp"/>
     </class>
 

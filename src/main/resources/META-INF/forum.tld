@@ -196,16 +196,7 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <name>topicMapId</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>topicIds</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
+
         <attribute>
             <name>contentPage</name>
             <required>false</required>
