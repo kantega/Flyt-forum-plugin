@@ -1,12 +1,7 @@
 package no.kantega.forum.model;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 02.des.2005
- * Time: 12:05:15
- * To change this template use File | Settings | File Templates.
- */
+import java.sql.Date;
+
 public class Attachment {
     private long id;
     private Post post;
@@ -14,6 +9,7 @@ public class Attachment {
     private long fileSize;
     private String mimeType;
     private byte[] data;
+    private Date created;
 
     public long getFileSize() {
         return fileSize;
@@ -67,5 +63,13 @@ public class Attachment {
 
     public void setPost(Post post) {
         this.post = post;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 }

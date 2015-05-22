@@ -1,60 +1,97 @@
 package no.kantega.forum.control;
 
-import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.util.HttpHelper;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
+import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.multimedia.ImageEditor;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.publishing.common.data.enums.Cropping;
+import no.kantega.publishing.common.exception.InvalidImageFormatException;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class ViewAttachmentController extends AbstractController {
+@Controller
+public class ViewAttachmentController {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private ForumDao dao;
-    private ImageEditor imageEditor;
+    private MultimediaRequestHandlerHelper multimediaRequestHandlerHelper;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(value = "/viewattachment", method = RequestMethod.GET)
+    public void handleAttachment(@RequestParam int attachmentId,
+                                 @RequestParam(required = false, defaultValue = "-1") int width,
+                                 @RequestParam(required = false, defaultValue = "-1") int height,
+                                 @RequestParam(required = false, defaultValue = "CONTAIN") Cropping cropping,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
         ServletOutputStream out = response.getOutputStream();
 
-        RequestParameters param = new RequestParameters(request);
-        int id = param.getInt("attachmentId");
-        int width = param.getInt("width");
-        int height = param.getInt("height");
+        Attachment attachment = dao.getAttachment((long)attachmentId);
+        if (attachment != null) {
+            String mimeType = StringUtils.defaultIfEmpty(attachment.getMimeType(), "application/octet-stream");
 
-        if (id != -1) {
-            Attachment attachment = dao.getAttachment((long)id);
-            if (attachment != null) {
-                String mimeType = attachment.getMimeType();
-                if (mimeType == null || mimeType.length() == 0) {
-                    mimeType = "application/octet-stream";
-                }
+            response.setContentType(mimeType);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
 
-                response.setContentType(mimeType);
-                response.addHeader("Content-Disposition", "attachment; filename=\"" + attachment.getFileName() + "\"");
-
-                if (mimeType.contains("image") && (width != -1 || height != -1)) {
-                    Multimedia source = new Multimedia();
-                    source.setData(attachment.getData());
-                    source.setFilename(attachment.getFileName());
-                    Multimedia multimedia = imageEditor.resizeMultimedia(source, width, height);
-                    out.write(multimedia.getData());
-                } else {
-                    out.write(attachment.getData());
-                }
+            Multimedia source = new Multimedia();
+            source.setData(attachment.getData());
+            source.setFilename(attachment.getFileName());
+            source.setId(attachmentId);
+            if (mimeType.contains("image")) {
+                handleImage(width, height, cropping, request, response, out, mimeType, source);
+            } else {
+                out.write(attachment.getData());
             }
+        } else {
+            log.error("Attachment with id {} not found", attachmentId);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
-        return null;
+    }
+
+    private void handleImage(int width, int height, Cropping cropping, HttpServletRequest request,
+                             HttpServletResponse response, ServletOutputStream out, String mimeType, Multimedia source) throws IOException, InvalidImageFormatException {
+        ImageResizeParameters resizeParams = new ImageResizeParameters(height, width, cropping);
+        String key = getCacheKey(source.getId(), source, resizeParams);
+        if (HttpHelper.isInClientCache(request, response, key, source.getLastModified())) {
+            response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+
+        } else if (shouldResize(mimeType, resizeParams)) {
+            byte[] bytes = multimediaRequestHandlerHelper.getResizedMultimediaBytes(key, source, resizeParams);
+
+            response.setHeader("Content-Disposition", "attachment; filename=" + "\"thumb" + key + "\"");
+            response.setHeader("Content-Length", String.valueOf(bytes.length));
+
+            out.write(bytes);
+
+        } else {
+            response.setHeader("Content-Length", String.valueOf(source.getData().length));
+            out.write(source.getData());
+        }
+    }
+
+    private String getCacheKey(int mmId, Multimedia mm, ImageResizeParameters resizeParams) {
+        return Integer.toString(mmId) + "-" + resizeParams.toString() + "-" + mm.getLastModified().getTime();
+    }
+
+    private boolean shouldResize(String mimetype, ImageResizeParameters resizeParams) {
+        return (mimetype.contains("image") && !mimetype.contains("svg")) && !resizeParams.skipResize();
     }
 
     public void setDao(ForumDao dao) {
         this.dao = dao;
     }
 
-    public void setImageEditor(ImageEditor imageEditor) {
-        this.imageEditor = imageEditor;
+    public void setMultimediaRequestHandlerHelper(MultimediaRequestHandlerHelper multimediaRequestHandlerHelper) {
+        this.multimediaRequestHandlerHelper = multimediaRequestHandlerHelper;
     }
 }

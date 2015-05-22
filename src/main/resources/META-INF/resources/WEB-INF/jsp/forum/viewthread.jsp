@@ -38,8 +38,8 @@
     </div>
 
     <p><c:out value="${thread.description}"/></p>
-    <kantega:section id="controls">
 
+    <div style="padding-bottom: 10px;text-align:right;">
         <forum:haspermisson permission="POST_IN_THREAD" object="${thread}">
             <a href="editpost?threadId=<c:out value="${thread.id}"/>"><spring:message code="post.add"/></a>
         </forum:haspermisson>
@@ -49,11 +49,6 @@
         <forum:haspermisson permission="DELETE_THREAD" object="${thread}">
             | <a href="javascript:deleteThread(<c:out value="${thread.id}"/>)"><spring:message code="thread.delete"/> </a>
         </forum:haspermisson>
-
-    </kantega:section>
-
-    <div style="padding-bottom: 10px;text-align:right;">
-        <kantega:getsection id="controls"/>
     </div>
     <div>
 
@@ -144,10 +139,6 @@
 
         </c:otherwise>
     </c:choose>
-
-    <div style="padding-top: 10px;text-align:right;">
-        <kantega:getsection id="controls"/>
-    </div>
 </kantega:section>
 
 <%@ include file="include/design/design.jsf"%>

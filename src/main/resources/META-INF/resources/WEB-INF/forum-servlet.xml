@@ -146,7 +146,11 @@
 
     <bean id="viewAttachmentController" class="no.kantega.forum.control.ViewAttachmentController">
         <property name="dao" ref="forumDao"/>
-        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="multimediaRequestHandlerHelper">
+            <bean class="no.kantega.forum.control.MultimediaRequestHandlerHelper">
+                <property name="imageEditor" ref="aksessImageEditor"/>
+            </bean>
+        </property>
     </bean>
 
     <bean id="ajaxUserSearchController" class="no.kantega.forum.control.AjaxUserSearchController">

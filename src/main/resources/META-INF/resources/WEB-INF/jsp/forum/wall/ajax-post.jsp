@@ -104,7 +104,7 @@
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
 
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
-                <aksess:link queryparams="forumId=${post.thread.forum.id}"><span class="oa-forum-category">i ${post.thread.forum.name}</span></aksess:link>
+                i <a href="?forumId=${post.thread.forum.id}"><span class="oa-forum-category">${post.thread.forum.name}</span></a>
             </c:if>
 
         </div>
