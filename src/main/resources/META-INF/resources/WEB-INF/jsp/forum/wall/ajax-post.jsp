@@ -51,6 +51,9 @@
                         <%-- Only the first post in a thread might need a preview. Comments in a thread is displayed as normal --%>
                         <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
                     </c:when>
+                    <c:when test="${trunctateAllPostsInThread}">
+                        <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
+                    </c:when>
                     <c:otherwise>
                        <form:escapeBody javaScriptEscape="false" htmlEscape="false">${post.body}</form:escapeBody>
                     </c:otherwise>
