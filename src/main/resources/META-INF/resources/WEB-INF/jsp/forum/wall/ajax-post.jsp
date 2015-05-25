@@ -14,6 +14,9 @@
 <c:set var="userProfileBaseUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userprofileurl"/>?userId=</c:set>
 <c:set var="userImageBaseUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userimageurl"/>?width=40&amp;userId=</c:set>
 
+<c:set var="imagePreviewWidth"><aksess:getconfig key="forum.imagePreviewWidth" default="100"/></c:set>
+<c:set var="imagePreviewHeight"><aksess:getconfig key="forum.imagePreviewHeight" default="100"/></c:set>
+
 <div class="oa-forum-post oa-forum-mediablock <c:if test="${hiddenPost && !expandThreads }">oa-forum-hidden</c:if>">
     <div class="oa-forum-mediablockImage oa-forum-avatar">
         <a href="${userProfileUrl}">
@@ -21,7 +24,7 @@
         </a>
     </div>
     <div class="oa-forum-mediablockContent">
-        <a name="oa-forum-post_<c:out value="${post.id}"/>"></a>
+        <a name="oa-forum-post_${post.id}"></a>
 
         <div class="oa-forum-username">
             <a href="${userProfileUrl}"><c:out value="${post.author}"/>:</a>
@@ -59,8 +62,8 @@
                 <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
                     <c:choose>
                         <c:when test="${attachment.image}">
-                            <a class="oa-forum-attachment" data-download="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}&width=100&height=100" target="_blank">
-                                <img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=<c:out value="${attachment.id}"/>&width=100&height=100" alt="<c:out value="${attachment.fileName}"/>" border="0">
+                            <a class="oa-forum-attachment" data-download="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}" href="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}&width=${imagePreviewWidth}&height=${imagePreviewHeight}" target="_blank">
+                                <img src="${pageContext.request.contextPath}/forum/viewattachment?attachmentId=${attachment.id}&width=${imagePreviewWidth}&height=${imagePreviewHeight}" alt="<c:out value="${attachment.fileName}"/>" border="0">
                             </a>
                         </c:when>
                         <c:otherwise>
