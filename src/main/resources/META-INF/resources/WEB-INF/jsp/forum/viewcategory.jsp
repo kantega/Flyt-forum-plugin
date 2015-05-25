@@ -24,7 +24,7 @@
 
     <div class="forum-heading">
         <a href=""><spring:message code="forum.title"/></a> >
-        <a href="viewcategory?categoryId=<c:out value="${forumcategory.id}"/>"><c:out value="${forumcategory.name}"/></a>
+        <a href="viewcategory?categoryId=${forumcategory.id}"><c:out value="${forumcategory.name}"/></a>
     </div>
 
     <c:set var="hasforums" value="false"/>
@@ -43,7 +43,7 @@
                     <c:set var="hasforums" value="true"/>
                     <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
                         <td>
-                            <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
+                            <a href="viewforum?forumId=${forum.id}"><c:out value="${forum.name}"/></a>
                         </td>
                         <td>
                             <c:out value="${forum.numThreads}"/>
@@ -68,9 +68,9 @@
     <forum:haspermisson permission="EDIT_CATEGORY" object="${forumcategory}">
 
         <div style="padding-top: 10px">
-            <a href="editforum?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forum.addforum"/></a>
-            |<a href="editcategory?categoryId=<c:out value="${forumcategory.id}"/>"><spring:message code="forumcategory.edit"/></a>
-            | <a href="javascript:deleteCategory(<c:out value="${forumcategory.id}"/>)"><spring:message code="forumcategory.delete"/></a>
+            <a href="editforum?categoryId=${forumcategory.id}"><spring:message code="forum.addforum"/></a>
+            |<a href="editcategory?categoryId=${forumcategory.id}"><spring:message code="forumcategory.edit"/></a>
+            | <a href="javascript:deleteCategory(${forumcategory.id})"><spring:message code="forumcategory.delete"/></a>
         </div>
     </forum:haspermisson>
 </kantega:section>

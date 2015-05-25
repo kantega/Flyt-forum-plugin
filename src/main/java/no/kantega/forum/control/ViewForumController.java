@@ -13,25 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 20.des.2005
- * Time: 10:01:58
- * To change this template use File | Settings | File Templates.
- */
 public class ViewForumController extends AbstractForumViewController {
     private ForumDao dao;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         long id = Long.parseLong(request.getParameter("forumId"));
         Forum f = dao.getForum(id);
 
         if (!isAuthorized(request, f)) {
             return new ModelAndView("closedforum", null);
         } else {
-
             int maxThreads = 50;
 
             int startIndex = 0;
@@ -40,15 +32,15 @@ public class ViewForumController extends AbstractForumViewController {
             } catch (Exception e) {
 
             }
-            List startIndexes = new ArrayList();
+            List<Integer> startIndexes = new ArrayList<>(f.getNumThreads());
             for(int i = 0; i < f.getNumThreads(); i+= maxThreads) {
-                startIndexes.add(new Integer(i));
+                startIndexes.add(i);
             }
 
-            map.put("current", new Integer(startIndex/maxThreads));
-            map.put("startindex", new Integer(startIndex));
+            map.put("current", startIndex / maxThreads);
+            map.put("startindex", startIndex);
             map.put("startindexes", startIndexes);
-            map.put("pages", new Integer(startIndexes.size()));
+            map.put("pages", startIndexes.size());
 
             map.put("forum", f);
 
@@ -61,13 +53,11 @@ public class ViewForumController extends AbstractForumViewController {
                 unreadPosts = dao.getPostsAfterDate(lastVisit);
             }
 
-
-            List threads = dao.getThreadsInForum(f.getId(), startIndex, maxThreads, ThreadSortOrder.SORT_BY_DEFAULT);
-            for (int i = 0; i < threads.size(); i++) {
-                ForumThread thread = (ForumThread) threads.get(i);
-                List last = dao.getLastPostsInThread(thread.getId(), 1);
-                if(last.size() > 0) {
-                    thread.setLastPost((Post)last.get(0));
+            List<ForumThread> threads = dao.getThreadsInForum(f.getId(), startIndex, maxThreads, ThreadSortOrder.SORT_BY_DEFAULT);
+            for (ForumThread thread : threads) {
+                List<Post> last = dao.getLastPostsInThread(thread.getId(), 1);
+                if (last.size() > 0) {
+                    thread.setLastPost(last.get(0));
                 }
                 if (unreadPosts != null) {
                     readStatus.updateUnreadPostsInThread(unreadPosts, thread);

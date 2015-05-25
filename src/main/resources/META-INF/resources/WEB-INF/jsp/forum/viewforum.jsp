@@ -2,13 +2,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=utf-8" %>
+
+<c:set var="defaultSubjecten"><kantega:label key="post.subject" bundle="forum" locale="en" /></c:set>
+<c:set var="defaultSubjectno"><kantega:label key="post.subject" bundle="forum" locale="no" /></c:set>
 
 <kantega:section id="innhold">
     <div class="forum-heading">
         <a href=""><spring:message code="forum.title"/></a> >
 
-        <a href="viewforum?forumId=<c:out value="${forum.id}"/>"><c:out value="${forum.name}"/></a>
+        <a href="viewforum?forumId=${forum.id}"><c:out value="${forum.name}"/></a>
     </div>
 
 
@@ -16,12 +21,12 @@
 
     <div style="text-align: right;">
         <forum:haspermisson permission="EDIT_THREAD" object="${forum}">
-            <a href="editpost?forumId=<c:out value="${forum.id}"/>"><spring:message code="thread.addthread"/></a>
+            <a href="editpost?forumId=${forum.id}"><spring:message code="thread.addthread"/></a>
         </forum:haspermisson>
 
         <forum:haspermisson permission="EDIT_FORUM" object="${forum}">
-            | <a href="editforum?forumId=<c:out value="${forum.id}"/>"><spring:message code="forum.edit"/></a>
-            | <a href="deleteforum?forumId=<c:out value="${forum.id}"/>"><spring:message code="forum.delete"/></a>
+            | <a href="editforum?forumId=${forum.id}"><spring:message code="forum.edit"/></a>
+            | <a href="deleteforum?forumId=${forum.id}"><spring:message code="forum.delete"/></a>
         </forum:haspermisson>
     </div>
 
@@ -47,7 +52,7 @@
                             <c:if test="${startindex != index}">
                                 <c:set var="current" value=""/>
                             </c:if>
-                            <a class="forum-pagenavigation<c:out value="${current}"/>" href="viewforum?forumId=<c:out value="${forum.id}"/>&amp;startIndex=<c:out value="${index}"/>"><c:out value="${status.index+1}"/></a>
+                            <a class="forum-pagenavigation<c:out value="${current}"/>" href="viewforum?forumId=${forum.id}&amp;startIndex=${index}">${status.index+1}</a>
                         </c:forEach>
                     </td>
                 </tr>
@@ -72,7 +77,7 @@
                     <td valign="top">
                         <c:choose>
                             <c:when test="${thread.numNewPosts > 0}">
-                                <img src="../bitmaps/forum/thread_new.gif" alt="<c:out value="${thread.numNewPosts}"/> <spring:message code="post.icon.newthread"/>" title="<c:out value="${thread.numNewPosts}"/> <spring:message code="post.icon.newthread"/>">
+                                <img src="../bitmaps/forum/thread_new.gif" alt="${thread.numNewPosts} <spring:message code="post.icon.newthread"/>" title="${thread.numNewPosts} <spring:message code="post.icon.newthread"/>">
                             </c:when>
                             <c:when test="${thread.numPosts > 10}">
                                 <img src="../bitmaps/forum/thread_hot.gif" alt="<spring:message code="post.icon.hotthread"/>" title="<spring:message code="post.icon.hotthread"/>">
@@ -83,18 +88,24 @@
                         </c:choose>
                     </td>
                     <td>
-                        <a href="viewthread?threadId=<c:out value="${thread.id}"/>"><c:out value="${thread.name}"/></a>
+                        <c:set var="threadname"><c:out value="${thread.lastPost.subject}"/></c:set>
+                        <c:if test="${threadname eq defaultSubjecten or subject eq defaultSubjectno or fn:length(subject) eq 0}">
+                            <c:set var="subject"><aksess:abbreviate maxsize="25">${thread.lastPost.body}</aksess:abbreviate></c:set>
+                        </c:if>
+                        <a href="viewthread?threadId=${thread.id}"><c:out value="${thread.name}"/></a>
                     </td>
                     <td valign="top">
                         <c:if test="${thread.lastPost != null}">
-                            <a href="viewthread?threadId=<c:out value="${thread.id}"/>#post_<c:out value="${thread.lastPost.id}"/>"><c:out value="${thread.lastPost.subject}"/></a><br>
+                            <c:set var="subject"><c:out value="${thread.lastPost.subject}"/></c:set>
+                            <c:if test="${subject eq defaultSubjecten or subject eq defaultSubjectno or fn:length(subject) eq 0}">
+                                <c:set var="subject"><aksess:abbreviate maxsize="25">${thread.lastPost.body}</aksess:abbreviate></c:set>
+                            </c:if>
+                            <a href="viewthread?threadId=${thread.lastPost.thread.id}#post_${thread.lastPost.id}">${subject}</a><br>
                             av <c:out value="${thread.lastPost.author}"/>
                         </c:if>
                     </td>
 
-                    <td>
-                        <c:out value="${thread.numPosts}"/>
-                    </td>
+                    <td>${thread.numPosts}</td>
                 </tr>
             </c:forEach>
         </table>

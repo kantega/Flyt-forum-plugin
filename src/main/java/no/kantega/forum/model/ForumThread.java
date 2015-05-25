@@ -3,13 +3,6 @@ package no.kantega.forum.model;
 import java.util.Date;
 import java.util.Set;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 02.des.2005
- * Time: 11:26:41
- * To change this template use File | Settings | File Templates.
- */
 public class ForumThread {
     private long id;
     private String name;
