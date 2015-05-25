@@ -29,6 +29,7 @@ import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -72,6 +73,7 @@ public class EditPostController extends AbstractForumFormController {
     private String imageFormat = "jpg";
     private ForumPostService service;
     private ImageEditor imageEditor;
+    @Autowired
     private SystemConfiguration configuration;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
@@ -163,7 +165,6 @@ public class EditPostController extends AbstractForumFormController {
             boolean approved = permissionManager.hasPermission(username, Permission.APPROVE_POST, p);
             p.setApproved(approved);
 
-
             if (replyId != -1) {
                 String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], locale);
                 String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], locale);
@@ -235,6 +236,10 @@ public class EditPostController extends AbstractForumFormController {
             if (user != null) {
                 t.setOwner(user.getUsername());
             }
+            int wallcontentid = param.getInt("wallcontentid");
+            if(wallcontentid != -1){
+                t.setContentId(wallcontentid);
+            }
             t.setForum(f);
         }
         return t;
@@ -258,7 +263,6 @@ public class EditPostController extends AbstractForumFormController {
         }
 
         boolean approved = permissionManager.hasPermission(username, Permission.APPROVE_POST, p);
-        // Lag ny tr�d f�rst hvis det er aktuelt
 
         boolean isNewThread = p.getThread().isNew();
 

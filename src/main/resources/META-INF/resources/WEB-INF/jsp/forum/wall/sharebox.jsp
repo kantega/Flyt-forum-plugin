@@ -5,6 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <div id="oa-forum-newPost">
+
     <div id="oa-forum-sharebox">
         <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST">
             <div class="oa-forum-formElement">
@@ -18,6 +19,12 @@
                 </c:choose>
                 <input type="hidden" name="ajax" value="true">
                 <input type="hidden" name="hiddenForumId" value="${hiddenForumId}"/>
+                <c:if test="${not empty aksess_this}">
+                    <c:set var="addContentIdIfFound"><aksess:getconfig key="forum.addContentIdIfFound" default="false"/></c:set>
+                    <c:if test="${addContentIdIfFound}">
+                        <input type="hidden" name="wallcontentid" value="${aksess_this.id}"/>
+                    </c:if>
+                </c:if>
                 <input type="hidden" name="subject" value="Subject">
                 <label id="oa-forum-sharebox-label" class="oa-forum-hidden">${helptextLabel}</label>
                 <%-- helptextLabel is set in RenderWallTag--%>
