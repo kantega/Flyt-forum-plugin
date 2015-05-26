@@ -22,8 +22,9 @@ public class ForumDao {
         this.template = template;
     }
 
-    public void saveOrUpdate(ForumCategory forumCategory) {
+    public ForumCategory saveOrUpdate(ForumCategory forumCategory) {
         template.saveOrUpdate(forumCategory);
+        return forumCategory;
     }
 
     public Attachment saveOrUpdate(Attachment attachment) {
