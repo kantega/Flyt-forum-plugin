@@ -489,62 +489,6 @@ $(document).ready(function(){
 
     });
 
-    // Handles viewing larger versions of images
-    // $forumThreads.on("click", ".oa-forum-attachment, .oa-forum-enlarge-photo", function(event){
-    //     var $attachmentContainer = $(this).closest(".oa-forum-attachments");
-    //     var $imgLink = $attachmentContainer.find(".oa-forum-attachment");
-    //     if ($imgLink.find("img").length){
-    //         event.preventDefault();
-    //         $imgLink.removeClass("oa-forum-attachment").addClass("oa-forum-attachment-image-fullsize");
-    //         var $img = $imgLink.find("img");
-
-    //         // Setting the img width before changing the img "src" attripute
-    //         var origImgWidth = $img.width();
-    //         var origImgHeight = $img.height();
-    //         $img.data("origImgWidth", origImgWidth);
-    //         $img.data("origImgHeight", origImgHeight);
-    //         $img.css("width", origImgWidth + "px");
-    //         $img.css("height", origImgHeight + "px");
-
-    //         // Finding and setting the max width and height for the large version of the image
-    //         var maxImgWidth = $attachmentContainer.width(); // Extra padding
-    //         var multiplyHeightBy = Math.round(maxImgWidth / origImgWidth );
-    //         var maxImgHeight = Math.round(origImgHeight * multiplyHeightBy);
-
-    //         // Replacing the img url with the new img width and height.
-    //         var newImgSrc = $img.attr("src").substring(0, $img.attr("src").indexOf("width="));
-    //         newImgSrc += "width=" + maxImgWidth + "&amp;height=" + maxImgHeight;
-
-    //         $img.attr("src", newImgSrc);
-    //         $img.animate({
-    //             width: maxImgWidth,
-    //             height: maxImgHeight
-    //         }, 400, function() {
-    //             $attachmentContainer.find(".oa-forum-enlarge-photo").addClass("oa-forum-hidden");
-    //             $attachmentContainer.find(".oa-forum-reduce-photo").removeClass("oa-forum-hidden");
-    //             $attachmentContainer.find(".oa-forum-download-original").removeClass("oa-forum-hidden");
-    //         });
-    //     }
-    // });
-
-    // $forumThreads.on("click", ".oa-forum-attachment-image-fullsize, .oa-forum-reduce-photo", function(event) {
-    //     event.preventDefault();
-    //     var $attachmentContainer = $(this).closest(".oa-forum-attachments");
-    //     var $imgLink = $attachmentContainer.find(".oa-forum-attachment-image-fullsize");
-    //     $imgLink.removeClass("oa-forum-attachment-image-fullsize").addClass("oa-forum-attachment");
-    //     var $img = $imgLink.find("img");
-
-    //     $img.animate({
-    //         width: $img.data("origImgWidth"),
-    //         height: $img.data("origImgHeight")
-    //     }, 400, function() {
-    //         var $attachmentContainer = $(this).closest(".oa-forum-attachments");
-    //         $attachmentContainer.find(".oa-forum-enlarge-photo").removeClass("oa-forum-hidden");
-    //         $attachmentContainer.find(".oa-forum-reduce-photo").addClass("oa-forum-hidden");
-    //         $attachmentContainer.find(".oa-forum-download-original").addClass("oa-forum-hidden");
-    //     });
-    // });
-
     function placeholderIsSupported() {
         var test = document.createElement('input');
         return ('placeholder' in test);
