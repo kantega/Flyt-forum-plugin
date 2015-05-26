@@ -7,7 +7,8 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
@@ -39,12 +40,15 @@ public class RenderWallTag extends SimpleTagSupport {
     private ThreadSortOrder sortBy = ThreadSortOrder.SORT_BY_DEFAULT;
 
     private static ForumDao forumDao;
+    private static SystemConfiguration configuration;
 
 	public void doTag() throws JspException, IOException {
 		try {
 			PageContext pageContext = ((PageContext) getJspContext());
             if(forumDao == null) {
-                forumDao = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ForumDao.class);
+				WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+				forumDao = context.getBean(ForumDao.class);
+				configuration = context.getBean(SystemConfiguration.class);
             }
 			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
@@ -54,7 +58,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
 				forumListPostsUrl.append("?forumId=");
                 if (forumId > 0) {
-					forumListPostsUrl.append(String.valueOf(forumId));
+					forumListPostsUrl.append(forumId);
                 } else {
 					forumListPostsUrl.append(join(forumIds, ','));
                 }
@@ -94,7 +98,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			request.setAttribute("forumCategoryId", forumCategoryId);
 			request.setAttribute("userid", userId);
 			request.setAttribute("forumListPostsUrl", forumListPostsUrl);
-			request.setAttribute("allowedFileextensions", Aksess.getConfiguration().getString(EditPostController.allowedFileextensionKey, EditPostController.defaultAllowedFileextensionsString));
+			request.setAttribute("allowedFileextensions", configuration.getString(EditPostController.allowedFileextensionKey, EditPostController.defaultAllowedFileextensionsString));
 
 			final String label = getShareHelpText(request, forumId);
 			request.setAttribute("helptextLabel", label);
