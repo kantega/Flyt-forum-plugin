@@ -20,7 +20,7 @@
 <div class="oa-forum-post oa-forum-mediablock <c:if test="${hiddenPost && !expandThreads }">oa-forum-hidden</c:if>">
     <div class="oa-forum-mediablockImage oa-forum-avatar">
         <a href="${userProfileUrl}">
-            <img src="${userImageUrl}">
+            <img src="${userImageUrl}" onerror="handleProfileImageNotFound(this);">
         </a>
     </div>
     <div class="oa-forum-mediablockContent">

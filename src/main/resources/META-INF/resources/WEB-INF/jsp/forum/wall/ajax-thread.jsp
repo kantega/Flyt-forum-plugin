@@ -4,10 +4,21 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="forum" uri="http://www.kantega.no/aksess/tags/forum" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 
 <c:if test="${empty forumLocale}">
     <c:set var="forumLocale" value="no_NO"/>
 </c:if>
+<c:set var="defaultProfileImage"><aksess:getconfig key="forum.defaultProfileImage" default="/bitmaps/forum/avatar_anon.png"/></c:set>
+<script>
+    function handleProfileImageNotFound(image){
+        image.onerror = "";
+        <c:if test="${not empty defaultProfileImage}">
+        image.src = "${pageContext.request.contextPath}${defaultProfileImage}";
+        </c:if>
+        return true;
+    }
+</script>
 <div class="oa-forum-thread <c:if test="${not empty wallHasMorePosts}">oa-forum-thread-has-more-posts</c:if>">
     <div class="oa-forum-posts">
         <c:forEach items="${thread.posts}" var="post" varStatus="postsStatus">
