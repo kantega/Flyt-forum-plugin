@@ -66,7 +66,9 @@ public class RenderWallTag extends SimpleTagSupport {
 				forumListPostsUrl.append("?forumCategoryId=").append(forumCategoryId);
 			}
 
-			forumListPostsUrl.append(String.format("&numberOfPostsToShow=%s&expandThreads=%s", maxthreads, String.valueOf(expandthreads)));
+			forumListPostsUrl
+                    .append("&numberOfPostsToShow=").append(maxthreads)
+                    .append("&expandThreads=").append(expandthreads);
 
 			if (userId != null) {
 				forumListPostsUrl.append("&username=").append(userId);
@@ -86,8 +88,6 @@ public class RenderWallTag extends SimpleTagSupport {
             if(sortBy == ThreadSortOrder.SORT_BY_DATE_CREATED){
                 forumListPostsUrl.append("&sortBy=").append(sortBy.getId());
             }
-
-
 
 			request.setAttribute("showSharebox", sharebox);
 			request.setAttribute("showForumTabs", showforumtabs);
