@@ -22,7 +22,7 @@ public class DeleteThreadController extends AbstractForumFormController {
     @Override
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("threadId"));
-        return permissions(Permission.EDIT_THREAD, dao.getThread(id));
+        return permissions(Permission.DELETE_THREAD, dao.getThread(id));
     }
 
     @Override
