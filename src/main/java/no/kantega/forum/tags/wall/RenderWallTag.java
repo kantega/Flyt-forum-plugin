@@ -67,11 +67,11 @@ public class RenderWallTag extends SimpleTagSupport {
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
             String forumIdStr = "-1";
+            ResolvedUser resolvedUser = userResolver.resolveUser(request);
 
 			StringBuilder forumListPostsUrl = new StringBuilder(request.getContextPath()).append("/forum/listPosts");
 			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
 				forumListPostsUrl.append("?forumId=");
-                ResolvedUser resolvedUser = userResolver.resolveUser(request);
                 if (forumId > 0) {
 					forumListPostsUrl.append(forumId);
                     boolean canView = permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forumDao.getForum(forumId));
@@ -105,6 +105,12 @@ public class RenderWallTag extends SimpleTagSupport {
 			if (forumCategoryId != -1) {
                 ForumCategory category = forumDao.getForumCategory(forumCategoryId);
                 request.setAttribute("forumCategory", category);
+                boolean canView = false;
+
+                for (Forum forum : category.getForums()) {
+                    canView |= permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forum);
+                }
+                request.setAttribute("userCanViewForum", canView);
 
 			}
 
