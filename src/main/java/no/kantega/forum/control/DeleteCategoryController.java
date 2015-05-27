@@ -13,12 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteCategoryController extends AbstractForumFormController {
     private ForumDao dao;
 
-
+    @Override
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("categoryId"));
         return permissions(Permission.EDIT_CATEGORY, dao.getForumCategory(id));
     }
 
+    @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         if(!assertPermissions(request)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);

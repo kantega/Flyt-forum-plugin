@@ -11,13 +11,6 @@ import java.util.HashMap;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.ForumCategory;
 
-/**
- * Created by IntelliJ IDEA.
- * User: HAREVE
- * Date: 08.des.2005
- * Time: 16:51:10
- * To change this template use File | Settings | File Templates.
- */
 public class ViewCategoryController  implements Controller {
     private ForumDao dao;
 

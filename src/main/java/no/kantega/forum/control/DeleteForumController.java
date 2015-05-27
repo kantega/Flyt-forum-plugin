@@ -13,10 +13,21 @@ import javax.servlet.http.HttpServletResponse;
 public class DeleteForumController extends AbstractForumFormController {
     private ForumDao dao;
 
+    @Override
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
-        return permissions(Permission.EDIT_FORUM, null);
+        long id = Long.parseLong(request.getParameter("forumId"));
+        Forum f = dao.getPopulatedForum(id);
+        return permissions(Permission.EDIT_FORUM, f);
     }
+
+    @Override
     public ModelAndView handleRequestInternal (HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        if (!assertPermissions(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
         long id = Long.parseLong(request.getParameter("forumId"));
         Forum f = dao.getPopulatedForum(id);
         long catId = f.getForumCategory().getId();

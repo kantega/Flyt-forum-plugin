@@ -40,15 +40,17 @@
             </tr>
 
                 <c:forEach items="${forumcategory.forums}" var="forum" varStatus="status">
-                    <c:set var="hasforums" value="true"/>
-                    <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
-                        <td>
-                            <a href="viewforum?forumId=${forum.id}"><c:out value="${forum.name}"/></a>
-                        </td>
-                        <td>
-                            <c:out value="${forum.numThreads}"/>
-                        </td>
-                    </tr>
+                    <forum:haspermisson permission="VIEW" object="${forum}">
+                        <c:set var="hasforums" value="true"/>
+                        <tr class="forum-tableRow<c:out value="${status.index mod 2}"/>">
+                            <td>
+                                <a href="viewforum?forumId=${forum.id}"><c:out value="${forum.name}"/></a>
+                            </td>
+                            <td>
+                                <c:out value="${forum.numThreads}"/>
+                            </td>
+                        </tr>
+                    </forum:haspermisson>
                 </c:forEach>
 
         </table>

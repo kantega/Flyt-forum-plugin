@@ -3,6 +3,10 @@ package no.kantega.forum.control;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.model.Attachment;
+import no.kantega.forum.permission.Permission;
+import no.kantega.forum.permission.PermissionManager;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.Cropping;
@@ -25,9 +29,11 @@ public class ViewAttachmentController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private ForumDao dao;
     private MultimediaRequestHandlerHelper multimediaRequestHandlerHelper;
+    private PermissionManager permissionManager;
+    private UserResolver userResolver;
 
     @RequestMapping(value = "/viewattachment", method = RequestMethod.GET)
-    public void handleAttachment(@RequestParam int attachmentId,
+    public void handleAttachment(@RequestParam long attachmentId,
                                  @RequestParam(required = false, defaultValue = "-1") int width,
                                  @RequestParam(required = false, defaultValue = "-1") int height,
                                  @RequestParam(required = false, defaultValue = "CONTAIN") Cropping cropping,
@@ -35,8 +41,16 @@ public class ViewAttachmentController {
                                  HttpServletResponse response) throws Exception {
         ServletOutputStream out = response.getOutputStream();
 
-        Attachment attachment = dao.getAttachment((long)attachmentId);
+        Attachment attachment = dao.getAttachment(attachmentId);
+
         if (attachment != null) {
+
+            String userName = getUsername(request);
+            if (!permissionManager.hasPermission(userName, Permission.VIEW, attachment.getPost())) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+
             String mimeType = StringUtils.defaultIfEmpty(attachment.getMimeType(), "application/octet-stream");
 
             response.setContentType(mimeType);
@@ -45,7 +59,7 @@ public class ViewAttachmentController {
             Multimedia source = new Multimedia();
             source.setData(attachment.getData());
             source.setFilename(attachment.getFileName());
-            source.setId(attachmentId);
+            source.setId((int) attachmentId);
             if (mimeType.contains("image")) {
                 handleImage(width, height, cropping, request, response, out, mimeType, source);
             } else {
@@ -56,6 +70,15 @@ public class ViewAttachmentController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
+    }
+
+    private String getUsername(HttpServletRequest request) {
+        String userName = null;
+        ResolvedUser user = userResolver.resolveUser(request);
+        if(user != null) {
+            userName = user.getUsername();
+        }
+        return userName;
     }
 
     private void handleImage(int width, int height, Cropping cropping, HttpServletRequest request,
@@ -93,5 +116,13 @@ public class ViewAttachmentController {
 
     public void setMultimediaRequestHandlerHelper(MultimediaRequestHandlerHelper multimediaRequestHandlerHelper) {
         this.multimediaRequestHandlerHelper = multimediaRequestHandlerHelper;
+    }
+
+    public void setPermissionManager(PermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public void setUserResolver(UserResolver userResolver) {
+        this.userResolver = userResolver;
     }
 }

@@ -19,12 +19,20 @@ import java.util.Set;
 public class DeleteThreadController extends AbstractForumFormController {
     private ForumDao dao;
 
+    @Override
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("threadId"));
         return permissions(Permission.EDIT_THREAD, dao.getThread(id));
     }
 
+    @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        if (!assertPermissions(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
         if(!request.getMethod().equals("POST")) {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return null;

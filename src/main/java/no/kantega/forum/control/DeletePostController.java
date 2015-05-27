@@ -16,12 +16,20 @@ public class DeletePostController extends AbstractForumFormController {
     private ForumDao dao;
     private ForumPostService service;
 
+    @Override
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         long id = Long.parseLong(request.getParameter("postId"));
         return permissions(Permission.EDIT_POST, dao.getPost(id));
     }
 
+    @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        if (!assertPermissions(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
+
         if(!request.getMethod().equals("POST")) {
             response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return null;

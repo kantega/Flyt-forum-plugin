@@ -11,16 +11,14 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class AbstractForumFormController extends SimpleFormController {
+public abstract class AbstractForumFormController extends SimpleFormController {
 
     protected PermissionManager permissionManager;
     protected UserResolver userResolver;
 
-    public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
-        return new PermissionObject[0];
-    }
+    public abstract PermissionObject[] getRequiredPermissions(HttpServletRequest request);
 
-
+    @Override
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
         if(!assertPermissions(request)) {
             httpServletResponse.sendError(HttpServletResponse.SC_FORBIDDEN);

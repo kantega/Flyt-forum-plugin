@@ -13,7 +13,6 @@
                 <entry key="/viewcategory" value-ref="forumCategoryViewController"/>
                 <entry key="/editcategory" value-ref="editCategoryController"/>
                 <entry key="/deletecategory" value-ref="deleteCategoryController"/>
-                <entry key="/listforums" value-ref="forumListController"/>
                 <entry key="/viewforum" value-ref="forumViewController"/>
                 <entry key="/editforum" value-ref="editForumController"/>
                 <entry key="/deleteforum" value-ref="deleteForumController"/>
@@ -69,6 +68,8 @@
 
     <bean id="forumCategoryViewController" class="no.kantega.forum.control.ViewCategoryController">
         <property name="dao" ref="forumDao"/>
+        <property name="userResolver" ref="userResolver"/>
+        <property name="permissionManager" ref="forumPermissionManager"/>
     </bean>
 
     <bean id="editCategoryController" class="no.kantega.forum.control.EditCategoryController" parent="abstractForumFormController">
@@ -81,10 +82,6 @@
     </bean>
 
     <bean id="deleteCategoryController" class="no.kantega.forum.control.DeleteCategoryController" parent="abstractForumFormController"/>
-
-    <bean id="forumListController" class="no.kantega.forum.control.ListForumsController">
-        <property name="dao" ref="forumDao"/>
-    </bean>
 
     <bean id="forumViewController" class="no.kantega.forum.control.ViewForumController" parent="abstractForumViewController"/>
 
@@ -136,6 +133,8 @@
 
     <bean id="approvePostController" class="no.kantega.forum.control.ApprovePostController">
         <property name="dao" ref="forumDao"/>
+        <property name="permissionManager" ref="forumPermissionManager"/>
+        <property name="userResolver" ref="userResolver"/>
     </bean>
 
     <bean id="deletePostController" class="no.kantega.forum.control.DeletePostController" parent="abstractForumFormController">
@@ -151,6 +150,8 @@
                 <property name="imageEditor" ref="aksessImageEditor"/>
             </bean>
         </property>
+        <property name="permissionManager" ref="forumPermissionManager"/>
+        <property name="userResolver" ref="userResolver"/>
     </bean>
 
     <bean id="ajaxUserSearchController" class="no.kantega.forum.control.AjaxUserSearchController">
