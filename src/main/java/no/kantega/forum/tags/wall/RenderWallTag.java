@@ -75,14 +75,14 @@ public class RenderWallTag extends SimpleTagSupport {
                 if (forumId > 0) {
 					forumListPostsUrl.append(forumId);
                     boolean canView = permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forumDao.getForum(forumId));
-                    request.setAttribute("canView", canView);
+                    request.setAttribute("userCanViewForum", canView);
                 } else {
 					forumListPostsUrl.append(join(forumIds, ','));
                     boolean canView = false;
                     for (Integer id : forumIds) {
                         canView |= permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forumDao.getForum(id));
                     }
-                    request.setAttribute("canView", canView);
+                    request.setAttribute("userCanViewForum", canView);
                 }
             } else {
 				forumListPostsUrl.append("?forumCategoryId=").append(forumCategoryId);

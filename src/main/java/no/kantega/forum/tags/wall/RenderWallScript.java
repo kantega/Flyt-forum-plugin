@@ -9,11 +9,14 @@ import java.io.IOException;
 public class RenderWallScript extends SimpleTagSupport{
 
     public void doTag() throws JspException, IOException {
-        try {
-            PageContext pageContext = ((PageContext)getJspContext());
-            pageContext.include("/WEB-INF/jsp/forum/wall/script.jsp");
-        } catch (ServletException e) {
-            throw new JspException(e);
+        PageContext pageContext = ((PageContext)getJspContext());
+        Object userCanViewForum = pageContext.getRequest().getAttribute("userCanViewForum"); // no need to render scripts if user cannot se wall.
+        if (userCanViewForum == null || (boolean) userCanViewForum) {
+            try {
+                pageContext.include("/WEB-INF/jsp/forum/wall/script.jsp");
+            } catch (ServletException e) {
+                throw new JspException(e);
+            }
         }
     }
 }
