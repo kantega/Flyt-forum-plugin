@@ -423,6 +423,18 @@ public class ForumDao {
         return template.get(Attachment.class, attachmentId);
     }
 
+    public Forum getForumForAttachment(final Attachment attachment){
+        return template.execute(new HibernateCallback<Forum>() {
+            @Override
+            public Forum doInHibernate(Session session) throws HibernateException, SQLException {
+                Query attachmentQuery = session.createQuery("from Attachment a where a.id = ?");
+                attachmentQuery.setLong(0, attachment.getId());
+                Attachment attachement = (Attachment) attachmentQuery.uniqueResult();
+                return attachement.getPost().getThread().getForum();
+            }
+        });
+    }
+
     public ForumCategory getForumCategory(final long forumCategoryId) {
         return template.execute(new HibernateCallback<ForumCategory>() {
             public ForumCategory doInHibernate(Session session) throws HibernateException {

@@ -48,14 +48,14 @@ public class DefaultPermissionManager implements PermissionManager {
             // Tillatt posting kun for registrerte brukere og i �pne forum
             if (permission == Permission.POST_IN_THREAD && object instanceof ForumThread) {
                 ForumThread thread = (ForumThread)object;
-                if (thread.getForum().isAnonymousPostAllowed()) {
+                if (thread.getForum().isAnonymousPostAllowed()  || isAuthorizedInForum(user, thread.getForum())) {
                     return true;
                 }
             }
 
             if((permission == Permission.ADD_THREAD || permission == Permission.EDIT_THREAD) && object instanceof Forum) {
                 Forum forum = (Forum)object;
-                if (forum.isAnonymousPostAllowed()) {
+                if (forum.isAnonymousPostAllowed() || isAuthorizedInForum(user, forum)) {
                     return true;
                 }
             }
@@ -70,28 +70,7 @@ public class DefaultPermissionManager implements PermissionManager {
                     forum = ((Post)object).getThread().getForum();
                 }
                 if (forum != null) {
-                    boolean isAuthorized = false;
-                    Set<String> groups = forum.getGroups();
-                    if (groups == null || groups.isEmpty()) {
-                        isAuthorized = true;
-                    } else {
-                        for (String groupId : groups) {
-                            if (groupResolver.isInGroup(user, groupId)) {
-                                isAuthorized = true;
-                                break;
-                            }
-                        }
-
-                        if (!isAuthorized) {
-                            // Forum-moderator skal alltid ha tilgang
-                            if (user != null && user.equals(forum.getModerator())) {
-                                isAuthorized = true;
-                            }
-                        }
-
-                    }
-
-                    return isAuthorized;
+                    return isAuthorizedInForum(user, forum);
                 }
 
             }
@@ -141,6 +120,30 @@ public class DefaultPermissionManager implements PermissionManager {
         }
 
         return isAdmin;
+    }
+
+    private boolean isAuthorizedInForum(String user, Forum forum) {
+        boolean isAuthorized = false;
+        Set<String> groups = forum.getGroups();
+        if (groups == null || groups.isEmpty()) {
+            isAuthorized = true;
+        } else {
+            for (String groupId : groups) {
+                if (groupResolver.isInGroup(user, groupId)) {
+                    isAuthorized = true;
+                    break;
+                }
+            }
+
+            if (!isAuthorized) {
+                // Forum-moderator skal alltid ha tilgang
+                if (user != null && user.equals(forum.getModerator())) {
+                    isAuthorized = true;
+                }
+            }
+
+        }
+        return isAuthorized;
     }
 
     public void setGroupResolver(GroupResolver groupResolver) {

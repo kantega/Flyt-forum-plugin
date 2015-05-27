@@ -46,7 +46,7 @@ public class ViewAttachmentController {
         if (attachment != null) {
 
             String userName = getUsername(request);
-            if (!permissionManager.hasPermission(userName, Permission.VIEW, attachment.getPost())) {
+            if (!permissionManager.hasPermission(userName, Permission.VIEW, dao.getForumForAttachment(attachment))) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
