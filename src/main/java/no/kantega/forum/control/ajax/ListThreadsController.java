@@ -14,7 +14,12 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class ListThreadsController implements Controller {
 
@@ -69,16 +74,13 @@ public class ListThreadsController implements Controller {
 
 		if (threadId != -1) {
 			threads.add(forumDao.getPopulatedThread(threadId));
-		} else if (userId != null && userId.trim().length() > 0) {
+		} else if (isNotBlank(userId)) {
 			threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumIds[0], forumCategoryId, order);
 		} else if (forumCategoryId != -1) {
 			threads = forumDao.getThreadsInForumCategory(forumCategoryId, offset, numberOfPostsToShow + 1, order);
 		} else {
 			threads = forumDao.getThreadsInForums(forumIds, offset, numberOfPostsToShow + 1, order);
 		}
-
-
-
 
 		if (numberOfPostsToShow > 0 && threads.size() > numberOfPostsToShow) {
 			model.put("hasMorePosts", Boolean.TRUE);

@@ -46,7 +46,7 @@ public class ViewForumController extends AbstractForumViewController {
 
             // Hent nye poster siden siste besøk
             ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
-            List unreadPosts = null;
+            List<Post> unreadPosts = null;
 
             Date lastVisit = ForumUtil.getLastVisit(request, response, true);
             if (lastVisit != null) {

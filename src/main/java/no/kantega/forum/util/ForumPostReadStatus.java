@@ -1,21 +1,16 @@
 package no.kantega.forum.util;
 
+import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
-import no.kantega.forum.model.Forum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Aug 15, 2007
- * Time: 2:45:46 PM
- */
 public class ForumPostReadStatus {
     HttpServletRequest request;
 
@@ -23,11 +18,12 @@ public class ForumPostReadStatus {
         this.request = request;
     }
 
+    @SuppressWarnings("unchecked")
     public void addPost(Post post) {
         HttpSession session = request.getSession(true);
-        Map threads = (Map)session.getAttribute("forumReadPosts");
+        Map<String, ReadStatus> threads = (Map<String, ReadStatus>)session.getAttribute("forumReadPosts");
         if (threads == null) {
-            threads = new HashMap();
+            threads = new HashMap<>();
             session.setAttribute("forumReadPosts", threads);
         }
         ReadStatus st = new ReadStatus();
@@ -38,18 +34,18 @@ public class ForumPostReadStatus {
         threads.put("post-" + post.getId(), st);
     }
 
-    public List filterReadPosts(List posts) {
-        List unreadPosts = new ArrayList();
+    @SuppressWarnings("unchecked")
+    public List<Post> filterReadPosts(List<Post> posts) {
+        List<Post> unreadPosts = new ArrayList<>();
         HttpSession session = request.getSession(true);
 
-        Map readPosts = (Map)session.getAttribute("forumReadPosts");
+        Map<String, ReadStatus> readPosts = (Map<String, ReadStatus>)session.getAttribute("forumReadPosts");
         if (readPosts == null) {
             return posts;
         }
 
 
-        for (int i = 0; i < posts.size(); i++) {
-            Post p = (Post) posts.get(i);
+        for (Post p : posts) {
             if (readPosts.get("post-" + p.getId()) == null) {
                 unreadPosts.add(p);
             }
@@ -58,29 +54,27 @@ public class ForumPostReadStatus {
         return unreadPosts;
     }
 
-    public void updateUnreadPostsInForum(List posts, Forum forum) {
+    public void updateUnreadPostsInForum(List<Post> posts, Forum forum) {
         forum.setNumNewPosts(0);
-        List unreadPosts = filterReadPosts(posts);
-        for (int i = 0; i < unreadPosts.size(); i++) {
-            Post p =  (Post)unreadPosts.get(i);
+        List<Post> unreadPosts = filterReadPosts(posts);
+        for (Post p : unreadPosts) {
             if (p.getThread().getForum().getId() == forum.getId()) {
                 forum.setNumNewPosts(forum.getNumNewPosts() + 1);
             }
         }
     }
 
-    public void updateUnreadPostsInThread(List posts, ForumThread thread) {
+    public void updateUnreadPostsInThread(List<Post> posts, ForumThread thread) {
         thread.setNumNewPosts(0);
-        List unreadPosts = filterReadPosts(posts);
-        for (int i = 0; i < unreadPosts.size(); i++) {
-            Post p =  (Post)unreadPosts.get(i);
+        List<Post> unreadPosts = filterReadPosts(posts);
+        for (Post p : unreadPosts) {
             if (p.getThread().getId() == thread.getId()) {
                 thread.setNumNewPosts(thread.getNumNewPosts() + 1);
             }
         }
     }
 
-    private class ReadStatus {
+    private static class ReadStatus {
         private long forumId;
         private long threadId;
         private long postId;
@@ -110,5 +104,3 @@ public class ForumPostReadStatus {
         }
     }
 }
-
-// 
