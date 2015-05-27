@@ -103,10 +103,7 @@ public class ForumDao {
 
         // Remove duplicates since Hibernate duplicates forums
         Set<ForumCategory> setItems = new LinkedHashSet<>(list);
-        list.clear();
-        list.addAll(setItems);
-
-        return list;
+        return new ArrayList<>(setItems);
     }
 
     public List<Forum> getForums() {
@@ -413,11 +410,13 @@ public class ForumDao {
     }
 
     public Forum getForum(final long forumId) {
-        return (Forum) template.find("from Forum f inner join fetch f.forumCategory c where f.id=?", forumId).get(0);
+        List forums = template.find("from Forum f inner join fetch f.forumCategory c where f.id=?", forumId);
+        return forums.isEmpty() ? null : (Forum) forums.get(0);
     }
 
     public ForumThread getThread(final long threadId) {
-        return (ForumThread) template.find("from ForumThread t inner join fetch t.forum f where t.id=?", threadId).get(0);
+        List threads = template.find("from ForumThread t inner join fetch t.forum f where t.id=?", threadId);
+        return threads.isEmpty() ? null : (ForumThread) threads.get(0);
     }
 
     public Attachment getAttachment(final long attachmentId) {
@@ -430,9 +429,13 @@ public class ForumDao {
                 Query q  = session.createQuery("from ForumCategory c where c.id = ?");
                 q.setLong(0, forumCategoryId);
 
-                ForumCategory category = (ForumCategory)q.list().get(0);
-                for (Object forum : category.getForums()) {
-                    Hibernate.initialize(forum);
+                List categories = q.list();
+                ForumCategory category = null;
+                if (!categories.isEmpty()) {
+                    category = (ForumCategory) categories.get(0);
+                    for (Object forum : category.getForums()) {
+                        Hibernate.initialize(forum);
+                    }
                 }
                 return category;
             }
