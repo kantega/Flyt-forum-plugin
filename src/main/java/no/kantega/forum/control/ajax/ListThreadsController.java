@@ -7,6 +7,10 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.Permission;
+import no.kantega.forum.permission.PermissionManager;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,19 +23,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class ListThreadsController implements Controller {
 
-
+    private PermissionManager permissionManager;
+    private UserResolver userResolver;
 	private ForumDao forumDao;
 	private int defaultNumberOfPostsToShow = 20;
 	private RatingService ratingService;
 
-	public ListThreadsController(ForumDao forumDao, RatingService ratingService) {
+	public ListThreadsController(ForumDao forumDao, RatingService ratingService, PermissionManager permissionManager, UserResolver userResolver) {
 		this.forumDao = forumDao;
 		this.ratingService = ratingService;
-	}
+        this.permissionManager = permissionManager;
+        this.userResolver = userResolver;
+    }
 
 	public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
 		Map<String, Object> model = new HashMap<>();
@@ -70,10 +78,10 @@ public class ListThreadsController implements Controller {
 
         List<String> objectIds = new ArrayList<>();
 		Map<Long, List<Rating>> ratingsForPosts = new HashMap<>();
-		List<ForumThread> threads = new ArrayList<>();
+		List<ForumThread> threads;
 
 		if (threadId != -1) {
-			threads.add(forumDao.getPopulatedThread(threadId));
+			threads = singletonList(forumDao.getPopulatedThread(threadId));
 		} else if (isNotBlank(userId)) {
 			threads = forumDao.getThreadsWhereUserHasPosted(userId, numberOfPostsToShow + 1, offset, forumIds[0], forumCategoryId, order);
 		} else if (forumCategoryId != -1) {
@@ -81,6 +89,9 @@ public class ListThreadsController implements Controller {
 		} else {
 			threads = forumDao.getThreadsInForums(forumIds, offset, numberOfPostsToShow + 1, order);
 		}
+
+        ResolvedUser user = userResolver.resolveUser(request);
+        threads = filterByPermission(user.getUsername(), threads);
 
 		if (numberOfPostsToShow > 0 && threads.size() > numberOfPostsToShow) {
 			model.put("hasMorePosts", Boolean.TRUE);
@@ -112,4 +123,14 @@ public class ListThreadsController implements Controller {
 
 		return new ModelAndView("wall/threads", model);
 	}
+
+    private List<ForumThread> filterByPermission(String userId, List<ForumThread> threads) {
+        List<ForumThread> filteredThreads = new ArrayList<>(threads.size());
+        for (ForumThread thread : threads) {
+            if(permissionManager.hasPermission(userId, Permission.VIEW, thread)){
+                filteredThreads.add(thread);
+            }
+        }
+        return filteredThreads;
+    }
 }

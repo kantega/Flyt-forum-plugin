@@ -171,6 +171,8 @@
     <bean id="ajaxListThreadsController" class="no.kantega.forum.control.ajax.ListThreadsController">
         <constructor-arg ref="forumDao"/>
         <constructor-arg ref="ratingService"/>
+        <constructor-arg ref="forumPermissionManager"/>
+        <constructor-arg ref="userResolver"/>
     </bean>
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController">

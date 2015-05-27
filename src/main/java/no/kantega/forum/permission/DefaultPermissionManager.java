@@ -48,14 +48,14 @@ public class DefaultPermissionManager implements PermissionManager {
             // Tillatt posting kun for registrerte brukere og i �pne forum
             if (permission == Permission.POST_IN_THREAD && object instanceof ForumThread) {
                 ForumThread thread = (ForumThread)object;
-                if (thread.getForum().isAnonymousPostAllowed() || user != null) {
+                if (thread.getForum().isAnonymousPostAllowed()) {
                     return true;
                 }
             }
 
             if((permission == Permission.ADD_THREAD || permission == Permission.EDIT_THREAD) && object instanceof Forum) {
                 Forum forum = (Forum)object;
-                if (forum.isAnonymousPostAllowed() || user != null) {
+                if (forum.isAnonymousPostAllowed()) {
                     return true;
                 }
             }
