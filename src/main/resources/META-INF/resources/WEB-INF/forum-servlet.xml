@@ -68,8 +68,6 @@
 
     <bean id="forumCategoryViewController" class="no.kantega.forum.control.ViewCategoryController">
         <property name="dao" ref="forumDao"/>
-        <property name="userResolver" ref="userResolver"/>
-        <property name="permissionManager" ref="forumPermissionManager"/>
     </bean>
 
     <bean id="editCategoryController" class="no.kantega.forum.control.EditCategoryController" parent="abstractForumFormController">
