@@ -7,12 +7,17 @@ import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.dao.ThreadSortOrder;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.permission.Permission;
+import no.kantega.forum.permission.PermissionManager;
+import no.kantega.modules.user.ResolvedUser;
+import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -39,28 +44,45 @@ public class RenderWallTag extends SimpleTagSupport {
 	private String shareBoxPlaceholder = null;
     private ThreadSortOrder sortBy = ThreadSortOrder.SORT_BY_DEFAULT;
 
-    private static ForumDao forumDao;
-    private static SystemConfiguration configuration;
+    private ForumDao forumDao;
+    private SystemConfiguration configuration;
+	private PermissionManager permissionManager;
+    private UserResolver userResolver;
 
-	public void doTag() throws JspException, IOException {
+    @Override
+    public void setJspContext(JspContext pc) {
+        super.setJspContext(pc);
+        PageContext pageContext = ((PageContext) getJspContext());
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        forumDao = context.getBean(ForumDao.class);
+        configuration = context.getBean(SystemConfiguration.class);
+        permissionManager = context.getBean(PermissionManager.class);
+        userResolver = context.getBean(UserResolver.class);
+    }
+
+    public void doTag() throws JspException, IOException {
 		try {
 			PageContext pageContext = ((PageContext) getJspContext());
-            if(forumDao == null) {
-				WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
-				forumDao = context.getBean(ForumDao.class);
-				configuration = context.getBean(SystemConfiguration.class);
-            }
-			HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+
+            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
             String forumIdStr = "-1";
 
-			StringBuilder forumListPostsUrl = new StringBuilder(request.getContextPath() + "/forum/listPosts");
+			StringBuilder forumListPostsUrl = new StringBuilder(request.getContextPath()).append("/forum/listPosts");
 			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
 				forumListPostsUrl.append("?forumId=");
+                ResolvedUser resolvedUser = userResolver.resolveUser(request);
                 if (forumId > 0) {
 					forumListPostsUrl.append(forumId);
+                    boolean canView = permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forumDao.getForum(forumId));
+                    request.setAttribute("canView", canView);
                 } else {
 					forumListPostsUrl.append(join(forumIds, ','));
+                    boolean canView = false;
+                    for (Integer id : forumIds) {
+                        canView |= permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forumDao.getForum(id));
+                    }
+                    request.setAttribute("canView", canView);
                 }
             } else {
 				forumListPostsUrl.append("?forumCategoryId=").append(forumCategoryId);
@@ -83,6 +105,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			if (forumCategoryId != -1) {
                 ForumCategory category = forumDao.getForumCategory(forumCategoryId);
                 request.setAttribute("forumCategory", category);
+
 			}
 
             if(sortBy == ThreadSortOrder.SORT_BY_DATE_CREATED){
@@ -122,7 +145,7 @@ public class RenderWallTag extends SimpleTagSupport {
 		}
 	}
 
-	//Get placeholder text for the new forum entry. If not present, get the default placeholder.
+    //Get placeholder text for the new forum entry. If not present, get the default placeholder.
 	private String getShareHelpText(final HttpServletRequest req, final int fId) {
 		if (shareBoxPlaceholder != null && !shareBoxPlaceholder.isEmpty()) return shareBoxPlaceholder;
 		final String defaultLabelKey = "forum.share.inputfield.label.default";
