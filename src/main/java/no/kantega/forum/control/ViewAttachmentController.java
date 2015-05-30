@@ -65,6 +65,7 @@ public class ViewAttachmentController {
             } else {
                 out.write(attachment.getData());
             }
+            out.flush();
         } else {
             log.error("Attachment with id {} not found", attachmentId);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
