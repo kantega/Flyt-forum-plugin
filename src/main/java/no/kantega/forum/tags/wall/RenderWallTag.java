@@ -107,10 +107,12 @@ public class RenderWallTag extends SimpleTagSupport {
                 request.setAttribute("forumCategory", category);
                 boolean canView = false;
 
-                for (Forum forum : category.getForums()) {
-                    canView |= permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forum);
-                }
-                request.setAttribute("userCanViewForum", canView);
+				if (category != null) {
+					for (Forum forum : category.getForums()) {
+                        canView |= permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forum);
+                    }
+				}
+				request.setAttribute("userCanViewForum", canView);
 
 			}
 
