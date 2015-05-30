@@ -93,11 +93,16 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     animation: fadeIn 150ms linear;
 }
 
+.oa-forum-underlay {
+    display: table;
+    width: 100%;
+}
+
 .oa-forum-image-container {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
     z-index: 9999;
-    position: fixed;
-    top: 50%;
-    left: 50%;
     -webkit-animation: fadeInDown 150ms linear;
     -moz-animation: fadeInDown 150ms linear;
     -o-animation: fadeInDown 150ms linear;

@@ -434,7 +434,8 @@ $(document).ready(function(){
             container = document.createElement("div"),
             image = document.createElement("img"),
             close = document.createElement("a"),
-            download = document.createElement("a");
+            download = document.createElement("a"),
+            underlay = document.createElement("div");
 
         var spinnerOptions = {
             lines: 11,
@@ -447,6 +448,7 @@ $(document).ready(function(){
 
         container.className = "oa-forum-image-container";
         overlay.className = "oa-forum-overlay";
+        underlay.className = "oa-forum-underlay";
 
         image.className = "oa-forum-image-enlarged";
         image.src = this.getAttribute("data-download");
@@ -459,6 +461,8 @@ $(document).ready(function(){
         close.innerHTML = "Lukk";
         close.className = "oa-forum-image-close oa-forum-image-button";
 
+        overlay.appendChild(underlay);
+
         container.appendChild(close);
         container.appendChild(download);
         container.appendChild(image);
@@ -468,10 +472,19 @@ $(document).ready(function(){
         document.body.appendChild(overlay);
 
         image.onload = function() {
-            container.style.marginLeft = (this.width / 2) * -1 + "px";
-            container.style.marginTop = (this.height / 2) * -1 + "px";
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            underlay.style.width = vw + "px";
+            underlay.style.height = vh + "px";
+
+            container.style.maxWidth = vw + "px";
+            container.style.maxHeight = vh + "px";
+
+            image.style.maxWidth = (vw / 100) * 90 + "px";
+            image.style.maxHeight = (vh / 100) * 90 + "px";
+
             imageSpinner.stop();
-            document.body.appendChild(container);
+            underlay.appendChild(container);
         };
 
         $(close).on("click", function(e) {
