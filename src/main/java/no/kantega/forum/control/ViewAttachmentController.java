@@ -60,6 +60,7 @@ public class ViewAttachmentController {
             source.setData(attachment.getData());
             source.setFilename(attachment.getFileName());
             source.setId((int) attachmentId);
+            source.setLastModified(attachment.getCreated());
             if (mimeType.contains("image")) {
                 handleImage(width, height, cropping, request, response, out, mimeType, source);
             } else {

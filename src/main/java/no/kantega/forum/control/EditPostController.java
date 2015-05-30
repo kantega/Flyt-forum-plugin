@@ -351,11 +351,12 @@ public class EditPostController extends AbstractForumFormController {
             MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
             int fileNo = 1;
             MultipartFile file = mRequest.getFile("attachment" + fileNo);
+            Date now = new Date();
             while (file != null && file.getSize() > 0) {
                 String mimeType = file.getContentType();
                 if (mimeType.contains("image") || isAnAllowedFileExtension(file.getOriginalFilename())) {
                     Attachment attachment = new Attachment();
-
+                    attachment.setCreated(now);
                     byte[] bytes = file.getBytes();
                     long size = file.getSize();
                     String filename = file.getOriginalFilename();
