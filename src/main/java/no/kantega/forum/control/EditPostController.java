@@ -29,7 +29,6 @@ import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -68,12 +67,11 @@ public class EditPostController extends AbstractForumFormController {
     private ForumDao dao;
     private UserProfileManager userProfileManager;
 
-    private int maxImageWidth = 1024;
-    private int maxImageHeight = 768;
+    private int defaultMaxImageWidth = 1024;
+    private int defaultMaxImageHeight = 768;
     private String imageFormat = "jpg";
     private ForumPostService service;
     private ImageEditor imageEditor;
-    @Autowired
     private SystemConfiguration configuration;
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
@@ -371,11 +369,13 @@ public class EditPostController extends AbstractForumFormController {
                             int width = ii.getWidth();
                             int height = ii.getHeight();
 
+                            int maxImageWidth = configuration.getInt("forum.maxImageWidth", this.defaultMaxImageWidth);
+                            int maxImageHeight = configuration.getInt("forum.maxImageHeight", this.defaultMaxImageHeight);
                             if (width > maxImageWidth && height > maxImageHeight) {
                                 Multimedia source = new Multimedia();
                                 source.setData(bytes);
                                 source.setFilename(attachment.getFileName());
-                                Multimedia multimedia = imageEditor.resizeMultimedia(source, width, height);
+                                Multimedia multimedia = imageEditor.resizeMultimedia(source, maxImageWidth, maxImageHeight);
 
                                 bytes = multimedia.getData();
                                 size = bytes.length;
@@ -491,5 +491,9 @@ public class EditPostController extends AbstractForumFormController {
 
     public void setImageEditor(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;
+    }
+
+    public void setConfiguration(SystemConfiguration configuration) {
+        this.configuration = configuration;
     }
 }

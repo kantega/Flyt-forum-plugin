@@ -128,6 +128,7 @@
         <property name="userProfileManager" ref="userProfileManager"/>
         <property name="forumPostService" ref="forumPostService"/>
         <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="configuration" ref="systemConfiguration"/>
     </bean>
 
     <bean id="approvePostController" class="no.kantega.forum.control.ApprovePostController">
