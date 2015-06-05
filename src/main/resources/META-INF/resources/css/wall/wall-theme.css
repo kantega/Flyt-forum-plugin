@@ -59,6 +59,12 @@
     height:16px;
     background:url("../../bitmaps/forum/forum_delete.png") no-repeat 0 0;
 }
+.oa-forum-mediablock .oa-forum-editPost, .oa-forum-mediablock .oa-forum-editThread{
+    background-size: 100% 100%;
+    width:16px;
+    height:16px;
+    background:url("../../bitmaps/forum/forum_edit.png") no-repeat 0 0;
+}
 .oa-forum-mediablock .oa-forum-body{
     margin:0;
     line-height: 1.5;

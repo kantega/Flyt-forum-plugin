@@ -45,6 +45,12 @@ ul.oa-forum-tabs li {
     top: 0;
     display:block;
 }
+.oa-forum-mediablock .oa-forum-editPost, .oa-forum-mediablock .oa-forum-editThread{
+    position: absolute;
+    right: 25px;
+    top: 0;
+    display:block;
+}
 
 a.oa-forum-iconLink{text-decoration:none;}
 a.oa-forum-iconLink img{vertical-align:middle; padding-right: 5px;}
