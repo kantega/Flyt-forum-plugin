@@ -72,6 +72,9 @@
                 </c:choose>
             </p>
         </div>
+        <div class="oa-forum-editBody oa-forum-hidden">
+            <textarea rows="1" cols="40" name="body"><form:escapeBody javaScriptEscape="false" htmlEscape="false">${post.body}</form:escapeBody></textarea>
+        </div>
         <c:if test="${not empty post.attachments}">
             <div class="oa-forum-attachments">
                 <c:forEach items="${post.attachments}" var="attachment" varStatus="status">
@@ -90,6 +93,18 @@
                 </c:forEach>
             </div>
         </c:if>
+        <div class="oa-forum-edit oa-forum-hidden">
+            <c:choose>
+                <c:when test="${postsStatus.index == 0}">
+                    <button class="oa-forum-post-cancelEditThread">Avbryt</button>
+                    <button class="oa-forum-post-submitEditThread">Lagre</button>
+                </c:when>
+                <c:otherwise>
+                    <button class="oa-forum-post-cancelEditPost">Avbryt</button>
+                    <button class="oa-forum-post-submitEditPost">Lagre</button>
+                </c:otherwise>
+            </c:choose>
+        </div>
         <div class="oa-forum-metadata">
 
             <c:if test="${fn:length(thread.posts) == 1}">
