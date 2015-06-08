@@ -119,8 +119,8 @@
 
             <span class="oa-forum-divider">&nbsp;&sdot;&nbsp;</span>
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
-            <c:if test="${post.postDate != post.modifiedDate}">
-                redigert for <span class="oa-forum-date oa-forum-date-modified" date-data="<fmt:formatDate value="${post.modifiedDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.modifiedDate}" pattern="dd.MM.yyyy HH:mm"/></span>
+            <c:if test="${not empty post.modifiedDate && (post.postDate != post.modifiedDate)}">
+                redigert: <span class="oa-forum-date oa-forum-date-modified" date-data="<fmt:formatDate value="${post.modifiedDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.modifiedDate}" pattern="dd.MM.yyyy HH:mm"/></span>
             </c:if>
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
                 i <a href="?forumId=${post.thread.forum.id}"><span class="oa-forum-category">${post.thread.forum.name}</span></a>
