@@ -55,6 +55,8 @@ public class EditThreadController extends AbstractForumFormController {
             return new ModelAndView(new RedirectView("nospam"));
         }
 
+        t.setModifiedDate(new Date());
+
         dao.saveOrUpdate(t);
         return new ModelAndView(new RedirectView(request.getContextPath() + "/forum/viewforum?forumId="+t.getForum().getId()));
     }

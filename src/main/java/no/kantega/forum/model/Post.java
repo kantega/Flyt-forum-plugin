@@ -21,6 +21,8 @@ public class Post implements Comparable<Post>{
 
     private List<Post> replyPosts;
 
+    private Date modifiedDate;
+
     public long getId() {
         return id;
     }
@@ -123,6 +125,14 @@ public class Post implements Comparable<Post>{
 
     public void setReplyPosts(List<Post> replyPosts) {
         this.replyPosts = replyPosts;
+    }
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
     public boolean isContentComment() {

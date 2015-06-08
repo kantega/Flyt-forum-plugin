@@ -18,6 +18,7 @@ public class ForumThread {
     private int numNewPosts = 0;
     private Set topics;
     private Date lastPostDate;
+    private Date modifiedDate;
 
     public long getId() {
         return id;
@@ -133,6 +134,14 @@ public class ForumThread {
 
     public void setLastPostDate(Date lastPostDate) {
         this.lastPostDate = lastPostDate;
+    }
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
     public boolean isContentComment() {

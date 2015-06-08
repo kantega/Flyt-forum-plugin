@@ -362,13 +362,6 @@ $(document).ready(function(){
         post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editPost").toggleClass("oa-forum-hidden");
     });
 
-    // Handles editing threads
-    $forumThreads.on("click", ".oa-forum-editThread, .oa-forum-post-cancelEditThread", function(event) {
-        event.preventDefault();
-        var post = $(this).closest(".oa-forum-post");
-        post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editThread").toggleClass("oa-forum-hidden");
-    });//*/
-
     $forumThreads.on("click", ".oa-forum-post-submitEditPost", function() {
         event.preventDefault();
         var post = $(this).closest(".oa-forum-post");
@@ -381,32 +374,10 @@ $(document).ready(function(){
           data: {
             body: body
           }
-        }).done(function(){
-            post.find(".oa-forum-body p").html(body);
-            post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editPost").toggleClass("oa-forum-hidden");
+        }).done(function(content){
+            post.replaceWith(content);
         }).fail(function(){
             post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editPost").toggleClass("oa-forum-hidden");
-        });
-
-    });
-
-    $forumThreads.on("click", ".oa-forum-post-submitEditThread", function() {
-        event.preventDefault();
-        var post = $(this).closest(".oa-forum-post");
-        var action = post.find(".oa-forum-editThread").attr("href");
-        var editBody = post.find(".oa-forum-editBody");
-        var body = editBody.find("[name=body]").val();
-        $.ajax({
-          type: "POST",
-          url: action,
-          data: {
-            body: body
-          }
-        }).done(function(){
-            post.find(".oa-forum-body p").html(body);
-            post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editThread").toggleClass("oa-forum-hidden");
-        }).fail(function(){
-            post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editThread").toggleClass("oa-forum-hidden");
         });
 
     });

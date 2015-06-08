@@ -30,18 +30,10 @@
             <a href="${userProfileUrl}"><c:out value="${post.author}"/>:</a>
         </div>
 
-        <c:choose>
-            <c:when test="${postsStatus.index == 0}">
-                <forum:haspermisson permission="EDIT_THREAD" object="${post.thread}">
-                    <a class="oa-forum-editThread" href="${pageContext.request.contextPath}/forum/editthread?threadId=${post.thread.id}"></a>
-                </forum:haspermisson>
-            </c:when>
-            <c:otherwise>
+
                 <forum:haspermisson permission="EDIT_POST" object="${post}">
                     <a class="oa-forum-editPost" href="${pageContext.request.contextPath}/forum/editpost?postId=${post.id}"></a>
                 </forum:haspermisson>
-            </c:otherwise>
-        </c:choose>
         <c:choose>
             <c:when test="${postsStatus.index == 0}">
                 <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
@@ -94,16 +86,8 @@
             </div>
         </c:if>
         <div class="oa-forum-edit oa-forum-hidden">
-            <c:choose>
-                <c:when test="${postsStatus.index == 0}">
-                    <button class="oa-forum-post-cancelEditThread">Avbryt</button>
-                    <button class="oa-forum-post-submitEditThread">Lagre</button>
-                </c:when>
-                <c:otherwise>
-                    <button class="oa-forum-post-cancelEditPost">Avbryt</button>
-                    <button class="oa-forum-post-submitEditPost">Lagre</button>
-                </c:otherwise>
-            </c:choose>
+            <button class="oa-forum-post-cancelEditPost">Avbryt</button>
+            <button class="oa-forum-post-submitEditPost">Lagre</button>
         </div>
         <div class="oa-forum-metadata">
 
@@ -135,7 +119,9 @@
 
             <span class="oa-forum-divider">&nbsp;&sdot;&nbsp;</span>
             <span class="oa-forum-date" date-data="<fmt:formatDate value="${post.postDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.postDate}" pattern="dd.MM.yyyy HH:mm"/></span>
-
+            <c:if test="${post.postDate != post.modifiedDate}">
+                redigert for <span class="oa-forum-date oa-forum-date-modified" date-data="<fmt:formatDate value="${post.modifiedDate}" pattern="yyyy-MM-dd'T'HH:mm:ss"/>"><fmt:formatDate value="${post.modifiedDate}" pattern="dd.MM.yyyy HH:mm"/></span>
+            </c:if>
             <c:if test="${postsStatus.first && post.thread.forum.id != hiddenForumId}">
                 i <a href="?forumId=${post.thread.forum.id}"><span class="oa-forum-category">${post.thread.forum.name}</span></a>
             </c:if>

@@ -244,10 +244,15 @@ public class EditPostController extends AbstractForumFormController {
     }
 
     protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object object, BindException bindException) throws Exception {
+        Date now = new Date();
 
         Post p = (Post) object;
         if (ForumUtil.isSpam(request)) {
             return new ModelAndView("nospam");
+        }
+
+        if (p != null) {
+            p.setModifiedDate(now);
         }
 
         ResolvedUser user = userResolver.resolveUser(request);
@@ -268,6 +273,7 @@ public class EditPostController extends AbstractForumFormController {
             p.getThread().setName(p.getSubject());
             p.getThread().setNumPosts(0);
             p.getThread().setApproved(approved);
+            p.getThread().setModifiedDate(now);
             dao.saveOrUpdate(p.getThread());
         }
 

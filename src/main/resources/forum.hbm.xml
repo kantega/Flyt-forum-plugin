@@ -64,6 +64,7 @@
         <property name="approved" not-null="false" type="yes_no"/>
 
         <property name="lastPostDate" type="timestamp"/>
+        <property name="modifiedDate" type="timestamp"/>
     </class>
 
     <class name="Post" table="forum_post">
@@ -85,6 +86,7 @@
         <property name="approved" not-null="false" type="yes_no"/>
         <property name="ratingScore" type="float"/>
         <property name="numberOfRatings" type="integer"/>
+        <property name="modifiedDate" type="timestamp"/>
     </class>
 
     <class name="Attachment" table="forum_attachment">
