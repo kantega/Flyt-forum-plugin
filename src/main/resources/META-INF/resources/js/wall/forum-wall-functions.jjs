@@ -362,7 +362,7 @@ $(document).ready(function(){
         post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editPost").toggleClass("oa-forum-hidden");
     });
 
-    $forumThreads.on("click", ".oa-forum-post-submitEditPost", function() {
+    $forumThreads.on("click", ".oa-forum-post-submitEditPost", function(event) {
         event.preventDefault();
         var post = $(this).closest(".oa-forum-post");
         var action = post.find(".oa-forum-editPost").attr("href");
