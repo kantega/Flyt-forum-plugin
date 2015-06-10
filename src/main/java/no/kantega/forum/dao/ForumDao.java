@@ -1,17 +1,28 @@
 package no.kantega.forum.dao;
 
-import no.kantega.forum.model.*;
+import no.kantega.forum.model.Attachment;
+import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ForumDao {
     private HibernateTemplate template;
@@ -659,5 +670,116 @@ public class ForumDao {
         });
 
         return n.intValue();
+    }
+
+    /**
+     * Get posts count in threads where participant has posted.
+     * Posts count does not include the participant's own posts
+     * @param participant The participant (userId)
+     * @param period The period in time
+     * @return The thread identifiers
+     */
+    public Long getPostCountInThreadsWithActivityInPeriodWhereParticipantHasPosted(final String participant, final Interval period) {
+        Long count = (Long) template.execute(new HibernateCallback() {
+            @Override
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT COUNT(*) AS result FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
+
+                query.setString(0, participant);
+                query.setString(1, participant);
+
+                Timestamp start = toTimestamp(period.getStart());
+                query.setTimestamp(2, start);
+                query.setTimestamp(3, start);
+
+                Timestamp end = toTimestamp(period.getEnd());
+                query.setTimestamp(4, end);
+                query.setTimestamp(5, end);
+
+                query.addScalar("result", Hibernate.LONG);
+
+                return query.uniqueResult();
+            }
+        });
+        return count;
+    }
+
+    public List<Post> getPostsInThreadsWithActivityInPeriodWhereParticipantHasPosted(final String participant, final Interval period) {
+        List<Post> posts = (List<Post>) template.execute(new HibernateCallback<List<Post>>() {
+            @Override
+            public List<Post> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT op.* FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
+
+                query.setString(0, participant);
+                query.setString(1, participant);
+
+                Timestamp start = toTimestamp(period.getStart());
+                query.setTimestamp(2, start);
+                query.setTimestamp(3, start);
+
+                Timestamp end = toTimestamp(period.getEnd());
+                query.setTimestamp(4, end);
+                query.setTimestamp(5, end);
+
+                query.addEntity(Post.class);
+
+                return query.list();
+            }
+        });
+        return posts;
+    }
+
+    public Long getThreadCountWithActivityInPeriodWhereParticipantHasPosted(final String participant, final Interval period) {
+        Long count = (Long) template.execute(new HibernateCallback() {
+            @Override
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT COUNT(DISTINCT op.threadId) AS result FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
+
+                query.setString(0, participant);
+                query.setString(1, participant);
+
+                Timestamp start = toTimestamp(period.getStart());
+                query.setTimestamp(2, start);
+                query.setTimestamp(3, start);
+
+                Timestamp end = toTimestamp(period.getEnd());
+                query.setTimestamp(4, end);
+                query.setTimestamp(5, end);
+
+                query.addScalar("result", Hibernate.LONG);
+
+                return query.uniqueResult();
+            }
+        });
+        return count;
+    }
+
+    public List<ForumThread> getThreadsWithActivityInPeriodWhereParticipantHasPosted(final String participant, final Interval period) {
+        List<ForumThread> count = (List<ForumThread>) template.execute(new HibernateCallback<List<ForumThread>>() {
+            @Override
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT * FROM forum_thread t WHERE t.threadId IN (SELECT DISTINCT op.threadId FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?))");
+
+                query.setString(0, participant);
+                query.setString(1, participant);
+
+                Timestamp start = toTimestamp(period.getStart());
+                query.setTimestamp(2, start);
+                query.setTimestamp(3, start);
+
+                Timestamp end = toTimestamp(period.getEnd());
+                query.setTimestamp(4, end);
+                query.setTimestamp(5, end);
+
+                query.addEntity(ForumThread.class);
+
+                return query.list();
+            }
+        });
+        return count;
+    }
+
+    private Timestamp toTimestamp(DateTime dateTime) {
+        return dateTime != null ? new Timestamp(dateTime.getMillis()) : null;
     }
 }
