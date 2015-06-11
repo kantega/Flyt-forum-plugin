@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
+            http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
        default-autowire="byName">
 
     <cache:annotation-driven cache-manager="cacheManager" />
+    <mvc:annotation-driven />
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="urlMap">
@@ -184,6 +186,12 @@
     <bean id="numberOfNewThreadsInForumController" class="no.kantega.forum.control.ajax.NumberOfNewThreadsInForumController">
         <property name="jsonView" ref="aksessJsonView"/>
         <property name="forumDao" ref="forumDao"/>
+    </bean>
+
+    <bean id="activityForumController" class="no.kantega.forum.control.ajax.ActivityForumController">
+        <property name="forumDao" ref="forumDao"/>
+        <property name="userResolver" ref="userResolver"/>
+        <property name="permissionManager" ref="forumPermissionManager"/>
     </bean>
 
     <bean name="userProfileManager" class="no.kantega.modules.user.CachedUserProfileManager">
