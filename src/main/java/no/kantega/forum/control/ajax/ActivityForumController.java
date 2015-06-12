@@ -55,9 +55,7 @@ public class ActivityForumController {
 
             return function.accept(username, new Interval(from, to));
         } catch (Fault fault) {
-            Map<String, Object> model = new LinkedHashMap<>();
-            model.put("messages", fault.getMessages());
-            return new ResponseEntity<Object>(model, HttpStatus.valueOf(fault.getStatusCode()));
+            return handleFault(fault);
         }
 
     }
@@ -110,6 +108,38 @@ public class ActivityForumController {
         });
     }
 
+    @RequestMapping(value = "/latestTimestamp", method = RequestMethod.GET)
+    public ResponseEntity<Object> latestTimestamp(HttpServletRequest request) {
+        try {
+            String username = getUsername(request, userResolver);
+            if (username == null) {
+                throw new Fault(403, getLocalizedMessage(BASE_NAME, "forbidden"));
+            }
+            Instant latestPostDate = forumDao.getLatestPostDateOfPosts(username);
+            if (latestPostDate == null) { // No posts were made by this user
+                return new  ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+            }
+            Instant latestModifiedDate = forumDao.getLatestModifiedDateTimeOfPosts(username);
+            Instant latestTimestamp = null;
+            if (latestModifiedDate == null) { // No posts were edited by this user
+                    latestTimestamp = latestPostDate;
+            } else if (latestModifiedDate.isAfter(latestPostDate)) {
+                latestTimestamp = latestModifiedDate;
+            } else {
+                latestTimestamp = latestPostDate;
+            }
+            return new ResponseEntity<Object>(toString(latestTimestamp), HttpStatus.OK);
+        } catch (Fault fault) {
+            return handleFault(fault);
+        }
+    }
+
+    private ResponseEntity<Object> handleFault(Fault fault) {
+        Map<String, Object> model = new LinkedHashMap<>();
+        model.put("messages", fault.getMessages());
+        return new ResponseEntity<Object>(model, HttpStatus.valueOf(fault.getStatusCode()));
+    }
+
     public void setForumDao(ForumDao forumDao) {
         this.forumDao = forumDao;
     }
@@ -158,6 +188,10 @@ public class ActivityForumController {
             }
         }
         return _default;
+    }
+
+    private String toString(Instant instant) {
+        return instant != null ? String.format("\"%s\"", instant.toString()) : null;
     }
 
     private String getLocalizedMessage(String baseName, String key, String... arguments) {

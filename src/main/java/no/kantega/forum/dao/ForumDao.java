@@ -12,6 +12,7 @@ import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -779,7 +780,35 @@ public class ForumDao {
         return count;
     }
 
+    public Instant getLatestPostDateOfPosts(final String username) {
+        return template.execute(new HibernateCallback<Instant>() {
+            @Override
+            public Instant doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT MAX(p.postDate) as postDate FROM forum_post p WHERE p.owner = ?");
+                query.setString(0, username);
+                query.addScalar("postDate", Hibernate.TIMESTAMP);
+                return toInstant((Timestamp) query.uniqueResult());
+            }
+        });
+    }
+
+    public Instant getLatestModifiedDateTimeOfPosts(final String username) {
+        return template.execute(new HibernateCallback<Instant>() {
+            @Override
+            public Instant doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT MAX(p.modifiedDate) as modifiedDate FROM forum_post p WHERE p.owner = ?");
+                query.setString(0, username);
+                query.addScalar("modifiedDate", Hibernate.TIMESTAMP);
+                return toInstant((Timestamp) query.uniqueResult());
+            }
+        });
+    }
+
     private Timestamp toTimestamp(DateTime dateTime) {
         return dateTime != null ? new Timestamp(dateTime.getMillis()) : null;
+    }
+
+    private Instant toInstant(Timestamp timestamp) {
+        return timestamp != null ? new Instant(timestamp.getTime()) : null;
     }
 }
