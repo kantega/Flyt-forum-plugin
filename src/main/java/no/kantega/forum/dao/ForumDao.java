@@ -684,7 +684,7 @@ public class ForumDao {
         Long count = (Long) template.execute(new HibernateCallback() {
             @Override
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery query = session.createSQLQuery("SELECT COUNT(*) AS result FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
+                SQLQuery query = session.createSQLQuery("SELECT COUNT(*) AS result FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_post pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
 
                 query.setString(0, participant);
                 query.setString(1, participant);
@@ -709,7 +709,7 @@ public class ForumDao {
         List<Post> posts = (List<Post>) template.execute(new HibernateCallback<List<Post>>() {
             @Override
             public List<Post> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery query = session.createSQLQuery("SELECT op.* FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
+                SQLQuery query = session.createSQLQuery("SELECT op.* FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_post pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
 
                 query.setString(0, participant);
                 query.setString(1, participant);
@@ -734,7 +734,7 @@ public class ForumDao {
         Long count = (Long) template.execute(new HibernateCallback() {
             @Override
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery query = session.createSQLQuery("SELECT COUNT(DISTINCT op.threadId) AS result FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
+                SQLQuery query = session.createSQLQuery("SELECT COUNT(DISTINCT op.threadId) AS result FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_post pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?)");
 
                 query.setString(0, participant);
                 query.setString(1, participant);
@@ -759,7 +759,7 @@ public class ForumDao {
         List<ForumThread> count = (List<ForumThread>) template.execute(new HibernateCallback<List<ForumThread>>() {
             @Override
             public List<ForumThread> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery query = session.createSQLQuery("SELECT * FROM forum_thread t WHERE t.threadId IN (SELECT DISTINCT op.threadId FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_thread pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?))");
+                SQLQuery query = session.createSQLQuery("SELECT * FROM forum_thread t WHERE t.threadId IN (SELECT DISTINCT op.threadId FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_post pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?))");
 
                 query.setString(0, participant);
                 query.setString(1, participant);
