@@ -17,10 +17,13 @@ import org.joda.time.Interval;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -756,11 +759,11 @@ public class ForumDao {
         return count;
     }
 
-    public List<ForumThread> getThreadsWithActivityInPeriodWhereParticipantHasPosted(final String participant, final Interval period) {
-        List<ForumThread> count = (List<ForumThread>) template.execute(new HibernateCallback<List<ForumThread>>() {
+    public List<Long> getThreadsWithActivityInPeriodWhereParticipantHasPosted(final String participant, final Interval period) {
+        List<Long> count = (List<Long>) template.execute(new HibernateCallback<List<Long>>() {
             @Override
-            public List<ForumThread> doInHibernate(Session session) throws HibernateException, SQLException {
-                SQLQuery query = session.createSQLQuery("SELECT * FROM forum_thread t WHERE t.threadId IN (SELECT DISTINCT op.threadId FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_post pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?))");
+            public List<Long> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT t.threadId as threadId FROM forum_thread t WHERE t.threadId IN (SELECT DISTINCT op.threadId FROM forum_post op WHERE op.threadId IN (SELECT DISTINCT pp.threadId FROM forum_post pp WHERE pp.owner = ?) AND op.owner <> ? AND (op.postDate > ? OR op.modifiedDate > ?) AND (op.postDate < ? OR op.modifiedDate < ?))");
 
                 query.setString(0, participant);
                 query.setString(1, participant);
@@ -773,7 +776,7 @@ public class ForumDao {
                 query.setTimestamp(4, end);
                 query.setTimestamp(5, end);
 
-                query.addEntity(ForumThread.class);
+                query.addScalar("threadId", Hibernate.LONG);
 
                 return query.list();
             }
@@ -823,5 +826,57 @@ public class ForumDao {
 
     private Instant toInstant(Timestamp timestamp) {
         return timestamp != null ? new Instant(timestamp.getTime()) : null;
+    }
+
+    public List<ForumThread> getThreads(final String participant, final int offset, final int limit) {
+        List<ForumThread> count = (List<ForumThread>) template.execute(new HibernateCallback<List<ForumThread>>() {
+            @Override
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT\n" +
+                        "  t.threadId, t.name, t.description,\n" +
+                        "  t.forumId, t.createdDate, t.numPosts, t.owner, t.contentId,\n" +
+                        "  t.approved, MAX(p.postDate) AS lastPostDate, MAX(p.modifiedDate) AS modifiedDate\n" +
+                        "FROM\n" +
+                        "  forum_post p\n" +
+                        "  JOIN\n" +
+                        "    forum_thread t\n" +
+                        "  ON p.threadId = t.threadId\n" +
+                        "WHERE\n" +
+                        "  p.threadId IN (SELECT DISTINCT a.threadId FROM forum_post a WHERE a.owner = ?)\n" +
+                        "GROUP BY \n" +
+                        "  t.threadId, t.name, t.description, t.forumId, t.createdDate, \n" +
+                        "  t.numPosts, t.owner, t.contentId, t.approved, t.lastPostDate, t.modifiedDate\n" +
+                        "ORDER BY modifiedDate DESC, lastPostDate DESC");
+
+                query.setString(0, participant);
+                query.setFetchSize(limit);
+
+                query.addEntity(ForumThread.class);
+
+                Iterator<ForumThread> forumThreads = query.list().iterator();
+                List<ForumThread> page = new ArrayList<ForumThread>();
+                int start = offset;
+                int end = offset + limit;
+                int at  = 0;
+                while (forumThreads.hasNext() && at < end) {
+                    if (at >= start) {
+                        page.add(forumThreads.next());
+                    } else {
+                        forumThreads.next();
+                    }
+                    at++;
+                }
+                return page;
+            }
+        });
+        return count;
+    }
+
+    private void setString(PreparedStatement statement, int index, String string) throws SQLException {
+        statement.setString(index, string);
+    }
+
+    private BigDecimal toBigDecimal(Integer integer) {
+        return integer != null ? BigDecimal.valueOf(integer.longValue()) : null;
     }
 }

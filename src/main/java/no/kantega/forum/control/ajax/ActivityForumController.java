@@ -99,20 +99,47 @@ public class ActivityForumController {
 
     @RequestMapping(value = "/threads", method = RequestMethod.GET)
     public ResponseEntity<Object> threads(HttpServletRequest request) {
-        return handleRequest(request, new Function() {
-            @Override
-            public ResponseEntity<Object> accept(String username, Interval interval) throws Fault {
-                List<Map<String,Object>> forumThreads = new ArrayList<>();
-                for (ForumThread forumThread : forumDao.getThreadsWithActivityInPeriodWhereParticipantHasPosted(username, interval)) {
-                    if (permissionManager.hasPermission(username, Permission.VIEW, forumThread)) {
-                        Map<String, Object> basicForumThread = getBasicThread(forumThread);
-                        basicForumThread.put("firstPost", getFirstPostInThread(forumThread));
-                        forumThreads.add(basicForumThread);
-                    }
-                }
-                return new ResponseEntity<Object>(forumThreads, HttpStatus.OK);
+        try {
+            String username = getUsername(request, userResolver);
+            if (username == null) {
+                throw new Fault(403, getLocalizedMessage(BASE_NAME, "forbidden"));
             }
-        });
+
+            Instant from = toInstant(request.getParameter("from"), ISO_DATE_TIME, Instant.now());
+            Instant to = toInstant(request.getParameter("to"), ISO_DATE_TIME, Instant.now());
+
+            Integer skip = toInteger(request.getParameter("skip"), 0);
+            Integer top = toInteger(request.getParameter("top"), Integer.MAX_VALUE);
+
+            Interval interval = new Interval(from, to);
+            List<Map<String,Object>> forumThreads = new ArrayList<>();
+            List<Long> activityThreadIds = forumDao.getThreadsWithActivityInPeriodWhereParticipantHasPosted(username, interval);
+
+            for (ForumThread forumThread : forumDao.getThreads(username, skip, top)) {
+                if (permissionManager.hasPermission(username, Permission.VIEW, forumThread)) {
+                    Map<String, Object> basicForumThread = getBasicThread(forumThread);
+                    basicForumThread.put("firstPost", getFirstPostInThread(forumThread));
+                    basicForumThread.put("activity", activityThreadIds.contains(forumThread.getId()));
+                    forumThreads.add(basicForumThread);
+                }
+            }
+            return new ResponseEntity<Object>(forumThreads, HttpStatus.OK);
+        } catch (Fault fault) {
+            return handleFault(fault);
+        }
+    }
+
+    private Integer toInteger(String value, int _default) {
+        if (value != null) {
+            try {
+                _default = Integer.parseInt(value);
+            } catch (NumberFormatException cause) {
+                throw new Fault(400, getLocalizedMessage(BASE_NAME, "integer.parse.NumberFormatException", value));
+            } catch (Exception cause) {
+                throw new Fault(500, getLocalizedMessage(BASE_NAME, "integer.parse.Exception", value));
+            }
+        }
+        return _default;
     }
 
     @RequestMapping(value = "/thread", method = RequestMethod.GET)
