@@ -23,14 +23,41 @@
             serverTime = serverDate.getTime();
         }
 
-        function parseDate(dateValue) {
-            var dateComp = dateValue.split("T");
-            if (dateComp.length == 2) {
-                var ymd = dateComp[0].split("-");
-                var mhs = dateComp[1].split(":");
-                if (ymd.length == 3 && mhs.length == 3) {
-                    return new Date(ymd[0], ymd[1]-1, ymd[2], mhs[0], mhs[1], mhs[2]);
+        function portability(dateValue) {
+            var day, tz,
+                rx=/^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
+                p= rx.exec(dateValue) || [];
+            if(p[1]){
+                day= p[1].split(/\D/);
+                for(var i= 0, L= day.length; i<L; i++){
+                    day[i]= parseInt(day[i], 10) || 0;
                 }
+                day[1]-= 1;
+                day= new Date(Date.UTC.apply(Date, day));
+                if(!day.getDate()) return NaN;
+                if(p[5]){
+                    tz= (parseInt(p[5], 10)*60);
+                    if(p[6]) tz+= parseInt(p[6], 10);
+                    if(p[4]== '+') tz*= -1;
+                    if(tz) day.setUTCMinutes(day.getUTCMinutes()+ tz);
+                }
+                return day;
+            }
+            return NaN;
+        }
+
+        function parseDate(dateValue) {
+            var D = null;
+            try {
+                D = new Date(dateValue);
+            } catch (exception) {}
+            if (!D) {
+                try {
+                    D = portability(dateValue);
+                } catch (exception) {}
+            }
+            if (D) {
+                return D;
             }
             return null;
         }
