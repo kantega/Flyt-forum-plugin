@@ -1,10 +1,13 @@
 package no.kantega.forum.control.ajax;
 
 import no.kantega.forum.dao.ForumDao;
-import no.kantega.forum.model.BasicForumThread;
+import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.BasicPost;
+import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
+import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
@@ -99,13 +102,43 @@ public class ActivityForumController {
         return handleRequest(request, new Function() {
             @Override
             public ResponseEntity<Object> accept(String username, Interval interval) throws Fault {
-                List<BasicForumThread> forumThreads = new ArrayList<>();
+                List<Map<String,Object>> forumThreads = new ArrayList<>();
                 for (ForumThread forumThread : forumDao.getThreadsWithActivityInPeriodWhereParticipantHasPosted(username, interval)) {
-                    forumThreads.add(new BasicForumThread(forumThread));
+                    if (permissionManager.hasPermission(username, Permission.VIEW, forumThread)) {
+                        Map<String, Object> basicForumThread = getBasicThread(forumThread);
+                        basicForumThread.put("firstPost", getFirstPostInThread(forumThread));
+                        forumThreads.add(basicForumThread);
+                    }
                 }
                 return new ResponseEntity<Object>(forumThreads, HttpStatus.OK);
             }
         });
+    }
+
+    @RequestMapping(value = "/thread", method = RequestMethod.GET)
+    public ResponseEntity<Object> thread(HttpServletRequest request) {
+        try {
+            String username = getUsername(request, userResolver);
+            if (username == null) {
+                throw new Fault(403, getLocalizedMessage(BASE_NAME, "forbidden"));
+            }
+            Long threadId = toLong(request.getParameter("threadId"), null);
+            if (threadId == null) {
+                throw new Fault(400, getLocalizedMessage(BASE_NAME, "parameter.mandatory", "threadId"));
+            }
+            ForumThread forumThread = forumDao.getPopulatedThread(threadId);
+            if (forumThread == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            if (!permissionManager.hasPermission(username, Permission.VIEW, forumThread)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            Map<String, Object> basicForumThread = getBasicThread(forumThread);
+            basicForumThread.put("firstPost", getFirstPostInThread(forumThread));
+            return new ResponseEntity<Object>(basicForumThread, HttpStatus.OK);
+        } catch (Fault fault) {
+            return handleFault(fault);
+        }
     }
 
     @RequestMapping(value = "/latestTimestamp", method = RequestMethod.GET)
@@ -190,6 +223,19 @@ public class ActivityForumController {
         return _default;
     }
 
+    private Long toLong(String value, Long _default) {
+        if (value != null) {
+            try {
+                _default = Long.parseLong(value);
+            } catch (NumberFormatException cause) {
+                throw new Fault(400, getLocalizedMessage(BASE_NAME, "long.parse.NumberFormatException", value));
+            } catch (Exception cause) {
+                throw new Fault(500, getLocalizedMessage(BASE_NAME, "long.parse.Exception", value));
+            }
+        }
+        return _default;
+    }
+
     private String toString(Instant instant) {
         return instant != null ? String.format("\"%s\"", instant.toString()) : null;
     }
@@ -204,6 +250,166 @@ public class ActivityForumController {
         } catch (Exception cause2) {
             return key;
         }
+    }
+
+    private Map<String, Object> getBasicThread(ForumThread forumThread) {
+        Map<String,Object> model = new LinkedHashMap<>();
+        model.put("id", forumThread.getId());
+        model.put("name", forumThread.getName());
+        model.put("description", forumThread.getDescription());
+        Map<String,Object> basicForum = null;
+        try {
+            basicForum = getBasicForum(forumThread, forumThread.getForum());
+        } catch (Exception cause) {
+
+        }
+
+        model.put("forum", basicForum);
+        model.put("createdDate", forumThread.getCreatedDate());
+        model.put("numPosts", forumThread.getNumPosts());
+        Map<String,Object> lastBasicPost = null;
+        try {
+            lastBasicPost = getBasicPost(forumThread, forumThread.getLastPost());
+        } catch (Exception cause) {}
+        model.put("lastPost", lastBasicPost);
+        List<Map<String,Object>> basicPosts = null;
+        try {
+            for (Post post : forumThread.getPosts()) {
+                if (basicPosts == null) {
+                    basicPosts = new ArrayList<>();
+                }
+                Map<String, Object> basicPost = getBasicPost(forumThread, post);
+                basicPosts.add(basicPost);
+            }
+        } catch (Exception cause) {}
+        model.put("posts", basicPosts);
+        model.put("owner", forumThread.getOwner());
+        model.put("contentId", forumThread.getContentId());
+        model.put("isApproved", forumThread.isApproved());
+        model.put("numNewPosts", forumThread.getNumNewPosts());
+        model.put("lastPostDate", forumThread.getLastPost());
+        model.put("modifiedDate", forumThread.getModifiedDate());
+        return model;
+    }
+
+    private Map<String, Object> getBasicForum(ForumThread forumThread, Forum forum) {
+        Map<String,Object> basicForum = new LinkedHashMap<>();
+        basicForum.put("id", forum.getId());
+        Map<String,Object> basicForumCategory = null;
+        try {
+            basicForumCategory = getBasicForumCategory(forum, forum.getForumCategory());
+        } catch (Exception cause) {}
+        basicForum.put("forumCategory", basicForumCategory);
+        basicForum.put("name", forum.getName());
+        basicForum.put("description", forum.getDescription());
+        basicForum.put("numThreads", forum.getNumThreads());
+        basicForum.put("createdDate", forum.getCreatedDate());
+        Map<String,Object> lastBasicPost = null;
+        try {
+            lastBasicPost = getBasicPost(forumThread, forum.getLastPost());
+        } catch (Exception cause) {}
+        basicForum.put("lastPost", lastBasicPost);
+        basicForum.put("owner", forum.getOwner());
+        List<Long> threadIds = null;
+        try {
+            for (ForumThread ft : forum.getThreads()) {
+                if (threadIds == null) {
+                    threadIds = new ArrayList<>();
+                }
+                threadIds.add(ft.getId());
+            }
+        } catch (Exception cause) {}
+        basicForum.put("threads", threadIds);
+        basicForum.put("anonymousPostAllowed", forum.isAnonymousPostAllowed());
+        basicForum.put("attachmentsAllowed", forum.isAttachmentsAllowed());
+        basicForum.put("moderator", forum.getModerator());
+        List<String> groups = null;
+        try {
+            for (String group : forum.getGroups()) {
+                if (groups == null) {
+                    groups = new ArrayList<>();
+                }
+                groups.add(group);
+            }
+        } catch (Exception cause) {}
+        basicForum.put("groups", groups);
+        basicForum.put("numNewPosts", forum.getNumThreads());
+        return basicForum;
+    }
+
+    private Map<String, Object> getBasicForumCategory(Forum forum, ForumCategory forumCategory) {
+        Map<String,Object> basicForumCategory = new LinkedHashMap<>();
+        basicForumCategory.put("id", forumCategory.getId());
+        basicForumCategory.put("name", forumCategory.getName());
+        basicForumCategory.put("description", forumCategory.getDescription());
+        basicForumCategory.put("numForums", forumCategory.getNumForums());
+        basicForumCategory.put("createdDate", forumCategory.getCreatedDate());
+        basicForumCategory.put("owner", forumCategory.getOwner());
+        List<Long> forumIds = null;
+        try {
+            for (Forum f : forumCategory.getForums()) {
+                if (forumIds == null) {
+                    forumIds = new ArrayList<>();
+                }
+                forumIds.add(f.getId());
+            }
+        } catch (Exception cause) {}
+        basicForumCategory.put("forums", forumIds);
+        return basicForumCategory;
+    }
+
+    private Map<String, Object> getBasicPost(ForumThread forumThread, Post post) {
+        Map<String,Object> basicPost = new LinkedHashMap<>();
+        basicPost.put("id", post.getId());
+        try {
+            basicPost.put("thread", forumThread.getId());
+        } catch (Exception cause) {}
+
+        try {
+            basicPost.put("replyToId", post.getReplyToId());
+        } catch (Exception cause) {}
+        basicPost.put("subject", post.getSubject());
+        basicPost.put("body", post.getBody());
+        basicPost.put("owner", post.getOwner());
+        basicPost.put("postDate", post.getPostDate());
+        List<Map<String,Object>> basicAttatchments = null;
+        try {
+            for (Attachment attachment : post.getAttachments()) {
+                if (basicAttatchments == null) {
+                    basicAttatchments = new ArrayList<>();
+                }
+                Map<String, Object> basicAttachment = getBasicAttachment(post, attachment);
+                basicAttatchments.add(basicAttachment);
+            }
+        } catch (Exception cause) {}
+        basicPost.put("attachments", basicAttatchments);
+        basicPost.put("author", post.getAuthor());
+        basicPost.put("approved", post.isApproved());
+        basicPost.put("ratingScore", post.getRatingScore());
+        basicPost.put("numberOfRatings", post.getNumberOfRatings());
+        basicPost.put("modifiedDate", post.getModifiedDate());
+        return basicPost;
+    }
+
+    private Map<String, Object> getBasicAttachment(Post post, Attachment attachment) {
+        Map<String,Object> basicAttachment = new LinkedHashMap<>();
+        basicAttachment.put("id", attachment.getId());
+        basicAttachment.put("post", post.getId());
+        basicAttachment.put("fileName", attachment.getFileName());
+        basicAttachment.put("fileSize", attachment.getFileSize());
+        basicAttachment.put("mimeType", attachment.getMimeType());
+        //basicAttachment.put("data", attachment.getData());
+        basicAttachment.put("created", attachment.getCreated());
+        return basicAttachment;
+    }
+
+    private Map<String, Object> getFirstPostInThread(ForumThread forumThread) {
+        Map<String,Object> firstBasicPost = null;
+        try {
+            Post post = forumDao.getFirstPostInThread(forumThread.getId());
+            firstBasicPost = getBasicPost(forumThread, post);
+        } catch (Exception cause) {}
+        return firstBasicPost;
     }
 
     private class Fault extends RuntimeException {

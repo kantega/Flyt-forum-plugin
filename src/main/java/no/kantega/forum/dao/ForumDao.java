@@ -406,6 +406,7 @@ public class ForumDao {
             public ForumThread doInHibernate(Session session) throws HibernateException {
                 ForumThread t = (ForumThread) session.get(ForumThread.class, threadId);
                 t.getPosts().size();
+                t.getForum().getId();
                 return t;
             }
         });
@@ -800,6 +801,18 @@ public class ForumDao {
                 query.setString(0, username);
                 query.addScalar("modifiedDate", Hibernate.TIMESTAMP);
                 return toInstant((Timestamp) query.uniqueResult());
+            }
+        });
+    }
+
+    public Post getFirstPostInThread(final long threadId) {
+        return template.execute(new HibernateCallback<Post>() {
+            @Override
+            public Post doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery query = session.createSQLQuery("SELECT TOP 1 * FROM forum_post p WHERE p.threadId = ? ORDER BY p.postId ASC");
+                query.setLong(0, threadId);
+                query.addEntity(Post.class);
+                return (Post) query.uniqueResult();
             }
         });
     }
