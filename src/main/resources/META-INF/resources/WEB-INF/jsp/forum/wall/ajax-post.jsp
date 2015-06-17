@@ -32,18 +32,18 @@
 
 
                 <forum:haspermisson permission="EDIT_POST" object="${post}">
-                    <a class="oa-forum-editPost" href="${pageContext.request.contextPath}/forum/editpost?postId=${post.id}"></a>
+                    <a title="Rediger" class="oa-forum-editPost" href="${pageContext.request.contextPath}/forum/editpost?postId=${post.id}"></a>
                 </forum:haspermisson>
         <c:choose>
             <c:when test="${postsStatus.index == 0}">
                 <%-- First post in thread. Deleting the first post will result in deleting the entire thread --%>
                 <forum:haspermisson permission="DELETE_THREAD" object="${post.thread}">
-                    <a class="oa-forum-deleteThread" href="${pageContext.request.contextPath}/forum/deletethread?threadId=${post.thread.id}"></a>
+                    <a title="Slett" class="oa-forum-deleteThread" href="${pageContext.request.contextPath}/forum/deletethread?threadId=${post.thread.id}"></a>
                 </forum:haspermisson>
             </c:when>
             <c:otherwise>
                 <forum:haspermisson permission="DELETE_POST" object="${post}">
-                    <a class="oa-forum-deletePost" href="${pageContext.request.contextPath}/forum/deletepost?postId=${post.id}"></a>
+                    <a title="Slett" class="oa-forum-deletePost" href="${pageContext.request.contextPath}/forum/deletepost?postId=${post.id}"></a>
                 </forum:haspermisson>
             </c:otherwise>
         </c:choose>
