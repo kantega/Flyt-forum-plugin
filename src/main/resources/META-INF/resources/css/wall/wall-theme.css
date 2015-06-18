@@ -107,12 +107,12 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     font-size:14px;
     color:#ccc;
 }
-#oa-forum-forumContent{
+.oa-forum-forumContent{
     border-left:1px solid #d1d1d1;
     border-right:1px solid #d1d1d1;
     border-bottom:1px solid #d1d1d1;
 }
-#oa-forum-forumContent .oa-forum-threads .oa-forum-thread:first-child{
+.oa-forum-forumContent .oa-forum-threads .oa-forum-thread:first-child{
     border-top:none;
     margin-top:0;
     padding-top:20px;
@@ -124,16 +124,16 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 .oa-forum-formElement{
     margin:5px 0;
 }
-#oa-forum-newPost .oa-forum-formElement{
+.oa-forum-newPost .oa-forum-formElement{
     margin:5px;
 }
 .oa-forum-txtR{
     text-align:right;
 }
-#oa-forum-newPost textarea{
+.oa-forum-newPost textarea{
     width:98%;
 }
-#oa-forum-newPost input[type=text]{
+.oa-forum-newPost input[type=text]{
     width:100%;
 }
 .oa-forum-hidden{

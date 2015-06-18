@@ -13,10 +13,10 @@
         <%@include file="sharebox.jsp"%>
     </c:if>
 
-    <div id="oa-forum-forumContent">
+    <div class="oa-forum-forumContent" data-forumId="${forumId}" data-forumCategoryId="${forumCategoryId}" data-forumWallUrl="${forumListPostsUrl}">
         <div class="oa-forum-new-posts"></div>
         <div class="oa-forum-threads"></div>
-        <div id="oa-forum-wall-load-more-threads">
+        <div class="oa-forum-wall-load-more-threads">
             <a href="#" class="button">
                 <span><kantega:label key="forum.wall.loadmoreposts" bundle="forum" locale="${forumLocale}"/></span>
             </a>

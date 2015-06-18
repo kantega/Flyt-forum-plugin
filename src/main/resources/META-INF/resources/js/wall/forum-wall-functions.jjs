@@ -1,23 +1,24 @@
 <%@ page contentType="application/javascript;charset=utf-8" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="aksess"  uri="http://www.kantega.no/aksess/tags/aksess"  %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%@include file="jquery-form-3.34.0.js" %>
 <%@include file="prettyDate.js" %>
 <%@include file="jquery.elastic-1.6.11.js" %>
 <%@include file="spin.min.js" %>
 
-$(document).ready(function(){
-
-    var sharebox = document.getElementById("oa-forum-sharebox"),
-        shareboxButtons = document.getElementById("oa-forum-sharebox-buttons"),
-        shareboxTextarea = document.getElementById("oa-forum-sharebox-textarea"),
+$.fn.oaForumWall = function () {
+    var forumWall = $(this);
+    var sharebox = forumWall.find(".oa-forum-sharebox"),
+        shareboxButtons = forumWall.find(".oa-forum-sharebox-buttons"),
+        shareboxTextarea = forumWall.find(".oa-forum-sharebox-textarea"),
         shareboxSpinner = null,
         imageSpinner = null,
-        loadMoreLink = document.getElementById("oa-forum-wall-load-more-threads"),
-        $forumThreads = $(".oa-forum-threads");
-
+        loadMoreLink = forumWall.find(".oa-forum-wall-load-more-threads"),
+        $forumThreads = forumWall.find(".oa-forum-threads");
+    var forumId = forumWall.find(".oa-forum-forumContent[data-forumId]").attr("data-forumId") || forumId;
+    var forumCategoryId = forumWall.find(".oa-forum-forumContent[data-forumCategoryId]").attr("data-forumCategoryId") || forumCategoryId;
+    var forumWallUrl = forumWall.find(".oa-forum-forumContent[data-forumWallUrl]").attr("data-forumWallUrl") || forumWallUrl;
 
     var spinnerOptions = {
         lines: 9,
@@ -28,32 +29,43 @@ $(document).ready(function(){
         className: 'oa-forum-spinner'
     };
 
-
     //Set global for toggling updates on whether reply textfields have focus.
     //We don't want to lose user content on refreshes, so suppress refreshes while users are writing posts
 
     var hasTextInput = function() {
         var len = 0;
-        var txt = $( ".oa-forum-comment-reply" );
+        var txt = forumWall.find( ".oa-forum-comment-reply" );
         for(var i = 0; i < txt.length; i++){ len += txt[i].value.length; }
         return len > 0;
     };
+
+    var show = function(elements) {
+        elements = $(elements);
+        while (elements.hasClass("oa-forum-hidden")) {
+            elements.removeClass("oa-forum-hidden");
+        }
+    }
+
+    var hide = function(elements) {
+        elements = $(elements);
+        elements.addClass("oa-forum-hidden");
+    }
 
     //Handle updates of new posts
     var loadTime = new Date().getTime();
     var newThreadsTemplate = "<kantega:label key="forum.wall.newThreads" bundle="forum" locale="${forumLocale}"/>";
     // Handles loading and animation of the wall.
     loadWallThreads(true);
-    loadMoreLink.style.display = "none";
+    hide(loadMoreLink);
 
-    $("#oa-forum-wall-load-more-threads a").on("click", function(event){
+    forumWall.find(".oa-forum-wall-load-more-threads a").on("click", function(event){
         event.preventDefault();
         loadWallThreads(true);
-        $(this).parent().hide();
+        hide($(this).parent());
     });
 
     if (!placeholderIsSupported()) {
-        document.getElementById("oa-forum-sharebox-label").style.display = "block";
+        show(forumWall.find(".oa-forum-sharebox-label"));
     }
 
     var refreshInterval = <aksess:getconfig key="forum.refreshinterval" default="30000"/>;
@@ -62,34 +74,34 @@ $(document).ready(function(){
 
     function updateWithNumberOfNewPosts() {
         var autoRefresh = <aksess:getconfig key="forum.autorefresh" default="false"/>;
-        var newpostsContainer = $("#oa-forum-forumContent .oa-forum-new-posts");
+        var newpostsContainer = forumWall.find(".oa-forum-forumContent .oa-forum-new-posts");
 
     <aksess:getuser name="user" />
-        $.get("${pageContext.request.contextPath}/forum/numberOfNewThreads" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
-            if (data.numberOfNewThreads > 0) {
-                if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert --%>
-                newpostsContainer.html('');
-                    loadTime = new Date().getTime();
-                    loadWallThreads(false);
-                } else { <%-- Manuell oppdatering eller det er skrevet noe i kommentarfelt --%>
-                    var loadNewThreads = $('<a class="numberOfNewThreads" href="">' + newThreadsTemplate.replace('$$', data.numberOfNewThreads) + '</a>');
-                    loadNewThreads.click(function (event) {
-                        event.preventDefault();
-                        newpostsContainer.html('');
+            $.get("${pageContext.request.contextPath}/forum/numberOfNewThreads" , {forumId: forumId, forumCategoryId: forumCategoryId, timeStamp:loadTime, username:'${user.id}'}, function(data) {
+                if (data.numberOfNewThreads > 0) {
+                    if( autoRefresh && !hasTextInput() ){ <%-- Bruker har ikke skrevet inn noe, og automatisk oppdatering er aktivert --%>
+                    newpostsContainer.html('');
                         loadTime = new Date().getTime();
                         loadWallThreads(false);
-                        return false;
-                    });
-                    newpostsContainer.html(loadNewThreads);
+                    } else { <%-- Manuell oppdatering eller det er skrevet noe i kommentarfelt --%>
+                        var loadNewThreads = $('<a class="numberOfNewThreads" href="">' + newThreadsTemplate.replace('$$', data.numberOfNewThreads) + '</a>');
+                        loadNewThreads.click(function (event) {
+                            event.preventDefault();
+                            newpostsContainer.html('');
+                            loadTime = new Date().getTime();
+                            loadWallThreads(false);
+                            return false;
+                        });
+                        newpostsContainer.html(loadNewThreads);
+                    }
                 }
-            }
-        });
+            });
         setTimeout(updateWithNumberOfNewPosts, refreshInterval);
     }
 
     function loadWallThreads(loadMore) {
-        var $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
-        var noThreads = $(".oa-forum-thread", $forumContent).length;
+        var $forumContent = forumWall.find(".oa-forum-forumContent .oa-forum-threads");
+        var noThreads = forumWall.find(".oa-forum-thread", $forumContent).length;
         var spinner = new Spinner(spinnerOptions).spin($forumContent[0]);
         var url = forumWallUrl;
 
@@ -100,7 +112,7 @@ $(document).ready(function(){
         $.post(url, function(data) {
 
             var $processedData = $('<div/>').html(data).contents(),
-                $forumContent = $("#oa-forum-forumContent .oa-forum-threads");
+                $forumContent = forumWall.find(".oa-forum-forumContent .oa-forum-threads");
 
             if (loadMore) {
                 $forumContent.append($processedData);
@@ -108,22 +120,22 @@ $(document).ready(function(){
             else {
                 $forumContent.html($processedData);
             }
-            $(".oa-forum-date", $forumContent).each(function() {
+            forumWall.find(".oa-forum-date", $forumContent).each(function() {
                 $(this).prettyDate({serverTime: serverTime, locale: locale});
             });
 
-            if ($(".oa-forum-thread:last-child", $forumContent).hasClass("oa-forum-thread-has-more-posts")) {
-                loadMoreLink.style.display = "block";
+            if (forumWall.find(".oa-forum-thread:last-child", $forumContent).hasClass("oa-forum-thread-has-more-posts")) {
+                show(loadMoreLink);
             }
 
-            $("body").trigger('oa.forumwall.loaded');
+            forumWall.trigger('oa.forumwall.loaded');
 
             spinner.stop();
         });
     }
 
     // Handles posting of status
-    $('#oa-forum-sharebox .oa-forum-ajaxForm').ajaxForm({
+    sharebox.find('.oa-forum-ajaxForm').ajaxForm({
         beforeSerialize: function($form, options){
             $form.find("textarea").val(replaceURLWithHTMLLinks($form.find("textarea").val()));
         },
@@ -140,9 +152,9 @@ $(document).ready(function(){
         success: function(data) {
             shareboxSpinner.stop();
             shareboxTextarea.blur();
-            $(shareboxButtons).addClass("oa-forum-hidden");
-            $(shareboxTextarea).removeClass("open");
-            $('#oa-forum-sharebox .oa-forum-ajaxForm').removeClass("hidden");
+            hide(shareboxButtons);
+            shareboxTextarea.removeClass("open");
+            show(sharebox.find('.oa-forum-ajaxForm'));
             prependNewThread(data);
         }
     });
@@ -150,49 +162,46 @@ $(document).ready(function(){
     $(window).on("keyup", function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (code === 27) {
-            shareboxButtons.style.display = "none";
+            hide(shareboxButtons);
             shareboxTextarea.blur();
-            $(shareboxButtons).addClass("oa-forum-hidden");
-            $(shareboxTextarea).removeClass("open");
-            $(".oa-forum-overlay").remove();
-            $(".oa-forum-image-container").remove();
+            shareboxTextarea.removeClass("open");
+            forumWall.find(".oa-forum-overlay").remove();
+            forumWall.find(".oa-forum-image-container").remove();
             imageSpinner.stop();
         }
     });
 
     $(window).on("click", function (e) {
-        shareboxButtons.style.display = "none";
-        $(shareboxButtons).addClass("oa-forum-hidden");
-        $(shareboxTextarea).removeClass("open");
-        $(".oa-forum-overlay").remove();
-        $(".oa-forum-image-container").remove();
+        hide(shareboxButtons);
+        shareboxTextarea.removeClass("open");
+        forumWall.find(".oa-forum-overlay").remove();
+        forumWall.find(".oa-forum-image-container").remove();
     });
 
-    $(sharebox).on("click", function (e) {
+    sharebox.on("click", function (e) {
         e.stopPropagation();
     });
 
-    $(shareboxTextarea).on('focus', function() {
-        shareboxButtons.style.display = "block";
-        $(shareboxButtons).removeClass('oa-forum-hidden');
-        $(this).addClass("open");
-        $(this).closest(".oa-forum-ajaxForm").find("#oa-forum-share-add-attachment").removeClass("oa-forum-hidden");
-        $(this).closest(".oa-forum-ajaxForm").find("#oa-forum-share-attachment").removeClass("oa-forum-hidden").addClass("oa-forum-hidden");
+    shareboxTextarea.on('focus', function() {
+        show(shareboxButtons);
+        shareboxTextarea.addClass("open");
+        show(shareboxTextarea.closest(".oa-forum-ajaxForm").find(".oa-forum-share-add-attachment"));
+        hide(shareboxTextarea.closest(".oa-forum-ajaxForm").find(".oa-forum-share-attachment"));
     });
 
-    $('#oa-forum-share-add-attachment a').on('click', function(event) {
+    forumWall.find('.oa-forum-share-add-attachment a').on('click', function(event) {
         event.preventDefault();
-        $("#oa-forum-share-add-attachment").removeClass("oa-forum-hidden").addClass("oa-forum-hidden")
-        $("#oa-forum-share-attachment").removeClass("oa-forum-hidden")
+        hide(forumWall.find(".oa-forum-share-add-attachment"));
+        show(forumWall.find(".oa-forum-share-attachment"));
     });
 
-    $('#oa-forum-share-attachment input').on('change', function(event){
+    forumWall.find('.oa-forum-share-attachment input').on('change', function(event){
 
-        //if ($('#oa-forum-share-attachment input').val() == "" || $('#oa-forum-share-attachment input').val() == undefined ) return;
+        //if (forumWall.find('.oa-forum-share-attachment input').val() == "" || forumWall.find('.oa-forum-share-attachment input').val() == undefined ) return;
         var valid = validateFileextension(event);
         if (!valid){
             alert("Filetypen du prøver å laste opp er ikke tillatt her.");
-            $('#oa-forum-share-attachment input').val("");
+            forumWall.find('.oa-forum-share-attachment input').val("");
         }
     });
 
@@ -219,7 +228,7 @@ $(document).ready(function(){
         var $processedData = $('<div/>').html(responseText).contents();
         $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
         $processedData.addClass("new");
-        $(".oa-forum-threads").prepend($processedData);
+        forumWall.find(".oa-forum-threads").prepend($processedData);
     }
 
     function postComment(element) {
@@ -228,7 +237,7 @@ $(document).ready(function(){
             $commentContainer = $commentForm.parent(),
             commentFormAction = $commentForm.attr("action"),
             commentText = replaceURLWithHTMLLinks($.trim(element.val())),
-            threadId = $("input[name=threadId]", $commentForm).val(),
+            threadId = forumWall.find("input[name=threadId]", $commentForm).val(),
             formParams = { threadId:  threadId, body: commentText, subject: "subject" };
 
         if (commentText.length > 0) {
@@ -258,10 +267,10 @@ $(document).ready(function(){
     }
 
     // Handles shifting between the "share tabs" (status, photo and link)
-    var $tablinks = $("#oa-forum-newPost .oa-forum-tablink");
+    var $tablinks = forumWall.find(".oa-forum-newPost .oa-forum-tablink");
     var visibleTabIndex = -1;
-    var $tabs = $("#oa-forum-newPost .oa-forum-tab-container");
-    $("#oa-forum-newPost .oa-forum-tablink").click(function(e){
+    var $tabs = forumWall.find(".oa-forum-newPost .oa-forum-tab-container");
+    forumWall.find(".oa-forum-newPost .oa-forum-tablink").click(function(e){
         e.preventDefault();
         var index = $(this).parent().prevAll().length -1; // -1 because the first element is the <li> containing "Share:"
         if (visibleTabIndex == index){
@@ -273,7 +282,7 @@ $(document).ready(function(){
                 $(this).addClass("oa-forum-visible-tablink");
             });
         } else {
-            $("#oa-forum-newPost .oa-forum-visible-tablink").slideUp("normal", function(){
+            forumWall(".oa-forum-newPost .oa-forum-visible-tablink").slideUp("normal", function(){
                 $(this).removeClass("oa-forum-visible-tablink");
                 $tabs.eq(index).hide().removeClass("oa-forum-hidden").slideDown("normal", function(){
                     visibleTabIndex = index;
@@ -371,11 +380,11 @@ $(document).ready(function(){
         var editBody = post.find(".oa-forum-editBody");
         var body = editBody.find("[name=body]").val();
         $.ajax({
-          type: "POST",
-          url: action,
-          data: {
-            body: body
-          }
+            type: "POST",
+            url: action,
+            data: {
+                body: body
+            }
         }).done(function(content){
             post.replaceWith(content);
         }).fail(function(){
@@ -552,4 +561,4 @@ $(document).ready(function(){
         return false;
 
     }
-});
+};

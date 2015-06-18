@@ -28,7 +28,7 @@ ul.oa-forum-tabs li {
     margin-bottom: 0;
 }
 
-#oa-forum-sharebox .oa-forum-spinner {
+.oa-forum-sharebox .oa-forum-spinner {
     margin-bottom: 15px;
     top: 14px !important;
 }
@@ -72,7 +72,7 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
     display:none !important;
 }
 
-#oa-forum-wall-load-more-threads{
+.oa-forum-wall-load-more-threads{
     display: none;
 }
 .oa-forum-post-preview-hidden-post-body{
