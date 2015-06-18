@@ -176,12 +176,14 @@ $(document).ready(function(){
         shareboxButtons.style.display = "block";
         $(shareboxButtons).removeClass('oa-forum-hidden');
         $(this).addClass("open");
+        $(this).closest(".oa-forum-ajaxForm").find("#oa-forum-share-add-attachment").removeClass("oa-forum-hidden");
+        $(this).closest(".oa-forum-ajaxForm").find("#oa-forum-share-attachment").removeClass("oa-forum-hidden").addClass("oa-forum-hidden");
     });
 
     $('#oa-forum-share-add-attachment a').on('click', function(event) {
         event.preventDefault();
-        $("#oa-forum-share-add-attachment").hide();
-        $("#oa-forum-share-attachment").show();
+        $("#oa-forum-share-add-attachment").removeClass("oa-forum-hidden").addClass("oa-forum-hidden")
+        $("#oa-forum-share-attachment").removeClass("oa-forum-hidden")
     });
 
     $('#oa-forum-share-attachment input').on('change', function(event){
