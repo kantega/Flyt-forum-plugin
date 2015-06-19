@@ -24,12 +24,15 @@ $.fn.oaForumWall = function () {
     var forum_label_named = '<kantega:label key="forum.share.inputfield.label.named" bundle="forum"/>';
     var forum_label_default = '<kantega:label key="forum.share.inputfield.label.default" bundle="forum"/>';
 
+    forumId = forumWall.find(".oa-forum-tab.selected").attr("data-forumId");
+
     var forumIdName = {};
     forumWall.find(".oa-forum-tab[data-forumId]").each(function(index, element){
         element = $(element);
         var _forumId = element.attr("data-forumId");
         forumIdName[_forumId] = element.find("a").html();
-    })
+    });
+
 
     var spinnerOptions = {
         lines: 9,
@@ -70,6 +73,10 @@ $.fn.oaForumWall = function () {
         forumId = _forumId;
     }
 
+    var getForumId = function() {
+        return forumId !== "" && forumId != "-1" ? forumId : null;
+    }
+
     var getForumWallUrl = function() {
         var split = forumWallUrl.split("?");
         var url = split[0];
@@ -80,8 +87,11 @@ $.fn.oaForumWall = function () {
             var keyValue = split[index].split("=");
             p[keyValue[0]] = keyValue[1];
         }
-        if (forumId && forumId >= 0) {
+        if (isDefined(getForumId())) {
             p["forumId"] = forumId;
+        } else {
+            p["forumId"] = undefined;
+            p["forumCategoryId"] = forumCategoryId;
         }
         var paremeters = [];
         for (key in p) {
