@@ -17,8 +17,19 @@ $.fn.oaForumWall = function () {
         loadMoreLink = forumWall.find(".oa-forum-wall-load-more-threads"),
         $forumThreads = forumWall.find(".oa-forum-threads");
     var forumId = forumWall.find(".oa-forum-forumContent[data-forumId]").attr("data-forumId") || forumId;
+    var defaultPostForumId = forumWall.find(".oa-forum-forumContent[data-defaultPostForumId]").attr("data-defaultPostForumId");
     var forumCategoryId = forumWall.find(".oa-forum-forumContent[data-forumCategoryId]").attr("data-forumCategoryId") || forumCategoryId;
     var forumWallUrl = forumWall.find(".oa-forum-forumContent[data-forumWallUrl]").attr("data-forumWallUrl") || forumWallUrl;
+
+    var forum_label_named = '<kantega:label key="forum.share.inputfield.label.named" bundle="forum"/>';
+    var forum_label_default = '<kantega:label key="forum.share.inputfield.label.default" bundle="forum"/>';
+
+    var forumIdName = {};
+    forumWall.find(".oa-forum-tab[data-forumId]").each(function(index, element){
+        element = $(element);
+        var _forumId = element.attr("data-forumId");
+        forumIdName[_forumId] = element.find("a").html();
+    })
 
     var spinnerOptions = {
         lines: 9,
@@ -31,6 +42,10 @@ $.fn.oaForumWall = function () {
 
     //Set global for toggling updates on whether reply textfields have focus.
     //We don't want to lose user content on refreshes, so suppress refreshes while users are writing posts
+
+    var isDefined = function(value){
+        return value !== undefined && value !== null;
+    };
 
     var hasTextInput = function() {
         var len = 0;
@@ -168,25 +183,37 @@ $.fn.oaForumWall = function () {
                 alert('Vennligst skriv noe du ønsker å dele');
                 return false;
             }
-            $form.addClass("hidden");
+            hide($form);
             shareboxSpinner = new Spinner(spinnerOptions).spin($form.parent()[0]);
             return true;
         },
         resetForm: true,
         success: function(data) {
-            shareboxSpinner.stop();
             shareboxTextarea.blur();
             hide(shareboxButtons);
             shareboxTextarea.removeClass("open");
             show(sharebox.find('.oa-forum-ajaxForm'));
             prependNewThread(data);
+        },
+        complete: function() {
+            shareboxSpinner.stop();
+            show($form);
         }
     });
 
     forumWall.on("click", ".oa-forum-tab[data-forumId] a", function(event){
         event.preventDefault();
-        setForumId($(this).closest(".oa-forum-tab[data-forumId]").attr("data-forumId"));
-        console.info("forumId", forumId);
+        var oaForumTab = $(this).closest(".oa-forum-tab[data-forumId]");
+        setForumId(oaForumTab.attr("data-forumId"));
+        forumWall.find(".oa-forum-tab").removeClass("selected");
+        oaForumTab.addClass("selected");
+
+        var _forumId = isDefined(forumId) && forumId !== "" ? forumId : defaultPostForumId;
+        var label = isDefined(forumIdName[_forumId]) ? forum_label_named.replace("%s", forumIdName[_forumId]) : forum_label_default;
+        forumWall.find(".oa-forum-ajaxForm [name=\"forumId\"]").val(_forumId);
+        forumWall.find(".oa-forum-sharebox-label").html(label);
+        forumWall.find(".oa-forum-sharebox [name=\"body\"]").attr("placeholder", label);
+
         loadWallThreads(false);
     });
 

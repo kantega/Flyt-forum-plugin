@@ -13,7 +13,7 @@
         <%@include file="sharebox.jsp"%>
     </c:if>
 
-    <div class="oa-forum-forumContent" data-forumId="${forumId}" data-forumCategoryId="${forumCategoryId}" data-forumWallUrl="${forumListPostsUrl}">
+    <div class="oa-forum-forumContent" data-forumId="${forumId}" data-forumCategoryId="${forumCategoryId}" data-forumWallUrl="${forumListPostsUrl}" data-defaultPostForumId="${defaultPostForumId}">
         <div class="oa-forum-new-posts"></div>
         <div class="oa-forum-threads"></div>
         <div class="oa-forum-wall-load-more-threads">
