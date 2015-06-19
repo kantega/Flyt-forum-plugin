@@ -197,7 +197,7 @@ $.fn.oaForumWall = function () {
         },
         complete: function() {
             shareboxSpinner.stop();
-            show($form);
+            show(forumWall.find(".oa-forum-ajaxForm"));
         }
     });
 
