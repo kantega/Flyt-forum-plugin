@@ -305,7 +305,7 @@ $.fn.oaForumWall = function () {
             $commentContainer = $commentForm.parent(),
             commentFormAction = $commentForm.attr("action"),
             commentText = replaceURLWithHTMLLinks($.trim(element.val())),
-            threadId = forumWall.find("input[name=threadId]", $commentForm).val(),
+            threadId = $commentForm.find("input[name=threadId]").val(),
             formParams = { threadId:  threadId, body: commentText, subject: "subject" };
 
         if (commentText.length > 0) {
