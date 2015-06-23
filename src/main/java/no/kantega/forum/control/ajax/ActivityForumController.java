@@ -11,6 +11,7 @@ import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.joda.time.format.DateTimeFormatter;
@@ -100,11 +101,14 @@ public class ActivityForumController {
     @RequestMapping(value = "/threads", method = RequestMethod.GET)
     public ResponseEntity<Object> threads(HttpServletRequest request) {
         try {
-            String username = getUsername(request, userResolver);
-            if (username == null) {
+            String displayUser = request.getParameter("displayUser");
+            String viewingUser = getUsername(request, userResolver);
+            if (viewingUser == null) {
                 throw new Fault(403, getLocalizedMessage(BASE_NAME, "forbidden"));
             }
-
+            if (isEmpty(displayUser)) {
+                displayUser = viewingUser;
+            }
             Instant from = toInstant(request.getParameter("from"), ISO_DATE_TIME, Instant.now());
             Instant to = toInstant(request.getParameter("to"), ISO_DATE_TIME, Instant.now());
 
@@ -113,10 +117,10 @@ public class ActivityForumController {
 
             Interval interval = new Interval(from, to);
             List<Map<String,Object>> forumThreads = new ArrayList<>();
-            List<Long> activityThreadIds = forumDao.getThreadsWithActivityInPeriodWhereParticipantHasPosted(username, interval);
+            List<Long> activityThreadIds = forumDao.getThreadsWithActivityInPeriodWhereParticipantHasPosted(displayUser, interval);
 
-            for (ForumThread forumThread : forumDao.getThreads(username, skip, top)) {
-                if (permissionManager.hasPermission(username, Permission.VIEW, forumThread)) {
+            for (ForumThread forumThread : forumDao.getThreads(viewingUser, skip, top)) {
+                if (permissionManager.hasPermission(viewingUser, Permission.VIEW, forumThread)) {
                     Map<String, Object> basicForumThread = getBasicThread(forumThread);
                     basicForumThread.put("firstPost", getFirstPostInThread(forumThread));
                     basicForumThread.put("activity", activityThreadIds.contains(forumThread.getId()));
@@ -127,6 +131,10 @@ public class ActivityForumController {
         } catch (Fault fault) {
             return handleFault(fault);
         }
+    }
+
+    private boolean isEmpty(String displayUser) {
+        return displayUser == null || displayUser.trim().length() == 0;
     }
 
     private Integer toInteger(String value, int _default) {
@@ -145,8 +153,8 @@ public class ActivityForumController {
     @RequestMapping(value = "/thread", method = RequestMethod.GET)
     public ResponseEntity<Object> thread(HttpServletRequest request) {
         try {
-            String username = getUsername(request, userResolver);
-            if (username == null) {
+            String loggedInUser = getUsername(request, userResolver);
+            if (loggedInUser == null) {
                 throw new Fault(403, getLocalizedMessage(BASE_NAME, "forbidden"));
             }
             Long threadId = toLong(request.getParameter("threadId"), null);
@@ -157,7 +165,7 @@ public class ActivityForumController {
             if (forumThread == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            if (!permissionManager.hasPermission(username, Permission.VIEW, forumThread)) {
+            if (!permissionManager.hasPermission(loggedInUser, Permission.VIEW, forumThread)) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             Map<String, Object> basicForumThread = getBasicThread(forumThread);
