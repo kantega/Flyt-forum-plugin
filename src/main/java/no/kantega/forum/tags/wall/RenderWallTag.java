@@ -73,6 +73,7 @@ public class RenderWallTag extends SimpleTagSupport {
 			if (forumId > 0 || (forumIds != null && forumIds.size() > 0)) {
 				forumListPostsUrl.append("?forumId=");
                 if (forumId > 0) {
+					forumIdStr = String.valueOf(forumIdStr);
 					forumListPostsUrl.append(forumId);
                     boolean canView = permissionManager.hasPermission(resolvedUser.getUsername(), Permission.VIEW, forumDao.getForum(forumId));
                     request.setAttribute("userCanViewForum", canView);
