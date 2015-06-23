@@ -119,7 +119,7 @@ public class ActivityForumController {
             List<Map<String,Object>> forumThreads = new ArrayList<>();
             List<Long> activityThreadIds = forumDao.getThreadsWithActivityInPeriodWhereParticipantHasPosted(displayUser, interval);
 
-            for (ForumThread forumThread : forumDao.getThreads(viewingUser, skip, top)) {
+            for (ForumThread forumThread : forumDao.getThreads(displayUser, skip, top)) {
                 if (permissionManager.hasPermission(viewingUser, Permission.VIEW, forumThread)) {
                     Map<String, Object> basicForumThread = getBasicThread(forumThread);
                     basicForumThread.put("firstPost", getFirstPostInThread(forumThread));
