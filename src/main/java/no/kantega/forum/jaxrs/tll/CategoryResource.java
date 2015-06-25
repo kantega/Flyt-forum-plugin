@@ -5,13 +5,10 @@ import no.kantega.forum.jaxrs.bol.Fault;
 import no.kantega.forum.jaxrs.tol.CategoryReferenceTo;
 import no.kantega.forum.jaxrs.tol.CategoryReferencesTo;
 import no.kantega.forum.jaxrs.tol.CategoryTo;
-import no.kantega.forum.jaxrs.tol.ForumReferenceTo;
 import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
-import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +23,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import static no.kantega.forum.jaxrs.tll.Util.*;
 
 /**
  * @author Kristian Myrhaug
@@ -62,7 +59,7 @@ public class CategoryResource {
     public CategoryReferencesTo getAll() {
         log.trace("getAll()");
         CategoryReferencesTo categoryReferenceTos = new CategoryReferencesTo();
-        String user = resolveUser();
+        String user = resolveUser(userResolver, request);
         for (ForumCategory forumCategoryBo : forumDao.getForumCategories()) {
             if (permissionManager.hasPermission(user, Permission.VIEW, forumCategoryBo)) {
                 categoryReferenceTos.add(new CategoryReferenceTo(
@@ -91,85 +88,15 @@ public class CategoryResource {
         if (categoryBo == null) {
             throw new Fault(404, "Not found");
         }
-        String user = resolveUser();
+        String user = resolveUser(userResolver, request);
         if (!permissionManager.hasPermission(user, Permission.VIEW, categoryBo)) {
             throw new Fault(403, "Not authorized");
         }
-        List<ResourceReferenceTo> actions = getActions(categoryBo, user);
-        return new CategoryTo(categoryBo, forumReferenceTos(categoryBo.getForums()), actions);
-    }
-
-    private List<ResourceReferenceTo> getActions(ForumCategory categoryBo, String user) {
-        List<ResourceReferenceTo> actions = new ArrayList<>();
-        if (categoryBo != null) {
-            if (permissionManager.hasPermission(user, Permission.VIEW, categoryBo)) {
-                actions.add(new ResourceReferenceTo(
-                        uriInfo.getBaseUriBuilder().path("category").path("{categoryId}").build(categoryBo.getId()),
-                        "read",
-                        "Read category",
-                        null,
-                        null,
-                        "GET",
-                        null,
-                        null
-                ));
-            }
-            if (permissionManager.hasPermission(user, Permission.EDIT_CATEGORY, categoryBo)) {
-                actions.add(new ResourceReferenceTo(
-                        uriInfo.getBaseUriBuilder().path("category").path("{categoryId}").build(categoryBo.getId()),
-                        "update",
-                        "Update category",
-                        null,
-                        null,
-                        "PUT",
-                        null,
-                        null
-                ));
-                actions.add(new ResourceReferenceTo(
-                        uriInfo.getBaseUriBuilder().path("category").path("{categoryId}").build(categoryBo.getId()),
-                        "delete",
-                        "Delete category",
-                        null,
-                        null,
-                        "DELETE",
-                        null,
-                        null
-                ));
-            }
-        }
-        return actions;
+        List<ResourceReferenceTo> actions = getActions(categoryBo, user, permissionManager, uriInfo);
+        return new CategoryTo(categoryBo, forumReferenceTos(categoryBo.getForums(), uriInfo), actions);
     }
 
     public ForumDao getForumDao() {
         return forumDao;
-    }
-
-    private List<ForumReferenceTo> forumReferenceTos(Set<Forum> forumBos) {
-        List<ForumReferenceTo> forumReferencesTo = null;
-        if (forumBos != null) {
-            forumReferencesTo = new ArrayList<>(forumBos.size());
-            for (Forum forumBo : forumBos) {
-                forumReferencesTo.add(new ForumReferenceTo(
-                        forumBo.getId(),
-                        forumBo.getName(),
-                        forumBo.getDescription(),
-                        uriInfo.getBaseUriBuilder().path("forum").path("{forumId}").build(forumBo.getId()),
-                        "forum",
-                        "Forum",
-                        null,
-                        null,
-                        "GET",
-                        null,
-                        null
-
-                ));
-            }
-        }
-        return forumReferencesTo;
-    }
-
-    private String resolveUser() {
-        ResolvedUser resolvedUser = userResolver.resolveUser(request);
-        return resolvedUser != null ? resolvedUser.getUsername() : null;
     }
 }

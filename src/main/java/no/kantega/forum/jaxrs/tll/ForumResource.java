@@ -2,16 +2,13 @@ package no.kantega.forum.jaxrs.tll;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.jaxrs.bol.Fault;
-import no.kantega.forum.jaxrs.tol.CategoryReferenceTo;
-import no.kantega.forum.jaxrs.tol.ForumReferenceTo;
 import no.kantega.forum.jaxrs.tol.ForumReferencesTo;
 import no.kantega.forum.jaxrs.tol.ForumTo;
-import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
+import no.kantega.forum.jaxrs.tol.ThreadTo;
 import no.kantega.forum.model.Forum;
-import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +18,15 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+
+import static no.kantega.forum.jaxrs.tll.Util.*;
 
 /**
  * @author Kristian Myrhaug
@@ -62,10 +61,10 @@ public class ForumResource {
     public ForumReferencesTo getAll() {
         log.trace("getAll()");
         ForumReferencesTo forumReferencesTo = new ForumReferencesTo();
-        String user = resolveUser();
+        String user = resolveUser(userResolver, request);
         for (Forum forumBo : forumDao.getForums()) {
             if (permissionManager.hasPermission(user, Permission.VIEW, forumBo))
-            forumReferencesTo.add(toReference(forumBo, "read", "Read forum", "GET"));
+            forumReferencesTo.add(toReference(forumBo, "read", "Read forum", "GET", uriInfo));
         }
         return forumReferencesTo;
     }
@@ -78,66 +77,39 @@ public class ForumResource {
         if (forumBo == null) {
             throw new Fault(404, "Not found");
         }
-        String user = resolveUser();
+        String user = resolveUser(userResolver, request);
         if (!permissionManager.hasPermission(user, Permission.VIEW, forumBo)) {
             throw new Fault(403, "Not authorized");
         }
-        return new ForumTo(forumBo, categoryReferenceTo(forumBo.getForumCategory()), getActions(forumBo, user));
+        return new ForumTo(forumBo, categoryReferenceTo(forumBo.getForumCategory(), uriInfo), getActions(forumBo, user, permissionManager, uriInfo));
     }
 
-    private CategoryReferenceTo categoryReferenceTo(ForumCategory categoryBo) {
-        CategoryReferenceTo categoryReferenceTo = null;
-        if (categoryBo != null) {
-            categoryReferenceTo = new CategoryReferenceTo(
-                    categoryBo.getId(),
-                    categoryBo.getName(),
-                    categoryBo.getDescription(),
-                    uriInfo.getBaseUriBuilder().path("category").path(String.format("%d", categoryBo.getId())).build(),
-                    "category",
-                    "Category",
-                    null,
-                    null,
-                    "GET",
-                    null,
-                    null
-            );
+    @Path("{forumId}")
+    @POST
+    public ThreadTo createThread(@PathParam("forumId") Long forumId, ThreadTo threadTo) {
+        log.trace("createThread(Long,ThreadTo)");
+        Forum forumBo = forumDao.getForum(forumId);
+        if (forumBo == null) {
+            throw new Fault(404, "Not found");
         }
-        return categoryReferenceTo;
-    }
-
-    private List<ResourceReferenceTo> getActions(Forum forumBo, String user) {
-        List<ResourceReferenceTo> actions = new ArrayList<>();
-        if (forumBo != null) {
-            if (permissionManager.hasPermission(user, Permission.VIEW, forumBo)) {
-                actions.add(toReference(forumBo, "read", "Read forum", "GET"));
-            }
-            if (permissionManager.hasPermission(user, Permission.EDIT_FORUM, forumBo)) {
-                actions.add(toReference(forumBo, "update", "Update forum", "PUT"));
-                actions.add(toReference(forumBo, "delete", "Delete forum", "DELETE"));
-            }
+        String user = resolveUser(userResolver, request);
+        if (!permissionManager.hasPermission(user, Permission.ADD_THREAD, forumBo)) {
+            throw new Fault(403, "Not authorized");
         }
-        return actions;
-    }
+        ForumThread threadBo = new ForumThread();
+        threadBo.setModifiedDate(new Date());
+        threadBo.setContentId(threadTo.getContentId());
+        threadBo.setCreatedDate(new Date());
+        threadBo.setDescription(threadBo.getDescription());
+        threadBo.setForum(forumBo);
+        threadBo.setName(threadBo.getName());
+        threadBo.setNumNewPosts(0);
+        threadBo.setNumPosts(0);
+        threadBo.setOwner(user);
+        threadBo.setApproved(!forumBo.isApprovalRequired());
+        threadBo = forumDao.saveOrUpdate(threadBo);
+        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo), getActions(threadBo, user, permissionManager, uriInfo));
 
-    private ForumReferenceTo toReference(Forum forumBo, String rel, String title, String method) {
-        return new ForumReferenceTo(
-                forumBo.getId(),
-                forumBo.getName(),
-                forumBo.getDescription(),
-                uriInfo.getBaseUriBuilder().path("forum").path("{forumId}").build(forumBo.getId()),
-                rel,
-                title,
-                null,
-                null,
-                method,
-                null,
-                null
-        );
-    }
-
-    private String resolveUser() {
-        ResolvedUser resolvedUser = userResolver.resolveUser(request);
-        return resolvedUser != null ? resolvedUser.getUsername() : null;
     }
 
 }

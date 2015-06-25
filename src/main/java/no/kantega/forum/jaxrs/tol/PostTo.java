@@ -64,6 +64,10 @@ public class PostTo {
     @XmlElement(name = "threadReference")
     private ResourceReferenceTo threadReference;
 
+    @XmlElementWrapper(name = "actions")
+    @XmlElement(name = "action")
+    private List<ResourceReferenceTo> actions;
+
     /*
     @XmlElement(name = "")
     private Set<Attachment> attachments;
@@ -72,7 +76,7 @@ public class PostTo {
     public PostTo() {
     }
 
-    public PostTo(Post postBo, ResourceReferenceTo threadReference) {
+    public PostTo(Post postBo, ResourceReferenceTo threadReference, List<ResourceReferenceTo> actions) {
         this.id = postBo.getId();
         this.replyToId = postBo.getReplyToId();
         this.subject = postBo.getSubject();
@@ -85,9 +89,10 @@ public class PostTo {
         this.numberOfRatings = postBo.getNumberOfRatings();
         this.modifiedDate = postBo.getModifiedDate() != null ? new Instant(postBo.getModifiedDate().getTime()) : null;
         this.threadReference = threadReference;
+        this.actions = actions;
     }
 
-    public PostTo(Long id, Long replyToId, String subject, String body, String owner, Instant postDate, String author, Boolean approved, Float ratingScore, Integer numberOfRatings, Instant modifiedDate, ResourceReferenceTo threadReference) {
+    public PostTo(Long id, Long replyToId, String subject, String body, String owner, Instant postDate, String author, Boolean approved, Float ratingScore, Integer numberOfRatings, Instant modifiedDate, ResourceReferenceTo threadReference, List<ResourceReferenceTo> actions) {
         this.id = id;
         this.replyToId = replyToId;
         this.subject = subject;
@@ -100,6 +105,7 @@ public class PostTo {
         this.numberOfRatings = numberOfRatings;
         this.modifiedDate = modifiedDate;
         this.threadReference = threadReference;
+        this.actions = actions;
     }
 
     public Long getId() {
@@ -196,5 +202,13 @@ public class PostTo {
 
     public void setThreadReference(ResourceReferenceTo threadReference) {
         this.threadReference = threadReference;
+    }
+
+    public List<ResourceReferenceTo> getActions() {
+        return actions;
+    }
+
+    public void setActions(List<ResourceReferenceTo> actions) {
+        this.actions = actions;
     }
 }

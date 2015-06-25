@@ -22,6 +22,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -29,8 +30,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import static no.kantega.forum.jaxrs.tll.Util.*;
 
 /**
  * @author Kristian Myrhaug
@@ -67,7 +71,7 @@ public class ThreadResource {
         if (startAtThreadId != null && endAtThreadId != null) {
             throw new Fault(400, "Mutually exclusive: startAtThreadId, endAtThreadId");
         }
-        String user = resolveUser();
+        String user = resolveUser(userResolver, request);
         username = getOrDefault(username, user);
         numberOfThreads = getOrDefault(numberOfThreads, DEFAULT_NUMBER_OF_THREADS);
         includePosts = getOrDefault(includePosts, false);
@@ -87,10 +91,10 @@ public class ThreadResource {
         }
         for (ForumThread threadBo : threadsBo) {
             if (permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
-                threadTos.add(new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum()), includePosts ? postsTo(threadBo) : null, getActions(threadBo, user)));
+                threadTos.add(new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), includePosts ? postsTo(threadBo, user, permissionManager, uriInfo) : null, getActions(threadBo, user, permissionManager, uriInfo)));
             }
         }
-        return new ThreadsTo(threadTos, getActions(username, startAtThreadId, endAtThreadId, numberOfThreads, includePosts));
+        return new ThreadsTo(threadTos, getActions(username, startAtThreadId, endAtThreadId, numberOfThreads, includePosts, uriInfo));
     }
 
     @Path("{threadId}")
@@ -101,141 +105,46 @@ public class ThreadResource {
         if (threadBo == null) {
             throw new Fault(404, "Not found");
         }
-        String user = resolveUser();
+        String user = resolveUser(userResolver, request);
         if (!permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
             throw new Fault(403, "Not authorized");
         }
-        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum()), postsTo(threadBo), getActions(threadBo, user));
+        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo), getActions(threadBo, user, permissionManager, uriInfo));
+    }
+
+    @Path("{threadId}")
+    @POST
+    public PostTo createPost(@PathParam("threadId") Long threadId, PostTo postTo) {
+        log.trace("get(Long)");
+        ForumThread threadBo = forumDao.getThread(threadId, true);
+        if (threadBo == null) {
+            throw new Fault(404, "Not found");
+        }
+        String user = resolveUser(userResolver, request);
+        if (!permissionManager.hasPermission(user, Permission.POST_IN_THREAD, threadBo)) {
+            throw new Fault(403, "Not authorized");
+        }
+        Post postBo = new Post();
+        postBo.setOwner(user);
+        postBo.setAuthor(user);
+        postBo.setThread(threadBo);
+        postBo.setApproved(!threadBo.getForum().isApprovalRequired());
+        postBo.setBody(postTo.getBody());
+        postBo.setModifiedDate(new Date());
+        postBo.setNumberOfRatings(0);
+        postBo.setPostDate(new Date());
+        postBo.setRatingScore(0F);
+        postBo.setSubject(postTo.getSubject());
+        //postBo.setReplyToId();
+        postBo = forumDao.saveOrUpdate(postBo);
+        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getActions(postBo, user, permissionManager, uriInfo));
     }
 
     public ForumDao getForumDao() {
         return forumDao;
     }
 
-    private List<ResourceReferenceTo> getActions(@QueryParam("username") String username, @QueryParam("startAtThreadId") Long startAtThreadId, @QueryParam("endAtThreadId") Long endAtThreadId, @QueryParam("numberOfThreads") Integer numberOfThreads, @QueryParam("includePosts") Boolean includePosts) {
-        List<ResourceReferenceTo> actions = new ArrayList<>();
-        if (endAtThreadId != null) {
-            actions.add(new ResourceReferenceTo(
-                    uriInfo.getBaseUriBuilder().path("thread").queryParam("username", "{username}").queryParam("endAtThreadId", "{endAtThreadId}").queryParam("numberOfThreads", "{numberOfThreads}").queryParam("includePosts", "{includePosts}").build(username, endAtThreadId, numberOfThreads, includePosts),
-                    "younger",
-                    "Read younger threads",
-                    null,
-                    null,
-                    "GET",
-                    null,
-                    null
-            ));
-        }
-        if (startAtThreadId != null) {
-            actions.add(new ResourceReferenceTo(
-                    uriInfo.getBaseUriBuilder().path("thread").queryParam("username", "{username}").queryParam("startAtThreadId", "{startAtThreadId}").queryParam("numberOfThreads", "{numberOfThreads}").queryParam("includePosts", "{includePosts}").build(username, startAtThreadId, numberOfThreads, includePosts),
-                    "older",
-                    "Read older threads",
-                    null,
-                    null,
-                    "GET",
-                    null,
-                    null
-            ));
-        }
-        if (actions.isEmpty()) {
-            actions.add(new ResourceReferenceTo(
-                    uriInfo.getBaseUriBuilder().path("thread").queryParam("username", "{username}").queryParam("numberOfThreads", "{numberOfThreads}").queryParam("includePosts", "{includePosts}").build(username, numberOfThreads, includePosts),
-                    "refresh",
-                    "Refresh threads",
-                    null,
-                    null,
-                    "GET",
-                    null,
-                    null
-            ));
-        }
-        return actions;
-    }
 
-    private List<ResourceReferenceTo> getActions(ForumThread threadBo, String user) {
-        List<ResourceReferenceTo> actions = new ArrayList<>();
-        if (threadBo != null) {
-            if (permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
-                actions.add(toReference(threadBo, "read", "Read thread", "GET"));
-            }
-            if (permissionManager.hasPermission(user, Permission.EDIT_THREAD, threadBo)) {
-                actions.add(toReference(threadBo, "update", "Update thread", "PUT"));
-            }
-            if (permissionManager.hasPermission(user, Permission.DELETE_THREAD, threadBo)) {
-                actions.add(toReference(threadBo, "delete", "Delete thread", "DELETE"));
-            }
-            if (permissionManager.hasPermission(user, Permission.POST_IN_THREAD, threadBo)) {
-                actions.add(toReference(threadBo, "create", "Create post", "POST"));
-            }
-        }
-        return actions;
-    }
-
-    private ResourceReferenceTo toReference(ForumThread threadBo, String rel, String title, String method) {
-        return new ResourceReferenceTo(
-                uriInfo.getBaseUriBuilder().path("thread").path("{threadId}").build(threadBo.getId()),
-                rel,
-                title,
-                null,
-                null,
-                method,
-                null,
-                null
-        );
-    }
-
-    private List<PostTo> postsTo(ForumThread threadBo) {
-        List<PostTo> postsTo = null;
-        if (threadBo != null) {
-            Set<Post> postsBo = null;
-            try {
-                threadBo.getPosts().size();
-                postsBo = threadBo.getPosts();
-            } catch (Throwable cause) {}
-            if (postsBo != null) {
-                postsTo = new ArrayList<>(postsBo.size());
-                for (Post postBo : postsBo) {
-                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET")));
-                }
-            }
-        }
-        return postsTo;
-    }
-
-    private ForumReferenceTo forumReferenceTo(Forum forumBo) {
-        ForumReferenceTo forumReferenceTo = null;
-        if (forumBo != null) {
-            forumReferenceTo = new ForumReferenceTo(
-                    forumBo.getId(),
-                    forumBo.getName(),
-                    forumBo.getDescription(),
-                    uriInfo.getBaseUriBuilder().path("forum").path(String.format("%d", forumBo.getId())).build(),
-                    "forum",
-                    "Forum",
-                    null,
-                    null,
-                    "GET",
-                    null,
-                    null
-
-            );
-        }
-        return forumReferenceTo;
-    }
-
-    private <T> T getLastIfAny(List<T> list) {
-        T item = null;
-        if (list != null && !list.isEmpty()) {
-            item = list.get(list.size() - 1);
-        }
-        return item;
-    }
-
-    private String resolveUser() {
-        ResolvedUser resolvedUser = userResolver.resolveUser(request);
-        return resolvedUser != null ? resolvedUser.getUsername() : null;
-    }
 
     private <T> T getOrDefault(T value, T defaultValue) {
         return value != null ? value : defaultValue;
