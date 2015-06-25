@@ -5,6 +5,7 @@ import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -430,9 +431,25 @@ public class ForumDao {
         return forums.isEmpty() ? null : (Forum) forums.get(0);
     }
 
+    public ForumThread getThread(final long threadId, final boolean includePosts) {
+        ForumThread thread = template.execute(new HibernateCallback<ForumThread>() {
+            @Override
+            public ForumThread doInHibernate(Session session) throws HibernateException, SQLException {
+                Query query = session.createQuery("from ForumThread t inner join fetch t.forum f where t.id=?");
+                query.setLong(0, threadId);
+                List<ForumThread> threads = query.list();
+                if (threads.isEmpty()) {
+                    return null;
+                } else if (includePosts) {
+                    Hibernate.initialize(threads.get(0).getPosts());
+                }
+                return threads.get(0);
+            }
+        });
+        return thread;
+    }
     public ForumThread getThread(final long threadId) {
-        List threads = template.find("from ForumThread t inner join fetch t.forum f where t.id=?", threadId);
-        return threads.isEmpty() ? null : (ForumThread) threads.get(0);
+        return getThread(threadId, false);
     }
 
     public Attachment getAttachment(final long attachmentId) {
@@ -878,5 +895,151 @@ public class ForumDao {
 
     private BigDecimal toBigDecimal(Integer integer) {
         return integer != null ? BigDecimal.valueOf(integer.longValue()) : null;
+    }
+
+    public List<ForumThread> getThreadsStartingAt(final String username, final Long startAtThreadId, final Integer numberOfThreads, final Boolean includePosts) {
+        List<ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException {
+
+                Query queryThreadIds = session.createSQLQuery("select distinct(threadId) from forum_post where owner=?");
+
+                queryThreadIds.setString(0, username);
+
+                List<String> threadIds = toListOfStrings(queryThreadIds.list());
+                if (threadIds.isEmpty()) {
+                    return new ArrayList<>();
+                }
+
+                StringBuilder q = new StringBuilder();
+                q.append("from ForumThread t where t.id IN (")
+                        .append(StringUtils.join(threadIds, ", ")) // Safe because it is always longs
+                        .append(")");
+
+                q.append(" order by t.lastPostDate desc");
+                Query query = session.createQuery(q.toString());
+
+                query.setFetchSize(numberOfThreads);
+
+                List<ForumThread> selected = new ArrayList<ForumThread>();
+                List<ForumThread> candidates = query.list();
+                int count = -1;
+                for (ForumThread thread : candidates) {
+                    if (count >= numberOfThreads) {
+                        break;
+                    }
+                    if (count > -1) {
+                        selected.add(thread);
+                        count++;
+                    }
+                    if (thread.getId() == startAtThreadId) {
+                        count++;
+                    }
+                }
+                if (includePosts) {
+                    for (ForumThread thread : selected) {
+                        Hibernate.initialize(thread.getPosts());
+                    }
+                }
+                return selected;
+            }
+        });
+        return ret;
+    }
+
+    public List<ForumThread> getThreadsEndingAt(final String username, final Long endAtThreadId, final Integer numberOfThreads, final Boolean includePosts) {
+        List<ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException {
+
+                Query queryThreadIds = session.createSQLQuery("select distinct(threadId) from forum_post where owner=?");
+
+                queryThreadIds.setString(0, username);
+
+                List<String> threadIds = toListOfStrings(queryThreadIds.list());
+                if (threadIds.isEmpty()) {
+                    return new ArrayList<>();
+                }
+
+                StringBuilder q = new StringBuilder();
+                q.append("from ForumThread t where t.id IN (")
+                        .append(StringUtils.join(threadIds, ", ")) // Safe because it is always longs
+                        .append(")");
+
+                q.append(" order by t.lastPostDate asc");
+                Query query = session.createQuery(q.toString());
+
+                query.setFetchSize(numberOfThreads);
+
+                List<ForumThread> selected = new ArrayList<ForumThread>();
+                List<ForumThread> candidates = query.list();
+                int count = -1;
+                for (ForumThread thread : candidates) {
+                    if (count >= numberOfThreads) {
+                        break;
+                    }
+                    if (count > -1) {
+                        selected.add(thread);
+                        count++;
+                    }
+                    if (thread.getId() == endAtThreadId) {
+                        count++;
+                    }
+                }
+                if (includePosts) {
+                    for (ForumThread thread : selected) {
+                        Hibernate.initialize(thread.getPosts());
+                    }
+                }
+                return selected;
+            }
+        });
+        return ret;
+    }
+
+    public List<ForumThread> getThreads(final String username, final Integer numberOfThreads, final boolean includePosts) {
+        List<ForumThread> ret = template.execute(new HibernateCallback<List<ForumThread>>() {
+            public List<ForumThread> doInHibernate(Session session) throws HibernateException {
+
+                Query queryThreadIds = session.createSQLQuery("select distinct(threadId) from forum_post where owner=?");
+
+                queryThreadIds.setString(0, username);
+
+                List<String> threadIds = toListOfStrings(queryThreadIds.list());
+                if (threadIds.isEmpty()) {
+                    return new ArrayList<>();
+                }
+
+                StringBuilder q = new StringBuilder();
+                q.append("from ForumThread t where t.id IN (")
+                        .append(StringUtils.join(threadIds, ", ")) // Safe because it is always longs
+                        .append(")");
+
+                q.append(" order by t.lastPostDate desc");
+                Query query = session.createQuery(q.toString());
+
+                if (numberOfThreads != -1) {
+                    query.setMaxResults(numberOfThreads);
+                }
+
+                List<ForumThread> threads = query.list();
+                if (includePosts) {
+                    for (ForumThread thread : threads) {
+                        Hibernate.initialize(thread.getPosts());
+                    }
+                }
+                return threads;
+            }
+        });
+        return ret;
+    }
+
+    private List<String> toListOfStrings(List<Number> listOfNumbers) {
+        if (listOfNumbers == null) return null;
+        List<String> listOfStrings = new ArrayList<>(listOfNumbers.size());
+        for (Number number : listOfNumbers) {
+            if (number != null) {
+                listOfStrings.add(number.toString());
+            }
+        }
+        return listOfStrings;
     }
 }
