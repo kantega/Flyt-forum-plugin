@@ -12,7 +12,7 @@
         if (typeof options.refreshInterval == "undefined") {
             options.refreshInterval = 60;
         }
-        if (typeof options.locale == "undefined") {
+        if (options.locale === undefined || options.locale === null || options.locale.length === 0) {
             options.locale = "no";
         }
 
