@@ -3,12 +3,9 @@ package no.kantega.forum.jaxrs.tll;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.jaxrs.bol.Fault;
 import no.kantega.forum.jaxrs.tol.PostTo;
-import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
-import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +19,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static no.kantega.forum.jaxrs.tll.Util.getActions;
 import static no.kantega.forum.jaxrs.tll.Util.resolveUser;
@@ -73,7 +67,7 @@ public class PostResource {
         if (!permissionManager.hasPermission(user, Permission.VIEW, postBo)) {
             throw new Fault(403, "Not authorized");
         }
-        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getActions(postBo, user, permissionManager, uriInfo));
+        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo));
     }
 
     @Path("{postId}")
@@ -101,7 +95,7 @@ public class PostResource {
         replyPostBo.setSubject(replyPostBo.getSubject());
         replyPostBo.setReplyToId(postBo.getReplyToId() != 0 ? postBo.getReplyToId() : postId);
         forumDao.saveOrUpdate(replyPostBo);
-        return new PostTo(replyPostBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getActions(postBo, user, permissionManager, uriInfo));
+        return new PostTo(replyPostBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo));
     }
 
     public ForumDao getForumDao() {

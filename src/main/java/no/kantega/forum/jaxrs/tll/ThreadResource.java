@@ -2,17 +2,13 @@ package no.kantega.forum.jaxrs.tll;
 
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.jaxrs.bol.Fault;
-import no.kantega.forum.jaxrs.tol.ForumReferenceTo;
 import no.kantega.forum.jaxrs.tol.PostTo;
-import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
-import no.kantega.forum.jaxrs.tol.ThreadsTo;
 import no.kantega.forum.jaxrs.tol.ThreadTo;
-import no.kantega.forum.model.Forum;
+import no.kantega.forum.jaxrs.tol.ThreadsTo;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
-import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +28,6 @@ import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import static no.kantega.forum.jaxrs.tll.Util.*;
 
@@ -99,6 +94,7 @@ public class ThreadResource {
 
     @Path("{threadId}")
     @GET
+    @Consumes({"application/json", "application/xml", "multipart/form-data"})
     public ThreadTo get(@PathParam("threadId") Long threadId) {
         log.trace("get(Long)");
         ForumThread threadBo = forumDao.getThread(threadId, true);
@@ -114,8 +110,9 @@ public class ThreadResource {
 
     @Path("{threadId}")
     @POST
+    @Consumes({"application/json", "application/xml", "multipart/form-data"})
     public PostTo createPost(@PathParam("threadId") Long threadId, PostTo postTo) {
-        log.trace("get(Long)");
+        log.trace("createPost(Long,PostTo)");
         ForumThread threadBo = forumDao.getThread(threadId, true);
         if (threadBo == null) {
             throw new Fault(404, "Not found");
@@ -137,7 +134,7 @@ public class ThreadResource {
         postBo.setSubject(postTo.getSubject());
         //postBo.setReplyToId();
         postBo = forumDao.saveOrUpdate(postBo);
-        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getActions(postBo, user, permissionManager, uriInfo));
+        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo));
     }
 
     public ForumDao getForumDao() {

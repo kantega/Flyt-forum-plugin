@@ -210,7 +210,7 @@ public class Util {
             if (postsBo != null) {
                 postsTo = new ArrayList<>(postsBo.size());
                 for (Post postBo : postsBo) {
-                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getActions(postBo, user, permissionManager, uriInfo)));
+                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo)));
                 }
             }
         }

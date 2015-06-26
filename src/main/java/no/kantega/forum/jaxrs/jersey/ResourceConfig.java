@@ -10,6 +10,7 @@ public class ResourceConfig extends org.glassfish.jersey.server.ResourceConfig {
 
     public ResourceConfig() {
         register(RequestContextFilter.class);
+        register(PostToMessageBodyReader.class);
         register(ThrowableMapper.class);
         register(FaultMapper.class);
         register(new Binder());
