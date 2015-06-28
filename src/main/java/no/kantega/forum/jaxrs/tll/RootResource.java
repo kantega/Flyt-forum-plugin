@@ -18,8 +18,8 @@ import java.util.Arrays;
  * @since 2015-06-24
  */
 @Path("/")
-@Consumes({"application/json", "application/xml"})
-@Produces({"application/json", "application/xml"})
+@Consumes({"application/json"})
+@Produces({"application/json"})
 public class RootResource {
 
     private final Logger log = LoggerFactory.getLogger(RootResource.class);

@@ -10,6 +10,7 @@ import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.rating.RatingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +37,8 @@ import static no.kantega.forum.jaxrs.tll.Util.*;
  * @since 2015-06-24
  */
 @Path("/thread")
-@Consumes({"application/json", "application/xml"})
-@Produces({"application/json", "application/xml"})
+@Consumes({"application/json"})
+@Produces({"application/json"})
 public class ThreadResource {
 
     public static final int DEFAULT_NUMBER_OF_THREADS = 5;
@@ -46,6 +47,7 @@ public class ThreadResource {
     private ForumDao forumDao;
     private PermissionManager permissionManager;
     private UserResolver userResolver;
+    private RatingService ratingService;
 
     @Context
     private UriInfo uriInfo;
@@ -54,10 +56,11 @@ public class ThreadResource {
     private HttpServletRequest request;
 
     @Inject
-    public ThreadResource(@Named("forumDao") ForumDao forumDao, @Named("forumPermissionManager") PermissionManager permissionManager, @Named("userResolver") UserResolver userResolver) {
+    public ThreadResource(@Named("forumDao") ForumDao forumDao, @Named("forumPermissionManager") PermissionManager permissionManager, @Named("userResolver") UserResolver userResolver, @Named("ratingService") RatingService ratingService) {
         this.forumDao = forumDao;
         this.permissionManager = permissionManager;
         this.userResolver = userResolver;
+        this.ratingService = ratingService;
     }
 
     @GET
@@ -86,7 +89,7 @@ public class ThreadResource {
         }
         for (ForumThread threadBo : threadsBo) {
             if (permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
-                threadTos.add(new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), includePosts ? postsTo(threadBo, user, permissionManager, uriInfo) : null, getActions(threadBo, user, permissionManager, uriInfo)));
+                threadTos.add(new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), includePosts ? postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request) : null, getActions(threadBo, user, permissionManager, uriInfo)));
             }
         }
         return new ThreadsTo(threadTos, getActions(username, startAtThreadId, endAtThreadId, numberOfThreads, includePosts, uriInfo));
@@ -94,7 +97,7 @@ public class ThreadResource {
 
     @Path("{threadId}")
     @GET
-    @Consumes({"application/json", "application/xml", "multipart/form-data"})
+    @Consumes({"application/json", "multipart/form-data"})
     public ThreadTo get(@PathParam("threadId") Long threadId) {
         log.trace("get(Long)");
         ForumThread threadBo = forumDao.getThread(threadId, true);
@@ -105,12 +108,12 @@ public class ThreadResource {
         if (!permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
             throw new Fault(403, "Not authorized");
         }
-        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo), getActions(threadBo, user, permissionManager, uriInfo));
+        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request), getActions(threadBo, user, permissionManager, uriInfo));
     }
 
     @Path("{threadId}")
     @POST
-    @Consumes({"application/json", "application/xml", "multipart/form-data"})
+    @Consumes({"application/json", "multipart/form-data"})
     public PostTo createPost(@PathParam("threadId") Long threadId, PostTo postTo) {
         log.trace("createPost(Long,PostTo)");
         ForumThread threadBo = forumDao.getThread(threadId, true);
@@ -134,7 +137,7 @@ public class ThreadResource {
         postBo.setSubject(postTo.getSubject());
         //postBo.setReplyToId();
         postBo = forumDao.saveOrUpdate(postBo);
-        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo));
+        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
 
     public ForumDao getForumDao() {

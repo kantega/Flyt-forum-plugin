@@ -10,6 +10,7 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.rating.RatingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,8 @@ import static no.kantega.forum.jaxrs.tll.Util.*;
  */
 @Path("/forum")
 
-@Consumes({"application/json", "application/xml"})
-@Produces({"application/json", "application/xml"})
+@Consumes({"application/json"})
+@Produces({"application/json"})
 public class ForumResource {
 
     private final Logger log = LoggerFactory.getLogger(ForumResource.class);
@@ -43,6 +44,7 @@ public class ForumResource {
     private ForumDao forumDao;
     private PermissionManager permissionManager;
     private UserResolver userResolver;
+    private RatingService ratingService;
 
     @Context
     private UriInfo uriInfo;
@@ -51,10 +53,11 @@ public class ForumResource {
     private HttpServletRequest request;
 
     @Inject
-    public ForumResource(@Named("forumDao") ForumDao forumDao, @Named("forumPermissionManager") PermissionManager permissionManager, @Named("userResolver") UserResolver userResolver) {
+    public ForumResource(@Named("forumDao") ForumDao forumDao, @Named("forumPermissionManager") PermissionManager permissionManager, @Named("userResolver") UserResolver userResolver, @Named("ratingService") RatingService ratingService) {
         this.forumDao = forumDao;
         this.permissionManager = permissionManager;
         this.userResolver = userResolver;
+        this.ratingService = ratingService;
     }
 
     @GET
@@ -108,7 +111,7 @@ public class ForumResource {
         threadBo.setOwner(user);
         threadBo.setApproved(!forumBo.isApprovalRequired());
         threadBo = forumDao.saveOrUpdate(threadBo);
-        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo), getActions(threadBo, user, permissionManager, uriInfo));
+        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request), getActions(threadBo, user, permissionManager, uriInfo));
 
     }
 

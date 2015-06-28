@@ -12,8 +12,13 @@ import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.rating.Rating;
+import no.kantega.publishing.api.rating.RatingService;
+import no.kantega.publishing.security.SecuritySession;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +29,8 @@ import java.util.Set;
  * @since 2015-06-25
  */
 public class Util {
+
+    public static final String RATING_CONTEXT = "forum";
 
     private Util(){}
 
@@ -199,7 +206,7 @@ public class Util {
         );
     }
 
-    public static List<PostTo> postsTo(ForumThread threadBo, String user, PermissionManager permissionManager, UriInfo uriInfo) {
+    public static List<PostTo> postsTo(ForumThread threadBo, String user, PermissionManager permissionManager, UriInfo uriInfo, RatingService ratingService, HttpServletRequest request) {
         List<PostTo> postsTo = null;
         if (threadBo != null) {
             Set<Post> postsBo = null;
@@ -210,7 +217,7 @@ public class Util {
             if (postsBo != null) {
                 postsTo = new ArrayList<>(postsBo.size());
                 for (Post postBo : postsBo) {
-                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo)));
+                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request)));
                 }
             }
         }
@@ -238,7 +245,7 @@ public class Util {
         return forumReferenceTo;
     }
 
-    public static List<ResourceReferenceTo> getActions(Post postBo, String user, PermissionManager permissionManager, UriInfo uriInfo) {
+    public static List<ResourceReferenceTo> getActions(Post postBo, String user, PermissionManager permissionManager, UriInfo uriInfo, RatingService ratingService, HttpServletRequest request) {
         List<ResourceReferenceTo> actions = new ArrayList<>();
         if (postBo != null) {
             if (permissionManager.hasPermission(user, Permission.VIEW, postBo)) {
@@ -263,6 +270,35 @@ public class Util {
                         null,
                         null
                 ));
+            }
+            if (permissionManager.hasPermission(user, Permission.VIEW, postBo)) {
+                if (!hasRated(request, String.valueOf(postBo.getId()), RATING_CONTEXT, ratingService)) {
+                    actions.add(new ResourceReferenceTo(
+                            uriInfo.getBaseUriBuilder().path("post").path("{postId}").path("like").build(
+                                    postBo.getReplyToId() != 0 ? postBo.getReplyToId() : postBo.getId()
+                            ),
+                            "like",
+                            "Like post",
+                            null,
+                            null,
+                            "GET",
+                            null,
+                            null
+                    ));
+                } else {
+                    actions.add(new ResourceReferenceTo(
+                            uriInfo.getBaseUriBuilder().path("post").path("{postId}").path("like").build(
+                                    postBo.getReplyToId() != 0 ? postBo.getReplyToId() : postBo.getId()
+                            ),
+                            "unlike",
+                            "Unlike post",
+                            null,
+                            null,
+                            "DELETE",
+                            null,
+                            null
+                    ));
+                }
             }
         }
         return actions;
@@ -310,5 +346,42 @@ public class Util {
             ));
         }
         return actions;
+    }
+
+    public static boolean hasRated(HttpServletRequest request, String objectId, String context, RatingService ratingService) {
+        for (Cookie cookie : request.getCookies()) {
+            //The user has already rated if she has a cookie for this object.
+            if (cookie.getName().equals(getCookieNameForObject(objectId, context))) {
+                return true;
+            }
+        }
+        //If she is logged in she might have rated this object even though she doesn't have a cookie.
+        SecuritySession secSession = SecuritySession.getInstance(request);
+        if (secSession.isLoggedIn()) {
+            List<Rating> ratings = ratingService.getRatingsForObject(objectId, context);
+            if (ratings == null || ratings.size() == 0 ) {
+                return false;
+            }
+            for (Rating rating : ratings) {
+                if (rating.getUserid().equals(secSession.getUser().getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void deleteRatingCookie(HttpServletResponse response, String objectId, String context) {
+        Cookie cookie = new Cookie(getCookieNameForObject(objectId, context), "0");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    public static void setRatingCookie(HttpServletResponse response, String objectId, String context, String value) {
+        response.addCookie(new Cookie(getCookieNameForObject(objectId, context), value));
+    }
+
+    public static String getCookieNameForObject(String objectId, String context) {
+        return "aksess-rating-" + context + "-" + objectId;
     }
 }

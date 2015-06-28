@@ -32,8 +32,8 @@ import static no.kantega.forum.jaxrs.tll.Util.*;
  * @since 2015-06-24
  */
 @Path("/category")
-@Consumes({"application/json", "application/xml"})
-@Produces({"application/json", "application/xml"})
+@Consumes({"application/json"})
+@Produces({"application/json"})
 public class CategoryResource {
 
     private final Logger log = LoggerFactory.getLogger(CategoryResource.class);

@@ -45,11 +45,18 @@
             }
             return NaN;
         }
-
+        function isValidDate(d) {
+            if ( Object.prototype.toString.call(d) !== "[object Date]" )
+                return false;
+            return !isNaN(d.getTime());
+        }
         function parseDate(dateValue) {
             var D = null;
             try {
                 D = new Date(dateValue);
+                if (!isValidDate(D)) {
+                    D = null;
+                }
             } catch (exception) {}
             if (!D) {
                 try {
