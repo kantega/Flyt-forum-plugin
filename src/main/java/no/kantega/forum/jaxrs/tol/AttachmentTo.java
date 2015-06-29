@@ -1,6 +1,7 @@
 package no.kantega.forum.jaxrs.tol;
 
 import no.kantega.forum.jaxrs.jaxb.InstantXmlAdapter;
+import no.kantega.forum.model.Attachment;
 import org.joda.time.Instant;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,8 +23,6 @@ public class AttachmentTo {
 
     @XmlElement(name = "id")
     private Long id;
-    @XmlElement(name = "postReference")
-    private ResourceReferenceTo postReference;
     @XmlElement(name = "fileName")
     private String fileName;
     @XmlElement(name = "fileSize")
@@ -36,6 +35,8 @@ public class AttachmentTo {
     @XmlElement(name = "created")
     @XmlJavaTypeAdapter(InstantXmlAdapter.class)
     private Instant created;
+    @XmlElement(name = "postReference")
+    private ResourceReferenceTo postReference;
 
     public AttachmentTo() {
     }
@@ -48,14 +49,24 @@ public class AttachmentTo {
         this.created = created;
     }
 
-    public AttachmentTo(Long id, ResourceReferenceTo postReference, String fileName, Long fileSize, String mimeType, ResourceReferenceTo dataReference, Instant created) {
-        this.id = id;
+    public AttachmentTo(Attachment attachment, ResourceReferenceTo dataReference, ResourceReferenceTo postReference) {
+        this.id = attachment.getId();
+        this.fileName = attachment.getFileName();
+        this.fileSize = attachment.getFileSize();
+        this.mimeType = attachment.getMimeType();
+        this.dataReference = dataReference;
+        this.created = attachment.getCreated() != null ? new Instant(attachment.getCreated().getTime()) : null;
         this.postReference = postReference;
+    }
+
+    public AttachmentTo(Long id, String fileName, Long fileSize, String mimeType, ResourceReferenceTo dataReference, Instant created, ResourceReferenceTo postReference) {
+        this.id = id;
         this.fileName = fileName;
         this.fileSize = fileSize;
         this.mimeType = mimeType;
         this.dataReference = dataReference;
         this.created = created;
+        this.postReference = postReference;
     }
 
     public Long getId() {
@@ -64,14 +75,6 @@ public class AttachmentTo {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public ResourceReferenceTo getPostReference() {
-        return postReference;
-    }
-
-    public void setPostReference(ResourceReferenceTo postReference) {
-        this.postReference = postReference;
     }
 
     public String getFileName() {
@@ -120,5 +123,13 @@ public class AttachmentTo {
 
     public void setCreated(Instant created) {
         this.created = created;
+    }
+
+    public ResourceReferenceTo getPostReference() {
+        return postReference;
+    }
+
+    public void setPostReference(ResourceReferenceTo postReference) {
+        this.postReference = postReference;
     }
 }

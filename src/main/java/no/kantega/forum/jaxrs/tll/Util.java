@@ -1,11 +1,13 @@
 package no.kantega.forum.jaxrs.tll;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.forum.jaxrs.tol.AttachmentTo;
 import no.kantega.forum.jaxrs.tol.CategoryReferenceTo;
 import no.kantega.forum.jaxrs.tol.ForumReferenceTo;
 import no.kantega.forum.jaxrs.tol.LikeTo;
 import no.kantega.forum.jaxrs.tol.PostTo;
 import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
+import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.ForumThread;
@@ -235,7 +237,7 @@ public class Util {
             if (postsBo != null) {
                 postsTo = new ArrayList<>(postsBo.size());
                 for (Post postBo : postsBo) {
-                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request)));
+                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), getAttachments(postBo, uriInfo), getActions(postBo, user, permissionManager, uriInfo, ratingService, request)));
                 }
             }
         }
@@ -251,6 +253,21 @@ public class Util {
             }
         }
         return likes;
+    }
+
+    public static List<AttachmentTo> getAttachments(Post postBo, UriInfo uriInfo) {
+        List<Attachment> attachmentBos = null;
+        List<AttachmentTo> attachmentTos = null;
+        try {
+            attachmentBos = new ArrayList<>(postBo.getAttachments());
+        } catch (Exception cause) {}
+        if (attachmentBos != null) {
+            attachmentTos = new ArrayList<>(attachmentBos.size());
+            for (Attachment attachment : attachmentBos) {
+                attachmentTos.add(new AttachmentTo(attachment, /*TODO*/null, toReference(postBo, "read", "Read post", "GET", uriInfo)));
+            }
+        }
+        return attachmentTos;
     }
 
     public static ForumReferenceTo forumReferenceTo(Forum forumBo, UriInfo uriInfo) {
