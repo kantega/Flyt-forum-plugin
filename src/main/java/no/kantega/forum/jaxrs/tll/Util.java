@@ -1,7 +1,9 @@
 package no.kantega.forum.jaxrs.tll;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.forum.jaxrs.tol.CategoryReferenceTo;
 import no.kantega.forum.jaxrs.tol.ForumReferenceTo;
+import no.kantega.forum.jaxrs.tol.LikeTo;
 import no.kantega.forum.jaxrs.tol.PostTo;
 import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
 import no.kantega.forum.model.Forum;
@@ -14,21 +16,37 @@ import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.realm.SecurityRealm;
+import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * @author Kristian Myrhaug
  * @since 2015-06-25
  */
 public class Util {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Util.class);
 
     public static final String RATING_CONTEXT = "forum";
 
@@ -206,7 +224,7 @@ public class Util {
         );
     }
 
-    public static List<PostTo> postsTo(ForumThread threadBo, String user, PermissionManager permissionManager, UriInfo uriInfo, RatingService ratingService, HttpServletRequest request) {
+    public static List<PostTo> postsTo(ForumThread threadBo, String user, PermissionManager permissionManager, UriInfo uriInfo, RatingService ratingService, HttpServletRequest request, List<Rating> ratings) {
         List<PostTo> postsTo = null;
         if (threadBo != null) {
             Set<Post> postsBo = null;
@@ -217,11 +235,22 @@ public class Util {
             if (postsBo != null) {
                 postsTo = new ArrayList<>(postsBo.size());
                 for (Post postBo : postsBo) {
-                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request)));
+                    postsTo.add(new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request)));
                 }
             }
         }
         return postsTo;
+    }
+
+    public static List<LikeTo> getLikes(HttpServletRequest request, List<Rating> ratingBos, Post postBo) {
+        List<LikeTo> likes = new ArrayList<>();
+        for (Rating ratingBo : ratingBos) {
+            if (ratingBo.getObjectId().equalsIgnoreCase(String.valueOf(postBo.getId()))) {
+
+                likes.add(new LikeTo(ratingBo, getUser(request, ratingBo.getUserid(), false, false)));
+            }
+        }
+        return likes;
     }
 
     public static ForumReferenceTo forumReferenceTo(Forum forumBo, UriInfo uriInfo) {
@@ -383,5 +412,82 @@ public class Util {
 
     public static String getCookieNameForObject(String objectId, String context) {
         return "aksess-rating-" + context + "-" + objectId;
+    }
+
+
+    public static List<Rating> getRatings(RatingService ratingService, Post postBo) {
+        List<Rating> ratings = null;
+        if (postBo != null) {
+            ratings = ratingService.getRatingsForObject(String.valueOf(postBo.getId()), RATING_CONTEXT);
+        }
+        return ratings;
+    }
+
+    public static List<Rating> getRatings(RatingService ratingService, ForumThread threadBo) {
+        List<Rating> ratings = null;
+        List<Post> postBos = null;
+        try {
+            postBos = new ArrayList<>(threadBo.getPosts());
+        } catch (Exception cause) {}
+        if (postBos != null) {
+            List<String> postIds = new ArrayList<>(postBos.size());
+            for (Post postBo : postBos) {
+                postIds.add(String.valueOf(postBo.getId()));
+            }
+            ratings = ratingService.getRatingsForObjects(postIds, RATING_CONTEXT);
+        }
+        return ratings;
+    }
+
+    public static List<Rating> getRatings(RatingService ratingService, String... objectIds) {
+        return ratingService.getRatingsForObjects(Arrays.asList(objectIds), RATING_CONTEXT);
+    }
+
+    public static User getUser(HttpServletRequest request, String username, boolean getRoles, boolean getRoleTopics) {
+        User user = null;
+        try {
+            WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(request.getSession(true).getServletContext());
+            if(!isBlank(username)) {
+                try {
+                    SecurityRealm realm = null;
+                    Map<String,SecurityRealm> beansOfType = webApplicationContext.getBeansOfType(SecurityRealm.class);
+                    for (SecurityRealm r : beansOfType.values()) {
+                        user = r.lookupUser(username);
+                        if(user != null){
+                            realm = r;
+                            break;
+
+                        }
+                    }
+
+                    if (user != null) {
+                        if (getRoles || getRoleTopics) {
+                            List<Role> roles = realm.lookupRolesForUser(user.getId());
+                            for (Role role : roles) {
+                                user.addRole(role);
+                            }
+                            if (getRoleTopics && Aksess.isTopicMapsEnabled()) {
+                                // Hent topics for bruker
+                                TopicMapService topicService = new TopicMapService(request);
+
+                                if (user.getRoles() != null) {
+                                    for (Role role : roles) {
+                                        List<Topic> tmp = topicService.getTopicsBySID(role);
+                                        for (Topic aTmp : tmp) {
+                                            user.addTopic(aTmp);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (SystemException e) {
+                    user = null;
+                }
+            }
+        } catch (Exception cause) {
+
+        }
+        return user;
     }
 }

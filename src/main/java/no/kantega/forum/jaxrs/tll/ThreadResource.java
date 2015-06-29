@@ -10,6 +10,7 @@ import no.kantega.forum.model.Post;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +90,8 @@ public class ThreadResource {
         }
         for (ForumThread threadBo : threadsBo) {
             if (permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
-                threadTos.add(new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), includePosts ? postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request) : null, getActions(threadBo, user, permissionManager, uriInfo)));
+                List<Rating> ratings = getRatings(ratingService, threadBo);
+                threadTos.add(new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), includePosts ? postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request, ratings) : null, getActions(threadBo, user, permissionManager, uriInfo)));
             }
         }
         return new ThreadsTo(threadTos, getActions(username, startAtThreadId, endAtThreadId, numberOfThreads, includePosts, uriInfo));
@@ -108,7 +110,8 @@ public class ThreadResource {
         if (!permissionManager.hasPermission(user, Permission.VIEW, threadBo)) {
             throw new Fault(403, "Not authorized");
         }
-        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request), getActions(threadBo, user, permissionManager, uriInfo));
+        List<Rating> ratings = getRatings(ratingService, threadBo);
+        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request, ratings), getActions(threadBo, user, permissionManager, uriInfo));
     }
 
     @Path("{threadId}")
@@ -137,7 +140,8 @@ public class ThreadResource {
         postBo.setSubject(postTo.getSubject());
         //postBo.setReplyToId();
         postBo = forumDao.saveOrUpdate(postBo);
-        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
+        List<Rating> ratings = getRatings(ratingService, postBo);
+        return new PostTo(postBo, toReference(threadBo, "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
 
     public ForumDao getForumDao() {

@@ -64,6 +64,10 @@ public class PostTo {
     @XmlElement(name = "threadReference")
     private ResourceReferenceTo threadReference;
 
+    @XmlElementWrapper(name = "likes")
+    @XmlElement(name = "like")
+    private List<LikeTo> likes;
+
     @XmlElementWrapper(name = "attachments")
     @XmlElement(name = "attachment")
     private List<AttachmentTo> attachments;
@@ -80,7 +84,7 @@ public class PostTo {
     public PostTo() {
     }
 
-    public PostTo(Post postBo, ResourceReferenceTo threadReference, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {
+    public PostTo(Post postBo, ResourceReferenceTo threadReference, List<LikeTo> likes, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {
         this.id = postBo.getId();
         this.replyToId = postBo.getReplyToId();
         this.subject = postBo.getSubject();
@@ -93,11 +97,12 @@ public class PostTo {
         this.numberOfRatings = postBo.getNumberOfRatings();
         this.modifiedDate = postBo.getModifiedDate() != null ? new Instant(postBo.getModifiedDate().getTime()) : null;
         this.threadReference = threadReference;
+        this.likes = likes;
         this.attachments = attachments;
         this.actions = actions;
     }
 
-    public PostTo(Long id, Long replyToId, String subject, String body, String owner, Instant postDate, String author, Boolean approved, Float ratingScore, Integer numberOfRatings, Instant modifiedDate, ResourceReferenceTo threadReference, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {
+    public PostTo(Long id, Long replyToId, String subject, String body, String owner, Instant postDate, String author, Boolean approved, Float ratingScore, Integer numberOfRatings, Instant modifiedDate, ResourceReferenceTo threadReference, List<LikeTo> likes, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {
         this.id = id;
         this.replyToId = replyToId;
         this.subject = subject;
@@ -110,6 +115,7 @@ public class PostTo {
         this.numberOfRatings = numberOfRatings;
         this.modifiedDate = modifiedDate;
         this.threadReference = threadReference;
+        this.likes = likes;
         this.attachments = attachments;
         this.actions = actions;
     }
@@ -224,5 +230,13 @@ public class PostTo {
 
     public void setAttachments(List<AttachmentTo> attachments) {
         this.attachments = attachments;
+    }
+
+    public List<LikeTo> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<LikeTo> likes) {
+        this.likes = likes;
     }
 }

@@ -10,6 +10,7 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.UserResolver;
+import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.Date;
+import java.util.List;
 
 import static no.kantega.forum.jaxrs.tll.Util.*;
 
@@ -111,7 +113,8 @@ public class ForumResource {
         threadBo.setOwner(user);
         threadBo.setApproved(!forumBo.isApprovalRequired());
         threadBo = forumDao.saveOrUpdate(threadBo);
-        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request), getActions(threadBo, user, permissionManager, uriInfo));
+        List<Rating> ratings = getRatings(ratingService, threadBo);
+        return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request, ratings), getActions(threadBo, user, permissionManager, uriInfo));
 
     }
 

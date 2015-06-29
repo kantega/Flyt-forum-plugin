@@ -366,8 +366,8 @@ $.fn.oaForumWall = function () {
     // link listener to display hidden ratings in a thread.
     $forumThreads.on("click", ".oa-forum-showAllRatings", function(event) {
         event.preventDefault();
-        $(this).hide();
-        $(this).siblings(".oa-forum-minimizedRatings").show();
+        hide($(this));
+        show($(this).siblings(".oa-forum-minimizedRatings"));
     });
 
     // link listener to display hidden comments in a thread.

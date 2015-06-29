@@ -28,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.Date;
+import java.util.List;
 
 import static no.kantega.forum.jaxrs.tll.Util.*;
 
@@ -76,7 +77,8 @@ public class PostResource {
         if (!permissionManager.hasPermission(user, Permission.VIEW, postBo)) {
             throw new Fault(403, "Not authorized");
         }
-        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
+        List<Rating> ratings = getRatings(ratingService, postBo);
+        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
 
     @Path("{postId}/like")
@@ -103,7 +105,8 @@ public class PostResource {
         ratingService.saveOrUpdateRating(rating);
         setRatingCookie(response, rating.getObjectId(), rating.getContext(), String.valueOf(rating.getRating()));
         postBo = forumDao.getPost(postId);
-        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
+        List<Rating> ratings = getRatings(ratingService, postBo);
+        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
 
     @Path("{postId}/like")
@@ -124,7 +127,8 @@ public class PostResource {
         ratingService.deleteRatingsForUser(RatingUtil.getUserId(request), postId.toString(), RATING_CONTEXT);
         deleteRatingCookie(response, postId.toString(), RATING_CONTEXT);
         postBo = forumDao.getPost(postId);
-        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
+        List<Rating> ratings = getRatings(ratingService, postBo);
+        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
 
     @Path("{postId}")
@@ -151,8 +155,9 @@ public class PostResource {
         replyPostBo.setRatingScore(0F);
         replyPostBo.setSubject(replyPostBo.getSubject());
         replyPostBo.setReplyToId(postBo.getReplyToId() != 0 ? postBo.getReplyToId() : postId);
-        forumDao.saveOrUpdate(replyPostBo);
-        return new PostTo(replyPostBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
+        replyPostBo = forumDao.saveOrUpdate(replyPostBo);
+        List<Rating> ratings = getRatings(ratingService, replyPostBo);
+        return new PostTo(replyPostBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
 
     @Path("{postId}")
@@ -170,8 +175,9 @@ public class PostResource {
         postBo.setBody(postTo.getBody());
         postBo.setModifiedDate(new Date());
 
-        forumDao.saveOrUpdate(postBo);
-        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), /*TODO*/ null, getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
+        postBo = forumDao.saveOrUpdate(postBo);
+        List<Rating> ratings = getRatings(ratingService, postBo);
+        return new PostTo(postBo, toReference(postBo.getThread(), "read", "Read thread", "GET", uriInfo), getLikes(request, ratings, postBo), /*TODO*/ null,   getActions(postBo, user, permissionManager, uriInfo, ratingService, request));
     }
     @Path("{postId}")
     @DELETE
