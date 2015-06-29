@@ -28,6 +28,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -65,7 +67,7 @@ public class ThreadResource {
     }
 
     @GET
-    public ThreadsTo getAll(@QueryParam("username") String username, @QueryParam("startAtThreadId") Long startAtThreadId, @QueryParam("endAtThreadId") Long endAtThreadId, @QueryParam("numberOfThreads") Integer numberOfThreads, @QueryParam("includePosts") Boolean includePosts) {
+    public ThreadsTo getAll(@QueryParam("username") String username, @QueryParam("startAtThreadId") Long startAtThreadId, @QueryParam("endAtThreadId") Long endAtThreadId, @QueryParam("numberOfThreads") Integer numberOfThreads, @QueryParam("includePosts") Boolean includePosts, @QueryParam("threadId") Long threadId) {
         log.trace("getAll(String,Long,Long,Integer,Boolean)");
         if (startAtThreadId != null && endAtThreadId != null) {
             throw new Fault(400, "Mutually exclusive: startAtThreadId, endAtThreadId");
@@ -76,7 +78,13 @@ public class ThreadResource {
         includePosts = getOrDefault(includePosts, false);
 
         List<ForumThread> threadsBo = null;
-        if (startAtThreadId != null) {
+        if (threadId != null) {
+            ForumThread threadBo = forumDao.getThread(threadId, true);
+            if (threadBo == null) {
+                throw new Fault(404, "Not found");
+            }
+            threadsBo = Collections.singletonList(threadBo);
+        } else if (startAtThreadId != null) {
             threadsBo = forumDao.getThreadsStartingAt(username, startAtThreadId, numberOfThreads, includePosts);
         } else if (endAtThreadId != null) {
             threadsBo = forumDao.getThreadsEndingAt(username, endAtThreadId, numberOfThreads, includePosts);
