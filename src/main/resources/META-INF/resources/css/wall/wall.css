@@ -211,3 +211,26 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
         transform: translateY(0);
     }
 }
+
+.oa-forum-post .oa-forum-deleteThread, .oa-forum-post:first-child .oa-forum-deletePost {
+     display: none;
+ }
+.oa-forum-post:first-child .oa-forum-deleteThread {
+    display: inherit;
+}
+.oa-forum-post .oa-forum-showFullThread {
+    display: none;
+}
+.oa-forum-post:first-child .oa-forum-showFullThread {
+    display: inherit;
+}
+.oa-forum-separatorContainer, .oa-forum-likerSeparator, .oa-forum-otherLikersCount {
+    display: inline;
+}
+.oa-forum-image-container a {
+    color: #FFFFFF;
+}
+.oa-forum-attachment img {
+    display: inline;
+    margin: auto;
+}
