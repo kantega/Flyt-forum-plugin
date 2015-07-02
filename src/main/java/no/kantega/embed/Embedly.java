@@ -1,11 +1,16 @@
 package no.kantega.embed;
 
+import no.kantega.utilities.Http;
+import org.springframework.util.StreamUtils;
+
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
-import static no.kantega.embed.Utilities.requireNonNull;
+import static no.kantega.utilities.Objects.requireNonNull;
 
 /**
  * @author Kristian Myrhaug
@@ -17,7 +22,7 @@ public class Embedly {
 
     private URL apiUrl;
     private String apiKey;
-    private String encoding = DEFAULT_URL_ENCODING;
+    private String urlEncoding = DEFAULT_URL_ENCODING;
 
     @Inject
     public Embedly(@Named("embed.ly.api.url") URL apiUrl, @Named("embed.ly.api.key") String apiKey) {
@@ -33,12 +38,12 @@ public class Embedly {
         return apiKey;
     }
 
-    public String getEncoding() {
-        return encoding;
+    public String getUrlEncoding() {
+        return urlEncoding;
     }
 
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
+    public void setUrlEncoding(String urlEncoding) {
+        this.urlEncoding = urlEncoding;
     }
 
     public Oembed.OembedBuilder oembed() {
@@ -51,7 +56,17 @@ public class Embedly {
                 .withUrl(new URL("http://www.adressa.no/bolig/article560853.snd"))
                 .withNostyle(true)
                 .build();
-        System.out.println(oembed.toUrl());
+
+        try (Http.HttpRequest request = oembed.getHttpRequest()) {
+            System.out.println(request.getUrl());
+            try (Http.HttpResponse response = request.getResponse()) {
+                try (InputStream entity = response.getInputStream()) {
+                    System.out.println(StreamUtils.copyToString(entity, Charset.forName("UTF-8")));
+                }
+            }
+        } catch (Exception cause) {
+            cause.printStackTrace();
+        }
     }
 
 

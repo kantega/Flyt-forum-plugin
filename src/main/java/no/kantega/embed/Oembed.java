@@ -1,10 +1,14 @@
 package no.kantega.embed;
 
+import no.kantega.utilities.Http;
+import no.kantega.utilities.Objects;
+import no.kantega.utilities.Url;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.kantega.embed.Utilities.createUrl;
+import static no.kantega.utilities.Url.createUrl;
 
 /**
  * @author Kristian Myrhaug
@@ -27,11 +31,11 @@ public class Oembed {
     private Scheme scheme;
 
     private Oembed(Embedly embedly, List<URL> urls, Integer maxWitdth, Integer maxHeight, Integer width, Boolean nostyle, Boolean autoplay, Boolean videosrc, Integer words, Integer chars, Boolean luxe, Boolean secure, Scheme scheme) {
-        this.embedly = Utilities.requireNonNull(embedly, "May not be null: embedly");
+        this.embedly = Objects.requireNonNull(embedly, "May not be null: embedly");
         this.urls = new ArrayList<>(
-                Utilities.requireNonNullElements(
-                        Utilities.requireNonEmpty(
-                                Utilities.requireNonNull(urls, "May not be null: urls"),
+                Objects.requireNonNullElements(
+                        Objects.requireNonEmpty(
+                                Objects.requireNonNull(urls, "May not be null: urls"),
                                 "May not be empty: urls"),
                         "May not be null: urls[%d]"
                 )
@@ -105,11 +109,11 @@ public class Oembed {
         return new DefalutOembedBuilder().withEmbedly(embedly);
     }
 
-    public URL toUrl() {
+    private URL toUrl() {
         URL url = this.getEmbedly().getApiUrl();
-        String query = QueryBuilder.forQuery(url.getQuery(), embedly.getEncoding())
+        String query = Http.query(url.getQuery(), embedly.getUrlEncoding())
                 .put("key", this.getEmbedly().getApiKey())
-                .put(new QueryBuilder.DecodedNameEncodedValuePair("urls", Utilities.getEncodedUrls(this.getUrls(), embedly.getEncoding()), embedly.getEncoding()))
+                .put(new Http.DecodedNameEncodedValuePair("urls", Url.getEncodedUrls(this.getUrls(), embedly.getUrlEncoding()), embedly.getUrlEncoding()))
                 .put("maxwidth", this.getMaxWitdth())
                 .put("maxheight", this.getMaxHeight())
                 .put("width", this.getWidth())
@@ -123,6 +127,16 @@ public class Oembed {
                 .put("scheme", this.getScheme())
                 .build();
         return createUrl(url, query, url.getRef());
+    }
+
+    public Http.HttpRequest getHttpRequest() {
+        return new Http.DefaultHttpRequest(
+                "GET",
+                toUrl(),
+                Http.DefaultHttpHeadersBuilder.builder()
+                        .withHeader("Accept", "application/json")
+                        .build()
+        );
     }
 
     public enum Scheme {

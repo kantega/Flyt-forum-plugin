@@ -1,4 +1,4 @@
-package no.kantega.embed;
+package no.kantega.utilities;
 
 import org.junit.Test;
 
@@ -8,12 +8,12 @@ import static org.junit.Assert.assertEquals;
  * @author Kristian Myrhaug
  * @since 2015-07-01
  */
-public class QueryBuilderTest {
+public class DefaultQueryBuilderTest {
 
     @Test
     public void thatParametersAreAdded() {
         String expected = "greeting=Hei&name=Navn&greeting=Hello&greeting=Hola";
-        String actual = QueryBuilder.forQuery("greeting=Hei&name=Navn", "UTF-8")
+        String actual = Http.query("greeting=Hei&name=Navn", "UTF-8")
                 .add("greeting", "Hello")
                 .add("greeting", "Hola")
                 .build();
@@ -23,7 +23,7 @@ public class QueryBuilderTest {
     @Test
     public void thatParametersAreReplaced() {
         String expected = "name=Navn&greeting=Hola";
-        String actual = QueryBuilder.forQuery("greeting=Hei&name=Navn", "UTF-8")
+        String actual = Http.query("greeting=Hei&name=Navn", "UTF-8")
                 .add("greeting", "Hello")
                 .put("greeting", "Hola")
                 .build();
@@ -33,7 +33,7 @@ public class QueryBuilderTest {
     @Test
     public void thatParametersAreEncoded() {
         String expected = "name%26=%26Navn&greeting%26=%26Hola";
-        String actual = QueryBuilder.forQuery("greeting%26=%26Hei&name%26=%26Navn", "UTF-8")
+        String actual = Http.query("greeting%26=%26Hei&name%26=%26Navn", "UTF-8")
                 .add("greeting&", "&Hello")
                 .put("greeting&", "&Hola")
                 .build();

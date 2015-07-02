@@ -1,4 +1,4 @@
-package no.kantega.embed;
+package no.kantega.utilities;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -11,41 +11,9 @@ import java.util.Collection;
  * @author Kristian Myrhaug
  * @since 2015-07-01
  */
-public class Utilities {
+public class Url {
 
-    private Utilities() {}
-
-    public static <T> T requireNonNull(T object, String message) {
-        if (object == null)
-            throw new NullPointerException(message);
-        return object;
-    }
-
-    public static <T extends Collection> T requireNonEmpty(T object, String message) {
-        if (object.isEmpty()) {
-            throw new IllegalArgumentException(message);
-        }
-        return object;
-    }
-
-    public static <T extends Collection> T requireNonNullElements(T object, String format) {
-        int index = 0;
-        for (Object element : object) {
-            if (element == null) {
-                throw new NullPointerException(String.format(format, index));
-            }
-            index++;
-        }
-        return object;
-    }
-
-    public static boolean nonNull(Object object) {
-        return object != null;
-    }
-
-    public static boolean isNull(Object object) {
-        return object == null;
-    }
+    private Url() {}
 
     public static String urlEncode(Object string, String encoding) {
         try {
@@ -75,13 +43,13 @@ public class Utilities {
         String string = url.toString();
         int index = string.indexOf("#");
         if (index > -1) {
-            string.substring(0, index);
+            string = string.substring(0, index);
         }
         index = string.indexOf("?");
         if (index > -1) {
-            string.substring(0, index);
+            string = string.substring(0, index);
         }
-        return createUrl(string + (nonNull(query) ? "?" + query : "") + (nonNull(fragment) ? "#" + fragment : ""));
+        return createUrl(string + (Objects.nonNull(query) ? "?" + query : "") + (Objects.nonNull(fragment) ? "#" + fragment : ""));
     }
 
     public static String getEncodedUrls(Collection<URL> urls, String encoding) {
