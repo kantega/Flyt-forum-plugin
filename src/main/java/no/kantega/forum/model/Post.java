@@ -22,6 +22,7 @@ public class Post implements Comparable<Post>{
     private List<Post> replyPosts;
 
     private Date modifiedDate;
+    private String embed;
 
     public long getId() {
         return id;
@@ -133,6 +134,14 @@ public class Post implements Comparable<Post>{
 
     public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+    public String getEmbed() {
+        return embed;
+    }
+
+    public void setEmbed(String embed) {
+        this.embed = embed;
     }
 
     public boolean isContentComment() {

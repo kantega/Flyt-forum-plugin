@@ -1,10 +1,14 @@
 package no.kantega.forum.dao;
 
+import no.kantega.embed.Embedly;
+import no.kantega.embed.Oembed;
 import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumCategory;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.utilities.Http;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -17,8 +21,12 @@ import org.joda.time.Instant;
 import org.joda.time.Interval;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.util.StreamUtils;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -28,6 +36,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import static no.kantega.utilities.Objects.nonNull;
 
 public class ForumDao {
     private HibernateTemplate template;
@@ -66,8 +76,37 @@ public class ForumDao {
     }
 
     public Post saveOrUpdate(Post post, boolean updateLastPostDateOnThread) {
+        URL link = getLink(post);
+        if (nonNull(link)) {
+            Embedly embedly = getEmbedly();
+            if (nonNull(embedly)) {
+                Oembed oembed = embedly.oembed()
+                        .withUrl(link)
+                        .withNostyle(true)
+                        .build();
+                try {
+                    try (Http.HttpRequest request = oembed.getHttpRequest()) {
+                        try (Http.HttpResponse response = request.getResponse()) {
+                            if (200 == response.getResponseCode()) {
+                                try (InputStream inputStream = response.getInputStream()) {
+                                    post.setEmbed(StreamUtils.copyToString(inputStream, Charset.forName("UTF-8")));
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception cause) {
+                    log.error("Could not perform embed", cause);
+                    post.setEmbed(null);
+                }
+
+            }
+        } else {
+            post.setEmbed(null);
+        }
         template.saveOrUpdate(post);
         updatePostCount(post.getThread().getId());
+
+
 
         if (updateLastPostDateOnThread) {
             ForumThread t = getThread(post.getThread().getId());
@@ -75,6 +114,36 @@ public class ForumDao {
             saveOrUpdate(t);
         }
         return post;
+    }
+
+    private URL getLink(Post post) {
+        URL link = null;
+        if (nonNull(post)) {
+            String body = post.getBody();
+            if (nonNull(body)) {
+                try {
+                    link = new URL(body.trim());
+                } catch (Exception cause) {}
+
+            }
+        }
+        return link;
+    }
+
+    private Embedly getEmbedly() {
+        Embedly embedly = null;
+        try{
+            URL apiUrl = new URL(Aksess.getConfiguration().getString("embed.ly.api.url"));
+            String apiUrlEncoding = Aksess.getConfiguration().getString("embed.ly.api.url.encoding");
+            String apiKey = Aksess.getConfiguration().getString("embed.ly.api.key");
+            apiUrlEncoding = nonNull(apiUrlEncoding) ? apiUrlEncoding : "UTF-8";
+            if (nonNull(apiUrl) && nonNull(apiKey)) {
+                embedly = new Embedly(apiUrl, apiKey, apiUrlEncoding);
+            }
+        } catch (Exception cause) {
+
+        }
+        return embedly;
     }
 
     public Post approve(Post post) {

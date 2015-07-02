@@ -68,6 +68,9 @@ public class PostTo {
     @XmlElement(name = "like")
     private List<LikeTo> likes;
 
+    @XmlElement(name = "embed")
+    private String embed;
+
     @XmlElementWrapper(name = "attachments")
     @XmlElement(name = "attachment")
     private List<AttachmentTo> attachments;
@@ -98,11 +101,12 @@ public class PostTo {
         this.modifiedDate = postBo.getModifiedDate() != null ? new Instant(postBo.getModifiedDate().getTime()) : null;
         this.threadReference = threadReference;
         this.likes = likes;
+        this.embed = postBo.getEmbed();
         this.attachments = attachments;
         this.actions = actions;
     }
 
-    public PostTo(Long id, Long replyToId, String subject, String body, String owner, Instant postDate, String author, Boolean approved, Float ratingScore, Integer numberOfRatings, Instant modifiedDate, ResourceReferenceTo threadReference, List<LikeTo> likes, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {
+    public PostTo(Long id, Long replyToId, String subject, String body, String owner, Instant postDate, String author, Boolean approved, Float ratingScore, Integer numberOfRatings, Instant modifiedDate, ResourceReferenceTo threadReference, List<LikeTo> likes, String embed, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {
         this.id = id;
         this.replyToId = replyToId;
         this.subject = subject;
@@ -116,6 +120,7 @@ public class PostTo {
         this.modifiedDate = modifiedDate;
         this.threadReference = threadReference;
         this.likes = likes;
+        this.embed = embed;
         this.attachments = attachments;
         this.actions = actions;
     }

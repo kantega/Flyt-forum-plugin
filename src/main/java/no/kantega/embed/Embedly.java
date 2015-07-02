@@ -22,10 +22,11 @@ public class Embedly {
 
     private URL apiUrl;
     private String apiKey;
-    private String urlEncoding = DEFAULT_URL_ENCODING;
+    private String apiUrlEncoding;
 
     @Inject
-    public Embedly(@Named("embed.ly.api.url") URL apiUrl, @Named("embed.ly.api.key") String apiKey) {
+    public Embedly(@Named("embed.ly.api.url") URL apiUrl, @Named("embed.ly.api.key") String apiKey, @Named("embed.ly.api.url.encoding") String apiUrlEncoding) {
+        this.apiUrlEncoding = apiUrlEncoding;
         this.apiUrl = requireNonNull(apiUrl, "May not be null: apiUrl");
         this.apiKey = requireNonNull(apiKey, "May not be null: apiKey");
     }
@@ -38,12 +39,8 @@ public class Embedly {
         return apiKey;
     }
 
-    public String getUrlEncoding() {
-        return urlEncoding;
-    }
-
-    public void setUrlEncoding(String urlEncoding) {
-        this.urlEncoding = urlEncoding;
+    public String getApiUrlEncoding() {
+        return apiUrlEncoding;
     }
 
     public Oembed.OembedBuilder oembed() {
@@ -51,7 +48,7 @@ public class Embedly {
     }
 
     public static void main(String... arguments) throws MalformedURLException {
-        Embedly embedly = new Embedly(new URL("https://api.embed.ly/1/oembed?#abc"), "936d6a99e233444fb8c25ac1368c2618");
+        Embedly embedly = new Embedly(new URL("https://api.embed.ly/1/oembed?#abc"), "936d6a99e233444fb8c25ac1368c2618", DEFAULT_URL_ENCODING);
         Oembed oembed = embedly.oembed()
                 .withUrl(new URL("http://www.adressa.no/bolig/article560853.snd"))
                 .withNostyle(true)

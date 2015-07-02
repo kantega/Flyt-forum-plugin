@@ -87,6 +87,7 @@
         <property name="ratingScore" type="float"/>
         <property name="numberOfRatings" type="integer"/>
         <property name="modifiedDate" type="timestamp"/>
+        <property name="embed" type="text"/>
     </class>
 
     <class name="Attachment" table="forum_attachment">

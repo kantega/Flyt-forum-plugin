@@ -111,9 +111,9 @@ public class Oembed {
 
     private URL toUrl() {
         URL url = this.getEmbedly().getApiUrl();
-        String query = Http.query(url.getQuery(), embedly.getUrlEncoding())
+        String query = Http.query(url.getQuery(), embedly.getApiUrlEncoding())
                 .put("key", this.getEmbedly().getApiKey())
-                .put(new Http.DecodedNameEncodedValuePair("urls", Url.getEncodedUrls(this.getUrls(), embedly.getUrlEncoding()), embedly.getUrlEncoding()))
+                .put(new Http.DecodedNameEncodedValuePair("urls", Url.getEncodedUrls(this.getUrls(), embedly.getApiUrlEncoding()), embedly.getApiUrlEncoding()))
                 .put("maxwidth", this.getMaxWitdth())
                 .put("maxheight", this.getMaxHeight())
                 .put("width", this.getWidth())
