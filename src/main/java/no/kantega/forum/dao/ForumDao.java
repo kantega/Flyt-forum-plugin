@@ -120,11 +120,15 @@ public class ForumDao {
         URL link = null;
         if (nonNull(post)) {
             String body = post.getBody();
-            if (nonNull(body)) {
-                try {
-                    link = new URL(body.trim());
-                } catch (Exception cause) {}
+            String[] split = body.split("\\s");
+            if (split.length == 1) {
+                if (nonNull(body)) {
+                    try {
+                        link = new URL(body.trim());
+                    } catch (Exception cause) {
+                    }
 
+                }
             }
         }
         return link;

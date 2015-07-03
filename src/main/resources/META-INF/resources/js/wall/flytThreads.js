@@ -151,6 +151,8 @@
         var imageUrl = getOption(options, "imageUrl");
         var imagePreviewUrl = getOption(options, "imagePreviewUrl");
         var docUrl = getOption(options, "docUrl");
+        var imagePreviewWidth = getOption(options, "imagePreviewWidth");
+        var imagePreviewHeight = getOption(options, "imagePreviewHeight");
         var threadTemplate = $("#flytForumWallTemplates").find(".oa-forum-thread");
         var postTemplate = $("#flytForumWallTemplates").find(".oa-forum-post");
         var likerTemplate = $("#flytForumWallTemplates").find(".oa-forum-liker");
@@ -293,6 +295,36 @@
 
             postClone.find(".oa-forum-body p").text(post.body);
             postClone.find(".oa-forum-editBody [name=body]").text(post.body);
+                if (isDefined(post.embed)) {
+                    try {
+                        post.embed = $.parseJSON(post.embed);
+                        //post.embed = isDefined(post.embed) ? $.isArray(post.embed) ? post.embed : [post.embed] : [];
+                        if (post.embed.length > 0) {
+                            postClone.find(".oa-forum-embed-url")
+                                .attr("title", post.embed[0].url)
+                                .attr("href", post.embed[0].url);
+                            postClone.find(".oa-forum-embed-title").text(post.embed[0].title);
+                            postClone.find(".oa-forum-embed-description").text(post.embed[0].description);
+                            if (isDefined(post.embed[0].html)) {
+                                postClone.find(".oa-forum-embed-html").html(post.embed[0].html);
+                                postClone.find(".oa-forum-embed-html > iframe")
+                                    .removeAttr("width")
+                                    .removeAttr("height");
+                            } else {
+                                postClone.find(".oa-forum-embed-thumbnail")
+                                    .attr("src", post.embed[0].thumbnail_url)
+                                    .css("max-width", imagePreviewWidth + "px")
+                                    .css("max-height", imagePreviewHeight + "px")
+
+                            }
+                            postClone.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
+                            postClone.find(".oa-forum-embed").removeClass("oa-forum-hidden");
+                            postClone.find(".oa-forum-body").addClass("oa-forum-hidden");
+                        }
+                    } catch (cause) {
+
+                    }
+                }
 
             if (isDefined(post.like)) {
                 postClone.flytCollapsableLikes(options);

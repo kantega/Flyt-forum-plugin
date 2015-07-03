@@ -49,6 +49,13 @@
 
                 </p>
             </div>
+            <div class="oa-forum-embed oa-forum-hidden">
+                <a class="oa-forum-embed-url" href="#" target="_blank" title=""><p class="oa-forum-embed-title"></p></a>
+                <img class="oa-forum-embed-thumbnail" src=""/>
+                <div class="oa-forum-embed-html"></div>
+                <div class="oa-forum-embed-description"></div>
+
+            </div>
             <div class="oa-forum-editBody oa-forum-hidden">
                 <textarea rows="1" cols="40" name="body"></textarea>
             </div>

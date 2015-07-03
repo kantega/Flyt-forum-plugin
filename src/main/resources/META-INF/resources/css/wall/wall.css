@@ -230,7 +230,7 @@ a.oa-forum-iconLink:hover img{text-decoration:none;}
 .oa-forum-image-container a {
     color: #FFFFFF;
 }
-.oa-forum-attachment img {
+.oa-forum-attachment img, .oa-forum-embed > img {
     display: inline;
     margin: auto;
 }
