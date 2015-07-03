@@ -472,7 +472,7 @@
                 "url": action.href,
                 "data": JSON.stringify({body: body})
             }).done(function(data, textStatus, jqXHR){
-                replacePost(postElement, populatePostTemplate(data, postsElement.closest(".oa-forum-thread").data("thread")));
+                replacePost(postElement, populatePostTemplate(data, postElement.closest(".oa-forum-thread").data("thread")));
             }).fail(function(jqXHR, textStatus, errorThrown){
 
             }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
@@ -494,7 +494,7 @@
                 type: action.method,
                 url: action.href
             }).done(function(data, textStatus, jqXHR){
-                replacePost(postElement, populatePostTemplate(data, postsElement.closest(".oa-forum-thread").data("thread")));
+                replacePost(postElement, populatePostTemplate(data, postElement.closest(".oa-forum-thread").data("thread")));
             }).fail(function(jqXHR, textStatus, errorThrown){
 
             }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
