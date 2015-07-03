@@ -54,7 +54,6 @@
                 <img class="oa-forum-embed-thumbnail" src=""/>
                 <div class="oa-forum-embed-html"></div>
                 <div class="oa-forum-embed-description"></div>
-
             </div>
             <div class="oa-forum-editBody oa-forum-hidden">
                 <textarea rows="1" cols="40" name="body"></textarea>

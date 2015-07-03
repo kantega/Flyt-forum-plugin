@@ -159,7 +159,6 @@ $.fn.oaForumWall = function () {
         }
 
         $.post(url, function(data) {
-
             var $processedData = $('<div/>').html(data).contents(),
                 $forumContent = forumWall.find(".oa-forum-forumContent .oa-forum-threads");
 
@@ -169,6 +168,9 @@ $.fn.oaForumWall = function () {
             else {
                 $forumContent.html($processedData);
             }
+            forumWall.find(".oa-forum-embed-body").closest(".oa-forum-post").each(function(){
+                embed($(this));
+            });
             forumWall.find(".oa-forum-date", $forumContent).each(function() {
                 $(this).prettyDate({serverTime: serverTime, locale: locale});
             });
@@ -628,5 +630,35 @@ $.fn.oaForumWall = function () {
         }
         return false;
 
+    }
+    function embed(postElement) {
+        try {
+            var embed = $.parseJSON(postElement.find(".oa-forum-embed-body").text());
+            //embed = isDefined(embed) ? $.isArray(embed) ? embed : [embed] : [];
+            if (embed.length > 0) {
+                postElement.find(".oa-forum-embed-url")
+                    .attr("title", embed[0].url)
+                    .attr("href", embed[0].url);
+                postElement.find(".oa-forum-embed-title").text(embed[0].title);
+                postElement.find(".oa-forum-embed-description").text(embed[0].description);
+                if (isDefined(embed[0].html)) {
+                    postElement.find(".oa-forum-embed-html").html(embed[0].html);
+                    postElement.find(".oa-forum-embed-html > iframe")
+                        .removeAttr("width")
+                        .removeAttr("height");
+                } else {
+                    postElement.find(".oa-forum-embed-thumbnail")
+                        .attr("src", embed[0].thumbnail_url)
+                        .css("max-width", imagePreviewWidth + "px")
+                        .css("max-height", imagePreviewHeight + "px")
+
+                }
+                postElement.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
+                postElement.find(".oa-forum-embed").removeClass("oa-forum-hidden");
+                postElement.find(".oa-forum-body").addClass("oa-forum-hidden");
+            }
+        } catch (cause) {
+
+        }
     }
 };

@@ -48,7 +48,9 @@
             </c:otherwise>
         </c:choose>
 
-        <div class="oa-forum-body">
+
+        <c:set var="embed">${not empty post.embed}</c:set>
+        <div class="oa-forum-body <c:if test="${embed}">oa-forum-hidden</c:if>">
             <p>
                 <c:choose>
                     <c:when test="${postsStatus.index == 0}">
@@ -63,11 +65,20 @@
                         </form:escapeBody>
                     </c:when>
                     <c:otherwise>
-                       <form:escapeBody javaScriptEscape="false" htmlEscape="true">${post.body}</form:escapeBody>
+                        <form:escapeBody javaScriptEscape="false" htmlEscape="true">${post.body}</form:escapeBody>
                     </c:otherwise>
                 </c:choose>
             </p>
         </div>
+        <div class="oa-forum-embed <c:if test="${not embed}">oa-forum-hidden</c:if>">
+            <c:if test="${embed}"><script class="oa-forum-embed-body">${post.embed}</script></c:if>
+            <a class="oa-forum-embed-url" href="#" target="_blank" title=""><p class="oa-forum-embed-title"></p></a>
+            <img class="oa-forum-embed-thumbnail" src=""/>
+            <div class="oa-forum-embed-html"></div>
+            <div class="oa-forum-embed-description"></div>
+        </div>
+
+
         <div class="oa-forum-editBody oa-forum-hidden">
             <textarea rows="1" cols="40" name="body"><form:escapeBody javaScriptEscape="false" htmlEscape="false">${post.body}</form:escapeBody></textarea>
         </div>
