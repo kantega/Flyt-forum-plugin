@@ -17,6 +17,36 @@ public class CachedUserProfileManager extends AbstractUserProfileManager {
 
     public UserProfile getUserProfile(String user) {
         UserProfile profile = null;
+        if(user.equals("Anonymous")){ // TODO: Review this.
+            final String profileUser = user;
+            profile = new UserProfile() {
+                @Override
+                public String getUser() {
+                    return profileUser;
+                }
+
+                @Override
+                public String getFullName() {
+                    return profileUser;
+                }
+
+                @Override
+                public String getEmail() {
+                    return null;
+                }
+
+                @Override
+                public String getPhone() {
+                    return null;
+                }
+
+                @Override
+                public String getSource() {
+                    return null;
+                }
+            };
+            return profile;
+        }
         try {
             profile = (UserProfile) cache.getFromCache(user, refreshPeriod);
         } catch (NeedsRefreshException e) {
