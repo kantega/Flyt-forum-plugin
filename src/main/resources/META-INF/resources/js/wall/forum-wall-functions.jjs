@@ -172,7 +172,7 @@ $.fn.oaForumWall = function () {
             else {
                 $forumContent.html($processedData);
             }
-            forumWall.find(".oa-forum-embed-body").closest(".oa-forum-post").each(function(){
+            $processedData.find(".oa-forum-post").each(function(){
                 embed($(this));
             });
             forumWall.find(".oa-forum-date", $forumContent).each(function() {
@@ -310,7 +310,7 @@ $.fn.oaForumWall = function () {
         var $commentForm = element.closest("form"),
             $commentContainer = $commentForm.parent(),
             commentFormAction = $commentForm.attr("action"),
-            commentText = replaceURLWithHTMLLinks($.trim(element.val())),
+            commentText = $.trim(element.val()),
             threadId = $commentForm.find("input[name=threadId]").val(),
             formParams = { threadId:  threadId, body: commentText, subject: "subject" };
 
@@ -332,6 +332,7 @@ $.fn.oaForumWall = function () {
 
                 $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
                 $container.append($processedData);
+                embed($processedData);
                 $commentForm.removeClass("hidden");
                 $(commentLoader).remove();
                 spinner.stop();
@@ -460,7 +461,9 @@ $.fn.oaForumWall = function () {
                 body: body
             }
         }).done(function(content){
-            post.replaceWith(content);
+            var $content = $("<div/>").html(content).contents();
+            post.replaceWith($content);
+            embed($content);
         }).fail(function(){
             post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editPost").toggleClass("oa-forum-hidden");
         });
