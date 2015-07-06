@@ -30,7 +30,7 @@ public class ForumTo {
     private String description;
     @XmlElement(name = "numThreads")
     private Integer numThreads;
-    @XmlElement(name = "id")
+    @XmlElement(name = "createDate")
     @XmlJavaTypeAdapter(InstantXmlAdapter.class)
     private Instant createdDate;
     @XmlElement(name = "owner")
