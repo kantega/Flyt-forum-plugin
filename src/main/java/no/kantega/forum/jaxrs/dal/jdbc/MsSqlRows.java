@@ -4,8 +4,7 @@ import no.kantega.forum.jaxrs.bol.Fault;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -38,7 +37,12 @@ public class MsSqlRows implements Rows, Row, AutoCloseable, Iterator<Row> {
 
     @Override
     public Row next() {
-        return hasNext() ? this : null;
+        if(hasNext()) {
+            hasNext = false;
+            return this;
+        }
+        hasNext = false;
+        return null;
     }
 
     @Override
@@ -216,6 +220,14 @@ public class MsSqlRows implements Rows, Row, AutoCloseable, Iterator<Row> {
     public String getString(String columnLabel) throws SQLException {
         String value = resultSet.getString(columnLabel);
         if (resultSet.wasNull()) {
+            return null;
+        }
+        return value;
+    }
+
+    public Object getObject(String columnLabel) throws SQLException {
+        Object value = resultSet.getObject(columnLabel);
+        if(resultSet.wasNull()){
             return null;
         }
         return value;
