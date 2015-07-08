@@ -35,7 +35,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static no.kantega.utilities.Objects.nonNull;
 
@@ -1103,6 +1105,18 @@ public class ForumDao {
             }
         });
         return ret;
+    }
+
+    public List<Long> getCategoryByForums(List<Long> forumIds) {
+        String in = forumIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        return template.execute(new HibernateCallback<List<Long>>() {
+            @Override
+            public List<Long> doInHibernate(Session session) throws HibernateException, SQLException {
+                SQLQuery sqlQuery = session.createSQLQuery("SELECT DISTINCT forumCategoryId FROM forum_forum WHERE forumId IN (" + in + ")");
+                sqlQuery.addScalar("forumCategoryId", Hibernate.LONG);
+                return sqlQuery.list();
+            }
+        });
     }
 
     private List<String> toListOfStrings(List<Number> listOfNumbers) {
