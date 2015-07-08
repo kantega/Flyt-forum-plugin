@@ -3,6 +3,7 @@ package no.kantega.forum.jaxrs.dal.jdbc;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -38,4 +39,9 @@ public interface Row {
 
     <T> Optional<T> getOptional(T value);
     void close() throws SQLException;
+
+    Instant getDate(int columnIndex) throws SQLException;
+    Instant getDate(String columnLabel) throws SQLException;
+    Instant getTimestamp(int columnIndex) throws SQLException;
+    Instant getTimestamp(String columnLabel) throws SQLException;
 }

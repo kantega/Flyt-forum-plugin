@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.kantega.utilities.Objects.nonNull;
+
 /**
  * @author Kristian Myrhaug
  * @since 2015-07-07
@@ -14,7 +16,7 @@ public interface Rows extends Iterable<Row>, AutoCloseable {
 
     default <T> T mapOne(SqlFunction<Row, T> mapper) throws SQLException {
         Row row = this.iterator().next();
-        return mapper.apply(row);
+        return nonNull(row) ? mapper.apply(row) : null;
     }
 
     default <T> List<T> mapAll(SqlFunction<Row, T> mapper) throws SQLException {

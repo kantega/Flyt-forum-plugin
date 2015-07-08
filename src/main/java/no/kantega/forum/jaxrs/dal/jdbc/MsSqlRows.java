@@ -5,6 +5,7 @@ import no.kantega.forum.jaxrs.bol.Fault;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Optional;
 
@@ -243,6 +244,42 @@ public class MsSqlRows implements Rows, Row, AutoCloseable, Iterator<Row> {
         if (nonNull(resultSet)) {
             resultSet.close();
         }
+    }
+
+    @Override
+    public Instant getDate(int columnIndex) throws SQLException {
+        Date value = resultSet.getDate(columnIndex);
+        if (resultSet.wasNull()) {
+            return null;
+        }
+        return nonNull(value) ? Instant.ofEpochMilli(value.getTime()) : null;
+    }
+
+    @Override
+    public Instant getDate(String columnLabel) throws SQLException {
+        Date value = resultSet.getDate(columnLabel);
+        if (resultSet.wasNull()) {
+            return null;
+        }
+        return nonNull(value) ? Instant.ofEpochMilli(value.getTime()) : null;
+    }
+
+    @Override
+    public Instant getTimestamp(int columnIndex) throws SQLException {
+        Timestamp value = resultSet.getTimestamp(columnIndex);
+        if (resultSet.wasNull()) {
+            return null;
+        }
+        return nonNull(value) ? value.toInstant() : null;
+    }
+
+    @Override
+    public Instant getTimestamp(String columnLabel) throws SQLException {
+        Timestamp value = resultSet.getTimestamp(columnLabel);
+        if (resultSet.wasNull()) {
+            return null;
+        }
+        return nonNull(value) ? value.toInstant() : null;
     }
 
     @Override

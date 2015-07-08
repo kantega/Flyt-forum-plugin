@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
+import static no.kantega.utilities.Objects.nonNull;
+
 /**
  * @author Kristian Myrhaug
  * @since 2015-06-24
@@ -62,6 +64,17 @@ public class CategoryTo {
         this.description = description;
         this.numForums = numForums;
         this.createdDate = createdDate;
+        this.owner = owner;
+        this.forumReferences = forums;
+        this.actions = actions;
+    }
+
+    public CategoryTo(Long id, String name, String description, Integer numForums, java.time.Instant createdDate, String owner, List<ForumReferenceTo> forums, List<ResourceReferenceTo> actions) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.numForums = numForums;
+        this.createdDate = nonNull(createdDate) ? new Instant(createdDate.toEpochMilli()) : null;
         this.owner = owner;
         this.forumReferences = forums;
         this.actions = actions;

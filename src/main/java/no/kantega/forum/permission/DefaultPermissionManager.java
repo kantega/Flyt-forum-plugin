@@ -1,5 +1,7 @@
 package no.kantega.forum.permission;
 
+import no.kantega.forum.jaxrs.bol.ForumBo;
+import no.kantega.forum.jaxrs.bol.GroupDo;
 import no.kantega.forum.model.Forum;
 import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
@@ -12,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static no.kantega.utilities.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
@@ -28,6 +31,33 @@ public class DefaultPermissionManager implements PermissionManager {
 
     public boolean hasPermission(String user, Permission permission, Object object) {
         return getPermission(user, permission, object);
+    }
+
+    @Override
+    public boolean hasPermission(String user, Permission permission, ForumBo forumBo, List<GroupDo> groupBos) {
+        boolean isAdmin = false;
+
+        // Sjekk om bruker er forumadministrator
+        if(isNotBlank(user)) {
+            for (String group : administratorGroups) {
+                if (groupResolver.isInGroup(user, group)) {
+                    isAdmin = true;
+                    return isAdmin;
+                }
+            }
+        }
+        if (nonNull(forumBo)) {
+            if((permission == Permission.ADD_THREAD || permission == Permission.EDIT_THREAD)) {
+                if (forumBo.getAnonymousPostAllowed() || isAuthorizedInForum(user, forumBo, groupBos)) {
+                    return true;
+                }
+            }
+            if (permission == Permission.VIEW) {
+                return isAuthorizedInForum(user, forumBo, groupBos);
+
+            }
+        }
+        return isAdmin;
     }
 
 
@@ -138,6 +168,31 @@ public class DefaultPermissionManager implements PermissionManager {
             if (!isAuthorized) {
                 // Forum-moderator skal alltid ha tilgang
                 if (user != null && user.equals(forum.getModerator())) {
+                    isAuthorized = true;
+                }
+            }
+
+        }
+        return isAuthorized;
+    }
+
+
+
+    private boolean isAuthorizedInForum(String user, ForumBo forumBo, List<GroupDo> groupDos) {
+        boolean isAuthorized = false;
+        if (groupDos == null || groupDos.isEmpty()) {
+            isAuthorized = true;
+        } else {
+            for (GroupDo groupDo : groupDos) {
+                if (groupResolver.isInGroup(user, groupDo.getId())) {
+                    isAuthorized = true;
+                    break;
+                }
+            }
+
+            if (!isAuthorized) {
+                // Forum-moderator skal alltid ha tilgang
+                if (user != null && user.equals(forumBo.getModerator())) {
                     isAuthorized = true;
                 }
             }

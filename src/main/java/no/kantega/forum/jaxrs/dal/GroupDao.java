@@ -15,7 +15,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Kristian Myrhaug
@@ -23,36 +26,39 @@ import java.util.List;
  */
 public class GroupDao {
 
-    private DataSource dataSource;
-
-
-    @Inject
-    public GroupDao(@Named("aksessDataSource") DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public List<GroupDo> getAllGroups() {
-        return Jdbc.readOnly(dataSource, (Connection connection) -> {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT groupId,forumId FROM forum_forum_groups ORDER by groupId")) {
-                try (ResultSet rows = preparedStatement.executeQuery()) {
-                    List<GroupDo> groups = new ArrayList<>();
-                    while (rows.next()) {
-                        groups.add(new GroupDo(rows.getString(1), rows.getLong(2)));
-                    }
-                    return groups;
-                }
-            } catch (SQLException cause) {
-                throw new Fault(500, cause);
+    public List<GroupDo> getAllGroups(Connection connection) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT groupId,forumId FROM forum_forum_groups ORDER by groupId")) {
+            try (Rows rows = new MsSqlRows(preparedStatement.executeQuery())) {
+                return rows.mapAll(row -> new GroupDo(row.getString(1), row.getLong(2)));
             }
-        });
+        } catch (SQLException cause) {
+            throw new Fault(500, "Could not read groups", cause);
+        }
     }
 
-    public static GroupDo toGroupDo(Row row) {
-        try {
-            return new GroupDo(row.getString(1), row.getLong(2));
+    public List<GroupDo> readByForum(Connection connection, Long forumId) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT groupId,forumId FROM forum_forum_groups WHERE forumId = ?")) {
+            try (Rows rows = new MsSqlRows(preparedStatement.executeQuery())) {
+                return rows.mapAll(row -> new GroupDo(row.getString(1), row.getLong(2)));
+            }
         } catch (SQLException cause) {
-            throw new Fault(500, cause);
+            throw new Fault(500, String.format("Could not read groups by forum: %s", forumId), cause);
         }
+    }
+
+    public Map<Long,List<GroupDo>> readByForums(Connection connection, List<Long> forumIds) {
+        String in = forumIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT groupId,forumId FROM forum_forum_groups WHERE forumId IN (" + in + ") ORDER BY forumId")) {
+            try (Rows rows = new MsSqlRows(preparedStatement.executeQuery())) {
+                return rows.mapAll(row -> new GroupDo(row.getString(1), row.getLong(2))).stream().collect(Collectors.groupingBy(GroupDo::getForumId));
+            }
+        } catch (SQLException cause) {
+            throw new Fault(500, String.format("Could not read groups by forums: %s", forumIds), cause);
+        }
+    }
+
+    public Map<Long,List<GroupDo>> readByForums(Connection connection, Long... forumIds) {
+        return readByForums(connection, Arrays.asList(forumIds));
     }
 
 }
