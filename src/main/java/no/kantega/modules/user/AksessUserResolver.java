@@ -23,10 +23,7 @@ public class AksessUserResolver implements UserResolver {
         }
 
         if(session == null || session.getUser() == null) {
-            // TODO: Review this. Mulig å implementere dette på en bedre måte?
-            ResolvedUser user = new ResolvedUser();
-            user.setUsername("Anonymous");
-            return user;
+            return null;
         } else {
             ResolvedUser user = new ResolvedUser();
             user.setUsername(session.getUser().getId());
