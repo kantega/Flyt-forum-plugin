@@ -279,7 +279,7 @@ public class EditPostController extends AbstractForumFormController {
 
         p.setApproved(approved);
 
-        service.saveOrUpdate(p);
+        p = service.saveOrUpdate(p);
 
         // Send varsling til moderator om nytt innlegg
         String moderator = p.getThread().getForum().getModerator();

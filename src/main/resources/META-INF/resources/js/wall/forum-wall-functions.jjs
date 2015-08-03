@@ -277,6 +277,9 @@ $.fn.oaForumWall = function () {
     // Appends new "shares" to top of wall.
     function prependNewThread(responseText) {
         var $processedData = $('<div/>').html(responseText).contents();
+        $processedData.find(".oa-forum-post").each(function(){
+            embed($(this));
+        });
         $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
         $processedData.addClass("new");
         forumWall.find(".oa-forum-threads").prepend($processedData);

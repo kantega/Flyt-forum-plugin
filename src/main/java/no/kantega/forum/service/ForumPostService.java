@@ -25,10 +25,11 @@ public class ForumPostService implements ApplicationContextAware{
         this.dao = dao;
     }
 
-    public void saveOrUpdate(Post post){
-        dao.saveOrUpdate(post);
+    public Post saveOrUpdate(Post post){
+        post = dao.saveOrUpdate(post);
         runAfterSaveOrUpdateNotification(post);
         saveAttachments(post);
+        return post;
     }
 
     public void deletePost(Post post, String deletedText) {
