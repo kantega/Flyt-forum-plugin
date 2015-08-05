@@ -4,21 +4,21 @@ package no.kantega.forum.jaxrs.bol;
  * @author Kristian Myrhaug
  * @since 2015-07-07
  */
-public class GroupDo {
+public class GroupBo {
 
-    private String id;
     private Long forumId;
+    private String name;
 
-    public GroupDo(String id, Long forumId) {
-        this.id = id;
+    public GroupBo(Long forumId, String name) {
         this.forumId = forumId;
-    }
-
-    public String getId() {
-        return id;
+        this.name = name;
     }
 
     public Long getForumId() {
         return forumId;
+    }
+
+    public String getName() {
+        return name;
     }
 }

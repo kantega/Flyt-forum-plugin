@@ -49,6 +49,10 @@
         <property name="administratorGroups" value="${forum.administratorgroups:admin}"/>
     </bean>
 
+    <bean id="administratorGroups" class="java.lang.String">
+        <constructor-arg type="java.lang.String" value="${forum.administratorgroups:admin}"/>
+    </bean>
+
     <bean id="forumPostRatingNotificationListener" class="no.kantega.forum.listeners.PostRatingNotificationListener">
         <property name="dao" ref="forumDao"/>
     </bean>

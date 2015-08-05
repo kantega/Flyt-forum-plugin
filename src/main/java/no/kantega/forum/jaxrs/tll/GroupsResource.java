@@ -1,13 +1,12 @@
 package no.kantega.forum.jaxrs.tll;
 
-import no.kantega.forum.jaxrs.bol.GroupDo;
-import no.kantega.forum.jaxrs.dal.GroupDao;
+import no.kantega.forum.jaxrs.bll.GroupBl;
+import no.kantega.forum.jaxrs.bol.GroupBo;
 import no.kantega.forum.jaxrs.tol.GroupTo;
 import no.kantega.forum.jaxrs.tol.GroupsTo;
 import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,11 +25,11 @@ import java.util.Arrays;
 @Produces({"application/json"})
 public class GroupsResource {
     
-    private GroupDao groupDao;
+    private GroupBl groupBl;
 
     @Inject
-    public GroupsResource(@Named("flytForumGroupDao") GroupDao groupDao) {
-        this.groupDao = groupDao;
+    public GroupsResource(GroupBl groupBl) {
+        this.groupBl = groupBl;
     }
 
     @Context
@@ -39,9 +38,9 @@ public class GroupsResource {
     @GET
     public GroupsTo getAll() {
         GroupsTo groupsTo = new GroupsTo(new ArrayList<>(), null);
-        for (GroupDo groupBo : groupDao.getAllGroups()) {
+        for (GroupBo groupBo : groupBl.getGroups()) {
             groupsTo.getGroups().add(new GroupTo(
-                    groupBo.getId(),
+                    groupBo.getName(),
                     Arrays.asList(new ResourceReferenceTo(uriInfo.getBaseUriBuilder().path("forum").path("{forumId}").build(groupBo.getForumId()),
                             "forum",
                             "Read forum",

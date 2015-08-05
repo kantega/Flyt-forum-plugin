@@ -352,8 +352,34 @@ public class Util {
 
     public static String resolveUser(UserResolver userResolver, HttpServletRequest request) {
         ResolvedUser resolvedUser = userResolver.resolveUser(request);
+        return resolveUser(resolvedUser);
+    }
+
+    public static String resolveUser(ResolvedUser resolvedUser) {
         return resolvedUser != null ? resolvedUser.getUsername() : null;
-    }public static List<ResourceReferenceTo> getActions(String username, Long startAtThreadId, Long endAtThreadId, Integer numberOfThreads, Boolean includePosts, UriInfo uriInfo) {
+    }
+
+    public static List<String> resolveRoles(UserResolver userResolver, HttpServletRequest request) {
+        ResolvedUser resolvedUser = userResolver.resolveUser(request);
+        return resolveRoles(resolvedUser);
+    }
+
+    public static List<String> resolveRoles(ResolvedUser resolvedUser) {
+        if (resolvedUser != null) {
+            String[] resolvedRoles = resolvedUser.getRoles();
+            if (resolvedRoles != null) {
+                List<String> roles = new ArrayList<>(resolvedRoles.length);
+                for (String resolvedRole : resolvedRoles) {
+                    if (resolvedRole != null) {
+                        roles.add(resolvedRole);
+                    }
+                }
+                return roles;
+            }
+        } return null;
+    }
+
+    public static List<ResourceReferenceTo> getActions(String username, Long startAtThreadId, Long endAtThreadId, Integer numberOfThreads, Boolean includePosts, UriInfo uriInfo) {
         List<ResourceReferenceTo> actions = new ArrayList<>();
         if (endAtThreadId != null) {
             actions.add(new ResourceReferenceTo(
