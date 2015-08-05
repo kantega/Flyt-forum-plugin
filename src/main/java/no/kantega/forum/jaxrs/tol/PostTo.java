@@ -1,5 +1,6 @@
 package no.kantega.forum.jaxrs.tol;
 
+import no.kantega.forum.jaxrs.bol.PostBo;
 import no.kantega.forum.jaxrs.jaxb.InstantXmlAdapter;
 import no.kantega.forum.model.Attachment;
 import no.kantega.forum.model.ForumThread;
@@ -85,6 +86,25 @@ public class PostTo {
     */
 
     public PostTo() {
+    }
+
+    public PostTo(PostBo postBo, ResourceReferenceTo threadReference, List<LikeTo> likes, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions){
+        this.id = postBo.getId();
+        this.replyToId = postBo.getReplyToId();
+        this.subject = postBo.getSubject();
+        this.body = postBo.getBody();
+        this.owner = postBo.getOwner();
+        this.postDate = postBo.getPostDate() != null ? new Instant(postBo.getPostDate().toEpochMilli()) : null;
+        this.author = postBo.getAuthor();
+        this.approved = postBo.getApproved();
+        this.ratingScore = postBo.getRatingScore();
+        this.numberOfRatings = postBo.getNumberOfRatings();
+        this.modifiedDate = postBo.getModifiedDate() != null ? new Instant(postBo.getModifiedDate().toEpochMilli()) : null;
+        this.threadReference = threadReference;
+        this.likes = likes;
+        this.embed = postBo.getEmbed();
+        this.attachments = attachments;
+        this.actions = actions;
     }
 
     public PostTo(Post postBo, ResourceReferenceTo threadReference, List<LikeTo> likes, List<AttachmentTo> attachments, List<ResourceReferenceTo> actions) {

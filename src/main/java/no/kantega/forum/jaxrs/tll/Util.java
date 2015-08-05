@@ -226,6 +226,20 @@ public class Util {
         );
     }
 
+
+    public static ResourceReferenceTo toThreadReference(Long threadId, String rel, String title, String method, UriInfo uriInfo) {
+        return new ResourceReferenceTo(
+                uriInfo.getBaseUriBuilder().path("thread").path("{threadId}").build(threadId),
+                rel,
+                title,
+                null,
+                null,
+                method,
+                null,
+                null
+        );
+    }
+
     public static List<PostTo> postsTo(ForumThread threadBo, String user, PermissionManager permissionManager, UriInfo uriInfo, RatingService ratingService, HttpServletRequest request, List<Rating> ratings) {
         List<PostTo> postsTo = null;
         if (threadBo != null) {

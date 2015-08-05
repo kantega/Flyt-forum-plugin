@@ -3,9 +3,11 @@ package no.kantega.forum.jaxrs.jersey;
 import no.kantega.forum.jaxrs.bll.AuthorizationBl;
 import no.kantega.forum.jaxrs.bll.ForumBl;
 import no.kantega.forum.jaxrs.bll.GroupBl;
+import no.kantega.forum.jaxrs.bll.PostBl;
 import no.kantega.forum.jaxrs.bll.ThreadBl;
 import no.kantega.forum.jaxrs.dal.ForumDao;
 import no.kantega.forum.jaxrs.dal.GroupDao;
+import no.kantega.forum.jaxrs.dal.PostDao;
 import no.kantega.forum.jaxrs.dal.ThreadDao;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
@@ -24,6 +26,8 @@ public class Binder extends AbstractBinder {
         bind(GroupBl.class).to(GroupBl.class);
         bind(ThreadBl.class).to(ThreadBl.class);
         bind(AuthorizationBl.class).to(AuthorizationBl.class);
+        bind(PostDao.class).to(PostDao.class);
+        bind(PostBl.class).to(PostBl.class);
     }
 }
 

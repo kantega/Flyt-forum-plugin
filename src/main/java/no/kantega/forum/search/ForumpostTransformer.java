@@ -1,12 +1,19 @@
 package no.kantega.forum.search;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.kantega.forum.model.Post;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformerAdapter;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 public class ForumpostTransformer extends DocumentTransformerAdapter<Post> {
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-forumpost";
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${forum.forumPostUrl:/forum/listPosts?forumId=%s&threadId=%s}")
     private String forumPostUrl;
@@ -30,6 +37,32 @@ public class ForumpostTransformer extends DocumentTransformerAdapter<Post> {
         indexableDocument.addAttribute("lastModified", post.getPostDate());
         indexableDocument.setLanguage("nbo");
         indexableDocument.addAttribute("url", String.format(forumPostUrl, post.getThread().getForum().getId(), post.getThread().getId()));
+        if (post.getEmbed() != null) {
+            try {
+                Object instance = objectMapper.readValue(post.getEmbed(), Object.class);
+                if (instance instanceof List) {
+                    List list = (List) instance;
+                    instance = list.isEmpty() ? null : list.get(0);
+                }
+                if (instance instanceof Map) {
+                    Map<String,Object> embed = (Map<String,Object>) instance;
+                    if (embed.containsKey("description")) {
+                        instance = embed.get("description");
+                        if (instance instanceof String) {
+                            indexableDocument.addAttribute(ForumFields.POST_BODY, (String)instance);
+                        }
+                    }
+                    if (embed.containsKey("title")) {
+                        instance = embed.get("title");
+                        if (instance instanceof String) {
+                            indexableDocument.setTitle((String)instance);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return indexableDocument;
     }
 
