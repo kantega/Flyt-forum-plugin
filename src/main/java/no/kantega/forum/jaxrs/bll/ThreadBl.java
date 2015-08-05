@@ -26,12 +26,10 @@ public class ThreadBl {
         this.threadDao = threadDao;
     }
 
-    public List<Long> getThreadIdsByRoles(List<String> roles) {
-        return Jdbc.readOnly(dataSource, connection -> {
-            List<Long> forumIds = forumDao.getForumIdsForGroups(connection, roles);
-            forumIds.addAll(forumDao.getForumIdsWithoutGroups(connection));
-            return threadDao.getThreadIdsForForumIds(connection, forumIds);
-        });
+    public List<Long> getThreadIdsByForumIds(List<Long> forumIds) {
+        return Jdbc.readOnly(dataSource, connection ->
+                threadDao.getThreadIdsForForumIds(connection, forumIds)
+        );
     }
 
     public DataSource getDataSource() {

@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 public class ThreadDao {
 
     public List<Long> getThreadIdsForForumIds(Connection connection, List<Long> forumIds) {
+        if (forumIds.isEmpty()) {
+            return new ArrayList<>();
+        }
         try (PreparedStatement preparedStatement = connection.prepareStatement(new StringBuilder("SELECT threadId FROM forum_thread WHERE forumId IN (")
                 .append(forumIds.stream().map(String::valueOf).collect(Collectors.joining(", ")))
                 .append(")").toString())) {

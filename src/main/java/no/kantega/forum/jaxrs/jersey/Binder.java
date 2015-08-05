@@ -1,6 +1,7 @@
 package no.kantega.forum.jaxrs.jersey;
 
 import no.kantega.forum.jaxrs.bll.AuthorizationBl;
+import no.kantega.forum.jaxrs.bll.ForumBl;
 import no.kantega.forum.jaxrs.bll.GroupBl;
 import no.kantega.forum.jaxrs.bll.ThreadBl;
 import no.kantega.forum.jaxrs.dal.ForumDao;
@@ -19,6 +20,7 @@ public class Binder extends AbstractBinder {
         bind(GroupDao.class).to(GroupDao.class);
         bind(ThreadDao.class).to(ThreadDao.class);
         bind(ForumDao.class).to(ForumDao.class);
+        bind(ForumBl.class).to(ForumBl.class);
         bind(GroupBl.class).to(GroupBl.class);
         bind(ThreadBl.class).to(ThreadBl.class);
         bind(AuthorizationBl.class).to(AuthorizationBl.class);

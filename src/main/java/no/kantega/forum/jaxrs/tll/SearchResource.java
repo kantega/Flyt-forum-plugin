@@ -1,6 +1,7 @@
 package no.kantega.forum.jaxrs.tll;
 
 import no.kantega.forum.jaxrs.bll.AuthorizationBl;
+import no.kantega.forum.jaxrs.bll.ForumBl;
 import no.kantega.forum.jaxrs.bll.ThreadBl;
 import no.kantega.forum.search.ForumpostTransformer;
 import no.kantega.modules.user.ResolvedUser;
@@ -24,6 +25,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,7 @@ public class SearchResource {
     private Searcher searchService;
     private AksessSearchContextCreator aksessSearchContextCreator;
 
+    private ForumBl forumBl;
     private ThreadBl threadBl;
     private UserResolver userResolver;
     private AuthorizationBl authorizationBl;
@@ -57,26 +60,35 @@ public class SearchResource {
     private HttpServletRequest request;
 
     @Inject
-    public SearchResource(@Named("solrSearcher") Searcher searchService, @Named("aksessSearchContextCreator") AksessSearchContextCreator aksessSearchContextCreator, ThreadBl threadBl, @Named("userResolver") UserResolver userResolver, AuthorizationBl authorizationBl) {
+    public SearchResource(@Named("solrSearcher") Searcher searchService, @Named("aksessSearchContextCreator") AksessSearchContextCreator aksessSearchContextCreator, ForumBl forumBl, ThreadBl threadBl, @Named("userResolver") UserResolver userResolver, AuthorizationBl authorizationBl) {
         this.searchService = searchService;
         this.aksessSearchContextCreator = aksessSearchContextCreator;
+        this.forumBl = forumBl;
         this.threadBl = threadBl;
         this.userResolver = userResolver;
         this.authorizationBl = authorizationBl;
     }
 
     @GET
-    public SearchResponse byQuery(@QueryParam("query") String query) {
+    public SearchResponse byQuery(@QueryParam("query") String query, @QueryParam("forumId") List<Long> forumId) {
         log.trace("get(Long)");
         ResolvedUser resolvedUser = userResolver.resolveUser(request);
         String user = resolveUser(resolvedUser);
 
-        List<String> roles = null;
+        List<Long> forumIds = null;
         if (!authorizationBl.isAdministrator(user)) {
-            roles = resolveRoles(resolvedUser);
+            forumIds = forumBl.getForumIds(resolveRoles(resolvedUser));
+            if (forumId != null && !forumId.isEmpty()) {
+                forumIds.retainAll(forumId);
+            }
+        } else if (forumId != null && !forumId.isEmpty()) {
+            forumIds = new ArrayList<>(forumId);
+        }
+        if (forumIds != null && forumIds.isEmpty()) {
+            // No results
         }
 
-        List<Long> threadIds = roles != null ? threadBl.getThreadIdsByRoles(roles) : null;
+        List<Long> threadIds = forumIds != null ? threadBl.getThreadIdsByForumIds(forumIds) : null;
 
         SearchQuery searchQuery = createSearchQuery(query);
         withFilterQuery(searchQuery, indexedContentType(ForumpostTransformer.HANDLED_DOCUMENT_TYPE));
