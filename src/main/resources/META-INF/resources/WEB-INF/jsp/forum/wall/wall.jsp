@@ -2,6 +2,8 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<c:set var="isForumWallSearch"><aksess:getconfig key="forum.wall.search" default="false"/></c:set>
+
 <c:if test="${userCanViewForum}">
     <c:set scope="application" var="oaForumPostPreviewCharlength"><aksess:getconfig key="forum.post.previewcharlength" default="200"/></c:set>
     <c:set scope="application" var="trunctateAllPostsInThread"><aksess:getconfig key="forum.post.trunctateAllPostsInThread" default="false"/></c:set>
@@ -11,6 +13,10 @@
     </c:if>
     <c:if test="${showSharebox}">
         <%@include file="sharebox.jsp"%>
+    </c:if>
+    <c:if test="${isForumWallSearch}">
+        <%@include file="../flytThreadTemplates.jsp"%>
+        <%@include file="search-output.jsp"%>
     </c:if>
 
     <div class="oa-forum-forumContent" data-forumId="${forumId}" data-forumCategoryId="${forumCategoryId}" data-forumWallUrl="${forumListPostsUrl}" data-defaultPostForumId="${defaultPostForumId}">

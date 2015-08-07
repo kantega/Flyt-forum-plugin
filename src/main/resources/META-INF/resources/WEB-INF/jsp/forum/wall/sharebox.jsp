@@ -28,8 +28,10 @@
                 <input type="hidden" name="subject" value="Subject">
                 <label class="oa-forum-sharebox-label oa-forum-hidden">${helptextLabel}</label>
                 <%-- helptextLabel is set in RenderWallTag--%>
+                <c:if test="${isForumWallSearch}">
+                    <%@include file="search-input.jsp"%>
+                </c:if>
                 <textarea rows="1" cols="40" name="body" class="oa-forum-sharebox-textarea oa-forum-sharefield" placeholder="${helptextLabel}"></textarea>
-
             </div>
 
             <div class="oa-forum-sharebox-buttons oa-forum-hidden">

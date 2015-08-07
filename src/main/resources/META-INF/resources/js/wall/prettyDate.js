@@ -113,7 +113,9 @@
             $(all).each(function(i, elm) {
                 var $elm = $(all[i]);
                 var dateValue = $elm.attr('date-data');
-                $elm.html(createPrettyDate(now, parseDate(dateValue)));
+                if (dateValue != undefined && dateValue != null && dateValue != "") {
+                    $elm.html(createPrettyDate(now, parseDate(dateValue)));
+                }
             });
 
             setTimeout(updatePrettyDate, options.refreshInterval*1000);

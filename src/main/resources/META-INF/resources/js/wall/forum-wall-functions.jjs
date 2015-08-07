@@ -19,7 +19,9 @@ $.fn.oaForumWall = function () {
         shareboxSpinner = null,
         imageSpinner = null,
         loadMoreLink = forumWall.find(".oa-forum-wall-load-more-threads"),
-        $forumThreads = forumWall.find(".oa-forum-threads");
+        $forumThreads = forumWall.find(".oa-forum-threads"),
+        searchInputWrapper = forumWall.find(".flyt-forum-search-input-wrapper"),
+        searchOutputWrapper = forumWall.find(".flyt-forum-search-output-wrapper");
     var forumId = forumWall.find(".oa-forum-tab.selected").attr("data-forumId") || forumWall.find(".oa-forum-forumContent[data-forumId]").attr("data-forumId") || forumId;
     var defaultPostForumId = forumWall.find(".oa-forum-forumContent[data-defaultPostForumId]").attr("data-defaultPostForumId");
     var forumCategoryId = forumWall.find(".oa-forum-forumContent[data-forumCategoryId]").attr("data-forumCategoryId") || forumCategoryId;
@@ -27,6 +29,11 @@ $.fn.oaForumWall = function () {
 
     var forum_label_named = '<kantega:label key="forum.share.inputfield.label.named" bundle="forum"/>';
     var forum_label_default = '<kantega:label key="forum.share.inputfield.label.default" bundle="forum"/>';
+    var flyt_forum_search_input_placeholder = '<kantega:label key="flyt.forum.search.input.placeholder" bundle="forum"/>';
+    var flyt_forum_search_no_hits_text = '<kantega:label key="flyt.forum.search.no.hits.text" bundle="forum"/>';
+    var flyt_forum_search_hits_text = '<kantega:label key="flyt.forum.search.hits.text" bundle="forum"/>';
+    var searchTemplates = $("<div/>").html($("#flyt-forum-search-templates").text());
+    var searchHits = searchOutputWrapper.find(".flyt-forum-search-hits");
 
     var forumIdName = {};
     forumWall.find(".oa-forum-tab[data-forumId]").each(function(index, element){
@@ -35,6 +42,89 @@ $.fn.oaForumWall = function () {
         forumIdName[_forumId] = element.find("a").html();
     });
 
+    var selectedForumChanged = function(_forumId) {
+        searchInputWrapper.find(".flyt-forum-search-input").attr("placeholder", flyt_forum_search_input_placeholder.replace("%s", forumIdName[_forumId]));
+        searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", forumIdName[_forumId]));
+        searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", forumIdName[_forumId]));
+    };
+    searchOutputWrapper.on("click", ".flyt-forum-search-hit", function(event){
+        event.preventDefault();
+        var element = $(this);
+        if (element.find(".oa-forum-thread").length == 0) {
+            var post = element.data("post");
+            element.flytThread(
+                {
+                    showFullThreadLabelSeveral: "<kantega:label key="forum.wall.morecomments.part2" bundle="forum" locale="${forumLocale}"/>" + " %s " + "<kantega:label key="forum.wall.morecomments.part3" bundle="forum" locale="${forumLocale}"/>",
+                    showFullThreadLabelTwo: "<kantega:label key="forum.wall.morecomments.twocomments" bundle="forum" locale="${forumLocale}"/>",
+                    andSeparator: "<kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>",
+                    contextPath: "${pageContext.request.contextPath}",
+                    userProfileUrl: "${pageContext.request.contextPath}/intranett/minprofil/index?userId=%s",
+                    userProfileImageUrl : "${pageContext.request.contextPath}/intranett/minprofil/visbilde?width=40&userId=%s",
+                    imagePreviewUrl: "${pageContext.request.contextPath}/forum/viewattachment?width=${imagePreviewWidth}&height=${imagePreviewHeight}&attachmentId=%s",
+                    imageUrl: "${pageContext.request.contextPath}/forum/viewattachment?attachmentId=%s",
+                    docUrl: "${pageContext.request.contextPath}/forum/viewattachment?attachmentId=%s",
+                    imagePreviewWidth : "${imagePreviewWidth}",
+                    imagePreviewHeight: "${imagePreviewHeight}"
+                },
+                post.threadReference.href
+            ).done(function(data, textStatus, jqXHR){
+                element.find(".flyt-forum-search-hit-block").remove();
+            })
+        }
+    });
+    selectedForumChanged(defaultPostForumId);
+
+    var performSearch = function (query) {
+        var data = {
+            query: query
+        };
+        var _forumId = getForumId();
+        if (isDefined(_forumId)) {
+            data.forumId = _forumId
+        }
+        searchHits.html("");
+        $.ajax({
+            type: "GET",
+            url: "${pageContext.request.contextPath}/forum/rest/search",
+            data: data
+        }).done(function(posts){
+            if (isDefined(posts) && posts.length > 0) {
+                searchOutputWrapper.find(".flyt-forum-search-no-hits-text").addClass("hidden");
+                searchOutputWrapper.find(".flyt-forum-search-hits-text").removeClass("hidden");
+
+                for (var index = 0; index < posts.length; index++) {
+                    var searchHitClone = searchTemplates.find(".flyt-forum-search-hit").clone();
+                    searchHitClone.data("post", posts[index]);
+                    searchHitClone.find(".flyt-forum-search-hit-body").text(posts[index].body);
+
+                    var postDateDateTime = searchHitClone.find(".flyt-forum-search-hit-postDate-dateTime");
+                    postDateDateTime.attr("date-data", posts[index].postDate);
+                    postDateDateTime.html(posts[index].postDate);
+                    postDateDateTime.prettyDate({serverTime: serverTime, locale: locale});
+
+                    var modifiedDateDateTime = searchHitClone.find(".flyt-forum-search-hit-modifiedDate-dateTime");
+                    modifiedDateDateTime.attr("date-data", posts[index].modifiedDate);
+                    modifiedDateDateTime.html(posts[index].modifiedDate);
+                    modifiedDateDateTime.prettyDate({serverTime: serverTime, locale: locale});
+                    if (posts[index].modifiedDate == posts[index].postDate) {
+                        searchHitClone.find(".flyt-forum-search-hit-modifiedDate").addClass("hidden");
+                    }
+                    modifiedDateDateTime.attr("date-data", posts[index].modifiedDate);
+                    modifiedDateDateTime.html(posts[index].modifiedDate);
+                    modifiedDateDateTime.prettyDate({serverTime: serverTime, locale: locale});
+
+                    searchHitClone.find(".flyt-forum-search-hit-forum-name").html(forumIdName[_forumId]);
+                    searchHits.append(searchHitClone);
+                    posts = posts;
+                }
+            } else {
+                searchOutputWrapper.find(".flyt-forum-search-no-hits-text").removeClass("hidden");
+                searchOutputWrapper.find(".flyt-forum-search-hits-text").addClass("hidden");
+            }
+        }).fail(function(){
+
+        });
+    };
 
     var spinnerOptions = {
         lines: 9,
@@ -221,6 +311,7 @@ $.fn.oaForumWall = function () {
 
         var _forumId = isDefined(forumId) && forumId !== "" ? forumId : defaultPostForumId;
         var label = isDefined(forumIdName[_forumId]) ? forum_label_named.replace("%s", forumIdName[_forumId]) : forum_label_default;
+        selectedForumChanged(_forumId);
         forumWall.find(".oa-forum-ajaxForm [name=\"forumId\"]").val(_forumId);
         forumWall.find(".oa-forum-sharebox-label").html(label);
         forumWall.find(".oa-forum-sharebox [name=\"body\"]").attr("placeholder", label);
@@ -348,6 +439,11 @@ $.fn.oaForumWall = function () {
         $tablinks.removeClass("oa-forum-selected-sharelink");
         $(this).addClass("oa-forum-selected-sharelink");
         return false;
+    });
+
+    searchInputWrapper.on("click", ".flyt-forum-search-button", function(event){
+        event.preventDefault();
+        performSearch(searchInputWrapper.find(".flyt-forum-search-input").val());
     });
 
     // link listener to display hidden ratings in a thread.

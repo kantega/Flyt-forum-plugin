@@ -1,10 +1,241 @@
 (function($){
+    var threadTemplate = $("#flytForumWallTemplates").find(".oa-forum-thread");
+    var postTemplate = $("#flytForumWallTemplates").find(".oa-forum-post");
+    var likerTemplate = $("#flytForumWallTemplates").find(".oa-forum-liker");
+    var attachmentTemplate = $("#flytForumWallTemplates").find(".oa-forum-attachment");
+    var attachmentDocTemplate = $("#flytForumWallTemplates").find(".oa-forum-attachment-doc");
     var getOption = function(options, key) {
         var option = options !== undefined && options !== null ? options[key] : null;
         if (option !== undefined && option !== null) {
             return option;
         }
         throw "Missing option: " + key;
+    };
+
+    var isDefined = function(value) {
+        return value !== undefined && value !== null;
+    };
+    var getFirst = function(array, acceptFunction) {
+        if ($.isArray(array) && $.isFunction(acceptFunction)) {
+            for (var index = 0; index< array.length; index++) {
+                if (acceptFunction(array[index])) {
+                    return array[index];
+                }
+            }
+        }
+        return null;
+    };
+    var isImage = function(mimeType) {
+        return /^image\//i.test(mimeType);
+    };
+    var appendPost = function(threadPostsElement, postElement) {
+        var threadElement = threadPostsElement.closest(".oa-forum-thread");
+        threadPostsElement.append(postElement);
+        viewShowReplyOrReply(threadElement);
+        threadElement.find(".oa-forum-category").html(threadElement.data("thread").forumReference.name);
+        postElement.trigger("postAppended");
+    };
+    var removePost = function(postElement) {
+        var threadElement = postElement.closest(".oa-forum-thread");
+        postElement.trigger("postRemoved");
+        postElement.remove();
+        viewShowReplyOrReply(threadElement);
+        threadElement.find(".oa-forum-category").html(threadElement.data("thread").forumReference.name);
+    };
+    var replacePost = function(replacePost, withPost) {
+        var threadElement = replacePost.closest(".oa-forum-thread");
+        replacePost.replaceWith(withPost);
+        viewShowReplyOrReply(threadElement);
+        threadElement.find(".oa-forum-category").html(threadElement.data("thread").forumReference.name);
+        withPost.trigger("postReplaced", replacePost);
+    };
+    var viewShowReplyOrReply = function(threadElement) {
+        var threadReplyElement = threadElement.find(".oa-forum-reply");
+        var threadShowReply = threadElement.find(".oa-forum-showReplyForm");
+        if (threadElement.find(".oa-forum-post").length <= 1) {
+            threadReplyElement.addClass("oa-forum-hidden");
+            threadShowReply.closest("div").removeClass("oa-forum-hidden");
+        } else {
+            threadReplyElement.removeClass("oa-forum-hidden");
+            threadShowReply.closest("div").addClass("oa-forum-hidden");
+        }
+    };
+    var populateAttachmentTemplate = function(imageUrl, imagePreviewUrl, docUrl, attachment) {
+        var attachmentClone = null;
+        if (isImage(attachment.mimeType)) {
+            attachmentClone = attachmentTemplate.clone();
+            attachmentClone.attr("data-download", imageUrl.replace("%s", attachment.id));
+            attachmentClone.attr("href", imagePreviewUrl.replace("%s", attachment.id));
+            var attachmentCloneImg = attachmentClone.find("img");
+            attachmentCloneImg.attr("src", imagePreviewUrl.replace("%s", attachment.id));
+            attachmentCloneImg.attr("alt", attachment.fileName);
+        } else {
+            attachmentClone = attachmentDocTemplate.clone();
+            attachmentClone.attr("href", docUrl.replace("%s", attachment.id));
+        }
+        return attachmentClone;
+    };
+    var populateLikeTemplate = function(userProfileUrl, liker){
+        if (!isDefined(liker.userFullName)) {
+            return null;
+        }
+        var likerClone = likerTemplate.clone();
+        likerClone.data("liker", liker);
+        var likerAnchor = likerClone.find("a");
+        likerAnchor.attr("href", userProfileUrl.replace("%s", liker.userid));
+        likerAnchor.html(liker.userFullName);
+        return likerClone;
+    };
+    var populatePostTemplate = function(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, post, thread) {
+        var postClone = postTemplate.clone();
+
+        postClone.attr("data-postId", post.id);
+        postClone.find(".oa-forum-avatar a").attr("href", userProfileUrl.replace("%s", post.owner));
+        postClone.find(".oa-forum-avatar img").attr("src", userProfileImageUrl.replace("%s", post.owner));
+        postClone.find(".oa-forum-avatar img").attr("onerror", "handleProfileImageNotFound(this);");
+        postClone.find(".oa-forum-post_").attr("name", postClone.find(".oa-forum-post_").attr("name") + post.id);
+        postClone.find(".oa-forum-username a").attr("href", userProfileUrl.replace("%s", post.owner));
+        postClone.find(".oa-forum-username a").html(post.author + postClone.find(".oa-forum-username a").html());
+
+        var postEditAction = getFirst(post.action, function(action) {return action.rel === "update";});
+        var postCloneEditPost = postClone.find(".oa-forum-editPost");
+        if (isDefined(postEditAction)) {
+            postCloneEditPost.attr("href", postEditAction.href);
+            postCloneEditPost.data("action", postEditAction);
+        } else {
+            postCloneEditPost.addClass("oa-forum-hidden");
+        }
+        var postDeleteAction = getFirst(post.action, function(action) {return action.rel === "delete";});
+        var postCloneDeletePost = postClone.find(".oa-forum-deletePost");
+        if (isDefined(postDeleteAction)) {
+            postCloneDeletePost.attr("href", postDeleteAction.href);
+            postCloneDeletePost.data("action", postDeleteAction);
+        } else {
+            postCloneDeletePost.addClass("oa-forum-hidden");
+        }
+        if (isDefined(thread)) {
+            var threadDeleteAction = getFirst(thread.action, function (action) {
+                return action.rel === "delete";
+            });
+            var postCloneDeleteThread = postClone.find(".oa-forum-deleteThread");
+            if (isDefined(threadDeleteAction)) {
+                postCloneDeleteThread.attr("href", threadDeleteAction.href);
+                postCloneDeleteThread.data("action", threadDeleteAction);
+            } else {
+                postCloneDeleteThread.addClass("oa-forum-hidden");
+            }
+        }
+        var postLikeAction = getFirst(post.action, function(action) {return action.rel === "like";});
+        var postCloneLike = postClone.find(".oa-forum-like");
+        if (isDefined(postLikeAction)) {
+            postCloneLike.attr("href", postLikeAction.href);
+            postCloneLike.data("action", postLikeAction);
+        } else {
+            postCloneLike.addClass("oa-forum-hidden");
+        }
+        var postUnlikeAction = getFirst(post.action, function(action) {return action.rel === "unlike";});
+        var postCloneUnlike = postClone.find(".oa-forum-unlike");
+        if (isDefined(postUnlikeAction)) {
+            postCloneUnlike.attr("href", postUnlikeAction.href);
+            postCloneUnlike.data("action", postUnlikeAction);
+        } else {
+            postCloneUnlike.addClass("oa-forum-hidden");
+        }
+
+        var postClonePostDate = postClone.find(".oa-forum-postDate");
+        if (isDefined(post.postDate)) {
+            postClonePostDate.attr("date-data", post.postDate);
+            postClonePostDate.html(post.postDate)
+            postClonePostDate.prettyDate({serverTime: new Date().toISOString()});
+        } else {
+            postClonePostDate.closest("div").addClass("oa-forum-hidden");
+        }
+        var postCloneModifiedDate = postClone.find(".oa-forum-date-modified");
+        if (isDefined(post.modifiedDate) && (!isDefined(post.postDate) || post.postDate < post.modifiedDate)) {
+            postCloneModifiedDate.attr("date-data", post.modifiedDate);
+            postCloneModifiedDate.html(post.modifiedDate)
+            postCloneModifiedDate.prettyDate({serverTime: new Date().toISOString()});
+        } else {
+            postCloneModifiedDate.closest("div").addClass("oa-forum-hidden");
+        }
+
+        postClone.find(".oa-forum-body p").text(post.body);
+        postClone.find(".oa-forum-editBody [name=body]").text(post.body);
+        if (isDefined(post.embed)) {
+            try {
+                post.embed = $.parseJSON(post.embed);
+                //post.embed = isDefined(post.embed) ? $.isArray(post.embed) ? post.embed : [post.embed] : [];
+                if (post.embed.length > 0) {
+                    postClone.find(".oa-forum-embed-url")
+                        .attr("title", post.embed[0].url)
+                        .attr("href", post.embed[0].url);
+                    postClone.find(".oa-forum-embed-title").text(post.embed[0].title);
+                    postClone.find(".oa-forum-embed-description").text(post.embed[0].description);
+                    if (isDefined(post.embed[0].html)) {
+                        postClone.find(".oa-forum-embed-html").html(post.embed[0].html);
+                        postClone.find(".oa-forum-embed-html > iframe")
+                            .removeAttr("width")
+                            .removeAttr("height");
+                    } else {
+                        postClone.find(".oa-forum-embed-thumbnail")
+                            .attr("src", post.embed[0].thumbnail_url)
+                            .css("max-width", imagePreviewWidth + "px")
+                            .css("max-height", imagePreviewHeight + "px")
+
+                    }
+                    postClone.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
+                    postClone.find(".oa-forum-embed").removeClass("oa-forum-hidden");
+                    postClone.find(".oa-forum-body").addClass("oa-forum-hidden");
+                }
+            } catch (cause) {
+                cause = cause;
+            }
+        }
+
+        if (isDefined(post.like)) {
+            postClone.flytCollapsableLikes(options);
+            var postCloneCollapsableLikes = postClone.find(".oa-forum-collapsableLikes .oa-forum-likers")
+            for (var likeIndex = 0; likeIndex < post.like.length; likeIndex++) {
+                var likerClone = populateLikeTemplate(userProfileUrl, post.like[likeIndex]);
+                if (isDefined(likerClone)) {
+                    postCloneCollapsableLikes.append(likerClone);
+                    likerClone.trigger("likerAppended");
+                }
+            }
+        }
+        if (isDefined(post.attachment)) {
+            var postCloneAttachments = postClone.find(".oa-forum-attachments");
+            for (var attachmentIndex = 0; attachmentIndex < post.attachment.length; attachmentIndex++) {
+                postCloneAttachments.append(populateAttachmentTemplate(imageUrl, imagePreviewUrl, docUrl, post.attachment[attachmentIndex]));
+            }
+        }
+        return postClone;
+    };
+    var populateThreadTemplate = function(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, thread) {
+        var threadClone = threadTemplate.clone();
+
+        threadClone.attr("data-threadId", thread.id);
+        threadClone.data("thread", thread);
+
+        var postCreateAction = getFirst(thread.action, function(action){return action.rel === "create";});
+        var threadCloneForm = threadClone.find("form");
+        if (isDefined(postCreateAction)) {
+            threadCloneForm.attr("action", postCreateAction.href);
+            threadCloneForm.find("input[name=threadId]").val(thread.id);
+            threadCloneForm.data("action", postCreateAction);
+        } else {
+            threadCloneForm.remove();
+        }
+
+        threadClone.flytCollapsableThread(options);
+
+        var threadClonePosts = threadClone.find(".oa-forum-posts");
+        if (isDefined(thread.post)) {
+            for (var postIndex = 0; postIndex < thread.post.length; postIndex++) {
+                appendPost(threadClonePosts, populatePostTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, thread.post[postIndex], thread));
+            }
+        }
+        return threadClone;
     };
     $.fn.flytCollapsableThread = function(options) {
         var threadElement = $(this);
@@ -143,6 +374,223 @@
         });
         correctMinimizeMaximizeShouldBeVisible();
     };
+    function shareComment(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight) {
+        var postsElement = element.closest(".oa-forum-thread").find(".oa-forum-posts");
+        var formElement = element.closest("form");
+        var body = formElement.find("[name=body]").val();
+        var action = formElement.data("action");
+        $.ajax({
+            "contentType": "application/json",
+            "type": action.method,
+            "url": action.href,
+            "data": JSON.stringify({body: body})
+        }).done(function (data, textStatus, jqXHR) {
+            appendPost(postsElement, populatePostTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data, postsElement.closest(".oa-forum-thread").data("thread")));
+            formElement.find("[name=body]").val("");
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
+    function editPost(element) {
+        var postElement = element.closest(".oa-forum-post");
+        postElement.find(".oa-forum-post-submitEditPost").data("action", element.data("action"));
+        postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
+        var editBody = postElement.find(".oa-forum-editBody");
+        editBody.toggleClass("oa-forum-hidden");
+    }
+
+    function deletePost(element) {
+        var action = element.data("action");
+        var postElement = element.closest(".oa-forum-post");
+        $.ajax({
+            "type": action.method,
+            "url": action.href
+        }).done(function (data, textStatus, jqXHR) {
+            removePost(postElement);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
+    function cancelEditPost(element) {
+        var postElement = element.closest(".oa-forum-post");
+        postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
+        postElement.find(".oa-forum-editBody").toggleClass("oa-forum-hidden");
+    }
+
+    function submitEditPost(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight) {
+        var action = element.data("action");
+        var postElement = element.closest(".oa-forum-post");
+        var editBody = postElement.find(".oa-forum-editBody");
+        postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
+        editBody.toggleClass("oa-forum-hidden");
+        var body = editBody.find("[name=body]").val();
+        $.ajax({
+            "contentType": "application/json",
+            "type": action.method,
+            "url": action.href,
+            "data": JSON.stringify({body: body})
+        }).done(function (data, textStatus, jqXHR) {
+            replacePost(postElement, populatePostTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data, postElement.closest(".oa-forum-thread").data("thread")));
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
+    function showReplyForm(element) {
+        element.closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden");
+        element.closest("div").addClass("oa-forum-hidden");
+    }
+
+    function like(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight) {
+        var postElement = element.closest(".oa-forum-post");
+        var action = element.data("action");
+        $.ajax({
+            type: action.method,
+            url: action.href
+        }).done(function (data, textStatus, jqXHR) {
+            replacePost(postElement, populatePostTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data, postElement.closest(".oa-forum-thread").data("thread")));
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
+    function unlike(element) {
+        var postElement = element.closest(".oa-forum-post");
+        var action = element.data("action");
+        $.ajax({
+            type: action.method,
+            url: action.href
+        }).done(function (data, textStatus, jqXHR) {
+            postElement.find(".oa-forum-like").removeClass("oa-forum-hidden");
+            postElement.find(".oa-forum-unlike").addClass("oa-forum-hidden");
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
+    function viewAttachment(element) {
+        var overlay = document.createElement("div"),
+            container = document.createElement("div"),
+            image = document.createElement("img"),
+            close = document.createElement("a"),
+            download = document.createElement("a"),
+            underlay = document.createElement("div");
+
+        var spinnerOptions = {
+            lines: 11,
+            length: 1,
+            width: 3,
+            radius: 9,
+            color: '#ffffff',
+            className: 'oa-forum-overlay-spinner'
+        };
+
+        container.className = "oa-forum-image-container";
+        overlay.className = "oa-forum-overlay";
+        underlay.className = "oa-forum-underlay";
+
+        image.className = "oa-forum-image-enlarged";
+        image.src = element.attr("data-download");
+
+        download.href = element.attr("data-download");
+        download.innerHTML = "Last ned bilde";
+        download.className = "oa-forum-image-download oa-forum-image-button";
+
+        close.href = "#";
+        close.innerHTML = "Lukk";
+        close.className = "oa-forum-image-close oa-forum-image-button";
+
+        overlay.appendChild(underlay);
+
+        container.appendChild(close);
+        container.appendChild(download);
+        container.appendChild(image);
+
+        imageSpinner = new Spinner(spinnerOptions).spin(document.body);
+
+        document.body.appendChild(overlay);
+
+        image.onload = function () {
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            underlay.style.width = vw + "px";
+            underlay.style.height = vh + "px";
+
+            container.style.maxWidth = vw + "px";
+            container.style.maxHeight = vh + "px";
+
+            image.style.maxWidth = (vw / 100) * 90 + "px";
+            image.style.maxHeight = (vh / 100) * 90 + "px";
+
+            imageSpinner.stop();
+            underlay.appendChild(container);
+        };
+
+        $(close).on("click", function (e) {
+            $(container).remove();
+            $(overlay).remove();
+            imageSpinner.stop();
+            return false;
+        });
+
+        $(container).on("click", function (e) {
+            e.stopPropagation();
+        });
+
+        return false;
+    }
+
+    function fetchYounger(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, root, setYoungerAction) {
+        var action = element.data("action");
+        $.ajax({
+            type: action.method,
+            url: action.href
+        }).done(function (data, textStatus, jqXHR) {
+            var threads = []
+            for (var threadIndex = 0; threadIndex < data.thread.length; threadIndex++) {
+                threads.push(populateThreadTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data.thread[threadIndex]));
+            }
+            root.find(".oa-forum-threads").prepend(threads);
+            setYoungerAction(getFirst(data.action, function (action) {
+                return action.rel === "younger";
+            }));
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
+    function fetchOlder(element, root, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, setOlderAction) {
+        var action = element.data("action");
+        $.ajax({
+            type: action.method,
+            url: action.href
+        }).done(function (data, textStatus, jqXHR) {
+            for (var threadIndex = 0; threadIndex < data.thread.length; threadIndex++) {
+                root.find(".oa-forum-threads").append(populateThreadTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data.thread[threadIndex]));
+            }
+            setOlderAction(getFirst(data.action, function (action) {
+                return action.rel === "older";
+            }));
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
     $.fn.flytThreads = function(options) {
         var root = $(this);
         var contextPath = getOption(options, "contextPath");
@@ -153,27 +601,6 @@
         var docUrl = getOption(options, "docUrl");
         var imagePreviewWidth = getOption(options, "imagePreviewWidth");
         var imagePreviewHeight = getOption(options, "imagePreviewHeight");
-        var threadTemplate = $("#flytForumWallTemplates").find(".oa-forum-thread");
-        var postTemplate = $("#flytForumWallTemplates").find(".oa-forum-post");
-        var likerTemplate = $("#flytForumWallTemplates").find(".oa-forum-liker");
-        var attachmentTemplate = $("#flytForumWallTemplates").find(".oa-forum-attachment");
-        var attachmentDocTemplate = $("#flytForumWallTemplates").find(".oa-forum-attachment-doc");
-        var isDefined = function(value) {
-            return value !== undefined && value !== null;
-        };
-        var getFirst = function(array, acceptFunction) {
-            if ($.isArray(array) && $.isFunction(acceptFunction)) {
-                for (var index = 0; index< array.length; index++) {
-                    if (acceptFunction(array[index])) {
-                        return array[index];
-                    }
-                }
-            }
-            return null;
-        };
-        var isImage = function(mimeType) {
-            return /^image\//i.test(mimeType);
-        };
         var setYoungerAction = function(action) {
             var actionElement = root.find(".oa-forum-younger");
             if (isDefined(action)) {
@@ -194,453 +621,137 @@
                 actionElement.addClass(".oa-forum-hidden")
             }
         };
-        var populateAttachmentTemplate = function(attachment) {
-            var attachmentClone = null;
-            if (isImage(attachment.mimeType)) {
-                attachmentClone = attachmentTemplate.clone();
-                attachmentClone.attr("data-download", imageUrl.replace("%s", attachment.id));
-                attachmentClone.attr("href", imagePreviewUrl.replace("%s", attachment.id));
-                var attachmentCloneImg = attachmentClone.find("img");
-                attachmentCloneImg.attr("src", imagePreviewUrl.replace("%s", attachment.id));
-                attachmentCloneImg.attr("alt", attachment.fileName);
-            } else {
-                attachmentClone = attachmentDocTemplate.clone();
-                attachmentClone.attr("href", docUrl.replace("%s", attachment.id));
-            }
-            return attachmentClone;
-        };
-        var populateLikeTemplate = function(liker){
-            if (!isDefined(liker.userFullName)) {
-                return null;
-            }
-            var likerClone = likerTemplate.clone();
-            likerClone.data("liker", liker);
-            var likerAnchor = likerClone.find("a");
-            likerAnchor.attr("href", userProfileUrl.replace("%s", liker.userid));
-            likerAnchor.html(liker.userFullName);
-            return likerClone;
-        };
-        var populatePostTemplate = function(post, thread) {
-            var postClone = postTemplate.clone();
-
-            postClone.attr("data-postId", post.id);
-            postClone.find(".oa-forum-avatar a").attr("href", userProfileUrl.replace("%s", post.owner));
-            postClone.find(".oa-forum-avatar img").attr("src", userProfileImageUrl.replace("%s", post.owner));
-            postClone.find(".oa-forum-avatar img").attr("onerror", "handleProfileImageNotFound(this);");
-            postClone.find(".oa-forum-post_").attr("name", postClone.find(".oa-forum-post_").attr("name") + post.id);
-            postClone.find(".oa-forum-username a").attr("href", userProfileUrl.replace("%s", post.owner));
-            postClone.find(".oa-forum-username a").html(post.author + postClone.find(".oa-forum-username a").html());
-
-            var postEditAction = getFirst(post.action, function(action) {return action.rel === "update";});
-            var postCloneEditPost = postClone.find(".oa-forum-editPost");
-            if (isDefined(postEditAction)) {
-                postCloneEditPost.attr("href", postEditAction.href);
-                postCloneEditPost.data("action", postEditAction);
-            } else {
-                postCloneEditPost.addClass("oa-forum-hidden");
-            }
-            var postDeleteAction = getFirst(post.action, function(action) {return action.rel === "delete";});
-            var postCloneDeletePost = postClone.find(".oa-forum-deletePost");
-            if (isDefined(postDeleteAction)) {
-                postCloneDeletePost.attr("href", postDeleteAction.href);
-                postCloneDeletePost.data("action", postDeleteAction);
-            } else {
-                postCloneDeletePost.addClass("oa-forum-hidden");
-            }
-            if (isDefined(thread)) {
-                var threadDeleteAction = getFirst(thread.action, function (action) {
-                    return action.rel === "delete";
-                });
-                var postCloneDeleteThread = postClone.find(".oa-forum-deleteThread");
-                if (isDefined(threadDeleteAction)) {
-                    postCloneDeleteThread.attr("href", threadDeleteAction.href);
-                    postCloneDeleteThread.data("action", threadDeleteAction);
-                } else {
-                    postCloneDeleteThread.addClass("oa-forum-hidden");
-                }
-            }
-            var postLikeAction = getFirst(post.action, function(action) {return action.rel === "like";});
-            var postCloneLike = postClone.find(".oa-forum-like");
-            if (isDefined(postLikeAction)) {
-                postCloneLike.attr("href", postLikeAction.href);
-                postCloneLike.data("action", postLikeAction);
-            } else {
-                postCloneLike.addClass("oa-forum-hidden");
-            }
-            var postUnlikeAction = getFirst(post.action, function(action) {return action.rel === "unlike";});
-            var postCloneUnlike = postClone.find(".oa-forum-unlike");
-            if (isDefined(postUnlikeAction)) {
-                postCloneUnlike.attr("href", postUnlikeAction.href);
-                postCloneUnlike.data("action", postUnlikeAction);
-            } else {
-                postCloneUnlike.addClass("oa-forum-hidden");
-            }
-
-            var postClonePostDate = postClone.find(".oa-forum-postDate");
-            if (isDefined(post.postDate)) {
-                postClonePostDate.attr("date-data", post.postDate);
-                postClonePostDate.html(post.postDate)
-                postClonePostDate.prettyDate({serverTime: new Date().toISOString()});
-            } else {
-                postClonePostDate.closest("div").addClass("oa-forum-hidden");
-            }
-            var postCloneModifiedDate = postClone.find(".oa-forum-date-modified");
-            if (isDefined(post.modifiedDate) && (!isDefined(post.postDate) || post.postDate < post.modifiedDate)) {
-                postCloneModifiedDate.attr("date-data", post.modifiedDate);
-                postCloneModifiedDate.html(post.modifiedDate)
-                postCloneModifiedDate.prettyDate({serverTime: new Date().toISOString()});
-            } else {
-                postCloneModifiedDate.closest("div").addClass("oa-forum-hidden");
-            }
-
-            postClone.find(".oa-forum-body p").text(post.body);
-            postClone.find(".oa-forum-editBody [name=body]").text(post.body);
-                if (isDefined(post.embed)) {
-                    try {
-                        post.embed = $.parseJSON(post.embed);
-                        //post.embed = isDefined(post.embed) ? $.isArray(post.embed) ? post.embed : [post.embed] : [];
-                        if (post.embed.length > 0) {
-                            postClone.find(".oa-forum-embed-url")
-                                .attr("title", post.embed[0].url)
-                                .attr("href", post.embed[0].url);
-                            postClone.find(".oa-forum-embed-title").text(post.embed[0].title);
-                            postClone.find(".oa-forum-embed-description").text(post.embed[0].description);
-                            if (isDefined(post.embed[0].html)) {
-                                postClone.find(".oa-forum-embed-html").html(post.embed[0].html);
-                                postClone.find(".oa-forum-embed-html > iframe")
-                                    .removeAttr("width")
-                                    .removeAttr("height");
-                            } else {
-                                postClone.find(".oa-forum-embed-thumbnail")
-                                    .attr("src", post.embed[0].thumbnail_url)
-                                    .css("max-width", imagePreviewWidth + "px")
-                                    .css("max-height", imagePreviewHeight + "px")
-
-                            }
-                            postClone.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
-                            postClone.find(".oa-forum-embed").removeClass("oa-forum-hidden");
-                            postClone.find(".oa-forum-body").addClass("oa-forum-hidden");
-                        }
-                    } catch (cause) {
-
-                    }
-                }
-
-            if (isDefined(post.like)) {
-                postClone.flytCollapsableLikes(options);
-                var postCloneCollapsableLikes = postClone.find(".oa-forum-collapsableLikes .oa-forum-likers")
-                for (var likeIndex = 0; likeIndex < post.like.length; likeIndex++) {
-                    var likerClone = populateLikeTemplate(post.like[likeIndex]);
-                    if (isDefined(likerClone)) {
-                        postCloneCollapsableLikes.append(likerClone);
-                        likerClone.trigger("likerAppended");
-                    }
-                }
-            }
-            if (isDefined(post.attachment)) {
-                var postCloneAttachments = postClone.find(".oa-forum-attachments");
-                for (var attachmentIndex = 0; attachmentIndex < post.attachment.length; attachmentIndex++) {
-                    postCloneAttachments.append(populateAttachmentTemplate(post.attachment[attachmentIndex]));
-                }
-            }
-            return postClone;
-        };
-        var populateThreadTemplate = function(thread) {
-            var threadClone = threadTemplate.clone();
-
-            threadClone.attr("data-threadId", thread.id);
-            threadClone.data("thread", thread);
-
-            var postCreateAction = getFirst(thread.action, function(action){return action.rel === "create";});
-            var threadCloneForm = threadClone.find("form");
-            if (isDefined(postCreateAction)) {
-                threadCloneForm.attr("action", postCreateAction.href);
-                threadCloneForm.find("input[name=threadId]").val(thread.id);
-                threadCloneForm.data("action", postCreateAction);
-            } else {
-                threadCloneForm.remove();
-            }
-
-            threadClone.flytCollapsableThread(options);
-
-            var threadClonePosts = threadClone.find(".oa-forum-posts");
-            if (isDefined(thread.post)) {
-                for (var postIndex = 0; postIndex < thread.post.length; postIndex++) {
-                    appendPost(threadClonePosts, populatePostTemplate(thread.post[postIndex], thread));
-                }
-            }
-            return threadClone;
-        };
-        var appendPost = function(threadPostsElement, postElement) {
-            var threadElement = threadPostsElement.closest(".oa-forum-thread");
-            threadPostsElement.append(postElement);
-            viewShowReplyOrReply(threadElement);
-            threadElement.find(".oa-forum-category").html(threadElement.data("thread").forumReference.name);
-            postElement.trigger("postAppended");
-        };
-        var removePost = function(postElement) {
-            var threadElement = postElement.closest(".oa-forum-thread");
-            postElement.trigger("postRemoved");
-            postElement.remove();
-            viewShowReplyOrReply(threadElement);
-            threadElement.find(".oa-forum-category").html(threadElement.data("thread").forumReference.name);
-        };
-        var replacePost = function(replacePost, withPost) {
-            var threadElement = replacePost.closest(".oa-forum-thread");
-            replacePost.replaceWith(withPost);
-            viewShowReplyOrReply(threadElement);
-            threadElement.find(".oa-forum-category").html(threadElement.data("thread").forumReference.name);
-            withPost.trigger("postReplaced", replacePost);
-        };
-        var viewShowReplyOrReply = function(threadElement) {
-            var threadReplyElement = threadElement.find(".oa-forum-reply");
-            var threadShowReply = threadElement.find(".oa-forum-showReplyForm");
-            if (threadElement.find(".oa-forum-post").length <= 1) {
-                threadReplyElement.addClass("oa-forum-hidden");
-                threadShowReply.closest("div").removeClass("oa-forum-hidden");
-            } else {
-                threadReplyElement.removeClass("oa-forum-hidden");
-                threadShowReply.closest("div").addClass("oa-forum-hidden");
-            }
-        }
         var forumThreads = root.find(".oa-forum-threads");
         forumThreads.on("click", ".oa-forum-share-comment", function(event){
             event.preventDefault();
             var element = $(this);
-            var postsElement = element.closest(".oa-forum-thread").find(".oa-forum-posts");
-            var formElement = element.closest("form");
-            var body = formElement.find("[name=body]").val();
-            var action = formElement.data("action");
-            $.ajax({
-                "contentType": "application/json",
-                "type": action.method,
-                "url": action.href,
-                "data": JSON.stringify({body: body})
-            }).done(function(data, textStatus, jqXHR){
-                appendPost(postsElement, populatePostTemplate(data, postsElement.closest(".oa-forum-thread").data("thread")));
-                formElement.find("[name=body]").val("");
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            })
+            shareComment(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight);
         });
         forumThreads.on("click", ".oa-forum-editPost", function(event){
             event.preventDefault();
             var element = $(this);
-            var postElement = element.closest(".oa-forum-post");
-            postElement.find(".oa-forum-post-submitEditPost").data("action", element.data("action"));
-            postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
-            var editBody = postElement.find(".oa-forum-editBody");
-            editBody.toggleClass("oa-forum-hidden");
+            editPost(element);
         });
         forumThreads.on("click", ".oa-forum-deletePost", function(event){
             event.preventDefault();
             var element = $(this);
-            var action = element.data("action");
-            var postElement = element.closest(".oa-forum-post");
-            $.ajax({
-                "type": action.method,
-                "url": action.href
-            }).done(function(data, textStatus, jqXHR){
-                removePost(postElement);
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            })
+            deletePost(element);
         });
         forumThreads.on("click", ".oa-forum-post-cancelEditPost", function(event){
             event.preventDefault();
             var element = $(this);
-            var postElement = element.closest(".oa-forum-post");
-            postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
-            postElement.find(".oa-forum-editBody").toggleClass("oa-forum-hidden");
+            cancelEditPost(element);
         });
         forumThreads.on("click", ".oa-forum-post-submitEditPost", function(event){
             event.preventDefault();
             var element = $(this);
-            var action = element.data("action");
-            var postElement = element.closest(".oa-forum-post");
-            var editBody = postElement.find(".oa-forum-editBody");
-            postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
-            editBody.toggleClass("oa-forum-hidden");
-            var body = editBody.find("[name=body]").val();
-            $.ajax({
-                "contentType": "application/json",
-                "type": action.method,
-                "url": action.href,
-                "data": JSON.stringify({body: body})
-            }).done(function(data, textStatus, jqXHR){
-                replacePost(postElement, populatePostTemplate(data, postElement.closest(".oa-forum-thread").data("thread")));
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            });
+            submitEditPost(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight);
         });
         forumThreads.on("click", ".oa-forum-showReplyForm", function(event){
             event.preventDefault();
             var element = $(this);
-            element.closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden");
-            element.closest("div").addClass("oa-forum-hidden");
+            showReplyForm(element);
         });
         forumThreads.on("click", ".oa-forum-like", function(event){
             event.preventDefault();
             var element = $(this);
-            var postElement = element.closest(".oa-forum-post");
-            var action = element.data("action");
-            $.ajax({
-                type: action.method,
-                url: action.href
-            }).done(function(data, textStatus, jqXHR){
-                replacePost(postElement, populatePostTemplate(data, postElement.closest(".oa-forum-thread").data("thread")));
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            });
+            like(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight);
         });
         forumThreads.on("click", ".oa-forum-unlike", function(event){
             event.preventDefault();
             var element = $(this);
-            var postElement = element.closest(".oa-forum-post");
-            var action = element.data("action");
-            $.ajax({
-                type: action.method,
-                url: action.href
-            }).done(function(data, textStatus, jqXHR){
-                postElement.find(".oa-forum-like").removeClass("oa-forum-hidden");
-                postElement.find(".oa-forum-unlike").addClass("oa-forum-hidden");
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            });
+            unlike(element);
         });
-        forumThreads.on("click", ".oa-forum-attachment", function(e) {
-            e.preventDefault();
-            var overlay = document.createElement("div"),
-                container = document.createElement("div"),
-                image = document.createElement("img"),
-                close = document.createElement("a"),
-                download = document.createElement("a"),
-                underlay = document.createElement("div");
-
-            var spinnerOptions = {
-                lines: 11,
-                length: 1,
-                width: 3,
-                radius: 9,
-                color: '#ffffff',
-                className: 'oa-forum-overlay-spinner'
-            };
-
-            container.className = "oa-forum-image-container";
-            overlay.className = "oa-forum-overlay";
-            underlay.className = "oa-forum-underlay";
-
-            image.className = "oa-forum-image-enlarged";
-            image.src = this.getAttribute("data-download");
-
-            download.href = this.getAttribute("data-download");
-            download.innerHTML = "Last ned bilde";
-            download.className = "oa-forum-image-download oa-forum-image-button";
-
-            close.href = "#";
-            close.innerHTML = "Lukk";
-            close.className = "oa-forum-image-close oa-forum-image-button";
-
-            overlay.appendChild(underlay);
-
-            container.appendChild(close);
-            container.appendChild(download);
-            container.appendChild(image);
-
-            imageSpinner = new Spinner(spinnerOptions).spin(document.body);
-
-            document.body.appendChild(overlay);
-
-            image.onload = function() {
-                var vw = window.innerWidth;
-                var vh = window.innerHeight;
-                underlay.style.width = vw + "px";
-                underlay.style.height = vh + "px";
-
-                container.style.maxWidth = vw + "px";
-                container.style.maxHeight = vh + "px";
-
-                image.style.maxWidth = (vw / 100) * 90 + "px";
-                image.style.maxHeight = (vh / 100) * 90 + "px";
-
-                imageSpinner.stop();
-                underlay.appendChild(container);
-            };
-
-            $(close).on("click", function(e) {
-                $(container).remove();
-                $(overlay).remove();
-                imageSpinner.stop();
-                return false;
-            });
-
-            $(container).on("click", function (e) {
-                e.stopPropagation();
-            });
-
-            return false;
-
+        forumThreads.on("click", ".oa-forum-attachment", function(event) {
+            event.preventDefault();
+            var element = $(this);
+            return viewAttachment(element);
         });
         root.on("click", ".oa-forum-younger", function(event) {
             event.preventDefault();
             var element = $(this);
-            var action = element.data("action");
-            $.ajax({
-                type: action.method,
-                url: action.href
-            }).done(function(data, textStatus, jqXHR){
-                var threads = []
-                for (var threadIndex = 0; threadIndex < data.thread.length; threadIndex++) {
-                    threads.push(populateThreadTemplate(data.thread[threadIndex]));
-                }
-                root.find(".oa-forum-threads").prepend(threads);
-                setYoungerAction(getFirst(data.action, function(action) {return action.rel === "younger";}));
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            });
+            fetchYounger(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, root, setYoungerAction);
         });
         root.on("click", ".oa-forum-older", function(event) {
             event.preventDefault();
             var element = $(this);
-            var action = element.data("action");
-            $.ajax({
-                type: action.method,
-                url: action.href
-            }).done(function(data, textStatus, jqXHR){
-                for (var threadIndex = 0; threadIndex < data.thread.length; threadIndex++) {
-                    root.find(".oa-forum-threads").append(populateThreadTemplate(data.thread[threadIndex]));
-                }
-                setOlderAction(getFirst(data.action, function(action) {return action.rel === "older";}));
-            }).fail(function(jqXHR, textStatus, errorThrown){
-
-            }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
-
-            });
-        });
-        root.on("click", ".oa-forum-older", function(event) {
-            event.preventDefault();
+            fetchOlder(element, root, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, setOlderAction);
         });
         $.ajax({
             type: "GET",
             url: contextPath + "/forum/rest/thread?includePosts=true" + (location.search != "" ? "&" + location.search.substring(1) : "")
         }).done(function(data, textStatus, jqXHR){
             for (var threadIndex = 0; threadIndex < data.thread.length; threadIndex++) {
-                root.find(".oa-forum-threads").append(populateThreadTemplate(data.thread[threadIndex]));
+                root.find(".oa-forum-threads").append(populateThreadTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data.thread[threadIndex]));
             }
             setYoungerAction(getFirst(data.action, function(action) {return action.rel === "younger";}));
             setOlderAction(getFirst(data.action, function(action) {return action.rel === "older";}));
+        }).fail(function(jqXHR, textStatus, errorThrown){
+
+        }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){
+
+        });
+    };
+    $.fn.flytThread = function(options, url) {
+        var root = $(this);
+        var contextPath = getOption(options, "contextPath");
+        var userProfileUrl = getOption(options, "userProfileUrl");
+        var userProfileImageUrl = getOption(options, "userProfileImageUrl");
+        var imageUrl = getOption(options, "imageUrl");
+        var imagePreviewUrl = getOption(options, "imagePreviewUrl");
+        var docUrl = getOption(options, "docUrl");
+        var imagePreviewWidth = getOption(options, "imagePreviewWidth");
+        var imagePreviewHeight = getOption(options, "imagePreviewHeight");
+        root.on("click", ".oa-forum-share-comment", function(event){
+            event.preventDefault();
+            var element = $(this);
+            shareComment(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight);
+        });
+        root.on("click", ".oa-forum-editPost", function(event){
+            event.preventDefault();
+            var element = $(this);
+            editPost(element);
+        });
+        root.on("click", ".oa-forum-deletePost", function(event){
+            event.preventDefault();
+            var element = $(this);
+            deletePost(element);
+        });
+        root.on("click", ".oa-forum-post-cancelEditPost", function(event){
+            event.preventDefault();
+            var element = $(this);
+            cancelEditPost(element);
+        });
+        root.on("click", ".oa-forum-post-submitEditPost", function(event){
+            event.preventDefault();
+            var element = $(this);
+            submitEditPost(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight);
+        });
+        root.on("click", ".oa-forum-showReplyForm", function(event){
+            event.preventDefault();
+            var element = $(this);
+            showReplyForm(element);
+        });
+        root.on("click", ".oa-forum-like", function(event){
+            event.preventDefault();
+            var element = $(this);
+            like(element, options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight);
+        });
+        root.on("click", ".oa-forum-unlike", function(event){
+            event.preventDefault();
+            var element = $(this);
+            unlike(element);
+        });
+        root.on("click", ".oa-forum-attachment", function(event) {
+            event.preventDefault();
+            var element = $(this);
+            return viewAttachment(element);
+        });
+        return $.ajax({
+            type: "GET",
+            url: url
+        }).done(function(data, textStatus, jqXHR){
+            root.append(populateThreadTemplate(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, data));
         }).fail(function(jqXHR, textStatus, errorThrown){
 
         }).always(function(dataOrjqXHR, textStatus, jqXHROrerrorThrown){

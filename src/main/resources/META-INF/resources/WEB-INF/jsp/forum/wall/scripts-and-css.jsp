@@ -15,7 +15,30 @@
         });
     });
 
-</script>
+</script><c:if test="${isForumWallSearch}">
+    <script id="flyt-forum-search-templates" type="text/html">
+        <li class="flyt-forum-search-hit">
+            <div class="flyt-forum-search-hit-block">
+                <div class="flyt-forum-search-hit-body">{{flyt-forum-search-hit-body}}</div>
+                <div class="flyt-forum-search-hit-metadata">
+                    <spab class="flyt-forum-search-hit-postDate">
+                        Opprettet
+                        <span class="flyt-forum-search-hit-postDate-dateTime">{{flyt-forum-search-hit-postDate}}</span>
+                    </spab>
+                    <span class="flyt-forum-search-hit-modifiedDate">
+                        , redigert
+                        <span class="flyt-forum-search-hit-modifiedDate-dateTime">{{flyt-forum-search-hit-modifiedDate}}</span>
+                    </span>
+                    <span class="flyt-forum-search-hit-forum">
+                        i
+                        <span class="flyt-forum-search-hit-forum-name">{{flyt-forum-search-hit-forum}}</span>
+                    </span>
+                </div>
+            </div>
+        </li>
+    </script>
+    <script type="text/javascript" src="<kantega:expireurl url="/js/wall/flytThreads.js"/>"></script>
+</c:if>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>
 
 
