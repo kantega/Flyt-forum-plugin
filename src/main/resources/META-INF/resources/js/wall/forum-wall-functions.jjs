@@ -117,12 +117,15 @@ $.fn.oaForumWall = function () {
                     searchHits.append(searchHitClone);
                     posts = posts;
                 }
+                searchOutputWrapper.highlight(data.query.match(/\S+/g), { className : "flyt-forum-search-highlight" });
             } else {
                 searchOutputWrapper.find(".flyt-forum-search-no-hits-text").removeClass("hidden");
                 searchOutputWrapper.find(".flyt-forum-search-hits-text").addClass("hidden");
             }
         }).fail(function(){
 
+        }).always(function() {
+            searchOutputWrapper.removeClass("hidden");
         });
     };
 
@@ -154,20 +157,20 @@ $.fn.oaForumWall = function () {
         while (elements.hasClass("oa-forum-hidden")) {
             elements.removeClass("oa-forum-hidden");
         }
-    }
+    };
 
     var hide = function(elements) {
         elements = $(elements);
         elements.addClass("oa-forum-hidden");
-    }
+    };
 
     var setForumId = function(_forumId) {
         forumId = _forumId;
-    }
+    };
 
     var getForumId = function() {
         return forumId !== "" && forumId != "-1" ? forumId : null;
-    }
+    };
 
     var getForumWallUrl = function() {
         var split = forumWallUrl.split("?");
@@ -319,6 +322,24 @@ $.fn.oaForumWall = function () {
         loadWallThreads(false);
     });
 
+    searchInputWrapper.on("keyup", ".flyt-forum-search-input", function(event){
+        event.preventDefault();
+        var element = $(this);
+        var query = element.val();
+        if (query === undefined || query === null || query.trim().length === 0) {
+            searchOutputWrapper.addClass("hidden");
+        } else if (event.keyCode == 13) {
+            performSearch(query);
+        }
+    });
+
+    searchInputWrapper.on("keydown", ".flyt-forum-search-input", function(event){
+        var code = (event.keyCode ? event.keyCode : event.which);
+        if (code === 13) {
+            event.preventDefault();
+        }
+    });
+
     $(window).on("keyup", function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (code === 27) {
@@ -446,6 +467,15 @@ $.fn.oaForumWall = function () {
         performSearch(searchInputWrapper.find(".flyt-forum-search-input").val());
     });
 
+    searchInputWrapper.on("keyup", ".flyt-forum-search-input", function(event){
+        event.preventDefault();
+        var element = $(this);
+        var value = element.val();
+        if (value === undefined || value === null && value.trim().length === 0) {
+            searchOutputWrapper.addClass("hidden");
+        }
+    });
+
     // link listener to display hidden ratings in a thread.
     $forumThreads.on("click", ".oa-forum-showAllRatings", function(event) {
         event.preventDefault();
@@ -500,6 +530,7 @@ $.fn.oaForumWall = function () {
 
     // Handles posting comments and updating gui on a thread
     var enterKeyCode = 13;
+
     $forumThreads.on("keyup", ".oa-forum-thread .oa-forum-comment-reply", function(event) {
         if (event.keyCode == enterKeyCode && oa_forum_enableEnterAsCommentPostAction) {
             event.preventDefault();

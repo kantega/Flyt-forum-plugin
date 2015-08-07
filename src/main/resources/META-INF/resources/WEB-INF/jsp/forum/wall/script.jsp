@@ -39,6 +39,7 @@
             </div>
         </li>
     </script>
+    <script type="text/javascript" src="<kantega:expireurl url="/js/wall/jquery.highlight.js"/>"></script>
     <script type="text/javascript" src="<kantega:expireurl url="/js/wall/flytThreads.js"/>"></script>
 </c:if>
 <script type="text/javascript" src="<kantega:expireurl url="/js/wall/forum-wall-functions.jjs"/>"></script>

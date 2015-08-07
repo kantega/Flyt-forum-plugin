@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -120,6 +121,22 @@ public class ThreadResource {
         }
         List<Rating> ratings = getRatings(ratingService, threadBo);
         return new ThreadTo(threadBo, forumReferenceTo(threadBo.getForum(), uriInfo), postsTo(threadBo, user, permissionManager, uriInfo, ratingService, request, ratings), getActions(threadBo, user, permissionManager, uriInfo));
+    }
+
+    @Path("{threadId}")
+    @DELETE
+    @Consumes({"application/json", "multipart/form-data"})
+    public void delete(@PathParam("threadId") Long threadId) {
+        log.trace("get(Long)");
+        ForumThread threadBo = forumDao.getThread(threadId, true);
+        if (threadBo == null) {
+            throw new Fault(404, "Not found");
+        }
+        String user = resolveUser(userResolver, request);
+        if (!permissionManager.hasPermission(user, Permission.DELETE_THREAD, threadBo)) {
+            throw new Fault(403, "Not authorized");
+        }
+        forumDao.delete(threadBo);
     }
 
     @Path("{threadId}")

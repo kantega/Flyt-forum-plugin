@@ -417,6 +417,21 @@
         });
     }
 
+    function deleteThread(element) {
+        var action = element.data("action");
+        var postElement = element.closest(".oa-forum-thread");
+        $.ajax({
+            "type": action.method,
+            "url": action.href
+        }).done(function (data, textStatus, jqXHR) {
+            removePost(postElement);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (dataOrjqXHR, textStatus, jqXHROrerrorThrown) {
+
+        });
+    }
+
     function cancelEditPost(element) {
         var postElement = element.closest(".oa-forum-post");
         postElement.find(".oa-forum-edit").toggleClass("oa-forum-hidden");
@@ -716,6 +731,11 @@
             event.preventDefault();
             var element = $(this);
             deletePost(element);
+        });
+        root.on("click", ".oa-forum-deleteThread", function(event){
+           event.preventDefault();
+            var element = $(this);
+            deleteThread(element);
         });
         root.on("click", ".oa-forum-post-cancelEditPost", function(event){
             event.preventDefault();

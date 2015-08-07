@@ -7,6 +7,9 @@
 <div class="oa-forum-newPost">
 
     <div class="oa-forum-sharebox">
+        <c:if test="${isForumWallSearch}">
+            <%@include file="search-input.jsp"%>
+        </c:if>
         <form action="${pageContext.request.contextPath}/forum/editpost" class="oa-forum-ajaxForm" method="POST">
             <div class="oa-forum-formElement">
                 <c:choose>
@@ -28,9 +31,6 @@
                 <input type="hidden" name="subject" value="Subject">
                 <label class="oa-forum-sharebox-label oa-forum-hidden">${helptextLabel}</label>
                 <%-- helptextLabel is set in RenderWallTag--%>
-                <c:if test="${isForumWallSearch}">
-                    <%@include file="search-input.jsp"%>
-                </c:if>
                 <textarea rows="1" cols="40" name="body" class="oa-forum-sharebox-textarea oa-forum-sharefield" placeholder="${helptextLabel}"></textarea>
             </div>
 
