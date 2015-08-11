@@ -46,7 +46,7 @@
 jQuery.extend({
     highlight: function (node, re, nodeName, className) {
         if (node.nodeType === 3) {
-            var match = node.data.match(re);
+            var match = re.exec(node.data);
             if (match) {
                 var highlight = document.createElement(nodeName || 'span');
                 highlight.className = className || 'highlight';
@@ -83,26 +83,35 @@ jQuery.fn.highlight = function (words, options) {
     var settings = { className: 'highlight', element: 'span', caseSensitive: false, wordsOnly: false };
     jQuery.extend(settings, options);
     
-    if (words.constructor === String) {
+    if (words.constructor === String || words.constructor === RegExp) {
         words = [words];
     }
+    var p = jQuery.grep(words, function(word, i){
+        return word instanceof RegExp;
+    });
     words = jQuery.grep(words, function(word, i){
-      return word != '';
+      return word.constructor === String && word != '';
     });
-    words = jQuery.map(words, function(word, i) {
-      return word.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-    });
-    if (words.length == 0) { return this; };
+    if (words.length == 0 && p.length == 0) { return this; };
 
-    var flag = settings.caseSensitive ? "" : "i";
-    var pattern = "(" + words.join("|") + ")";
-    if (settings.wordsOnly) {
-        pattern = "\\b" + pattern + "\\b";
+    var re = null;
+    if (words.length > 0) {
+        var flag = settings.caseSensitive ? "" : "i";
+
+        var pattern = "(" + words.join("|") + ")";
+        if (settings.wordsOnly) {
+            pattern = "\\b" + pattern + "\\b";
+        }
+        re = new RegExp(pattern, flag);
     }
-    var re = new RegExp(pattern, flag);
     
     return this.each(function () {
-        jQuery.highlight(this, re, settings.element, settings.className);
+        if (re) {
+            jQuery.highlight(this, re, settings.element, settings.className);
+        }
+        for (var index = 0; index < p.length; index++) {
+            jQuery.highlight(this, p[index], settings.element, settings.className);
+        }
     });
 };
 

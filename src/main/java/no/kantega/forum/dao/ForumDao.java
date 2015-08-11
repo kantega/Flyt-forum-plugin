@@ -35,8 +35,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static no.kantega.utilities.Objects.nonNull;
@@ -78,12 +79,12 @@ public class ForumDao {
     }
 
     public Post saveOrUpdate(Post post, boolean updateLastPostDateOnThread) {
-        URL link = getLink(post);
-        if (nonNull(link)) {
+        List<URL> links = getLinks(post);
+        if (nonNull(links) && !links.isEmpty()) {
             Embedly embedly = getEmbedly();
             if (nonNull(embedly)) {
                 Oembed oembed = embedly.oembed()
-                        .withUrl(link)
+                        .withUrls(links)
                         .withNostyle(true)
                         .build();
                 try {
@@ -118,22 +119,35 @@ public class ForumDao {
         return post;
     }
 
-    private URL getLink(Post post) {
-        URL link = null;
+    //URLs starting with http://, https://, or ftp://
+    private static final Pattern pattern1 = Pattern.compile("(\\b(https?|ftp)://[-\\p{L}0-9+&@#/%?=~_|!:,.;]*[-\\p{L}0-9+&@#/%=~_|])", Pattern.CASE_INSENSITIVE);
+    //URLs starting with "www." (without // before it, or it'd re-link the ones done above).
+    private static final Pattern pattern2 = Pattern.compile("(^|[^/])(www\\.[\\S]+)(\\b)", Pattern.CASE_INSENSITIVE);
+
+    private List<URL> getLinks(Post post) {
+        List<URL> links = new ArrayList<>();
         if (nonNull(post)) {
             String body = post.getBody();
-            String[] split = body.split("\\s");
-            if (split.length == 1) {
-                if (nonNull(body)) {
+            if (nonNull(body)) {
+                Matcher matcher = pattern1.matcher(body);
+                while (matcher.find()) {
                     try {
-                        link = new URL(body.trim());
+                        String string = matcher.group(1);
+                        links.add(new URL(string));
                     } catch (Exception cause) {
                     }
-
+                }
+                matcher = pattern2.matcher(body);
+                while (matcher.find()) {
+                    try {
+                        String string = matcher.group(2);
+                        links.add(new URL("http://" + string));
+                    } catch (Exception cause) {
+                    }
                 }
             }
         }
-        return link;
+        return links;
     }
 
     private Embedly getEmbedly() {

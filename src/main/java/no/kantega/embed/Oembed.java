@@ -6,7 +6,7 @@ import no.kantega.utilities.Url;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import static no.kantega.utilities.Url.createUrl;
 
@@ -17,7 +17,7 @@ import static no.kantega.utilities.Url.createUrl;
 public class Oembed {
 
     private Embedly embedly;
-    private List<URL> urls;
+    private Collection<URL> urls;
     private Integer maxWitdth;
     private Integer maxHeight;
     private Integer width;
@@ -30,7 +30,7 @@ public class Oembed {
     private Boolean secure;
     private Scheme scheme;
 
-    private Oembed(Embedly embedly, List<URL> urls, Integer maxWitdth, Integer maxHeight, Integer width, Boolean nostyle, Boolean autoplay, Boolean videosrc, Integer words, Integer chars, Boolean luxe, Boolean secure, Scheme scheme) {
+    private Oembed(Embedly embedly, Collection<URL> urls, Integer maxWitdth, Integer maxHeight, Integer width, Boolean nostyle, Boolean autoplay, Boolean videosrc, Integer words, Integer chars, Boolean luxe, Boolean secure, Scheme scheme) {
         this.embedly = Objects.requireNonNull(embedly, "May not be null: embedly");
         this.urls = new ArrayList<>(
                 Objects.requireNonNullElements(
@@ -57,7 +57,7 @@ public class Oembed {
         return embedly;
     }
 
-    public List<URL> getUrls() {
+    public Collection<URL> getUrls() {
         return urls;
     }
 
@@ -148,6 +148,8 @@ public class Oembed {
 
         OembedBuilder withUrl(URL url);
 
+        OembedBuilder withUrls(Collection<URL> urls);
+
         OembedBuilder withoutUrl(URL url);
 
         OembedBuilder withMaxWitdth(Integer maxWitdth);
@@ -178,7 +180,7 @@ public class Oembed {
     public static class DefalutOembedBuilder implements OembedBuilder {
 
         private Embedly embedly;
-        private List<URL> urls;
+        private Collection<URL> urls;
         private Integer maxWitdth;
         private Integer maxHeight;
         private Integer width;
@@ -202,6 +204,16 @@ public class Oembed {
                     urls = new ArrayList<>();
                 }
                 urls.add(url);
+            }
+            return this;
+        }
+
+        public OembedBuilder withUrls(Collection<URL> urls) {
+            if (urls != null) {
+                if (this.urls == null) {
+                    this.urls = new ArrayList<>();
+                }
+                this.urls.addAll(urls);
             }
             return this;
         }
