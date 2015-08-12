@@ -60,6 +60,28 @@
             threadShowReply.closest("div").addClass("oa-forum-hidden");
         }
     };
+    var anchorize = function(postElement) {
+        postElement.highlight(
+            /\b((https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,
+            {
+                element:"a",
+                className: "oa-forum-anchor"
+            }).find(".oa-forum-anchor").each(function(){
+                var element = $(this);
+                element.attr("data-original", element.text());
+                element.attr("href", element.text());
+            });
+        postElement.highlight(
+            /(^|[^\/])(www\.[\S]+(\b|$))/i,
+            {
+                element:"a",
+                className: "oa-forum-anchor"
+            }).find(".oa-forum-anchor").each(function(){
+                var element = $(this);
+                element.attr("data-original", element.text());
+                element.attr("href", "http://" + element.text().trim());
+            });
+    };
     var populateAttachmentTemplate = function(imageUrl, imagePreviewUrl, docUrl, attachment) {
         var attachmentClone = null;
         if (isImage(attachment.mimeType)) {
@@ -161,7 +183,7 @@
 
         postClone.find(".oa-forum-body p").text(post.body);
         postClone.find(".oa-forum-editBody [name=body]").text(post.body);
-        if (isDefined(post.embed)) {
+        if (isDefined(post.embed && post.embed.length > 0)) {
             try {
                 post.embed = $.parseJSON(post.embed);
                 //post.embed = isDefined(post.embed) ? $.isArray(post.embed) ? post.embed : [post.embed] : [];
@@ -185,7 +207,6 @@
                     }
                     postClone.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
                     postClone.find(".oa-forum-embed").removeClass("oa-forum-hidden");
-                    postClone.find(".oa-forum-body").addClass("oa-forum-hidden");
                 }
             } catch (cause) {
                 cause = cause;
@@ -209,6 +230,7 @@
                 postCloneAttachments.append(populateAttachmentTemplate(imageUrl, imagePreviewUrl, docUrl, post.attachment[attachmentIndex]));
             }
         }
+        anchorize(postClone);
         return postClone;
     };
     var populateThreadTemplate = function(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, thread) {

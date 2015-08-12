@@ -50,7 +50,7 @@
 
 
         <c:set var="embed">${not empty post.embed}</c:set>
-        <div class="oa-forum-body <c:if test="${embed}">oa-forum-hidden</c:if>">
+        <div class="oa-forum-body">
             <p>
                 <c:choose>
                     <c:when test="${postsStatus.index == 0}">
