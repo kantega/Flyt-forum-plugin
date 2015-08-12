@@ -68,8 +68,10 @@
                 className: "oa-forum-anchor"
             }).find(".oa-forum-anchor").each(function(){
                 var element = $(this);
-                element.attr("data-original", element.text());
-                element.attr("href", element.text());
+                if (!element.attr("data-original")) {
+                    element.attr("data-original", element.html());
+                    element.attr("href", element.html());
+                }
             });
         postElement.highlight(
             /(^|[^\/])(www\.[\S]+(\b|$))/i,
@@ -78,8 +80,10 @@
                 className: "oa-forum-anchor"
             }).find(".oa-forum-anchor").each(function(){
                 var element = $(this);
-                element.attr("data-original", element.text());
-                element.attr("href", "http://" + element.text().trim());
+                if (!element.attr("data-original")) {
+                    element.attr("data-original", element.html());
+                    element.attr("href", "http://" + element.html().trim());
+                }
             });
     };
     var populateAttachmentTemplate = function(imageUrl, imagePreviewUrl, docUrl, attachment) {
