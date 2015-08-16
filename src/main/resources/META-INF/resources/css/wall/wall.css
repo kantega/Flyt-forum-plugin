@@ -26,6 +26,7 @@ ul.oa-forum-tabs li {
 .oa-forum-body p:first-child{
     margin-top:0;
     margin-bottom: 0;
+    white-space: pre-line;
 }
 
 .oa-forum-sharebox .oa-forum-spinner {

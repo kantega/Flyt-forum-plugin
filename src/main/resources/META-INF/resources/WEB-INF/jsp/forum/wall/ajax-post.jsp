@@ -51,24 +51,7 @@
 
         <c:set var="embed">${not empty post.embed}</c:set>
         <div class="oa-forum-body">
-            <p>
-                <c:choose>
-                    <c:when test="${postsStatus.index == 0}">
-                        <%-- Only the first post in a thread might need a preview. Comments in a thread is displayed as normal --%>
-                        <form:escapeBody javaScriptEscape="false" htmlEscape="true">
-                            <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
-                        </form:escapeBody>
-                    </c:when>
-                    <c:when test="${trunctateAllPostsInThread}">
-                        <form:escapeBody javaScriptEscape="false" htmlEscape="true">
-                            <forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/>
-                        </form:escapeBody>
-                    </c:when>
-                    <c:otherwise>
-                        <form:escapeBody javaScriptEscape="false" htmlEscape="true">${post.body}</form:escapeBody>
-                    </c:otherwise>
-                </c:choose>
-            </p>
+            <p><c:choose><c:when test="${postsStatus.index == 0}"><%-- Only the first post in a thread might need a preview. Comments in a thread is displayed as normal --%><form:escapeBody javaScriptEscape="false" htmlEscape="true"><forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/></form:escapeBody></c:when><c:when test="${trunctateAllPostsInThread}"><form:escapeBody javaScriptEscape="false" htmlEscape="true"><forum:formatwallpost postbody="${post.body}" charsinbodypreview="${oaForumPostPreviewCharlength}"/></form:escapeBody></c:when><c:otherwise><form:escapeBody javaScriptEscape="false" htmlEscape="true">${post.body}</form:escapeBody></c:otherwise></c:choose></p>
         </div>
         <div class="oa-forum-embed <c:if test="${not embed}">oa-forum-hidden</c:if>">
             <c:if test="${embed}"><script class="oa-forum-embed-body">${post.embed}</script></c:if>

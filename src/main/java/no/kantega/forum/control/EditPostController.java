@@ -420,7 +420,6 @@ public class EditPostController extends AbstractForumFormController {
     private String cleanup(String body, HttpServletRequest request) {
         String qStart = getApplicationContext().getMessage("post.quote.starttag", new Object[0], RequestContextUtils.getLocale(request));
         String qEnd = getApplicationContext().getMessage("post.quote.endtag", new Object[0], RequestContextUtils.getLocale(request));
-        body = body.replaceAll("\n", "<br>");
         body = startBlockquote.matcher(body).replaceAll(qStart);
         body = endBlockquote.matcher(body).replaceAll(qEnd);
 
