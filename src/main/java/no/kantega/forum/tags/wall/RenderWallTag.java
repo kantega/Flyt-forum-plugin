@@ -38,7 +38,7 @@ public class RenderWallTag extends SimpleTagSupport {
 	private int forumCategoryId = -1;
 	private int hiddenForumId = -1;
 	private int defaultPostForumId = -1;
-	private int maxthreads = 20;
+	private int maxthreads = 10;
 	private String userId = null;
 	private int threadId = -1;
 	private String shareBoxPlaceholder = null;
