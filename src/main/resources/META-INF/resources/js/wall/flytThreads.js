@@ -61,7 +61,8 @@
         }
     };
     var anchorize = function(postElement) {
-        postElement.highlight(
+        var bodyElement = postElement.find(".oa-forum-body");
+        bodyElement.highlight(
             /\b((https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,
             {
                 element:"a",
@@ -73,7 +74,7 @@
                     element.attr("href", element.html());
                 }
             });
-        postElement.highlight(
+        bodyElement.highlight(
             /(^|[^\/])(www\.[\S]+(\b|$))/i,
             {
                 element:"a",
