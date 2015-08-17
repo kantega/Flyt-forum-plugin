@@ -85,6 +85,22 @@
                     element.attr("href", "http://" + element.html().trim());
                 }
             });
+        try {
+            var embed = $.parseJSON(postElement.find(".oa-forum-embed-body").text());
+            postElement.find("a.oa-forum-anchor").each(function(){
+                var anchor = $(this);
+                var href = anchor.attr("href");
+                for (var index = 0; index < embed.length; index++) {
+                    if (isDefined(embed[index].title) && href == embed[index].url) {
+                        anchor.text(embed[index].title);
+                        var embedUrlElement = postElement.find(".oa-forum-embed-url");
+                        if (embedUrlElement.attr("href") == href) {
+                            embedUrlElement.addClass("oa-forum-hidden");
+                        }
+                    }
+                }
+            });
+        } catch(cause) {}
     };
     var populateAttachmentTemplate = function(imageUrl, imagePreviewUrl, docUrl, attachment) {
         var attachmentClone = null;
