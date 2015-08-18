@@ -24,7 +24,7 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         StringBuilder formattedPostBody = new StringBuilder();
 
         // Dont want to split up html anchor in preview text. So must first check if a link is present in the preview text
-        String linkStartTag = "<a";
+        String linkStartTag = "<a ";
         String linkEndTag = "</a>";
         charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", -1);
 
@@ -43,15 +43,7 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         }
         // Creating a preview if necessary, if the post does not fit within the limit, one line is removed in order to
         // show "show more" tag so it does not use more space
-        if (postbody.length() > charsInBodyPreview) {
-            String linkText = LocaleLabels.getLabel("forum.wall.post.previewlink","forum", Aksess.getDefaultAdminLocale());
-            formattedPostBody.append(postbody.substring(0, charsInBodyPreview - charsPerLine));
-            formattedPostBody.append("<span class=\"oa-forum-post-preview-more-indicator\">...</span>");
-            formattedPostBody.append("<br><a href=\"#\" class=\"oa-forum-post-preview-show-full-body-link\">").append(linkText).append("</a><br>");
-            formattedPostBody.append("<span class=\"oa-forum-post-preview-hidden-post-body\">").append(postbody.substring(charsInBodyPreview - charsPerLine)).append("</span>");
-        } else {
-            formattedPostBody.append(postbody);
-        }
+        formattedPostBody.append(postbody);
         out.write(formattedPostBody.toString());
 
         postbody = "";
