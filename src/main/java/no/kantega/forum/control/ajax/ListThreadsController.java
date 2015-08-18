@@ -13,6 +13,8 @@ import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -27,6 +29,8 @@ import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class ListThreadsController implements Controller {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private PermissionManager permissionManager;
     private UserResolver userResolver;
@@ -103,8 +107,7 @@ public class ListThreadsController implements Controller {
                 objectIds.add(String.valueOf(post.getId()));
             }
 		}
-
-		List<Rating> ratings = ratingService.getRatingsForObjects(objectIds, "forum");
+		List<Rating> ratings = new ArrayList<>(ratingService.getRatingsForObjects(objectIds, "forum"));
 		for (Rating rating : ratings) {
 			List<Rating> ratingsForSinglePost = ratingsForPosts.get(Long.parseLong(rating.getObjectId()));
 			if (ratingsForSinglePost == null) {
@@ -116,7 +119,6 @@ public class ListThreadsController implements Controller {
 		}
 		model.put("threads", threads);
 		model.put("ratings", ratingsForPosts);
-
         /*
             Kan da i jsp-en kjøre ${ratings[post.id]} for å få en liste over alle ratings for en gitt post
         */
@@ -133,4 +135,26 @@ public class ListThreadsController implements Controller {
         }
         return filteredThreads;
     }
+
+	public class ExtendedRating extends Rating {
+
+		private String userFullName;
+
+		public ExtendedRating(Rating rating) {
+			this.setUserid(rating.getUserid());
+			this.setContext(rating.getContext());
+			this.setRating(rating.getRating());
+			this.setObjectId(rating.getObjectId());
+			this.setComment(rating.getComment());
+			this.setDate(rating.getDate());
+		}
+
+		public String getUserFullName() {
+			return userFullName;
+		}
+
+		public void setUserFullName(String userFullName) {
+			this.userFullName = userFullName;
+		}
+	}
 }

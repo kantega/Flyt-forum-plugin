@@ -97,9 +97,8 @@
             <c:set var="postRatings" value="${ratings[post.id]}"/>
             <c:set var="hasLikedPost" value="false"/>
 
+            <aksess:getuser name="innloggetBruker" />
             <c:forEach items="${postRatings}" var="rating" varStatus="status">
-                <aksess:getuser userid="${rating.userid}" name="user" />
-                <aksess:getuser name="innloggetBruker" />
                 <c:if test="${rating.userid == innloggetBruker.id}">
                     <c:set var="hasLikedPost" value="true"/>
                 </c:if>
@@ -134,7 +133,6 @@
             <c:choose>
                 <c:when test="${!manyRatings}">
                     <c:forEach items="${postRatings}" var="rating" varStatus="status">
-                        <aksess:getuser userid="${rating.userid}" name="user"/>
                         <c:choose>
                             <c:when test="${status.index == 0}">
 
@@ -149,15 +147,14 @@
 
                             </c:otherwise>
                         </c:choose>
-                        <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                        <a href="${userProfileBaseUrl}${rating.userid}"><c:choose><c:when test="${not empty rating.userDisplayName}">${rating.userDisplayName}</c:when><c:otherwise>${rating.userid}</c:otherwise></c:choose></a>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
                     <c:forEach items="${postRatings}" var="rating" varStatus="status" begin="0" end="2">
-                        <aksess:getuser userid="${rating.userid}" name="user"/>
                         <c:choose>
                             <c:when test="${status.index == 0}">
-                                <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                                <a href="${userProfileBaseUrl}${rating.userid}"><c:choose><c:when test="${not empty rating.userDisplayName}">${rating.userDisplayName}</c:when><c:otherwise>${rating.userid}</c:otherwise></c:choose></a>
                             </c:when>
                             <c:when test="${status.index > 0 && status.last}">
                                 <c:if test="${status.index == 2}">
@@ -168,7 +165,7 @@
                                 </c:if>
                             </c:when>
                             <c:when test="${status.index > 0 && !status.last}">
-                                , <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                                , <a href="${userProfileBaseUrl}${rating.userid}"><c:choose><c:when test="${not empty rating.userDisplayName}">${rating.userDisplayName}</c:when><c:otherwise>${rating.userid}</c:otherwise></c:choose></a>
                             </c:when>
                             <c:otherwise>
 
@@ -177,7 +174,6 @@
                     </c:forEach>
                     <span class="oa-forum-minimizedRatings oa-forum-hidden">
                         <c:forEach items="${postRatings}" var="rating" varStatus="status" begin="2">
-                            <aksess:getuser userid="${rating.userid}" name="user"/>
                             <c:choose>
                                 <c:when test="${status.index > 0 && status.last}">
                                     <kantega:label key="forum.wall.like.and" bundle="forum" locale="${forumLocale}"/>
@@ -186,7 +182,7 @@
                                     ,
                                 </c:when>
                             </c:choose>
-                            <a href="${userProfileBaseUrl}${rating.userid}">${user.name}</a>
+                            <a href="${userProfileBaseUrl}${rating.userid}"><c:choose><c:when test="${not empty rating.userDisplayName}">${rating.userDisplayName}</c:when><c:otherwise>${rating.userid}</c:otherwise></c:choose></a>
                         </c:forEach>
                     </span>
                 </c:otherwise>

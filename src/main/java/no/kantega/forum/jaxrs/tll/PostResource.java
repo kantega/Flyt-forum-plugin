@@ -102,6 +102,7 @@ public class PostResource {
         rating.setObjectId(postId.toString());
         rating.setRating(1);
         rating.setUserid(RatingUtil.getUserId(request));
+        rating.setUserDisplayName(RatingUtil.getUserDisplayName(request));
         ratingService.saveOrUpdateRating(rating);
         setRatingCookie(response, rating.getObjectId(), rating.getContext(), String.valueOf(rating.getRating()));
         postBo = forumDao.getPost(postId);
