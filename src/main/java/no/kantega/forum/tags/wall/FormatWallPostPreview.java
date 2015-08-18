@@ -22,25 +22,8 @@ public class FormatWallPostPreview extends SimpleTagSupport {
         PageContext pageContext = ((PageContext)getJspContext());
         JspWriter out = pageContext.getOut();
         StringBuilder formattedPostBody = new StringBuilder();
-
-        // Dont want to split up html anchor in preview text. So must first check if a link is present in the preview text
-        String linkStartTag = "<a ";
-        String linkEndTag = "</a>";
         charsPerLine = Aksess.getConfiguration().getInt("forum.post.charsperline", -1);
 
-        int indexOfFirstLink = postbody.indexOf(linkStartTag);
-        // Link is in the preview part and the post is large enough for a preview to be made
-        if( indexOfFirstLink < (charsInBodyPreview - charsPerLine) && postbody.length() > charsInBodyPreview) {
-            int indexOfFirstLinkEnd = postbody.indexOf(linkEndTag);
-            // End of link is on "the other side" of the preview meaning it will split the link
-            if (indexOfFirstLinkEnd > (charsInBodyPreview - charsPerLine)) {
-                // Therefore the preview is increased by the length of the link
-                charsInBodyPreview = charsInBodyPreview + ( (indexOfFirstLinkEnd + linkEndTag.length()) - indexOfFirstLink);
-            }
-            // No matter where the link is in the preview, its length in chars will be about double of what is shown
-            // Preview is therefore increased
-            charsInBodyPreview += (indexOfFirstLinkEnd - indexOfFirstLink)/2;
-        }
         // Creating a preview if necessary, if the post does not fit within the limit, one line is removed in order to
         // show "show more" tag so it does not use more space
         formattedPostBody.append(postbody);
