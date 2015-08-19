@@ -35,7 +35,7 @@ public class ListThreadsController implements Controller {
     private PermissionManager permissionManager;
     private UserResolver userResolver;
 	private ForumDao forumDao;
-	private int defaultNumberOfPostsToShow = 10;
+	private int defaultNumberOfPostsToShow = 5;
 	private RatingService ratingService;
 
 	public ListThreadsController(ForumDao forumDao, RatingService ratingService, PermissionManager permissionManager, UserResolver userResolver) {
