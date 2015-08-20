@@ -252,7 +252,7 @@ $.fn.oaForumWall = function () {
 
     function loadWallThreads(loadMore) {
         var $forumContent = forumWall.find(".oa-forum-forumContent .oa-forum-threads");
-        var noThreads = forumWall.find(".oa-forum-thread", $forumContent).length;
+        var noThreads = forumWall.find(".oa-forum-thread", $forumContent).not("#flytForumWallTemplates .oa-forum-thread").length;
         var spinner = new Spinner(spinnerOptions).spin($forumContent[0]);
         var url = getForumWallUrl();
 
