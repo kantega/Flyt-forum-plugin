@@ -43,9 +43,10 @@ $.fn.oaForumWall = function () {
     });
 
     var selectedForumChanged = function(_forumId) {
-        searchInputWrapper.find(".flyt-forum-search-input").attr("placeholder", flyt_forum_search_input_placeholder.replace("%s", forumIdName[_forumId]));
-        searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", forumIdName[_forumId]));
-        searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", forumIdName[_forumId]));
+        var label = forumIdName[_forumId] !== undefined && forumIdName[_forumId] !== null ? forumIdName[_forumId] : "";
+        searchInputWrapper.find(".flyt-forum-search-input").attr("placeholder", flyt_forum_search_input_placeholder.replace("%s", label));
+        searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", label));
+        searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", label));
     };
     searchOutputWrapper.on("click", ".flyt-forum-search-hit", function(event){
         event.preventDefault();
@@ -72,7 +73,13 @@ $.fn.oaForumWall = function () {
             })
         }
     });
-    selectedForumChanged(defaultPostForumId);
+    $.ajax({
+        type: "GET",
+        url: "${pageContext.request.contextPath}/forum/rest/forum/" + defaultPostForumId
+    }).done(function(forum){
+        forumIdName[forum.id] = forum.name;
+        selectedForumChanged(forum.id);
+    }).fail(function(){});
 
     var performSearch = function (query) {
         var data = {
@@ -113,7 +120,7 @@ $.fn.oaForumWall = function () {
                     modifiedDateDateTime.html(posts[index].modifiedDate);
                     modifiedDateDateTime.prettyDate({serverTime: serverTime, locale: locale});
 
-                    searchHitClone.find(".flyt-forum-search-hit-forum-name").html(forumIdName[_forumId]);
+                    searchHitClone.find(".flyt-forum-search-hit-forum-name").html(forumIdName[_forumId] !== undefined && forumIdName[_forumId] !== null ? forumIdName[_forumId] : "");
                     searchHits.append(searchHitClone);
                     posts = posts;
                 }
