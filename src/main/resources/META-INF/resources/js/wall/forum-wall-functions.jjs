@@ -845,7 +845,7 @@ $.fn.oaForumWall = function () {
             postBody.readmore({
                 collapsedHeight: collapsedHeight,
                 moreLink: '<a href="#"><kantega:label key="forum.wall.post.previewlink" bundle="forum"/></a>',
-                lessLink: '<a href="#">Vis mindre</a>'
+                lessLink: '<a href="#"><kantega:label key="forum.wall.post.fulllink" bundle="forum"/></a>'
             });
         } else {
             if (console && console.warn) {

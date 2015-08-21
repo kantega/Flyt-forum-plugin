@@ -103,6 +103,25 @@
             });
         } catch(cause) {}
     };
+    var readmore = function(postElement) {
+        var postBody = postElement.find(".oa-forum-body");
+        if (postBody.readmore) {
+            var fontSizeMatcher = /([0-9]+).*/.exec(postBody.css("font-size"));
+            var lineHeightMatcher = /([0-9]+).*/.exec(postBody.css("line-height"));
+            var fontSize = fontSizeMatcher ? fontSizeMatcher[1] : 16;
+            var lineHeight = lineHeightMatcher ? parseInt(lineHeightMatcher[1]) : fontSize * 1.2;
+            var collapsedHeight = lineHeight + (fontSize / 8);
+            postBody.readmore({
+                collapsedHeight: collapsedHeight,
+                moreLink: '<a href="#"><kantega:label key="forum.wall.post.previewlink" bundle="forum"/></a>',
+                lessLink: '<a href="#"><kantega:label key="forum.wall.post.fulllink" bundle="forum"/></a>'
+            });
+        } else {
+            if (console && console.warn) {
+                console.warn("Include readmore!");
+            }
+        }
+    };
     var populateAttachmentTemplate = function(imageUrl, imagePreviewUrl, docUrl, attachment) {
         var attachmentClone = null;
         if (isImage(attachment.mimeType)) {
@@ -252,6 +271,7 @@
             }
         }
         anchorize(postClone);
+        readmore(postClone);
         return postClone;
     };
     var populateThreadTemplate = function(options, userProfileUrl, userProfileImageUrl, imageUrl, imagePreviewUrl, docUrl, imagePreviewWidth, imagePreviewHeight, thread) {
