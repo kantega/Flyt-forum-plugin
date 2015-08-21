@@ -274,6 +274,7 @@ $.fn.oaForumWall = function () {
                 var postElement = $(this);
                 embed(postElement);
                 anchorize(postElement);
+                readmore(postElement);
             });
             forumWall.find(".oa-forum-date", $forumContent).each(function() {
                 $(this).prettyDate({serverTime: serverTime, locale: locale});
@@ -402,6 +403,7 @@ $.fn.oaForumWall = function () {
             var postElement = $(this);
             embed(postElement);
             anchorize(postElement);
+            readmore(postElement);
         });
         $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
         $processedData.addClass("new");
@@ -437,6 +439,7 @@ $.fn.oaForumWall = function () {
                 $container.append($processedData);
                 embed($processedData);
                 anchorize($processedData);
+                readmore($processedData);
                 $commentForm.removeClass("hidden");
                 $(commentLoader).remove();
                 spinner.stop();
@@ -584,6 +587,7 @@ $.fn.oaForumWall = function () {
             post.replaceWith($content);
             embed($content);
             anchorize($content);
+            readmore($content);
         }).fail(function(){
             post.find(".oa-forum-body, .oa-forum-editBody, .oa-forum-edit, .oa-forum-editPost").toggleClass("oa-forum-hidden");
         });
@@ -829,5 +833,24 @@ $.fn.oaForumWall = function () {
                 }
             });
         } catch(cause) {}
+    };
+    var readmore = function(postElement) {
+        var postBody = postElement.find(".oa-forum-body");
+        if (postBody.readmore) {
+            var fontSizeMatcher = /([0-9]+).*/.exec(postBody.css("font-size"));
+            var lineHeightMatcher = /([0-9]+).*/.exec(postBody.css("line-height"));
+            var fontSize = fontSizeMatcher ? fontSizeMatcher[1] : 16;
+            var lineHeight = lineHeightMatcher ? parseInt(lineHeightMatcher[1]) : fontSize * 1.2;
+            var collapsedHeight = lineHeight + (fontSize / 8);
+            postBody.readmore({
+                collapsedHeight: collapsedHeight,
+                moreLink: '<a href="#"><kantega:label key="forum.wall.post.previewlink" bundle="forum"/></a>',
+                lessLink: '<a href="#">Vis mindre</a>'
+            });
+        } else {
+            if (console && console.warn) {
+                console.warn("Include readmore!");
+            }
+        }
     };
 };
