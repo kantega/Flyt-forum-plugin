@@ -44,6 +44,7 @@ $.fn.oaForumWall = function () {
 
     var selectedForumChanged = function(_forumId) {
         var label = forumIdName[_forumId] !== undefined && forumIdName[_forumId] !== null ? forumIdName[_forumId] : "";
+        searchInputWrapper.find(".flyt-forum-search-label").html(flyt_forum_search_input_placeholder.replace("%s", label));
         searchInputWrapper.find(".flyt-forum-search-input").attr("placeholder", flyt_forum_search_input_placeholder.replace("%s", label));
         searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", label));
         searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", label));
@@ -217,6 +218,7 @@ $.fn.oaForumWall = function () {
 
     if (!placeholderIsSupported()) {
         show(forumWall.find(".oa-forum-sharebox-label"));
+        show(forumWall.find(".flyt-forum-search-label"));
     }
 
     var refreshInterval = <aksess:getconfig key="forum.refreshinterval" default="30000"/>;
