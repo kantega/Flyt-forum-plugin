@@ -843,7 +843,7 @@ $.fn.oaForumWall = function () {
             var lineHeightMatcher = /([0-9]+).*/.exec(postBody.css("line-height"));
             var fontSize = fontSizeMatcher ? fontSizeMatcher[1] : 16;
             var lineHeight = lineHeightMatcher ? parseInt(lineHeightMatcher[1]) : fontSize * 1.2;
-            var collapsedHeight = lineHeight + (fontSize / 8);
+            var collapsedHeight = (lineHeight * 2) + (fontSize / 8);
             postBody.readmore({
                 collapsedHeight: collapsedHeight,
                 moreLink: '<a href="#"><kantega:label key="forum.wall.post.previewlink" bundle="forum"/></a>',
