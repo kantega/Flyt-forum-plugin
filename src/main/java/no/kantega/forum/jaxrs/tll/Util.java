@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -537,6 +538,12 @@ public class Util {
                                 }
                             }
                         }
+                    }
+
+                    if (isNull(user)) {
+                        user = new User();
+                        user.setGivenName(username);
+                        user.setSurname("");
                     }
                 } catch (SystemException e) {
                     user = null;
