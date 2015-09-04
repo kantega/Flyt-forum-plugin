@@ -774,6 +774,7 @@ $.fn.oaForumWall = function () {
                     .attr("href", embed[0].url);
                 postElement.find(".oa-forum-embed-title").text(embed[0].title);
                 postElement.find(".oa-forum-embed-description").text(embed[0].description);
+                postElement.find(".oa-forum-embed-thumbnail").addClass("oa-forum-hidden");
                 if (isDefined(embed[0].html)) {
                     postElement.find(".oa-forum-embed-html").html(embed[0].html);
                     postElement.find(".oa-forum-embed-html > iframe")
@@ -784,8 +785,7 @@ $.fn.oaForumWall = function () {
                         .attr("src", embed[0].thumbnail_url)
                         .css("max-width", ${imagePreviewWidth} + "px")
                         .css("max-height", ${imagePreviewHeight} + "px")
-                } else {
-                    postElement.find(".oa-forum-embed-thumbnail").addClass("oa-forum-hidden");
+                    postElement.find(".oa-forum-embed-thumbnail").removeClass("oa-forum-hidden");
                 }
                 postElement.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
                 postElement.find(".oa-forum-embed").removeClass("oa-forum-hidden");
