@@ -779,12 +779,13 @@ $.fn.oaForumWall = function () {
                     postElement.find(".oa-forum-embed-html > iframe")
                         .removeAttr("width")
                         .removeAttr("height");
-                } else {
+                } else if (isDefined(embed[0].thumbnail_url)) {
                     postElement.find(".oa-forum-embed-thumbnail")
                         .attr("src", embed[0].thumbnail_url)
                         .css("max-width", ${imagePreviewWidth} + "px")
                         .css("max-height", ${imagePreviewHeight} + "px")
-
+                } else {
+                    postElement.find(".oa-forum-embed-thumbnail").addClass("oa-forum-hidden");
                 }
                 postElement.find(".oa-forum-embed-url").removeClass("oa-forum-hidden");
                 postElement.find(".oa-forum-embed").removeClass("oa-forum-hidden");
