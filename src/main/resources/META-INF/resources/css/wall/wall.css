@@ -33,6 +33,10 @@ ul.oa-forum-tabs li {
     margin-bottom: 15px;
     top: 14px !important;
 }
+.oa-forum-sharefield{
+    overflow: hidden;
+    resize: none;
+}
 
 .oa-forum-overlay-spinner {
     position: fixed !important;

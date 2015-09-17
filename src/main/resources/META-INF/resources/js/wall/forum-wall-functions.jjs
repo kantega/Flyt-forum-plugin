@@ -49,6 +49,7 @@ $.fn.oaForumWall = function () {
         searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", label));
         searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", label));
     };
+    shareboxTextarea.resizable();
     searchOutputWrapper.on("click", ".flyt-forum-search-hit", function(event){
         event.preventDefault();
         var element = $(this);
@@ -287,7 +288,7 @@ $.fn.oaForumWall = function () {
             }
 
             forumWall.trigger('oa.forumwall.loaded');
-
+            $processedData.find(".oa-forum-sharefield").resizable();
             spinner.stop();
         });
     }

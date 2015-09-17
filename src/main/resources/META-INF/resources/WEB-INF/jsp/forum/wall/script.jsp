@@ -6,10 +6,14 @@
 <c:set var="isForumWallSearch"><aksess:getconfig key="forum.wall.search" default="false"/></c:set>
 
 <script type="text/javascript">
-    if (typeof jQuery == 'undefined') {
-        alert("jQuery is not loaded! OpenAksess forum wall requires jQuery to function.");
-    }
     $(document).ready(function(){
+        if (typeof jQuery === undefined) {
+            alert("jQuery is not loaded! OpenAksess forum wall requires jQuery to function.");
+        }
+        if (typeof jQuery.ui === undefined) {
+            alert("jQueryUI is not loaded! OpenAksess forum wall requires jQueryUI to function.");
+        }
+
         $.ajaxSetup ({
             // Disable caching of AJAX responses
             cache: false
