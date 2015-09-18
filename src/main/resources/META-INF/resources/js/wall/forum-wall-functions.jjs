@@ -49,7 +49,7 @@ $.fn.oaForumWall = function () {
         searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", label));
         searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", label));
     };
-    shareboxTextarea.resizable();
+    shareboxTextarea.resizable({handles: "se"});
     searchOutputWrapper.on("click", ".flyt-forum-search-hit", function(event){
         event.preventDefault();
         var element = $(this);
@@ -288,7 +288,7 @@ $.fn.oaForumWall = function () {
             }
 
             forumWall.trigger('oa.forumwall.loaded');
-            $processedData.find(".oa-forum-sharefield").resizable();
+            forumWall.find(".oa-forum-sharefield").resizable({handles: "se"});
             spinner.stop();
         });
     }
@@ -407,9 +407,11 @@ $.fn.oaForumWall = function () {
             embed(postElement);
             anchorize(postElement);
             readmore(postElement);
+            postElement.find(".oa-forum-sharefield").resizable({handles: "se"});
         });
         $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
         $processedData.addClass("new");
+
         forumWall.find(".oa-forum-threads").prepend($processedData);
     }
 
@@ -522,7 +524,7 @@ $.fn.oaForumWall = function () {
     // Handles showing comment form on a thread
     $forumThreads.on("click", ".oa-forum-showReplyForm", function(event) {
         event.preventDefault();
-        var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea");
+        var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea").resizable({handles: "se"});
         window.setTimeout(function(){
             $commentarea.focus();
             var $field = $commentarea;
@@ -560,9 +562,9 @@ $.fn.oaForumWall = function () {
 
     $forumThreads.on("click", ".oa-forum-share-comment", function(event){
         event.preventDefault();
-        var commentText = $(this).closest("div").siblings("div").children("textarea")[0];
+        var commentText = $(this).closest("form").find("textarea")[0];
         if(commentText.value != commentText.defaultValue){
-            postComment($(this).closest("div").siblings("div").children("textarea"));
+            postComment($(this).closest("form").find("textarea"));
         }
     });
 
