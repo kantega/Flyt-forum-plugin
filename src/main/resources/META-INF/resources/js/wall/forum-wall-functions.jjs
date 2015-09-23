@@ -861,5 +861,6 @@ $.fn.oaForumWall = function () {
                 console.warn("Include readmore!");
             }
         }
+        postElement.find(".oa-forum-editBody").find("[name=body]").resizable({handles: "se"});
     };
 };
