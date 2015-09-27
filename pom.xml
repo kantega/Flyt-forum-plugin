@@ -102,22 +102,8 @@
 
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm-attrs</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.sf.ehcache</groupId>
-                    <artifactId>ehcache</artifactId>
-                </exclusion>
-            </exclusions>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.0.1.Final</version>
         </dependency>
 
 
@@ -229,17 +215,7 @@
             <artifactId>spring-context</artifactId>
             <version>${springframework.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-spring3</artifactId>
-            <version>2.18</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -294,9 +270,9 @@
     </build>
 
     <properties>
-        <aksess.version>7.8.25-SNAPSHOT</aksess.version>
+        <aksess.version>7.9.0-SNAPSHOT</aksess.version>
         <securityapi.version>2.9</securityapi.version>
-        <springframework.version>3.2.12.RELEASE</springframework.version>
+        <springframework.version>4.2.1.RELEASE</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
         <servlet.version>3.0.1</servlet.version>
         <jsp.version>2.2</jsp.version>

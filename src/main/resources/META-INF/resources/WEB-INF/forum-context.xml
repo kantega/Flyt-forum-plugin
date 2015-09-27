@@ -16,32 +16,28 @@
 
     <bean class="no.kantega.forum.provider.DefaultForumProvider"/>
 
-    <bean id="forumSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
-      <property name="dataSource" ref="forumDataSource"/>
-      <property name="mappingResources" value="forum.hbm.xml"/>
-      <property name="hibernateProperties">
-        <props>
-          <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
-          <prop key="hibernate.show_sql">false</prop>
-          <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
-          <prop key="hibernate.cache.provider_configuration_file_resource_path">/forum-ehcache.xml</prop>
-          <prop key="net.sf.ehcache.configurationResourceName">/forum-ehcache.xml</prop>
-        </props>
-      </property>
-      <property name="schemaUpdate" value="true"/>
-    </bean>
-
     <bean id="forumHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
       <property name="sessionFactory">
-        <ref local="forumSessionFactory"/>
+          <bean class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
+              <property name="dataSource" ref="forumDataSource"/>
+              <property name="mappingResources" value="forum.hbm.xml"/>
+              <property name="hibernateProperties">
+                  <props>
+                      <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
+                      <prop key="hibernate.show_sql">false</prop>
+                      <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+                      <prop key="hibernate.cache.provider_configuration_file_resource_path">/forum-ehcache.xml</prop>
+                      <prop key="net.sf.ehcache.configurationResourceName">/forum-ehcache.xml</prop>
+                  </props>
+              </property>
+              <property name="schemaUpdate" value="true"/>
+          </bean>
       </property>
     </bean>
 
 
     <bean id="forumDao" class="no.kantega.forum.dao.ForumDao">
-      <property name="template">
-        <ref local="forumHibernateTemplate"/>
-      </property>
+      <property name="template" ref="forumHibernateTemplate"/>
     </bean>
 
     <bean id="forumPermissionManager" class="no.kantega.forum.permission.DefaultPermissionManager">
