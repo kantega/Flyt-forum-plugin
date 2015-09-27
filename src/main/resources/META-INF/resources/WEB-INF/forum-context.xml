@@ -18,7 +18,7 @@
 
     <bean id="forumHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
       <property name="sessionFactory">
-          <bean class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" destroy-method="destroy">
+          <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" destroy-method="destroy">
               <property name="dataSource" ref="forumDataSource"/>
               <property name="mappingResources" value="forum.hbm.xml"/>
               <property name="hibernateProperties">

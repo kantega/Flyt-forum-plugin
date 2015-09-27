@@ -195,7 +195,7 @@ public class ForumDao {
     }
 
     public List<ForumCategory> getForumCategories() {
-        List<ForumCategory> list = template.find("from ForumCategory c left join fetch c.forums f order by c.name");
+        List<ForumCategory> list = (List<ForumCategory>) template.find("from ForumCategory c left join fetch c.forums f order by c.name");
 
         // Remove duplicates since Hibernate duplicates forums
         Set<ForumCategory> setItems = new LinkedHashSet<>(list);
@@ -203,7 +203,7 @@ public class ForumDao {
     }
 
     public List<Forum> getForums() {
-        return template.find("from Forum f inner join fetch f.forumCategory c");
+        return (List<Forum>) template.find("from Forum f inner join fetch f.forumCategory c");
     }
 
     public List<Forum> getForumsWithUserPostings(final String userId) {
