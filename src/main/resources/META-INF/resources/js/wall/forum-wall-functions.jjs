@@ -49,7 +49,10 @@ $.fn.oaForumWall = function () {
         searchOutputWrapper.find(".flyt-forum-search-no-hits-text").text(flyt_forum_search_no_hits_text.replace("%s", label));
         searchOutputWrapper.find(".flyt-forum-search-hits-text").text(flyt_forum_search_hits_text.replace("%s", label));
     };
-    shareboxTextarea.resizable({handles: "se"});
+    var sharefields = shareboxTextarea.find(".oa-forum-sharefield");
+    if(sharefields.resizable){
+        sharefields.resizable({handles: "se"});
+    }
     searchOutputWrapper.on("click", ".flyt-forum-search-hit", function(event){
         event.preventDefault();
         var element = $(this);
@@ -288,7 +291,10 @@ $.fn.oaForumWall = function () {
             }
 
             forumWall.trigger('oa.forumwall.loaded');
-            forumWall.find(".oa-forum-sharefield").resizable({handles: "se"});
+            var sharefields = forumWall.find(".oa-forum-sharefield");
+            if(sharefields.resizable){
+                sharefields.resizable({handles: "se"});
+            }
             spinner.stop();
         });
     }
@@ -407,7 +413,11 @@ $.fn.oaForumWall = function () {
             embed(postElement);
             anchorize(postElement);
             readmore(postElement);
-            postElement.find(".oa-forum-sharefield").resizable({handles: "se"});
+
+            var sharefields = postElement.find(".oa-forum-sharefield");
+            if(sharefields.resizable){
+                sharefields.resizable({handles: "se"});
+            }
         });
         $processedData.find(".oa-forum-date").prettyDate({serverTime: serverTime, locale: locale});
         $processedData.addClass("new");
@@ -524,7 +534,10 @@ $.fn.oaForumWall = function () {
     // Handles showing comment form on a thread
     $forumThreads.on("click", ".oa-forum-showReplyForm", function(event) {
         event.preventDefault();
-        var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea").resizable({handles: "se"});
+        var $commentarea = $(this).closest(".oa-forum-thread").find(".oa-forum-reply").removeClass("oa-forum-hidden").find("textarea");
+        if($commentarea.resizable){
+            $commentarea.resizable({handles: "se"});
+        }
         window.setTimeout(function(){
             $commentarea.focus();
             var $field = $commentarea;
@@ -861,6 +874,10 @@ $.fn.oaForumWall = function () {
                 console.warn("Include readmore!");
             }
         }
-        postElement.find(".oa-forum-editBody").find("[name=body]").resizable({handles: "se"});
+
+        var sharefields = postElement.find(".oa-forum-editBody").find("[name=body]");
+        if(sharefields.resizable){
+            sharefields.resizable({handles: "se"});
+        }
     };
 };
