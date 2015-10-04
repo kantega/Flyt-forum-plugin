@@ -6,6 +6,7 @@ import no.kantega.forum.model.*;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.utilities.Http;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -43,25 +44,36 @@ public class ForumDao {
         this.template = template;
     }
 
+    private <T> void doSaveOrUpdate(T object){
+        template.executeWithNativeSession(session -> {
+            FlushMode flushMode = session.getFlushMode();
+            session.setFlushMode(FlushMode.COMMIT);
+            session.saveOrUpdate(object);
+            session.flush();
+            session.setFlushMode(flushMode);
+            return null;
+        });
+    }
+
     public ForumCategory saveOrUpdate(ForumCategory forumCategory) {
-        template.saveOrUpdate(forumCategory);
+        doSaveOrUpdate(forumCategory);
         return forumCategory;
     }
 
     public Attachment saveOrUpdate(Attachment attachment) {
-        template.saveOrUpdate(attachment);
+        doSaveOrUpdate(attachment);
         return attachment;
     }
 
     public ForumThread saveOrUpdate(ForumThread thread) {
         thread.setLastPostDate(new Date());
-        template.saveOrUpdate(thread);
+        doSaveOrUpdate(thread);
         updateThreadCount(thread.getForum().getId());
         return thread;
     }
 
     public Forum saveOrUpdate(Forum forum) {
-        template.saveOrUpdate(forum);
+        doSaveOrUpdate(forum);
         updateForumCount(forum.getForumCategory().getId());
         return forum;
     }
@@ -98,7 +110,7 @@ public class ForumDao {
         } else {
             post.setEmbed(null);
         }
-        template.saveOrUpdate(post);
+        doSaveOrUpdate(post);
         updatePostCount(post.getThread().getId());
 
 
@@ -106,7 +118,7 @@ public class ForumDao {
         if (updateLastPostDateOnThread) {
             ForumThread t = getThread(post.getThread().getId());
             t.setLastPostDate(new Date());
-            saveOrUpdate(t);
+            doSaveOrUpdate(t);
         }
         return post;
     }
@@ -160,11 +172,11 @@ public class ForumDao {
 
     public Post approve(Post post) {
         post.setApproved(true);
-        saveOrUpdate(post);
+        doSaveOrUpdate(post);
 
         ForumThread thread = post.getThread();
         thread.setApproved(true);
-        saveOrUpdate(thread);
+        doSaveOrUpdate(thread);
 
         updatePostCount(thread.getId());
         updateThreadCount(thread.getForum().getId());
@@ -172,27 +184,39 @@ public class ForumDao {
     }
 
     // delete
+
+    private <T> void doDelete(T object){
+        template.executeWithNativeSession(session -> {
+            FlushMode flushMode = session.getFlushMode();
+            session.setFlushMode(FlushMode.COMMIT);
+            session.delete(object);
+            session.flush();
+            session.setFlushMode(flushMode);
+            return null;
+        });
+    }
+
     public void delete(Post post) {
-        template.delete(post);
+        doDelete(post);
         updatePostCount(post.getThread().getId());
     }
 
     public void delete(ForumThread thread) {
-        template.delete(thread);
+        doDelete(thread);
         updateThreadCount(thread.getForum().getId());
     }
 
     public void delete(Attachment attachment) {
-        template.delete(attachment);
+        doDelete(attachment);
     }
 
     public void delete(Forum forum) {
-        template.delete(forum);
+        doDelete(forum);
         updateForumCount(forum.getForumCategory().getId());
     }
 
     public void delete(ForumCategory forumCategory) {
-        template.delete(forumCategory);
+        doDelete(forumCategory);
     }
 
     public List<ForumCategory> getForumCategories() {
@@ -217,9 +241,9 @@ public class ForumDao {
 
     /**
      *
-     * @param userId
+     * @param userId - owner of posts
      * @param max - max number of posts to get. Specify -1 for all.
-     * @return
+     * @return posts with userId as owner
      */
     public List<Post> getUserPostings(final String userId, final int max) {
         return template.execute(session -> {
@@ -1018,7 +1042,7 @@ public class ForumDao {
         return template.execute(session -> {
             SQLQuery sqlQuery = session.createSQLQuery("SELECT DISTINCT forumCategoryId FROM forum_forum WHERE forumId IN (" + in + ")");
             sqlQuery.addScalar("forumCategoryId", LongType.INSTANCE);
-            return sqlQuery.list();
+            return (List<Long>)sqlQuery.list();
         });
     }
 
