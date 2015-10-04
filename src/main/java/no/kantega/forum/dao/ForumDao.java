@@ -6,7 +6,6 @@ import no.kantega.forum.model.*;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.utilities.Http;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -15,6 +14,8 @@ import org.hibernate.type.TimestampType;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.util.StreamUtils;
@@ -36,7 +37,7 @@ public class ForumDao {
     @Autowired
     private SystemConfiguration configuration;
 
-    private Logger log = Logger.getLogger(ForumDao.class);
+    private Logger log = LoggerFactory.getLogger(ForumDao.class);
 
     public void setTemplate(HibernateTemplate template) {
         this.template = template;

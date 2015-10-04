@@ -3,7 +3,8 @@ package no.kantega.modules.user;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AksessUserResolver implements UserResolver {
-    private Logger log = Logger.getLogger(AksessUserResolver.class);
+    private Logger log = LoggerFactory.getLogger(AksessUserResolver.class);
 
     public ResolvedUser resolveUser(HttpServletRequest request) {
 
@@ -19,7 +20,7 @@ public class AksessUserResolver implements UserResolver {
         try {
             session = SecuritySession.getInstance(request);
         } catch (SystemException e) {
-            log.error(e);
+            log.error("Error SecuritySession.getInstance(request)", e);
         }
 
         if(session == null || session.getUser() == null) {

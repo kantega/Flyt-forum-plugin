@@ -3,13 +3,14 @@ package no.kantega.modules.user;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AksessGroupManager implements GroupManager {
-    private Logger log = Logger.getLogger(AksessGroupManager.class);
+    private Logger log = LoggerFactory.getLogger(AksessGroupManager.class);
 
     public Group[] getAllGroups() {
         try {
@@ -38,7 +39,7 @@ public class AksessGroupManager implements GroupManager {
             return groups.toArray(new Group[groups.size()]);
 
         } catch (Exception e) {
-            log.error(e);
+            log.error("Error in getAllGroups", e);
             return null;
         }
     }

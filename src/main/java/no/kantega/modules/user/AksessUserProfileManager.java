@@ -3,10 +3,11 @@ package no.kantega.modules.user;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AksessUserProfileManager extends AbstractUserProfileManager {
-    private Logger log = Logger.getLogger(AksessUserProfileManager.class);
+    private Logger log = LoggerFactory.getLogger(AksessUserProfileManager.class);
 
     private String source = "Aksess";
 
@@ -20,21 +21,17 @@ public class AksessUserProfileManager extends AbstractUserProfileManager {
                 return null;
             }
 
-            final String username = aksessUser.getId();
-            final String name = aksessUser.getName();
-            final String email = aksessUser.getEmail();
-
             return new UserProfile() {
                 public String getUser() {
-                    return username;
+                    return aksessUser.getId();
                 }
 
                 public String getFullName() {
-                    return name;
+                    return aksessUser.getName();
                 }
 
                 public String getEmail() {
-                    return email;
+                    return aksessUser.getEmail();
                 }
 
                 public String getPhone() {
@@ -46,13 +43,9 @@ public class AksessUserProfileManager extends AbstractUserProfileManager {
                 }
             };
         } catch (Exception e) {
-            log.error(e);
+            log.error("Error getUserProfile", e);
             return null;
         }
-    }
-
-    public void setSource(String source) {
-        this.source = source;
     }
 }
 

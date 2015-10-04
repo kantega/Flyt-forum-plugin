@@ -3,13 +3,14 @@ package no.kantega.modules.user;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AksessUserSearcher  implements UserSearcher {
-    private Logger log = Logger.getLogger(AksessUserSearcher.class);
+    private Logger log = LoggerFactory.getLogger(AksessUserSearcher.class);
 
     private String source = "Aksess";
 
@@ -51,7 +52,7 @@ public class AksessUserSearcher  implements UserSearcher {
             }
             return users.toArray(new UserProfile[users.size()]);
         } catch (Exception e) {
-            log.error(e);
+            log.error("Error findUsers", e);
             return new UserProfile[0];
         }
     }

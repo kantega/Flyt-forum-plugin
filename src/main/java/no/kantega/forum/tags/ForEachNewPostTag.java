@@ -6,7 +6,8 @@ import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -25,7 +26,7 @@ public class ForEachNewPostTag extends LoopTagSupport {
     private int maxPosts = 5;
     private String forumId = null;
 
-    private Logger log = Logger.getLogger(ForEachNewPostTag.class);
+    private Logger log = LoggerFactory.getLogger(ForEachNewPostTag.class);
     private ForumDao dao;
     private PermissionManager permissionsManager;
     private UserResolver userResolver;
@@ -61,7 +62,7 @@ public class ForEachNewPostTag extends LoopTagSupport {
                 }
 
             } catch (NumberFormatException e) {
-                log.error(e);
+                log.error("Error prepare", e);
             }
         }
 

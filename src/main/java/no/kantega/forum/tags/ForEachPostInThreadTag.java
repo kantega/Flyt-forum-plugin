@@ -3,7 +3,6 @@ package no.kantega.forum.tags;
 import no.kantega.forum.dao.ForumDao;
 import no.kantega.forum.util.ForumThreader;
 import no.kantega.publishing.common.data.Content;
-import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -23,7 +22,6 @@ public class ForEachPostInThreadTag extends LoopTagSupport {
     private boolean reverse;
     private boolean threaded = false;
 
-    private Logger log = Logger.getLogger(ForEachPostInThreadTag.class);
     private ForumDao dao;
 
     @Override
