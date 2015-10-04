@@ -129,7 +129,9 @@ $.fn.oaForumWall = function () {
                     searchHits.append(searchHitClone);
                     posts = posts;
                 }
-                searchOutputWrapper.highlight(data.query.match(/\S+/g), { className : "flyt-forum-search-highlight" });
+                if(searchOutputWrapper.highlight){
+                    searchOutputWrapper.highlight(data.query.match(/\S+/g), { className : "flyt-forum-search-highlight" });
+                }
             } else {
                 searchOutputWrapper.find(".flyt-forum-search-no-hits-text").removeClass("hidden");
                 searchOutputWrapper.find(".flyt-forum-search-hits-text").addClass("hidden");
@@ -812,46 +814,48 @@ $.fn.oaForumWall = function () {
     }
     var anchorize = function(postElement) {
         var bodyElement = postElement.find(".oa-forum-body");
-        bodyElement.highlight(
-            /\b((https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,
-            {
-                element:"a",
-                className: "oa-forum-anchor"
-            }).find(".oa-forum-anchor").each(function(){
-                var element = $(this);
-                if (!element.attr("data-original")) {
-                    element.attr("data-original", element.html());
-                    element.attr("href", element.html());
-                }
-            });
-        bodyElement.highlight(
-            /(^|[^\/])(www\.[\S]+(\b|$))/i,
-            {
-                element:"a",
-                className: "oa-forum-anchor"
-            }).find(".oa-forum-anchor").each(function(){
-                var element = $(this);
-                if (!element.attr("data-original")) {
-                    element.attr("data-original", element.html());
-                    element.attr("href", "http://" + element.html().trim());
-                }
-            });
-        try {
-            var embed = $.parseJSON(postElement.find(".oa-forum-embed-body").text());
-            postElement.find("a.oa-forum-anchor").each(function(){
-                var anchor = $(this);
-                var href = anchor.attr("href");
-                for (var index = 0; index < embed.length; index++) {
-                    if (isDefined(embed[index].title) && href == embed[index].url) {
-                        anchor.text(embed[index].title);
-                        var embedUrlElement = postElement.find(".oa-forum-embed-url");
-                        if (embedUrlElement.attr("href") == href) {
-                            embedUrlElement.addClass("oa-forum-hidden");
+        if(bodyElement.highlight){
+            bodyElement.highlight(
+                /\b((https?|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i,
+                {
+                    element:"a",
+                    className: "oa-forum-anchor"
+                }).find(".oa-forum-anchor").each(function(){
+                    var element = $(this);
+                    if (!element.attr("data-original")) {
+                        element.attr("data-original", element.html());
+                        element.attr("href", element.html());
+                    }
+                });
+            bodyElement.highlight(
+                /(^|[^\/])(www\.[\S]+(\b|$))/i,
+                {
+                    element:"a",
+                    className: "oa-forum-anchor"
+                }).find(".oa-forum-anchor").each(function(){
+                    var element = $(this);
+                    if (!element.attr("data-original")) {
+                        element.attr("data-original", element.html());
+                        element.attr("href", "http://" + element.html().trim());
+                    }
+                });
+            try {
+                var embed = $.parseJSON(postElement.find(".oa-forum-embed-body").text());
+                postElement.find("a.oa-forum-anchor").each(function(){
+                    var anchor = $(this);
+                    var href = anchor.attr("href");
+                    for (var index = 0; index < embed.length; index++) {
+                        if (isDefined(embed[index].title) && href == embed[index].url) {
+                            anchor.text(embed[index].title);
+                            var embedUrlElement = postElement.find(".oa-forum-embed-url");
+                            if (embedUrlElement.attr("href") == href) {
+                                embedUrlElement.addClass("oa-forum-hidden");
+                            }
                         }
                     }
-                }
-            });
-        } catch(cause) {}
+                });
+            } catch(cause) {}
+        }
     };
     var readmore = function(postElement) {
         var postBody = postElement.find(".oa-forum-body");
