@@ -72,4 +72,5 @@
     <bean id="groupManager" class="no.kantega.modules.user.AksessGroupManager"/>
     <bean id="userResolver" class="no.kantega.modules.user.AksessUserResolver"/>
 
+    <bean class="no.kantega.forum.cache.ForumCacheInit"/>
 </beans>
