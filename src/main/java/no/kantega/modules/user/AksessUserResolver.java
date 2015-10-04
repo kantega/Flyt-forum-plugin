@@ -32,7 +32,7 @@ public class AksessUserResolver implements UserResolver {
             Map<String, Role> roleMap = session.getUser().getRoles();
             List<String> roles = new ArrayList<>(roleMap.keySet());
 
-            user.setRoles(roles.toArray(new String[roles.size()]));
+            user.setRoles(roles);
             return user;
         }
     }

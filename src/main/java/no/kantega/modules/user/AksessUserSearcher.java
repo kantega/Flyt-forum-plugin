@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AksessUserSearcher  implements UserSearcher {
@@ -14,7 +15,7 @@ public class AksessUserSearcher  implements UserSearcher {
 
     private String source = "Aksess";
 
-    public UserProfile[] findUsers(String substring) {
+    public List<UserProfile> findUsers(String substring) {
         try {
             SecurityRealm realm = SecurityRealmFactory.getInstance();
 
@@ -26,34 +27,12 @@ public class AksessUserSearcher  implements UserSearcher {
                 final String username = aksessUser.getId();
                 final String name = aksessUser.getName();
                 final String email = aksessUser.getEmail();
-                UserProfile profile = new UserProfile() {
-                    public String getUser() {
-                        return username;
-                    }
-
-                    public String getFullName() {
-                        return name;
-                    }
-
-                    public String getEmail() {
-                        return email;
-
-                    }
-
-                    public String getPhone() {
-                        return "";
-                    }
-
-                    public String getSource() {
-                        return source;
-                    }
-                };
-                users.add(profile);
+                users.add(new AksessUserProfile(username, name, email, "", source));
             }
-            return users.toArray(new UserProfile[users.size()]);
+            return users;
         } catch (Exception e) {
             log.error("Error findUsers", e);
-            return new UserProfile[0];
+            return Collections.emptyList();
         }
     }
 

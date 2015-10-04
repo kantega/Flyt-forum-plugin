@@ -21,31 +21,12 @@ public class AksessUserProfileManager extends AbstractUserProfileManager {
                 return null;
             }
 
-            return new UserProfile() {
-                public String getUser() {
-                    return aksessUser.getId();
-                }
-
-                public String getFullName() {
-                    return aksessUser.getName();
-                }
-
-                public String getEmail() {
-                    return aksessUser.getEmail();
-                }
-
-                public String getPhone() {
-                    return "";
-                }
-
-                public String getSource() {
-                    return source;
-                }
-            };
+            return new AksessUserProfile(aksessUser.getId(), aksessUser.getName(), aksessUser.getEmail(), "", source);
         } catch (Exception e) {
             log.error("Error getUserProfile", e);
             return null;
         }
     }
+
 }
 

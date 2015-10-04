@@ -5,13 +5,14 @@ import no.kantega.security.api.role.Role;
 import no.kantega.security.api.role.RoleManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 public class SecurityApiGroupManager implements GroupManager {
     private RoleManager roleManager;
 
-    public Group[] getAllGroups() {
+    public List<Group> getAllGroups() {
         try {
             List<Group> groups = new ArrayList<>();
             Iterator<Role> roles = roleManager.getAllRoles();
@@ -20,22 +21,13 @@ public class SecurityApiGroupManager implements GroupManager {
                 final String groupId = role.getDomain() + ":" + role.getId();
                 final String groupName = role.getName();
 
-                Group group = new Group() {
-                    public String getId() {
-                        return groupId;
-                    }
-
-                    public String getName() {
-                        return groupName;
-                    }
-                };
-                groups.add(group);
+                groups.add(new AksessGroup(groupId, groupName));
             }
 
-            return groups.toArray(new Group[groups.size()]);
+            return groups;
 
         } catch (SystemException e) {
-            return new Group[0];
+            return Collections.emptyList();
         }
     }
 

@@ -1,17 +1,8 @@
 package no.kantega.forum.jaxrs.tll;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.forum.jaxrs.tol.AttachmentTo;
-import no.kantega.forum.jaxrs.tol.CategoryReferenceTo;
-import no.kantega.forum.jaxrs.tol.ForumReferenceTo;
-import no.kantega.forum.jaxrs.tol.LikeTo;
-import no.kantega.forum.jaxrs.tol.PostTo;
-import no.kantega.forum.jaxrs.tol.ResourceReferenceTo;
-import no.kantega.forum.model.Attachment;
-import no.kantega.forum.model.Forum;
-import no.kantega.forum.model.ForumCategory;
-import no.kantega.forum.model.ForumThread;
-import no.kantega.forum.model.Post;
+import no.kantega.forum.jaxrs.tol.*;
+import no.kantega.forum.model.*;
 import no.kantega.forum.permission.Permission;
 import no.kantega.forum.permission.PermissionManager;
 import no.kantega.modules.user.ResolvedUser;
@@ -34,11 +25,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -381,17 +368,9 @@ public class Util {
 
     public static List<String> resolveRoles(ResolvedUser resolvedUser) {
         if (resolvedUser != null) {
-            String[] resolvedRoles = resolvedUser.getRoles();
-            if (resolvedRoles != null) {
-                List<String> roles = new ArrayList<>(resolvedRoles.length);
-                for (String resolvedRole : resolvedRoles) {
-                    if (resolvedRole != null) {
-                        roles.add(resolvedRole);
-                    }
-                }
-                return roles;
-            }
-        } return null;
+            return resolvedUser.getRoles();
+        }
+        return null;
     }
 
     public static List<ResourceReferenceTo> getActions(String username, Long startAtThreadId, Long endAtThreadId, Integer numberOfThreads, Boolean includePosts, UriInfo uriInfo) {

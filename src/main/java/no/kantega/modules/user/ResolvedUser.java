@@ -1,8 +1,11 @@
 package no.kantega.modules.user;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ResolvedUser {
     private String username;
-    private String[] roles = new String[0];
+    private List<String> roles = Collections.emptyList();
 
     public String getUsername() {
         return username;
@@ -12,11 +15,11 @@ public class ResolvedUser {
         this.username = username;
     }
 
-    public String[] getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(String[] roles) {
+    public void setRoles(List<String> roles) {
         this.roles = roles;
     }
 }
