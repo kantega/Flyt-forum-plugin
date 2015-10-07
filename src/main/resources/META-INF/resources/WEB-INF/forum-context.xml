@@ -23,7 +23,7 @@
               <property name="mappingResources" value="forum.hbm.xml"/>
               <property name="hibernateProperties">
                   <props>
-                      <prop key="hibernate.dialect">${forum.dialect.hibernate3}</prop>
+                      <prop key="hibernate.dialect">${forum.dialect.hibernate}</prop>
                       <prop key="hibernate.show_sql">false</prop>
                       <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
                       <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
