@@ -1,9 +1,10 @@
 (function($){
-    var threadTemplate = $("#flytForumWallTemplates").find(".oa-forum-thread");
-    var postTemplate = $("#flytForumWallTemplates").find(".oa-forum-post");
-    var likerTemplate = $("#flytForumWallTemplates").find(".oa-forum-liker");
-    var attachmentTemplate = $("#flytForumWallTemplates").find(".oa-forum-attachment");
-    var attachmentDocTemplate = $("#flytForumWallTemplates").find(".oa-forum-attachment-doc");
+    var $flytForumWallTemplates = $("#flytForumWallTemplates");
+    var threadTemplate = $flytForumWallTemplates.find(".oa-forum-thread");
+    var postTemplate = $flytForumWallTemplates.find(".oa-forum-post");
+    var likerTemplate = $flytForumWallTemplates.find(".oa-forum-liker");
+    var attachmentTemplate = $flytForumWallTemplates.find(".oa-forum-attachment");
+    var attachmentDocTemplate = $flytForumWallTemplates.find(".oa-forum-attachment-doc");
     var getOption = function(options, key) {
         var option = options !== undefined && options !== null ? options[key] : null;
         if (option !== undefined && option !== null) {

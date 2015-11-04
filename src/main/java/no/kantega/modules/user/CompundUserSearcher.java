@@ -1,7 +1,6 @@
 package no.kantega.modules.user;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -10,15 +9,15 @@ import java.util.List;
 public class CompundUserSearcher implements UserSearcher {
     private List<UserSearcher> userSearchers;
 
-    public UserProfile[] findUsers(String substring) {
+    public List<UserProfile> findUsers(String substring) {
         List<UserProfile> profiles = new ArrayList<>();
 
         for (UserSearcher searcher : userSearchers) {
-            UserProfile[] p = searcher.findUsers(substring);
-            profiles.addAll(Arrays.asList(p));
+            List<UserProfile> p = searcher.findUsers(substring);
+            profiles.addAll(p);
         }
 
-        return profiles.toArray(new UserProfile[profiles.size()]);
+        return profiles;
     }
 
     public void setUserSearchers(List<UserSearcher> userSearchers) {

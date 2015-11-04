@@ -8,7 +8,6 @@ import no.kantega.forum.util.ForumComparator;
 import no.kantega.forum.util.ForumUtil;
 import no.kantega.modules.user.ResolvedUser;
 import no.kantega.modules.user.UserResolver;
-import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -27,7 +26,6 @@ public class ForEachForumTag extends LoopTagSupport {
 
     private Iterator i = null;
 
-    private Logger log = Logger.getLogger(ForEachForumTag.class);
     private ForumDao dao;
     private PermissionManager permissionsManager;
     private UserResolver userResolver;

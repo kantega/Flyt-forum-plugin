@@ -1,12 +1,7 @@
 package no.kantega.modules.user;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: Oct 2, 2005
- * Time: 6:34:22 PM
- * To change this template use File | Settings | File Templates.
- */
+import java.util.List;
+
 public interface UserSearcher {
-    public UserProfile[] findUsers(String substring);
+    List<UserProfile> findUsers(String substring);
 }

@@ -25,8 +25,8 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.multimedia.ImageEditor;
-import org.apache.xml.serializer.OutputPropertiesFactory;
-import org.cyberneko.html.parsers.SAXParser;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
@@ -35,28 +35,12 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLFilterImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
-
-import static java.util.Arrays.asList;
 
 public class EditPostController extends AbstractForumFormController {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -73,6 +57,12 @@ public class EditPostController extends AbstractForumFormController {
     private ForumPostService service;
     private ImageEditor imageEditor;
     private SystemConfiguration configuration;
+    private final PolicyFactory sanitizePolicy = new HtmlPolicyBuilder()
+            .allowElements("blockquote", "b", "br", "strong", "p", "a")
+            .allowUrlProtocols("http", "https")
+            .allowAttributes("href").onElements("a")
+            .requireRelNofollowOnLinks()
+            .toFactory();
 
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
         RequestParameters param = new RequestParameters(request);
@@ -340,9 +330,6 @@ public class EditPostController extends AbstractForumFormController {
 
     /**
      * Handles file attachments, shrinks images if they are to large
-     * @param request
-     * @param object
-     * @throws Exception
      */
     protected void onBind(HttpServletRequest request, Object object) throws Exception {
         Post post = (Post)object;
@@ -423,55 +410,7 @@ public class EditPostController extends AbstractForumFormController {
         body = startBlockquote.matcher(body).replaceAll(qStart);
         body = endBlockquote.matcher(body).replaceAll(qEnd);
 
-        SAXParser parser = new SAXParser();
-
-
-        XMLFilterImpl xmlFilter = new XMLFilterImpl() {
-            Set<String> legalTags = new HashSet<>(asList("blockquote", "b", "br", "strong", "p", "a"));
-
-            public void startElement(String string, String string1, String string2, Attributes attributes) throws SAXException {
-                if (legalTags.contains(string1)) {
-                    super.startElement(string, string1, string2, attributes);    //To change body of overridden methods use File | Settings | File Templates.
-                }
-            }
-
-            public void endElement(String string, String string1, String string2) throws SAXException {
-                if (legalTags.contains(string1)) {
-                    super.endElement(string, string1, string2);    //To change body of overridden methods use File | Settings | File Templates.
-                }
-            }
-
-        };
-
-        StringWriter sw = new StringWriter();
-
-        try {
-
-            parser.setFeature("http://cyberneko.org/html/features/balance-tags/document-fragment", true);
-            parser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-
-            parser.setContentHandler(xmlFilter);
-
-
-            SAXTransformerFactory fac = (SAXTransformerFactory) TransformerFactory.newInstance();
-
-            TransformerHandler handler = fac.newTransformerHandler();
-            final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
-            URL resourceUrl = contextClassLoader.getResource("no/kantega/xml/serializer/XMLEntities.properties");
-
-            handler.getTransformer().setOutputProperty(OutputPropertiesFactory.S_KEY_ENTITIES, resourceUrl.toString());
-            handler.getTransformer().setOutputProperty(OutputKeys.METHOD, "html");
-            xmlFilter.setContentHandler(handler);
-            handler.setResult(new StreamResult(sw));
-            parser.parse(new InputSource(new StringReader(body)));
-        } catch (TransformerConfigurationException | SAXException | IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        return sw.toString();
-
+        return sanitizePolicy.sanitize(body);
     }
 
     private boolean isAjaxRequest(HttpServletRequest request) {

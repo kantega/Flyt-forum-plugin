@@ -6,7 +6,6 @@ import no.kantega.forum.model.ForumThread;
 import no.kantega.forum.model.Post;
 import no.kantega.forum.util.ForumPostReadStatus;
 import no.kantega.forum.util.ForumUtil;
-import org.apache.log4j.Logger;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -25,8 +24,7 @@ public class ForEachThreadInForumTag extends LoopTagSupport {
     private long forumId;
     private int startIndex;
     private int maxThreads = Integer.MAX_VALUE;
-    private Iterator i = null;
-    private Logger log = Logger.getLogger(ForEachThreadInForumTag.class);
+    private Iterator<ForumThread> i = null;
     private ForumDao dao;
 
     @Override
@@ -50,7 +48,7 @@ public class ForEachThreadInForumTag extends LoopTagSupport {
 
             // Hent nye poster siden siste besøk
             ForumPostReadStatus readStatus = new ForumPostReadStatus(request);
-            List unreadPosts = null;
+            List<Post> unreadPosts = null;
 
             Date lastVisit = ForumUtil.getLastVisit(request, response, true);
             if (lastVisit != null) {

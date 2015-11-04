@@ -68,7 +68,7 @@ public class Post implements Comparable<Post>{
         return attachments;
     }
 
-    public void setAttachments(Set attachments) {
+    public void setAttachments(Set<Attachment> attachments) {
         this.attachments = attachments;
     }
 

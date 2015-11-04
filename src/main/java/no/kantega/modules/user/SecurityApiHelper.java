@@ -5,11 +5,6 @@ import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.role.DefaultRole;
 import no.kantega.security.api.role.Role;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 27, 2007
- * Time: 10:46:35 AM
- */
 public class SecurityApiHelper {
     public static Identity createApiIdentity(String aksessUserId) {
         String userId = "";

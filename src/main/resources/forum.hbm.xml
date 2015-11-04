@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC
-        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="no.kantega.forum.model">
+<hibernate-mapping package="no.kantega.forum.model" xmlns="http://www.hibernate.org/xsd/hibernate-mapping"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.hibernate.org/xsd/hibernate-mapping http://www.hibernate.org/xsd/hibernate-mapping">
     <class name="ForumCategory" table="forum_forumcategory">
         <cache usage="read-write"/>
         <id name="id" column="forumCategoryId" type="long">

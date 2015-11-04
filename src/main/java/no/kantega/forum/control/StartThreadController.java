@@ -9,7 +9,8 @@ import no.kantega.modules.user.ResolvedUser;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -22,7 +23,7 @@ public class StartThreadController extends AbstractForumFormController  {
 
     private ForumDao dao;
 
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public PermissionObject[] getRequiredPermissions(HttpServletRequest request) {
