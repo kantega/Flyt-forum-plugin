@@ -255,7 +255,7 @@
     </build>
 
     <properties>
-        <aksess.version>7.9.0-SNAPSHOT</aksess.version>
+        <aksess.version>7.9.0</aksess.version>
         <securityapi.version>2.9</securityapi.version>
         <springframework.version>4.2.1.RELEASE</springframework.version>
         <hibernate.version>3.2.6.ga</hibernate.version>
