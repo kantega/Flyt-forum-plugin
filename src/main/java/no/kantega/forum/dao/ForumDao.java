@@ -1,10 +1,11 @@
 package no.kantega.forum.dao;
 
-import no.kantega.embed.Embedly;
-import no.kantega.embed.Oembed;
-import no.kantega.forum.model.*;
-import no.kantega.publishing.api.configuration.SystemConfiguration;
-import no.kantega.utilities.Http;
+import no.kantega.embed.Embedder;
+import no.kantega.forum.model.Attachment;
+import no.kantega.forum.model.Forum;
+import no.kantega.forum.model.ForumCategory;
+import no.kantega.forum.model.ForumThread;
+import no.kantega.forum.model.Post;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.FlushMode;
 import org.hibernate.Hibernate;
@@ -15,17 +16,18 @@ import org.hibernate.type.TimestampType;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.HibernateTemplate;
-import org.springframework.util.StreamUtils;
 
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,9 +38,7 @@ public class ForumDao {
     private HibernateTemplate template;
 
     @Autowired
-    private SystemConfiguration configuration;
-
-    private Logger log = LoggerFactory.getLogger(ForumDao.class);
+    private Embedder embedder;
 
     public void setTemplate(HibernateTemplate template) {
         this.template = template;
@@ -84,29 +84,8 @@ public class ForumDao {
 
     public Post saveOrUpdate(Post post, boolean updateLastPostDateOnThread) {
         List<URL> links = getLinks(post);
-        if (nonNull(links) && !links.isEmpty()) {
-            Embedly embedly = getEmbedly();
-            if (nonNull(embedly)) {
-                Oembed oembed = embedly.oembed()
-                        .withUrls(links)
-                        .withNostyle(true)
-                        .build();
-                try {
-                    try (Http.HttpRequest request = oembed.getHttpRequest()) {
-                        try (Http.HttpResponse response = request.getResponse()) {
-                            if (200 == response.getResponseCode()) {
-                                try (InputStream inputStream = response.getInputStream()) {
-                                    post.setEmbed(StreamUtils.copyToString(inputStream, Charset.forName("UTF-8")));
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception cause) {
-                    log.error("Could not perform embed", cause);
-                    post.setEmbed(null);
-                }
-
-            }
+        if (!links.isEmpty()) {
+            post.setEmbed(embedder.getEmbeddedContent(links));
         } else {
             post.setEmbed(null);
         }
@@ -129,7 +108,7 @@ public class ForumDao {
     private static final Pattern pattern2 = Pattern.compile("(^|[^/])(www\\.[\\S]+)(\\b)", Pattern.CASE_INSENSITIVE);
 
     private List<URL> getLinks(Post post) {
-        List<URL> links = new ArrayList<>();
+        List<URL> links = new LinkedList<>();
         if (nonNull(post)) {
             String body = post.getBody();
             if (nonNull(body)) {
@@ -154,21 +133,7 @@ public class ForumDao {
         return links;
     }
 
-    private Embedly getEmbedly() {
-        Embedly embedly = null;
-        try{
-            URL apiUrl = new URL(configuration.getString("embed.ly.api.url"));
-            String apiUrlEncoding = configuration.getString("embed.ly.api.url.encoding");
-            String apiKey = configuration.getString("embed.ly.api.key");
-            apiUrlEncoding = nonNull(apiUrlEncoding) ? apiUrlEncoding : "UTF-8";
-            if (nonNull(apiUrl) && nonNull(apiKey)) {
-                embedly = new Embedly(apiUrl, apiKey, apiUrlEncoding);
-            }
-        } catch (Exception cause) {
 
-        }
-        return embedly;
-    }
 
     public Post approve(Post post) {
         post.setApproved(true);

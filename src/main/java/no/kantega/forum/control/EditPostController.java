@@ -39,7 +39,13 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 public class EditPostController extends AbstractForumFormController {
@@ -308,7 +314,7 @@ public class EditPostController extends AbstractForumFormController {
             map.put("hiddenForumId", hiddenForumId);
             if (isNewThread) {
                 ForumThread t = p.getThread();
-                t.setPosts(new TreeSet<Post>());
+                t.setPosts(new TreeSet<>());
                 t.getPosts().add(p);
                 map.put("thread", t);
                 return new ModelAndView("wall/ajax-thread", map);

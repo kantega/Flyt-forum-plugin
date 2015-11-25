@@ -1,22 +1,23 @@
 package no.kantega.embed;
 
 import no.kantega.utilities.Http;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.List;
 
 import static no.kantega.utilities.Objects.requireNonNull;
 
-/**
- * @author Kristian Myrhaug
- * @since 2015-07-01
- */
-public class Embedly {
+
+public class Embedly implements Embedder {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public static final String DEFAULT_URL_ENCODING = "UTF-8";
 
@@ -47,24 +48,26 @@ public class Embedly {
         return Oembed.withEmbedly(this);
     }
 
-    public static void main(String... arguments) throws MalformedURLException {
-        Embedly embedly = new Embedly(new URL("https://api.embed.ly/1/oembed?#abc"), "936d6a99e233444fb8c25ac1368c2618", DEFAULT_URL_ENCODING);
-        Oembed oembed = embedly.oembed()
-                .withUrl(new URL("http://www.adressa.no/bolig/article560853.snd"))
+
+    @Override
+    public String getEmbeddedContent(List<URL> links) {
+        Oembed oembed = oembed()
+                .withUrls(links)
                 .withNostyle(true)
                 .build();
-
-        try (Http.HttpRequest request = oembed.getHttpRequest()) {
-            System.out.println(request.getUrl());
-            try (Http.HttpResponse response = request.getResponse()) {
-                try (InputStream entity = response.getInputStream()) {
-                    System.out.println(StreamUtils.copyToString(entity, Charset.forName("UTF-8")));
-                }
+        try {
+            try (Http.HttpRequest request = oembed.getHttpRequest();
+                 Http.HttpResponse response = request.getResponse()) {
+                    if (200 == response.getResponseCode()) {
+                        try (InputStream inputStream = response.getInputStream()) {
+                            return StreamUtils.copyToString(inputStream, Charset.forName("UTF-8"));
+                        }
+                    }
             }
         } catch (Exception cause) {
-            cause.printStackTrace();
+            log.error("Could not perform embed", cause);
         }
+
+        return null;
     }
-
-
 }

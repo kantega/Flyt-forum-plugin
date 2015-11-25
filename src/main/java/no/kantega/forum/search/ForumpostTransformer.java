@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.kantega.forum.model.Post;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
@@ -11,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ForumpostTransformer extends DocumentTransformerAdapter<Post> {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-forumpost";
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -60,7 +64,7 @@ public class ForumpostTransformer extends DocumentTransformerAdapter<Post> {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Error transforming post " + post.getId(), e);
             }
         }
         return indexableDocument;

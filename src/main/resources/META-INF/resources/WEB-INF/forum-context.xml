@@ -73,4 +73,5 @@
     <bean id="userResolver" class="no.kantega.modules.user.AksessUserResolver"/>
 
     <bean class="no.kantega.forum.cache.ForumCacheInit"/>
+    <bean class="no.kantega.embed.EmbedConfig" />
 </beans>
