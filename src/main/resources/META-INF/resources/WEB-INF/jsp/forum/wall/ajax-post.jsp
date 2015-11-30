@@ -7,12 +7,11 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags" %>
 
-
+<c:set var="userimagesize"><aksess:getconfig key="forum.userimageurl.size" default="40"/></c:set>
 <c:set var="userProfileUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userprofileurl"/>?userId=${post.owner}</c:set>
-<c:set var="userImageUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userimageurl"/>?userId=${post.owner}&amp;width=40</c:set>
+<c:set var="userImageUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userimageurl"/>?userId=${post.owner}&amp;width=${userimagesize}</c:set>
 
 <c:set var="userProfileBaseUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userprofileurl"/>?userId=</c:set>
-<c:set var="userImageBaseUrl">${pageContext.request.contextPath}<aksess:getconfig key="forum.userimageurl"/>?width=40&amp;userId=</c:set>
 
 <c:set var="imagePreviewWidth"><aksess:getconfig key="forum.imagePreviewWidth" default="100"/></c:set>
 <c:set var="imagePreviewHeight"><aksess:getconfig key="forum.imagePreviewHeight" default="100"/></c:set>
