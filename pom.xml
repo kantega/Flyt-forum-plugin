@@ -11,19 +11,30 @@
     <artifactId>forum-plugin</artifactId>
     <packaging>jar</packaging>
     <name>Flyt Forum Plugin</name>
-    <version>1.33</version>
+    <version>1.34-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-forum-plugin.git</connection>
-        <tag>forum-plugin-1.33</tag>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>opensource.kantega.no</id>
+            <name>opensource.kantega.no release repository</name>
+            <url>https://opensource.kantega.no/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>opensource.kantega.no</id>
+            <name>opensource.kantega.no snapshot repository</name>
+            <url>https://opensource.kantega.no/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <pluginRepositories>
         <pluginRepository>
             <id>opensource.kantega.no</id>
             <name>Kantega Open Source Repository</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -34,7 +45,7 @@
         <repository>
             <id>nexus</id>
             <name>Kantega Maven Repository</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -42,7 +53,7 @@
         <repository>
             <id>snapshots</id>
             <name>Kantega Snapshots</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

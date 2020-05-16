@@ -1,21 +1,14 @@
 package no.kantega.forum.dao;
 
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.embed.Embedly;
 import no.kantega.embed.Oembed;
-import no.kantega.forum.model.Attachment;
-import no.kantega.forum.model.Forum;
-import no.kantega.forum.model.ForumCategory;
-import no.kantega.forum.model.ForumThread;
-import no.kantega.forum.model.Post;
+import no.kantega.forum.model.*;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.utilities.Http;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
+import org.hibernate.*;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.Interval;
@@ -30,12 +23,7 @@ import java.nio.charset.Charset;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -83,9 +71,16 @@ public class ForumDao {
         if (nonNull(links) && !links.isEmpty()) {
             Embedly embedly = getEmbedly();
             if (nonNull(embedly)) {
-                Oembed oembed = embedly.oembed()
-                        .withUrls(links)
-                        .withNostyle(true)
+                Oembed.OembedBuilder builder = embedly.oembed()
+                    .withUrls(links)
+                    .withNostyle(true);
+                if(embedly.isForceHttps()) {
+                    builder.withSecure(true);
+                }
+                if(embedly.isForceHttps()) {
+                    builder.withScheme(Oembed.Scheme.https);
+                }
+                Oembed oembed = builder
                         .build();
                 try {
                     try (Http.HttpRequest request = oembed.getHttpRequest()) {
@@ -153,12 +148,17 @@ public class ForumDao {
     private Embedly getEmbedly() {
         Embedly embedly = null;
         try{
-            URL apiUrl = new URL(Aksess.getConfiguration().getString("embed.ly.api.url"));
-            String apiUrlEncoding = Aksess.getConfiguration().getString("embed.ly.api.url.encoding");
-            String apiKey = Aksess.getConfiguration().getString("embed.ly.api.key");
+            Configuration configuration = Aksess.getConfiguration();
+            URL apiUrl = new URL(configuration.getString("embed.ly.api.url"));
+            String apiUrlEncoding = configuration.getString("embed.ly.api.url.encoding");
+            String apiKey = configuration.getString("embed.ly.api.key");
             apiUrlEncoding = nonNull(apiUrlEncoding) ? apiUrlEncoding : "UTF-8";
+
             if (nonNull(apiUrl) && nonNull(apiKey)) {
-                embedly = new Embedly(apiUrl, apiKey, apiUrlEncoding);
+                embedly = new Embedly(
+                    apiUrl, apiKey, apiUrlEncoding,
+                    configuration.getBoolean("embed.ly.api.url.forceSecure", false), configuration.getBoolean("embed.ly.api.url.forceHttps", false)
+                );
             }
         } catch (Exception cause) {
 
