@@ -21,15 +21,23 @@ public class Embedly implements Embedder {
 
     public static final String DEFAULT_URL_ENCODING = "UTF-8";
 
-    private URL apiUrl;
-    private String apiKey;
-    private String apiUrlEncoding;
+    private final URL apiUrl;
+    private final String apiKey;
+    private final boolean forceSecure;
+    private final boolean forceHttps;
+    private final String apiUrlEncoding;
 
     @Inject
-    public Embedly(@Named("embed.ly.api.url") URL apiUrl, @Named("embed.ly.api.key") String apiKey, @Named("embed.ly.api.url.encoding") String apiUrlEncoding) {
+    public Embedly(@Named("embed.ly.api.url") URL apiUrl,
+                   @Named("embed.ly.api.key") String apiKey,
+                   @Named("embed.ly.api.url.encoding") String apiUrlEncoding,
+                   @Named("embed.ly.api.url.forceSecure") boolean forceSecure,
+                   @Named("embed.ly.api.url.forceHttps") boolean forceHttps) {
         this.apiUrlEncoding = apiUrlEncoding;
         this.apiUrl = requireNonNull(apiUrl, "May not be null: apiUrl");
         this.apiKey = requireNonNull(apiKey, "May not be null: apiKey");
+        this.forceSecure = forceSecure;
+        this.forceHttps = forceHttps;
     }
 
     public URL getApiUrl() {
@@ -51,9 +59,16 @@ public class Embedly implements Embedder {
 
     @Override
     public String getEmbeddedContent(List<URL> links) {
-        Oembed oembed = oembed()
-                .withUrls(links)
-                .withNostyle(true)
+        Oembed.OembedBuilder builder = oembed()
+            .withUrls(links)
+            .withNostyle(true);
+        if(forceHttps) {
+            builder.withSecure(true);
+        }
+        if(forceHttps) {
+            builder.withScheme(Oembed.Scheme.https);
+        }
+        Oembed oembed = builder
                 .build();
         try {
             try (Http.HttpRequest request = oembed.getHttpRequest();
